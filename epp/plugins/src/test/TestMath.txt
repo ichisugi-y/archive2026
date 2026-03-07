@@ -1,0 +1,9 @@
+#epp "Math"
+
+class TestMath {
+  public static void main(String argv[]){
+    System.out.println(max(5.0, 10.0) == 10.0);
+    System.out.println(abs(-1.0) == 1.0);
+    System.out.println(sin(0.0) == 0.0);
+  }
+}

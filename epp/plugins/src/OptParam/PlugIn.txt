@@ -1,0 +1,210 @@
+/*
+ *
+ * Copyright (C) 1997, 1998 Yuuji ICHISUGI
+ *
+ * Permission to use, copy, modify and redistribution this software in
+ * whole and in part, for evaluation or research purposes and without fee
+ * is hereby granted provided this copyright notice.
+ * See CopyrightAndLicensing.txt for licensing condition.
+ */
+
+
+/*
+
+Syntax
+------
+MethodDeclarator
+	<original grammar rules>
+	Identifier ( OptionalParameterList )
+	Identifier ( FormalParameterList , OptionalParameterList )
+
+OptionalParameterList
+	OptionalParameter
+	OptionalParameterList, OptionalParameter
+
+OptionalParameter
+	Type VariableDeclaratorId = VariableInitializer
+
+
+An example
+----------
+
+	#epp "OptParam"
+	class Test {
+	  int foo(int x, int opt=10){ ... }
+	}
+
+will be expanded into:
+
+	int foo(int x, int opt){ ... }
+	int foo(int x){
+	  int opt = 10;
+	  return foo(x, opt);
+	}
+
+
+*/
+
+
+#epp "Symbol"
+#epp "SystemMixin"
+#epp "AutoSplitFiles"
+#epp "BackQuote"
+
+
+package OptParam;
+import epp.*;
+
+SystemMixin OptParam {
+  class Epp {
+    
+    extend Tree formalParameterRight(Tree tree) {
+      if (lookahead() == :"="){
+	matchAny();
+	return new Tree(:OptParam, tree, variableInitializer());
+      } else {
+	return original(tree);
+      }
+    }
+
+    extend void initMacroTable() {
+      original();
+      defineMacro(:method, new OptParamMacro());
+    }
+  }
+}
+
+class OptParamMacro extends Macro {
+
+  public Tree call(Tree tree){
+    Tree[] args 	= tree.args();
+    Tree modifiers	= args[0];
+    Tree rettype	= args[1];
+    Tree name		= args[2];
+    Tree fparams	= args[3];
+    Tree throwsTree	= args[4];
+    Tree body		= args[5];
+    Tree[] decls	= fparams.args();
+    TreeVec normalParams= new TreeVec();
+    TreeVec optParams	= new TreeVec();
+
+    int optBegin = decls.length;
+    for (int i = 0; i < decls.length; i++){
+      if (decls[i].tag() == :pdecl){
+	normalParams.add(decls[i]);
+      } else {
+	optBegin = i;
+	break;
+      }
+    }
+
+    /*
+    if (optBegin == decls.length){
+      // If there are no optional parameters, just call the original macro.
+      return originalMacro(tree);
+    }
+    */
+    
+    for (int i = optBegin; i < decls.length; i++){
+      if (decls[i].tag() == :pdecl){
+	throw error("OptParam USER: Non-optional parameter appeared after optional parameters.");
+      } else if (decls[i].tag() == :OptParam){
+	optParams.add(decls[i]);
+      } else {
+	throw error("OptParam USER: Unknown type of formal parameter appeared:"
+		    + decls[i]);
+	}
+    }
+    
+    TreeVec fixedOptParams = new TreeVec();
+    Tree[] optParamsA = optParams.toArray();
+    for (int i = 0; i < optParamsA.length; i++){
+      // optParam = (OptParam (pdecl (modifiers) type id) varInit)
+      Tree optParam	= optParamsA[i];
+      Tree[] vargs	= optParam.args()[0].args();
+      Tree varModifiers	= vargs[0];
+      Tree varType	= vargs[1];
+      Tree varId	= vargs[2];
+      Tree varInit	= optParam.args()[1];
+      
+      Tree invoke = `(invoke1 ,name
+		      (argumentList
+		       ,@(declToId(normalParams))
+		       ,@(declToId(fixedOptParams))
+		       ,(declToId1(optParam))
+		       ));
+      ((TreeVec)Dynamic.get(:afterCurrentClassBodyDeclaration))
+	.add(originalMacro
+	     (
+	      `(method
+		,modifiers
+		,rettype
+		,name
+		(formalParameters
+		 ,@normalParams
+		 ,@(optParamsToNormalParams(fixedOptParams)))
+		,throwsTree
+		(block
+		 (decl ,varModifiers ,varType
+		  (vardecls
+		   (varInit ,varId ,varInit)))
+		 ,((rettype.tag() == :id && rettype.idName() == :void) ?
+		   `(expressionStatement ,invoke) :
+		   `(returnWithExp ,invoke)))
+		)
+	      ));
+      
+      fixedOptParams.add(optParam);
+    }
+    // NOTE:
+    // In order to preserve line number information of the original tree,
+    // I should use modifyArgs.
+    Tree[] newArgs = {modifiers, rettype, name,
+		      `(formalParameters
+			,@normalParams
+			,@(optParamsToNormalParams(optParams))),
+		      throwsTree, body};
+    return originalMacro(tree.modifyArgs(newArgs));
+  }
+
+  Tree originalMacro(Tree tree){
+    return tree.modifyArgs(macroExpandArgs(tree.args()));
+  }
+
+  Tree[] declToId(TreeVec tvec){
+    Tree[] a = tvec.toArray();
+    Tree[] ret = new Tree[a.length];
+    for (int i = 0; i < a.length; i++){
+      ret[i] = declToId1(a[i]);
+    }
+    return ret;
+  }
+  
+  Tree declToId1(Tree tree){
+    if (tree.tag() == :OptParam){
+      return declToId1(tree.args()[0]);
+    } else if (tree.tag() == :pdecl){
+      Tree vardecl = tree.args()[2];
+      
+      // "a" -> "a", "a[]" -> "a"
+      if (vardecl.tag() == :id){
+	return vardecl;
+      } else if (vardecl.tag() == :arrayVar){
+	return vardecl.args()[0];
+      } else {
+	throw error("OptParam: FATAL");
+      }
+    } else {
+      throw error("OptParam: FATAL");
+    }
+  }
+
+  Tree[] optParamsToNormalParams(TreeVec tvec){
+    Tree[] a = tvec.toArray();
+    Tree[] ret = new Tree[a.length];
+    for (int i = 0; i < a.length; i++){
+      ret[i] = a[i].args()[0];
+    }
+    return ret;
+  }
+}

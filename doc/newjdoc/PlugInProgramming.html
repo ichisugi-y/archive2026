@@ -1,0 +1,286 @@
+<html>
+<head>
+<title>plug-in 開発の手順</title>
+ <meta charset="UTF-8">
+</head>
+<body bgcolor="#FFFFFF">
+<a href="index.html"> Index </a>
+<hr>
+<img src="gif/epp-logo-small.gif" align=right><br>
+<h1>Plug-in 開発の手順</h1>
+							1998-07-01
+<hr>
+<pre>
+
+
+はじめに
+--------
+ このドキュメントは、 plug-in 開発の手順を大まかに説明するものです。
+ また、最後の章では、 EPP のソースを bootstrap する方法を
+説明しています。
+
+
+
+開発環境
+--------
+ 開発環境としては、現在以下の２つのみをサポートしています。
+（まだ sh/bash 用の shell script しか用意してません。）
+
+	Solaris/Linux, JDK1.1.5 以降
+	Windows NT, gnu-win32 の bash, JDK1.1.5 以降
+
+ ただし、JDK 以外の JavaVM、 Java コンパイラ(fastjavac, jvc, jview など)も、
+shell script を編集すれば使えると思います。
+
+
+
+設計
+-----
+・ plug-in を開発するには、まず plug-in の機能を設計するところから
+始めます。
+
+・作りたい plug-in の名前を決めます。
+このドキュメントでは、以下 plug-in の名前を Foo とします。
+
+・拡張機能の文法を決めます。
+文法を決める場合は、既存の Java 文法や他の plug-in と衝突しないこと、
+エディタを混乱させないこと、などに気をつけます。
+できれば文法は拡張しない方がベストです。
+普通の Java クラスライブラリとして実装できないか、
+あるいは InvokeStyleMacro で実装できないかを検討して下さい。
+
+・マクロ展開の方針を決めます。
+具体的に展開前のコードと展開後のコードを書いて、
+問題がないか検討します。
+
+
+
+実装
+----
+・ファイル epp/Template/PlugIn.java は、
+plug-in のソースのテンプレートです。
+（ただし epp1.1.0beta3.1 までは、epp/sample/Sample/PlugIn.java 。）
+まず、カレントディレクトリの下に、作りたい plug-in と同じ名前の
+ディレクトリを作り、そこにテンプレートをコピーします。
+
+	% mkdir Foo
+	% cp epp/Template/PlugIn.java Foo
+
+・ PlugIn.java の中身を編集します。
+
+・まず文法拡張部分を実装します。
+ 例えば新しい statement を追加したい場合は、 statementTop という
+メソッドを拡張します。
+
+・マクロ展開関数を実装します。
+そのために、まず、展開後のコードをＳ式に変換してみます。
+
+	epp -tree -logfile Test.tree Test.java
+
+そして、 Tree.tree からカットアンドペーストして、
+PlugIn.java にバッククォートマクロで埋め込みます。
+あとは、コンマでコードを適当に埋め込みます。
+
+・一通り実装し終ったら、以下の点を確認します。
+ package Foo; があるか。
+ import epp.*; があるか。
+ マクロ展開関数の登録を正しくしているか。
+
+・ノードの名前は、既存のものと衝突しないように注意して下さい。
+ SystemMixin の名前も、既存のものと衝突してはいけません。
+
+
+
+テスト
+------
+・ plug-in のテストは、以下の５段階からなります。
+
+	１．plug-in のソースを EPP に通して展開。
+	２．展開された *.java ファイルを *.class にコンパイル。
+	３．plug-in でテストプログラムを展開。
+	４．展開されたテストプログラムを *.class にコンパイル。
+	５．コンパイルされたテストプログラムを実行。
+
+それぞれの段階ごとに適切なディレクトリ上で、
+適切な CLASSPATH を指定して java か javac を実行する必要があります。
+
+ tryplugin というコマンドは、これら一連の動作を、
+適切に環境設定を行ないながら自動的に進めてくれます。
+（現在のところ、 sh/bash script 版しかありません。）
+
+ tryplugin の使い方を以下に述べます。
+
+
+・まず、カレントディレクトリの下に、以下のファイルおよび
+ディレクトリがあるものとします。
+
+ Foo/PlugIn.java	// plug-in のソースファイル
+ test/TestFoo.java	// テストプログラム。 #epp Foo が書いてあること。
+ eppout/		// Foo/PlugIn.java の変換結果の出力先
+ test/eppout/		// test/TestFoo.java の変換結果の出力先
+
+ そして、次のようにすれば、tryplugin が５つの段階を自動的に進めます。
+
+	% tryplugin Foo 
+
+途中で何らかのエラーが起きたら、そこで停止します。
+ それぞれの段階でのエラーへの対処法方を以下に説明します。
+
+
+１． Foo/PlugIn.java を epp で展開する時のシンタックスエラー
+
+ エラーメッセージに書かれている行番号を目安に、シンタックスエラーを修正します。
+
+
+２． EPP で展開されたソースのコンパイル時のエラー
+
+ エラーメッセージを見て、ソースファイルを修正します。
+ SystemMixin plug-in を使っているせいで、わかりにくいエラーメッセージが
+出る場合がありますが、 epp/doc/SystemMixin.txt 中の
+「エラーメッセージ解説」の章を読めば
+ある程度原因の推測がつくと思います。
+
+
+３．plug-in による展開テスト中のエラー。
+
+ Foo/PlugIn.java のバグで NullPointerException などが出た場合は、
+デバッガを起動してエラーの正確な場所を見つけます。
+それにはカレントディレクトリで以下のように入力します。
+
+	% jdbplugin TestFoo.java
+
+ディレクトリを移動する必要はありません。
+ デバッガが起動したら、単に run と入力下さい。
+これでエラーが起きる場所がわかるはずです。
+
+
+４． plug-in で展開されたテストプログラムのソースのコンパイル中のエラー
+
+ テストプログラムにバグがある場合は、それを修正します。
+ そうでなさそうな場合は、再び Foo/PlugIn.java に print 文を入れるなどして
+がんばってデバッグします。
+
+
+５． plug-in を使って展開されたテストプログラムの実行中エラー
+
+ ４．の場合と同様、テストプログラムを修正するか、 Foo/PlugIn.java を
+デバッグします。
+
+
+・エラーが出ないが動作がおかしい場合は、 tree.print() を入れたり、
+-tree オプションを使って、おかしい場所をつきとめます。
+
+	% testplugin -tree -logfile tree.log Foo
+
+将来的には、 plug-in デバッグのサポートをより強力にしていくつもりです。
+
+
+
+インストール
+------------
+・デバッグが終ると、 plug-in を他の場所からも使えるように
+インストールする必要があります。
+
+ それには、カレントディレクトリの下の eppout/Foo/*.class を、
+ CLASSPATH のパスが通っている場所に置きます。
+例えば  ‾/lib/epp が CLASSPATH に入っている場合は、次のようにします。
+
+	% mkdir ‾/lib/epp/Foo
+	cp eppout/Foo/*.class ‾/lib/epp/Foo
+
+これで、 plug-in が使えるようになります。
+
+
+
+サンプル plug-in
+----------------
+以下の plug-in は比較的簡単な実装なので、
+読むと参考になると思います。
+
+ epp/src/level0 の下の、
+	Math/PlugIn.java
+	enum/PlugIn.java
+	assert/PlugIn.java
+	defmacro/PlugIn.java
+	UserOp/PlugIn.java
+
+
+
+
+EPP のソースのコンパイルの仕方
+------------------------------
+ EPP のソース（それ自体も EPP plug-in を使って書かれています）を
+コンパイルするには、以下のようにします。
+
+ 1.準備
+ ------
+ まず、配布パッケージの epp/src ディレクトリの下に eppout を作ります。
+
+	% cd epp/src
+	% mkdir eppout
+
+（注：EPP のコンパイルでは細かいファイルが大量に作られます。
+Unix 系 OS ではファイルの生成・削除が遅いので注意して下さい。
+Solaris の場合、普通のファイルシステムの下に eppout を作らずに、
+/tmp の下に作ると、コンパイルが劇的に速くなります。
+そうしたい場合は、次のようにします。
+
+	% mkdir /tmp/tmpeppout
+	% cd epp/src
+	% ln -s /tmp/tmpeppout eppout
+）
+
+ 2.ソースの変換
+ --------------
+ つぎに、 EPP のソースを EPP で普通の Java に変換します。
+ この時、  -plug-in-package-prefix jp.go.etl.epp オプションの指定が必要です。
+ また、変換後の EPP のパッケージを変更したい時は、
+-plug-in RenamePackage オプションを使って下さい。
+
+	% epp -plug-in-package-prefix jp.go.etl.epp -r level0
+	Process files under level0
+	Process files under level0/epp
+	Translating level0/epp/Symbol.java
+	Translating level0/epp/CompUnit.java
+	...
+	37 Java files were translated.
+	%
+
+ 3.変換されたソースのコンパイル
+ ------------------------------
+ 変換されたソースをコンパイルします。
+このとき、 CLASSPATH の設定は必要ありません。
+javac のデフォルトの heap size では足りないので、オプションで増やします。
+JavaWorkshop2.0 の fastjavac を使う場合は、オプションの必要はありません。
+
+	% cd eppout/level0
+	% javac -J-mx32m */*.java
+	%
+
+ 4.コンパイルされた EPP の実行。
+ ------------------------------
+ コンパイルされた EPP をその場で試してみることができます。
+ここでも、 CLASSPATH の設定は必要ありません。
+
+	% mkdir eppout
+	% java epp.Epp epp/Tree.java
+	Translating epp/Tree.java
+	1 Java files were translated.
+	%
+
+ 展開されたファイルの先頭を見れば、どのバージョンの EPP で
+作られたものかがわかります。
+
+	% head -1 eppout/epp/Tree.java
+	/* Generated by EPP 1.1.0 (by 1.1.0 (by 1.1.0 (by lisp-epp1.1.0))) */
+	%
+ 
+
+
+</pre>
+
+<hr>
+<a href="index.html"> Index </a>
+<img src="gif/epp-logo-small.gif" align=right><br>
+</body>
+</html>

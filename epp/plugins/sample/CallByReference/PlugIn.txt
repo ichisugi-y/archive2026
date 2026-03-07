@@ -1,0 +1,86 @@
+/*
+ *
+ * Copyright (C) 1997, 1998 Yuuji ICHISUGI
+ *
+ * Permission to use, copy, modify and redistribution this software in
+ * whole and in part, for evaluation or research purposes and without fee
+ * is hereby granted provided this copyright notice.
+ * See CopyrightAndLicensing.txt for licensing condition.
+ */
+
+
+/*
+ BUGS:
+
+1. "&" can only be used for int variable.
+2. The followings do not work as was expected.
+
+	if (foo(&x)) System.out.println(x);
+
+	mmm(&x, x++);
+
+*/
+
+#epp "Symbol"
+#epp "SystemMixin"
+#epp "AutoSplitFiles"
+#epp "BackQuote"
+
+
+package CallByReference;
+import epp.*;
+
+
+
+SystemMixin CallByReference {
+  class Epp {
+
+    extend Tree unaryExpressionTop() {
+      if (lookahead() == :"&") {
+	matchAny();
+	return new Tree(:preAnd , unaryExpression()) ;
+      } else {
+	return original() ;
+      }
+    }
+
+    extend void initMacroTable() {
+      original();
+      defineMacro(:preAnd, new PreAndMacro());
+    }
+  }
+}
+
+class PreAndMacro extends Macro {
+
+  public Tree call(Tree tree){
+    checkArgsLength(tree, 1);
+    if (tree.args()[0].tag() != :id){
+      throw error("CallByReference: User Error: "+
+		  "& is only applicable to variables.");
+    }
+    
+    Tree tmp = new Identifier(genTemp("_T"));
+    Tree var = tree.args()[0];
+    
+    ((TreeVec)Dynamic.get(:beforeCurrentBlockStatement))
+      .add(macroExpandTree
+	   (
+	    `(decl (modifiers)
+	      (arrayOf (id int))	// Assumed to be int !
+	      (vardecls
+	       (varInit ,tmp
+		(arrayInitializer ,var))))
+	    ));
+    
+    ((TreeVec)Dynamic.get(:afterCurrentBlockStatement))
+      .add(macroExpandTree
+	   (
+	    `(expressionStatement
+	      (= ,var
+	       (array ,tmp (literalTree int "0"))))
+	    ));
+    
+    return tmp;
+  }
+}

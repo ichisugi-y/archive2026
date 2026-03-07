@@ -1,0 +1,80 @@
+/*
+ *
+ * Copyright (C) 1997, 1998 Yuuji ICHISUGI
+ *
+ * Permission to use, copy, modify and redistribution this software in
+ * whole and in part, for evaluation or research purposes and without fee
+ * is hereby granted provided this copyright notice.
+ * See CopyrightAndLicensing.txt for licensing condition.
+ */
+
+
+/*
+
+Syntax
+------
+
+ClassBodyDeclaration:
+	<original grammar rules>
+	EnumDeclaration
+EnumDeclaration:
+	{ EnumElems_opt  ,_opt }
+EnumElems:
+	Id
+	EnumElems , Id
+*/
+
+#epp "Symbol"
+#epp "SystemMixin"
+#epp "AutoSplitFiles"
+#epp "BackQuote"
+
+
+package enum;
+import epp.*;
+
+SystemMixin enum {
+  class Epp {
+
+    extend Tree classBodyDeclarationTop() {
+      if (lookahead() == :enum) {
+	matchAny();
+	TreeVec tvec = new TreeVec();
+	match(:"{");
+	while (true){
+	  if (lookahead() == :"}") break;
+	  tvec.add(identifier());
+	  if (lookahead() == :"}") break;
+	  match(:",");
+	}
+	matchAny();
+	return new Tree(:enum, tvec);
+      } else {
+	return original();
+      }
+    }
+
+    extend void initMacroTable() {
+      original();
+      defineMacro(:enum, new EnumMacro());
+    }
+  }
+}
+
+class EnumMacro extends Macro {
+  public Tree call(Tree tree){
+    Tree[] args = tree.args();
+    int c = 0;
+    TreeVec top = (TreeVec)Dynamic.get(:beginningOfClassBody);
+    for (int i = 0; i < args.length; i++){
+      top.add(
+	      `(decl (modifiers (id public) (id static) (id final))
+		  (id int)
+		  (vardecls
+		   (varInit ,(args[i])
+		    ,(new LiteralTree(:int, Integer.toString(c++))))))
+	      );
+    }
+    return `(emptyClassBodyDeclaration);
+  }
+}

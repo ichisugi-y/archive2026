@@ -1,0 +1,353 @@
+<html>
+<head>
+<title>SystemMixin plug-in users manual</title>
+ <meta charset="UTF-8">
+</head>
+<body bgcolor="#FFFFFF">
+<a href="index.html"> Index </a>
+<hr>
+<img src="gif/epp-logo-small.gif" align=right><br>
+<h1>SystemMixin plug-in users manual</h1>
+<hr>
+
+<pre>
+◆ SystemMixin plug-in の目的
+
+ SystemMixin plug-in は、 EPP のような拡張性の高いシステムを作るための
+機能を、 Java 言語に追加します。
+ SystemMixin plug-in の機能を使うことより、
+プログラムを system mixin と呼ぶ細かい部品に分割して記述することができます。
+ system mixin は、オリジナルのシステムに対する差分のみを抜き出して
+記述するもので、いわば unix の patch file のようなものです。
+
+ EPP はプリプロセスを開始する前に、 #epp で指定された plug-in を
+load します。この plug-in は、１つあるいは複数の system mixin から
+構成されます。
+plug-in によって定義された「変更部分の差分」を、
+オリジナルの EPP に追加することによって、
+EPP のプログラムが拡張されることになります。 
+
+
+◆簡単な例
+
+従来のオブジェクト指向言語では、ネストした if 文を含むメソッドは、
+例えば以下のように書けます。
+
+--------------------------------------------------
+class Foo {
+  void m(String d){
+    if (d.equals("B")){
+      doB();
+    } else if (d.equals("A")){
+      doA();
+    } else {
+      doDefault();
+    }
+}
+--------------------------------------------------
+
+ このメソッドに、例えば "else if (d.equals("C") { doC() }"
+といった処理を追加したいとします。
+もし、オリジナルのソースコードを edit したくなければ、
+継承を使うしかありません。
+継承を使えば、次のように書けます。
+
+--------------------------------------------------
+class Bar extends Foo {
+  void m(String d){
+    if (d.equals("C")){
+      doC();
+    } else {
+      super.m(d);
+    }
+}
+--------------------------------------------------
+
+ しかし、この場合、オリジナルのクラス Foo は変化せず、
+新しい別のサブクラス Bar を定義しなければなりません。
+もしプログラムの他の場所で、 class X extends Foo {...} とか
+new Foo() のように Foo の名前が使われていたら、
+それを class X extends Bar {...} とか new Bar() に
+変更する必要があります。
+
+ ほとんどのオブジェクト指向言語では、このように、
+「メソッドとそれが属するクラス名」を変更しないでメソッドの動作を
+拡張することはできません。
+
+さらに、もともとのソースコードから "else if (d.equals("A") { doA(); }" という
+部分だけ削除したい、といったことは絶対に不可能です。
+
+ system mixin の機能は、この問題を解決します。
+
+上のプログラムを、３つの system mixin に分割して
+記述すると、以下のようになります。
+
+--------------------------------------------------
+SystemMixin Skeleton {
+  class Foo {
+    define void m(String d){
+      doDefault();
+    }
+  }
+}
+SystemMixin A {
+  class Foo {
+    void m(String d){
+      if (d.equals("A")) { doA(); } else { original(d); }
+    }
+  }
+}
+SystemMixin B {
+  class Foo {
+    void m(String d){
+      if (d.equals("B")) { doB(); } else { original(d); }
+    }
+  }
+}
+--------------------------------------------------
+
+ このように、従来は一枚岩でしか書けなかった「１つのメソッド」を、
+複数の「メソッドの断片」に分割して記述することができます。
+そして、新しい system mixin を追加することで、
+クラス名とメソッド名を変更することなしに、メソッドの動作を
+拡張することができます。
+（従って、もし Foo に subclass がある場合、メソッド m の変更は、
+すべての subclass に自動的に波及します。）
+
+ また、プログラムの起動直前に、特定の system mixin を削除することもできます。
+
+
+◆シンタックス概要
+ SystemMixin plug-in は、 Java 言語の上に、
+いわば全く別のオブジェクト指向言語を実装します。
+この言語には Ld-2 (description language version 2)という名前が
+ついています。
+実装の都合上、 system mixin を使って定義したクラスは、
+Java のクラスとは互換性がありません。
+
+ このオブジェクト指向言語 Ld-2 では、 Java と違って以下のような
+シンタックスを用います。
+
+インスタンス生成		newObj ClassName(args ...)
+メソッド呼び出し		obj!methodName(args ...)
+自分のメソッド呼び出し		methodName(args ...) 
+自分のインスタンス変数アクセス	self!varName （ self! は省略不可）
+自分自身			self
+オリジナルのメソッド呼び出し	original(args ...)
+
+ system mixin で定義されたクラスのインスタンスは、
+Java からは Obj という型のデータとして扱われます。
+
+例えば、 Foo というクラスのインスタンスを生成し、
+それの m というメソッドを呼び出すには以下のように書きます。
+
+    Obj foo = objNew Foo();
+    foo!m(d);
+ 
+
+◆ DefineModifier と MethodRole
+
+・異なった作者による複数の system mixin をたくさん組み合わせていくと、
+メソッド名が思わぬ衝突を起こすことがあり得ます。
+また、ある system mixin が動作するために必要な他の system mixin を
+指定し忘れるということも起こり得ます。
+
+ このような事態をある程度機械的に検出し警告するための宣言が、
+DefineModifier と MethodRole です。
+これらの宣言の正確なシンタックスは、「シンタックス」の章を見て下さい。
+
+・ DefineModifier
+ SystemMixin の中で定義するクラスおよびメソッドの断片には、
+define というキーワードをつけることができます。
+
+ system mixin をつなぎ合わせた時、すべてのクラスおよびメソッドの断片は、
+次の条件を満たすように並んでいなければなりません。
+
+	「最初に define がつけられた断片が１つあり、
+	その後に define のない断片のみがつづくこと」
+
+ define のついた断片が同じ名前で複数回あらわれたり、
+ define のない断片が最初にあらわれると、エラーとなります。
+
+ たとえば、「簡単な例」の章の３つの system mixin では、
+クラス Foo のメソッド m は、
+
+	SystemMixin Skeleton の class Foo の m (define あり)
+	SystemMixin A の class Foo の m
+	SystemMixin B の class Foo の m
+
+という３つのメソッドの断片がつなぎ合わさったものであり、上で述べた
+条件を満たしています。
+
+
+・ MethodRole
+ MethodRole の宣言は、現在の実装では無視されます。
+
+ 意味的には、それぞれの MethodRole は次の場合に指定します。
+
+	abstract	インターフェースのみを定義し実装は定義しないメソッド
+	default		redefine されてもよいメソッド
+	implement	普通のメソッド
+	extend		他のメソッドを差分的に拡張するメソッド
+	redefine	他のメソッドを上書きして再定義するメソッド
+
+
+
+◆ BeforeLoadingPlugIn
+
+ BeforeLoadingPlugIn 文を使って、
+plug-in がロードされる時に実行するコードを書くことができます。
+
+ 例えば、ある plug-in が、他の plug-in （例えば Symbol plug-in ）を必要とする
+場合は、 package 宣言と import 宣言の後
+（文法的には TypeDeclaration が来るべきところ）に、
+次のように書きます。
+
+	BeforeLoadingPlugIn{
+		requirePlugIn("jp.go.etl.epp.Symbol.PlugIn");
+	}
+
+ requirePlugIn は、もし指定された plug-in がまだ load されていなければ、
+それを load して、 setup list に追加します。
+
+ epp/sample/PComp/PlugIn.java には、別の使用例があります。
+ここでは、 setup list の中身を調べて、本来の Java の比較演算の文法を
+定義する mixin を取り除いています。
+
+
+◆ Ld-2 と Java との違いおよび注意点
+
+・すべてのインスタンスは、 Obj 型です。
+
+・メソッドの overload はできません。
+
+・ define class したら、必ずその SystemMixin 内で、
+コンストラクタを定義しなければなりません。
+
+・コンストラクタには return type として void を書かなければなりません。
+コンストラクタは、インスタンス生成時に自動的に呼び出されるという
+点を除けば、普通のメソッドと同じです。
+
+・インスタンス変数は、コンストラクタで初期化される前に、
+すでに Java で定義される「デフォルトの値」で初期化されています。
+明示的な初期化をし忘れてもコンパイルエラーは出ません。
+
+・ super はありません。
+
+・メソッド a の中から super class の別のメソッド b を呼び出すには、
+Java では super.b() と書けばできますが、 Ld-2 ではできません。
+
+
+
+◆エラーメッセージ解説
+ SystemMixin plug-in で変換されたソースを javac でコンパイルすると、
+見ただけでは意味のわからないエラーメッセージが出ることがあります。
+ しかし、以下の説明を読めば、たいていの場合は原因が推測できると
+思います。
+
+
+How to decode error messages during Javac
+-----------------------------------------
+"Superclass M_foo of class CompilationUnit_Epp_initEmitTable not found."
+ or
+"Incompatible type for constructor. Can't convert SSS_CCC_foo to java.lang.Object."
+	You wrote an Ld method "foo" in your source code, 
+	but the the compiler cound not find the declaration of the method.
+	Please check the followings.
+	1. Do not forget specifying "define" modifier.
+	2. Translate Java file which contains method declaration with "define"
+	   before compiling Java file which extend the method.
+	3. Check the spell of the method name.
+
+
+"Class M_foo not found in type declaration."
+	You wrote an Ld method invocation "foo()" or "obj!foo()",
+	but the compiler cound not find the method declaration.
+	So, this message can be interpreted as "Method foo not found."
+	Please check the spell of the method name.
+
+
+"Method redefined with different return type: ..."
+	Please check the return type of the Ld method
+	 written in the indicated line.
+
+
+"No method found matching call(Obj,Object[],int)"
+	You wrote method invocation foo(), obj!foo() or original()
+	but the method foo requires additional arguments.
+	Please check the method definition.
+
+
+The other error messages may be easy to understand as normal javac errors.
+
+
+
+◆シンタックス
+ SystemMixin plug-in によって拡張された構文のシンタックスです。
+ 記法は JLS1.0 で使われているものに準じます。
+（特に断りのない限り、大文字ではじまるものが non-terminal で、
+小文字ではじまるものはいわゆる「キーワード」です。
+また、 _opt が付いているものは、それが省略可能であることを表します。）
+
+
+Syntax
+------
+
+CompilationUnit
+	&ltoriginal alternatives&gt
+	SystemMixinDefinition
+
+SystemMixinDefinition
+	SystemMixin { LdClassDeclarations }
+	# Note: The "SystemMixin" in this rule
+	#	is not a non-terminal. It is a token.
+
+LdClassDeclarations
+	DefineModifier_opt class Identifier { LdClassBodyDeclarations }
+
+LdClassBodyDeclarations
+	LdClassBodyDeclarations LdClassBodyDeclaration
+
+LdClassBodyDeclaration
+	FieldDeclaration
+	LdMethodDeclaration
+
+LdMethodDeclaration
+	DefineModifier_opt MethodRole_opt Type MethodDeclarator Throws_opt
+
+DefineModifier
+	define
+
+MethodRole
+	abstract
+	default
+	implement
+	extend
+	redefine
+
+Primary
+	&ltoriginal alternatives&gt
+	LdInstanceCreation
+	LdFieldAccess
+	LdMethodInvocation
+	OriginalMethodInvocation
+
+LdInstanceCreation
+	newObj Identifier ( ArgumentList_opt )
+
+LdFieldAccess
+	Primary ! Identifier
+
+LdMethodInvocation
+	Primary ! Identifier ( ArgumentList_opt )
+
+OriginalMethodInvocation
+	 original ( ArgumentList_opt )
+
+</pre>
+
+<hr>
+<a href="index.html"> Index </a>
+<img src="gif/epp-logo-small.gif" align=right><br>
+</body>
+</html>

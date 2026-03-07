@@ -1,0 +1,5 @@
+AppName = IMJdemoMJ-cup
+PackageURL = IMJdemoMJ-cup.jar
+AppSize = 7099
+AppClass = mj.demo.base.IMJdemo
+LastModified = Wed, 21 Feb 2001 19:58:20

@@ -1,0 +1,1319 @@
+/*
+ * AutoSweeperDemo.java
+ */
+
+// base
+
+module base
+imports java.awt.*
+imports java.applet.Applet
+imports java.awt.event.*
+imports java.util.*
+{
+    class SS {
+        void main(String[] args) {
+            Frame frame = new Frame();
+            frame.setTitle("Auto Sweeper Demo");
+            frame.setLayout(new BorderLayout());
+            
+            frame.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent e) {
+                    System.exit(0);
+                }
+            });
+            frame.setSize(510, 536);
+            frame.setResizable(false);
+            BaseApplet applet = new BaseApplet();
+            frame.add(applet, BorderLayout.CENTER);
+            applet.init();
+            frame.setVisible(true);
+        }
+    }
+    
+    define class BaseApplet extends Applet {
+        private Round _round;
+        private DrawCanvas _canvas;
+        private Label _timeLabel;
+        private Label _trashLabel;
+        
+        define BaseApplet() {}
+        void init() {
+            Util.instance.init(this);
+            DrawCanvas.instance.init();
+            
+            setLayout(new BorderLayout());
+            Panel labelP = new Panel(new GridLayout(1, 2));
+            _timeLabel = new Label();
+            _trashLabel = new Label();
+            labelP.add(_timeLabel);
+            labelP.add(_trashLabel);
+            add(labelP, BorderLayout.NORTH);
+            _canvas = DrawCanvas.instance;
+            add(_canvas, BorderLayout.CENTER);
+            
+            _round = new Round(this);
+            new Thread(_round).start();
+        }
+        define Round getRound() {
+            return _round;
+        }
+        define Label getTimeLabel() {
+            return _timeLabel;
+        }
+        define Label getTrashLabel() {
+            return _trashLabel;
+        }
+    }
+    
+    define class Util {
+        static Util instance = new Util();
+        private ClassLoader _classLoader;
+        define Util() {}
+        define void init(Object object) {
+            _classLoader = object.getClass().getClassLoader();
+        }
+        define Image getImage(String file) {
+            Image image = null;
+            try {
+                image = Toolkit.getDefaultToolkit().createImage(_classLoader.getResource(file));
+            } catch(Exception e) {}
+            return image;
+        }
+    }
+    
+    define class DrawCanvas extends Canvas {
+        static DrawCanvas instance = new DrawCanvas();
+        private Room _room;
+        private Image _offScreen;
+        private Graphics _offScreenG;
+        
+        define DrawCanvas() {}
+        define void init() {
+            _room = new Room();
+            _room.init();
+        }
+        void update(Graphics g) {
+            if (_offScreen == null) {
+                loadImages();
+                _offScreen = createImage((Room.SIZE_X + 1) * Room.BLOCK_SIZE, Room.SIZE_Y * Room.BLOCK_SIZE);
+                _offScreenG = _offScreen.getGraphics();
+            }
+            paint(_offScreenG);
+            g.drawImage(_offScreen, 0, 0, null);
+        }
+        void paint(Graphics g) {
+            _room.draw(g);
+        }
+        define void loadImages() {
+            loadImage(Floor.FLOOR_IMAGE);
+            loadImage(Wall.WALL_IMAGE);
+            loadImage(Trash.TRASH_IMAGE);
+        }
+        define void loadImage(Image image) {
+            Graphics tmpG = createImage(Room.BLOCK_SIZE, Room.BLOCK_SIZE).getGraphics();
+            tmpG.drawImage(image, 0, 0, null);
+        }
+        define Room getRoom() {
+            return _room;
+        }
+    }
+    
+    define class Round extends MouseAdapter implements Runnable {
+        static final long CYCLE_TIME = 300;
+        static final long WAIT_CYCLE_TIME = 20;
+        private BaseApplet _baseApplet;
+        private boolean _started;
+        private long _baseTime;
+        private int _gameTime;
+        
+        define Round(BaseApplet applet) {
+            _baseApplet = applet;
+            _started = false;
+            _gameTime = 0;
+            showStatus();
+        }
+        void run() {
+            DrawCanvas.instance.addMouseListener(this);
+            init();
+            
+            _baseTime = Calendar.getInstance().getTime().getTime();
+            while(!DrawCanvas.instance.getRoom().isCleaned()) {
+                doAction();
+                DrawCanvas.instance.repaint();
+                waitCycle();
+            }
+            finish();
+        }
+        define void init() {
+            _baseApplet.getTimeLabel().setForeground(Color.red);
+            _baseApplet.getTimeLabel().setText("Click to start");
+            while(!_started) {
+                try {
+                    Thread.sleep(CYCLE_TIME);
+                } catch(InterruptedException e) {}
+                DrawCanvas.instance.repaint();
+            }
+        }
+        define void finish() {
+            _baseApplet.getTrashLabel().setForeground(Color.red);
+            _baseApplet.getTrashLabel().setText("Cleaned Up !!");
+        }
+        define void doAction() {
+            _gameTime++;
+            showStatus();
+        }
+        define void showStatus() {
+            _baseApplet.getTimeLabel().setForeground(Color.black);
+            _baseApplet.getTimeLabel().setText("Time: " + Integer.toString(_gameTime));
+            Room r =  DrawCanvas.instance.getRoom();
+            _baseApplet.getTrashLabel().setForeground(Color.black);
+            _baseApplet.getTrashLabel().setText("Trash: " + Integer.toString(r.getTrashes()) + " / " +
+                                                            Integer.toString(r.getInitTrashes()));
+        }
+        define void waitCycle() {
+            boolean loop = true;
+            while(loop) {
+                try {
+                    Thread.sleep(WAIT_CYCLE_TIME);
+                } catch(InterruptedException e) {
+                }
+                long thisTime = Calendar.getInstance().getTime().getTime();
+                if (thisTime - _baseTime >= CYCLE_TIME) {
+                    loop = false;
+                    _baseTime += CYCLE_TIME;
+                }
+            }
+        }
+        void mouseClicked(MouseEvent e) {
+            _started = true;
+        }
+    }
+    
+    define class Room {
+        static final int FLOOR = 0;
+        static final int WALL = 1;
+        static final int TRASH = 2;
+        static final int[][] BLOCKS_INIT = {
+            { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 },
+            { 1,0,0,2,2,2,2,0,1,1,2,2,0,2,1,1,2,2,2,1 },
+            { 1,2,2,0,2,2,2,2,0,1,0,0,2,2,1,1,2,2,2,1 },
+            { 1,1,1,1,1,2,2,0,0,1,2,2,2,2,1,1,1,2,2,1 },
+            { 1,2,2,1,0,2,2,2,0,0,0,2,2,2,2,1,1,0,0,1 },
+            { 1,2,2,0,0,0,2,2,2,2,0,0,2,2,2,1,1,0,0,1 },
+            { 1,0,0,0,0,1,2,2,2,2,2,0,1,0,2,2,0,0,0,1 },
+            { 1,2,2,2,2,1,2,0,0,1,1,1,1,0,2,0,2,2,2,1 },
+            { 1,2,2,1,1,1,1,0,0,2,2,2,0,0,0,2,0,0,0,1 },
+            { 1,2,2,2,0,1,1,0,0,0,0,2,2,0,2,0,0,0,2,1 },
+            { 1,2,2,2,0,0,0,0,2,0,0,0,2,2,2,2,2,0,2,1 },
+            { 1,0,2,2,0,0,0,2,0,0,0,2,2,1,1,1,1,1,2,1 },
+            { 1,2,2,2,0,0,0,2,0,0,0,0,2,1,1,1,1,1,2,1 },
+            { 1,0,2,0,2,0,2,2,2,0,1,1,1,1,1,2,2,2,0,1 },
+            { 1,2,0,2,2,2,2,2,2,2,2,0,0,1,1,2,2,0,0,1 },
+            { 1,0,2,2,1,1,1,2,2,0,0,0,0,1,1,2,0,0,0,1 },
+            { 1,0,0,2,1,0,2,2,0,0,2,2,0,0,2,2,2,2,0,1 },
+            { 1,0,2,2,1,0,0,0,0,2,2,2,2,0,0,2,2,2,2,1 },
+            { 1,2,2,2,1,0,0,1,1,1,0,2,2,2,2,2,1,1,2,1 },
+            { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 }
+        };
+        static final int SIZE_X = 20;
+        static final int SIZE_Y = 20;
+        static final int BLOCK_SIZE = 24;
+        
+        private int[][] _blocks;
+        private int _initTrashes;
+        private int _trashes;
+        
+        define Room() {
+            _blocks = new int[SIZE_Y][SIZE_X];
+        }
+        define void init() {
+            for (int y = 0; y < SIZE_Y; y++) {
+                for (int x = 0; x < SIZE_X; x++) {
+                    _blocks[y][x] = BLOCKS_INIT[y][x];
+                    if (_blocks[y][x] == Room.TRASH) {
+                        _initTrashes++;
+                    }
+                }
+            }
+            _trashes = _initTrashes;
+        }
+        define int getTrashes() {
+            return _trashes;
+        }
+        define int getInitTrashes() {
+            return _initTrashes;
+        }
+        define boolean isWall(int x, int y) {
+            boolean isWall = true;
+            try {
+                isWall = (_blocks[y][x] == Room.WALL);
+            } catch(ArrayIndexOutOfBoundsException e) {}
+            return isWall;
+        }
+        define boolean isTrash(int x, int y) {
+            boolean isTrash = false;
+            try {
+                isTrash = (_blocks[y][x] == Room.TRASH);
+            } catch(ArrayIndexOutOfBoundsException e) {}
+            return isTrash;
+        }
+        define void sweep(int x, int y) {
+            if (isTrash(x, y)) {
+                _blocks[y][x] = Room.FLOOR;
+                _trashes--;
+            }
+        }
+        define boolean isCleaned() {
+            return (_trashes == 0);
+        }
+        define void draw(Graphics g) {
+            for (int y = 0; y < SIZE_Y; y++) {
+                for (int x = 0; x < SIZE_X; x++) {
+                    switch(_blocks[y][x]) {
+                        case Room.FLOOR:
+                            Floor floor = new Floor(x * BLOCK_SIZE, y * BLOCK_SIZE);
+                            floor.draw(g);
+                            break;
+                        case Room.WALL:
+                            Wall wall = new Wall(x * BLOCK_SIZE, y * BLOCK_SIZE);
+                            wall.draw(g);
+                            break;
+                        case Room.TRASH:
+                            Trash trash = new Trash(x * BLOCK_SIZE, y * BLOCK_SIZE);
+                            trash.draw(g);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+    }
+    
+    define abstract class Block {
+        private int _x;
+        private int _y;
+        private Image _image;
+        
+        define Block(int x, int y) {
+            setX(x);
+            setY(y);
+            setImage(null);
+        }
+        define Block(int x, int y, Image image) {
+            setX(x);
+            setY(y);
+            setImage(image);
+        }
+        define int getX() {
+            return _x;
+        }
+        define void setX(int x) {
+            _x = x;
+        }
+        define int getBlockX() {
+            return getX() / Room.BLOCK_SIZE;
+        }
+        define int getY() {
+            return _y;
+        }
+        define void setY(int y) {
+            _y = y;
+        }
+        define int getBlockY() {
+            return getY() / Room.BLOCK_SIZE;
+        }
+        define Image getImage() {
+            return _image;
+        }
+        define void setImage(Image image) {
+            _image = image;
+        }
+        define void draw(Graphics g) {
+            g.drawImage(getImage(), getX(), getY(), null);
+        }
+    }
+    
+    define class Floor extends Block {
+        static final Image FLOOR_IMAGE = Util.instance.getImage("image/floor.gif");
+        define Floor(int x, int y) {
+            super(x, y, Floor.FLOOR_IMAGE);
+        }
+    }
+    define class Wall extends Block {
+        static final Image WALL_IMAGE = Util.instance.getImage("image/wall.gif");
+        define Wall(int x, int y) {
+            super(x, y, Wall.WALL_IMAGE);
+        }
+    }
+    define class Trash extends Block {
+        static final Image TRASH_IMAGE = Util.instance.getImage("image/trash.gif");
+        define Trash(int x, int y) {
+            super(x, y, Trash.TRASH_IMAGE);
+        }
+    }
+}
+
+// hardware
+
+module hardware
+extends base
+uses control
+{
+    define class SweeperImpl extends Block implements Sweeper {
+        static final int X_START = 1;
+        static final int Y_START = 1;
+        
+        private Image[] _images;
+        private Controller _controller;
+        private ActionCommand _actionCommand;
+        private Direction _direction;
+        
+        define SweeperImpl() {
+            super(Room.BLOCK_SIZE * X_START, Room.BLOCK_SIZE * Y_START);
+        }
+        define void init() {
+            _actionCommand = new StopCommand();
+            _controller = new Controller(this);
+            _controller.init();
+            _images = new Image[17];
+            for (int i = 0; i < 16; i++) {
+                _images[i] = Util.instance.getImage("image/sweeper" + Integer.toString(i).trim() + ".gif");
+            }
+            _images[16] = _images[0];
+            setDirection(new Direction());
+        }
+        define Image[] getImages() {
+            return _images;
+        }
+        void goForward() {
+            _actionCommand = new ForwardCommand();
+        }
+        void goBack() {
+            _actionCommand = new BackCommand();
+        }
+        void turnRight() {
+            _actionCommand = new RightCommand();
+        }
+        void turnLeft() {
+            _actionCommand = new LeftCommand();
+        }
+        void stop() {
+            _actionCommand = new StopCommand();
+        }
+        define Direction getDirection() {
+            return _direction;
+        }
+        define void setDirection(Direction dir) {
+            _direction = dir;
+            setImage(getImages()[dir.getDegree() / 90 * 4]);
+        }
+        define void addX(int x) {
+            setX(getX() + x);
+        }
+        define void addY(int y) {
+            setY(getY() + y);
+        }
+        define Controller getController() {
+            return _controller;
+        }
+        define void move() {
+            _actionCommand.exec(this);
+            DrawCanvas.instance.getRoom().sweep(getBlockX(), getBlockY());
+        }
+    }
+    define class Direction {
+        private int _degree;
+        define Direction() {
+            _degree = 0;
+        }
+        define Direction(int degree) {
+            if (degree < 0) {
+                degree = degree + (degree / (-360) + 1) * 360;
+            }
+            if (degree >= 360) {
+                degree = degree % 360;
+            }
+            _degree = degree;
+        }
+        define int getDegree() {
+            return _degree;
+        }
+        define float getDeltaX() {
+            return (float) ((_degree - 90) % 180) / (-90);
+        }
+        define float getDeltaY() {
+            return (float) ((_degree - 180) % 180) / 90;
+        }
+        define Direction getRight() {
+            return getTurned(-90);
+        }
+        define Direction getLeft() {
+            return getTurned(90);
+        }
+        define Direction getTurned(int degree) {
+            int newDegree = this.getDegree() + degree;
+            return new Direction(newDegree);
+        }
+    }
+    define interface ActionCommand {
+        static final long MOVE_CYCLE_TIME = 50;
+        define void exec(SweeperImpl sweeper);
+    }
+    define class StopCommand implements ActionCommand {
+        define StopCommand() {}
+        void exec(SweeperImpl sweeper) {}
+    }
+    define abstract class MoveCommand implements ActionCommand {
+        define void move(SweeperImpl sweeper, int move) {
+            Direction d = sweeper.getDirection();
+            int deltaX = move * (int)d.getDeltaX();
+            int deltaY = move * (int)d.getDeltaY();
+            if (DrawCanvas.instance.getRoom().isWall(
+                sweeper.getBlockX() + deltaX, sweeper.getBlockY() + deltaY)) {
+                return;
+            }
+            for (int i = 0; i < 4; i++) {
+                try {
+                    Thread.sleep(MOVE_CYCLE_TIME);
+                } catch(InterruptedException e) {}
+                sweeper.addX(deltaX * Room.BLOCK_SIZE / 4);
+                sweeper.addY(deltaY * Room.BLOCK_SIZE / 4);
+                DrawCanvas.instance.repaint();
+            }
+        }
+    }
+    define class ForwardCommand extends MoveCommand {
+        define ForwardCommand() {}
+        void exec(SweeperImpl sweeper) {
+            move(sweeper, 1);
+        }
+    }
+    define class BackCommand extends MoveCommand {
+        define BackCommand() {}
+        void exec(SweeperImpl sweeper) {
+            move(sweeper, -1);
+        }
+    }
+    define abstract class TurnCommand implements ActionCommand {
+        define void turn(SweeperImpl sweeper, int turn) {
+            Direction d = sweeper.getDirection();
+            int imgIndex = d.getDegree() / 90 * 4;
+            Image[] images = sweeper.getImages();
+            for (int i = 0; i < 4; i++) {
+                try {
+                    Thread.sleep(MOVE_CYCLE_TIME);
+                } catch(InterruptedException e) {}
+                imgIndex += turn;
+                if (imgIndex < 0) {
+                    imgIndex += 16;
+                }
+                sweeper.setImage(images[imgIndex]);
+                DrawCanvas.instance.repaint();
+            }
+            sweeper.setDirection(d.getTurned(turn * 90));
+        }
+    }
+    define class RightCommand extends TurnCommand {
+        define RightCommand() {}
+        void exec(SweeperImpl sweeper) {
+            turn(sweeper, -1);
+        }
+    }
+    define class LeftCommand extends TurnCommand {
+        define LeftCommand() {}
+        void exec(SweeperImpl sweeper) {
+            turn(sweeper, 1);
+        }
+    }
+    
+    class DrawCanvas {
+        private SweeperImpl _sweeper;
+        
+        void init() {
+            original();
+            _sweeper = new SweeperImpl();
+            _sweeper.init();
+        }
+        void paint(Graphics g) {
+            original(g);
+            _sweeper.draw(g);
+        }
+        void loadImages() {
+            original();
+            Image[] images = getSweeper().getImages();
+            for (int i = 0; i < images.length; i++) {
+                loadImage(images[i]);
+            }
+        }
+        define SweeperImpl getSweeper() {
+            return _sweeper;
+        }
+    }
+    class Round {
+        void doAction() {
+            original();
+            SweeperImpl sweeper = DrawCanvas.instance.getSweeper();
+            sweeper.getController().control();
+            sweeper.move();
+        }
+    }
+}
+
+// control
+
+module control
+{
+    define interface Sweeper {
+        define void goForward();
+        define void goBack();
+        define void turnRight();
+        define void turnLeft();
+        define void stop();
+    }
+    define class Controller {
+        private Sweeper _sweeper;
+        define Controller(Sweeper sweeper) {
+            _sweeper = sweeper;
+        }
+        define void init() {
+            // nop
+        }
+        define void control() {
+            // nop
+        }
+        define Sweeper getSweeper() {
+            return _sweeper;
+        }
+    }
+}
+
+// sensor
+
+module sensor
+extends hardware, base
+{
+    define abstract class Sensor {
+        private SweeperImpl _sweeper;
+        private Room _room;
+        private Controller _controller;
+        private String _iconFileName;
+        
+        define Sensor() {
+            _sweeper = DrawCanvas.instance.getSweeper();
+            _room = DrawCanvas.instance.getRoom();
+            _controller = _sweeper.getController();
+        }
+        define SweeperImpl getSweeper() {
+            return _sweeper;
+        }
+        define Room getRoom() {
+            return _room;
+        }
+        define Controller getController() {
+            return _controller;
+        }
+        define String getIconFileName() {
+            return _iconFileName;
+        }
+        define abstract void sense();
+    }
+    define class SensorSet {
+        private java.util.List _sensors;
+        private java.util.List _imageList;
+        define SensorSet() {
+            _sensors = new ArrayList();
+            _imageList = new ArrayList();
+            includeSensors();
+        }
+        define void includeSensors() {
+            // nop
+        }
+        define void add(Sensor sensor) {
+            _sensors.add(sensor);
+            Image image = Util.instance.getImage(sensor.getIconFileName());
+            if (image != null) {
+                _imageList.add(image);
+            }
+        }
+        define void sense() {
+            Iterator i = _sensors.iterator();
+            while(i.hasNext()) {
+                ((Sensor)i.next()).sense();
+            }
+        }
+        define Iterator getImageIterator() {
+            return _imageList.iterator();
+        }
+        define void draw(Graphics g) {
+            Iterator i = getImageIterator();
+            int y = 0;
+            while(i.hasNext()) {
+                g.drawImage((Image)i.next(), Room.SIZE_X * Room.BLOCK_SIZE, y, null);
+                y += Room.BLOCK_SIZE;
+            }
+        }
+    }
+    
+    class DrawCanvas {
+        private SensorSet _sensors;
+        void init() {
+            original();
+            _sensors = new SensorSet();
+        }
+        define SensorSet getSensorSet() {
+            return _sensors;
+        }
+        void paint(Graphics g) {
+            original(g);
+            _sensors.draw(g);
+        }
+        void loadImages() {
+            original();
+            Iterator i = getSensorSet().getImageIterator();
+            while(i.hasNext()) {
+                loadImage((Image)i.next());
+            }
+        }
+    }
+    class Round {
+        void doAction() {
+            original();
+            DrawCanvas.instance.getSensorSet().sense();
+        }
+    }
+}
+
+// event & sensors
+
+module event.key
+extends control
+{
+    class Controller {
+        define void keyUpTyped() {}
+        define void keyDownTyped() {}
+        define void keyRightTyped() {}
+        define void keyLeftTyped() {}
+        define void keySpaceTyped() {}
+    }
+}
+
+module sensor.key
+extends sensor
+uses event.key
+{
+    define class KeySensor extends Sensor implements KeyListener {
+        define KeySensor() {
+            super();
+            _iconFileName = "image/key_s.gif";
+        }
+        void sense() {}
+        void keyPressed(KeyEvent e) {
+            int keyCode = e.getKeyCode();
+            switch(keyCode) {
+                case KeyEvent.VK_UP:
+                    getController().keyUpTyped();
+                    break;
+                case KeyEvent.VK_DOWN:
+                    getController().keyDownTyped();
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    getController().keyRightTyped();
+                    break;
+                case KeyEvent.VK_LEFT:
+                    getController().keyLeftTyped();
+                    break;
+                case KeyEvent.VK_SPACE:
+                    getController().keySpaceTyped();
+                    break;
+                default:
+                    break;
+            }
+        }
+        void keyReleased(KeyEvent e) {}
+        void keyTyped(KeyEvent e) {}
+    }
+    class SensorSet {
+        void includeSensors() {
+            original();
+            KeySensor s = new KeySensor();
+            add(s);
+            DrawCanvas.instance.addKeyListener(s);
+        }
+    }
+}
+
+module event.wall
+extends control
+{
+    class Controller {
+        define void wallDetectedForward() {}
+        define void wallUndetectedForward() {}
+        define void wallDetectedRight() {}
+        define void wallUndetectedRight() {}
+        define void wallDetectedLeft() {}
+        define void wallUndetectedLeft() {}
+    }
+}
+
+module sensor.wall
+extends sensor
+uses event.wall
+{
+    define class WallSensor extends Sensor {
+        define WallSensor() {
+            super();
+            _iconFileName = "image/wall_s.gif";
+        }
+        void sense() {
+            Direction d = getSweeper().getDirection();
+            int x = getSweeper().getBlockX();
+            int y = getSweeper().getBlockY();
+            int deltaX = (int)d.getDeltaX();
+            int deltaY = (int)d.getDeltaY();
+            if (getRoom().isWall(x + deltaX, y + deltaY)) {
+                getController().wallDetectedForward();
+            } else {
+                getController().wallUndetectedForward();
+            }
+            Direction rd = d.getRight();
+            deltaX = (int)rd.getDeltaX();
+            deltaY = (int)rd.getDeltaY();
+            if (getRoom().isWall(x + deltaX, y + deltaY)) {
+                getController().wallDetectedRight();
+            } else {
+                getController().wallUndetectedRight();
+            }
+            Direction ld = d.getLeft();
+            deltaX = (int)ld.getDeltaX();
+            deltaY = (int)ld.getDeltaY();
+            if (getRoom().isWall(x + deltaX, y + deltaY)) {
+                getController().wallDetectedLeft();
+            } else {
+                getController().wallUndetectedLeft();
+            }
+        }
+    }
+    class SensorSet {
+        void includeSensors() {
+            original();
+            add(new WallSensor());
+        }
+    }
+}
+
+module event.trash
+extends control
+{
+    class Controller {
+        define void trashDetectedForward() {}
+        define void trashUndetectedForward() {}
+        define void trashDetectedRight() {}
+        define void trashUndetectedRight() {}
+        define void trashDetectedLeft() {}
+        define void trashUndetectedLeft() {}
+    }
+}
+
+module sensor.trash
+extends sensor
+uses event.trash
+{
+    define class TrashSensor extends Sensor {
+        define TrashSensor() {
+            super();
+            _iconFileName = "image/trash_s.gif";
+        }
+        void sense() {
+            Direction d = getSweeper().getDirection();
+            int x = getSweeper().getBlockX();
+            int y = getSweeper().getBlockY();
+            int deltaX = (int)d.getDeltaX();
+            int deltaY = (int)d.getDeltaY();
+            if (getRoom().isTrash(x + deltaX, y + deltaY)) {
+                getController().trashDetectedForward();
+            } else {
+                getController().trashUndetectedForward();
+            }
+            Direction rd = d.getRight();
+            deltaX = (int)rd.getDeltaX();
+            deltaY = (int)rd.getDeltaY();
+            if (getRoom().isTrash(x + deltaX, y + deltaY)) {
+                getController().trashDetectedRight();
+            } else {
+                getController().trashUndetectedRight();
+            }
+            Direction ld = d.getLeft();
+            deltaX = (int)ld.getDeltaX();
+            deltaY = (int)ld.getDeltaY();
+            if (getRoom().isTrash(x + deltaX, y + deltaY)) {
+                getController().trashDetectedLeft();
+            } else {
+                getController().trashUndetectedLeft();
+            }
+        }
+    }
+    class SensorSet {
+        void includeSensors() {
+            original();
+            add(new TrashSensor());
+        }
+    }
+}
+
+module event.direction
+extends control
+{
+    class Controller {
+        define void northDirected() {}
+        define void southDirected() {}
+        define void eastDirected() {}
+        define void westDirected() {}
+    }
+}
+
+module sensor.direction
+extends sensor
+uses event.direction
+{
+    define class DirectionSensor extends Sensor {
+        define DirectionSensor() {
+            super();
+            _iconFileName = "image/dir_s.gif";
+        }
+        void sense() {
+            int degree = (int)getSweeper().getDirection().getDegree();
+            switch (degree) {
+                case 0:
+                    getController().eastDirected();
+                    break;
+                case 90:
+                    getController().northDirected();
+                    break;
+                case 180:
+                    getController().westDirected();
+                    break;
+                case 270:
+                    getController().southDirected();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    class SensorSet {
+        void includeSensors() {
+            original();
+            add(new DirectionSensor());
+        }
+    }
+}
+
+module event.motor
+extends control
+{
+    class Controller {
+        define void goneForward() {}
+        define void goneBack() {}
+        define void turnedRight() {}
+        define void turnedLeft() {}
+        define void stopped() {}
+    }
+}
+
+module sensor.motor
+extends sensor
+uses event.motor
+{
+    define class MotorSensor extends Sensor {
+        define MotorSensor() {
+            super();
+            _iconFileName = "image/motor_s.gif";
+        }
+        void sense() {
+            getSweeper().notifyAction();
+        }
+    }
+    class SensorSet {
+        void includeSensors() {
+            original();
+            add(new MotorSensor());
+        }
+    }
+    
+    class SweeperImpl {
+        define void notifyAction() {
+            _actionCommand.notify(getController());
+        }
+    }
+    interface ActionCommand {
+        define void notify(Controller controller);
+    }
+    class ForwardCommand {
+        void notify(Controller controller) {
+            controller.goneForward();
+        }
+    }
+    class BackCommand {
+        void notify(Controller controller) {
+            controller.goneBack();
+        }
+    }
+    class RightCommand {
+        void notify(Controller controller) {
+            controller.turnedRight();
+        }
+    }
+    class LeftCommand {
+        void notify(Controller controller) {
+            controller.turnedLeft();
+        }
+    }
+    class StopCommand {
+        void notify(Controller controller) {
+            controller.stopped();
+        }
+    }
+}
+
+// controllers
+
+// manual
+
+module control.manual
+extends control, event.key
+{
+    class Controller {
+        void keyUpTyped() {
+            _sweeper.goForward();
+        }
+        void keyDownTyped() {
+            _sweeper.goBack();
+        }
+        void keyRightTyped() {
+            _sweeper.turnRight();
+        }
+        void keyLeftTyped() {
+            _sweeper.turnLeft();
+        }
+        void keySpaceTyped() {
+            _sweeper.stop();
+        }
+    }
+}
+
+// manual2
+
+module control.manual2
+extends control, event.key, event.direction
+{
+    define class Direction {
+        static final int EAST  = 0;
+        static final int NORTH = 1;
+        static final int WEST  = 2;
+        static final int SOUTH = 3;
+    }
+    class Controller {
+        private int _direction;
+        private int _status;
+        static final int STATUS_DEFAULT = 0;
+        static final int STATUS_TURN    = 1;
+        static final int STATUS_FORWARD = 2;
+        
+        void init() {
+            original();
+            _direction = Direction.EAST;
+            _status = Controller.STATUS_DEFAULT;
+        }
+        void northDirected() {
+            _direction = Direction.NORTH;
+        }
+        void southDirected() {
+            _direction = Direction.SOUTH;
+        }
+        void eastDirected() {
+            _direction = Direction.EAST;
+        }
+        void westDirected() {
+            _direction = Direction.WEST;
+        }
+        void keyUpTyped() {
+            switch(_direction) {
+                case Direction.EAST:
+                    getSweeper().turnLeft();
+                    _status = Controller.STATUS_TURN;
+                    break;
+                case Direction.NORTH:
+                    getSweeper().goForward();
+                    _status = Controller.STATUS_DEFAULT;
+                    break;
+                case Direction.WEST:
+                    getSweeper().turnRight();
+                    _status = Controller.STATUS_TURN;
+                    break;
+                case Direction.SOUTH:
+                    getSweeper().goBack();
+                    _status = Controller.STATUS_DEFAULT;
+                    break;
+                default:
+                    break;
+            }
+        }
+        void keyDownTyped() {
+            switch(_direction) {
+                case Direction.EAST:
+                    getSweeper().turnRight();
+                    _status = Controller.STATUS_TURN;
+                    break;
+                case Direction.NORTH:
+                    getSweeper().goBack();
+                    _status = Controller.STATUS_DEFAULT;
+                    break;
+                case Direction.WEST:
+                    getSweeper().turnLeft();
+                    _status = Controller.STATUS_TURN;
+                    break;
+                case Direction.SOUTH:
+                    getSweeper().goForward();
+                    _status = Controller.STATUS_DEFAULT;
+                    break;
+                default:
+                    break;
+            }
+        }
+        void keyRightTyped() {
+            switch(_direction) {
+                case Direction.EAST:
+                    getSweeper().goForward();
+                    _status = Controller.STATUS_DEFAULT;
+                    break;
+                case Direction.NORTH:
+                    getSweeper().turnRight();
+                    _status = Controller.STATUS_TURN;
+                    break;
+                case Direction.WEST:
+                    getSweeper().goBack();
+                    _status = Controller.STATUS_DEFAULT;
+                    break;
+                case Direction.SOUTH:
+                    getSweeper().turnLeft();
+                    _status = Controller.STATUS_TURN;
+                    break;
+                default:
+                    break;
+            }
+        }
+        void keyLeftTyped() {
+            switch(_direction) {
+                case Direction.EAST:
+                    getSweeper().goBack();
+                    _status = Controller.STATUS_DEFAULT;
+                    break;
+                case Direction.NORTH:
+                    getSweeper().turnLeft();
+                    _status = Controller.STATUS_TURN;
+                    break;
+                case Direction.WEST:
+                    getSweeper().goForward();
+                    _status = Controller.STATUS_DEFAULT;
+                    break;
+                case Direction.SOUTH:
+                    getSweeper().turnRight();
+                    _status = Controller.STATUS_TURN;
+                    break;
+                default:
+                    break;
+            }
+        }
+        void keySpaceTyped() {
+            getSweeper().stop();
+            _status = Controller.STATUS_DEFAULT;
+        }
+        void control() {
+            original();
+            switch (_status) {
+                case Controller.STATUS_TURN:
+                    _status = Controller.STATUS_FORWARD;
+                    break;
+                case Controller.STATUS_FORWARD:
+                    getSweeper().goForward();
+                    _status = Controller.STATUS_DEFAULT;
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+}
+
+// go forward next to turn
+
+module control.turnAndForward
+extends event.motor
+{
+    class Controller {
+        private boolean _nextForward;
+        void init() {
+            original();
+            _nextForward = false;
+        }
+        void goneForward() {
+            original();
+            _nextForward = false;
+        }
+        void goneBack() {
+            original();
+            _nextForward = false;
+        }
+        void turnedRight() {
+            original();
+            _nextForward = true;
+        }
+        void turnedLeft() {
+            original();
+            _nextForward = true;
+        }
+        void stopped() {
+            original();
+            _nextForward = true;
+        }
+        void control() {
+            if (_nextForward) {
+                getSweeper().goForward();
+                _nextForward = false;
+            }
+        }
+    }
+}
+
+// turn in detecting wall
+
+module control.avoidWall
+extends event.wall, control.turnAndForward
+{
+    class Controller {
+        private boolean _wallForward;
+        private boolean _wallRight;
+        private boolean _wallLeft;
+        void init() {
+            original();
+            _wallForward = false;
+            _wallRight = false;
+            _wallLeft = false;
+        }
+        void wallDetectedForward() {
+            original();
+            _wallForward = true;
+        }
+        void wallUndetectedForward() {
+            original();
+            _wallForward = false;
+        }
+        void wallDetectedRight() {
+            original();
+            _wallRight = true;
+        }
+        void wallUndetectedRight() {
+            original();
+            _wallRight = false;
+        }
+        void wallDetectedLeft() {
+            original();
+            _wallLeft = true;
+        }
+        void wallUndetectedLeft() {
+            original();
+            _wallLeft = false;
+        }
+        void control() {
+            original();
+            if (_wallForward) {
+                if (!_wallRight) {
+                    getSweeper().turnRight();
+                } else {
+                    getSweeper().turnLeft();
+                }
+            }
+        }
+    }
+}
+
+// detect trash
+
+module control.seekTrash
+extends event.trash, control.turnAndForward
+{
+    class Controller {
+        private boolean _trashForward;
+        private boolean _trashRight;
+        private boolean _trashLeft;
+        void init() {
+            original();
+            _trashForward = false;
+            _trashRight = false;
+            _trashLeft = false;
+        }
+        void trashDetectedForward() {
+            original();
+            _trashForward = true;
+        }
+        void trashUndetectedForward() {
+            original();
+            _trashForward = false;
+        }
+        void trashDetectedRight() {
+            original();
+            _trashRight = true;
+        }
+        void trashUndetectedRight() {
+            original();
+            _trashRight = false;
+        }
+        void trashDetectedLeft() {
+            original();
+            _trashLeft = true;
+        }
+        void trashUndetectedLeft() {
+            original();
+            _trashLeft = false;
+        }
+        void control() {
+            original();
+            if (_trashForward) {
+                getSweeper().goForward();
+            } else {
+                if (_trashRight) {
+                    getSweeper().turnRight();
+                } else {
+                    if (_trashLeft) {
+                        getSweeper().turnLeft();
+                    }
+                }
+            }
+        }
+    }
+}
+
+// turn random
+
+module control.random
+extends control.turnAndForward
+imports java.util.*
+{
+    class Controller {
+        private Random _random;
+        void init() {
+            original();
+            _random = new Random(Calendar.getInstance().getTime().getTime());
+        }
+        void goneForward() {
+            original();
+            float f = _random.nextFloat();
+            if (f < 0.05) {
+                getSweeper().turnRight();
+            } else if (f < 0.1) {
+                getSweeper().turnLeft();
+            }
+        }
+    }
+}

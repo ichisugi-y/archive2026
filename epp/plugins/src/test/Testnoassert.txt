@@ -1,0 +1,16 @@
+#epp "noassert"
+
+class Testnoassert {
+  public static void main(String argv[]){
+    int a = 2;
+
+    System.out.println(div(10, 2) == 5);
+
+    //div(10, 0);
+  }
+
+  static int div(int x, int y){
+    assert(y != 0);
+    return x / y;
+  }
+}

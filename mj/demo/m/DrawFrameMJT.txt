@@ -1,0 +1,1052 @@
+/*
+ * DrawFrameMJT.java
+ *
+ * Created on 2001/04/19
+ */
+
+/**
+ *
+ * @author  Takaho MATSUZAKI
+ * @version 1.0
+ */
+
+//basic function module
+
+module mjdemo.base
+imports java.awt.*
+imports java.applet.Applet
+imports java.awt.event.*
+imports java.util.*
+{
+    define
+    class DrawFrame extends Applet implements ActionListener,ItemListener{
+	
+	/**
+	 * @param args the command line arguments
+	 */
+	ss void main (String args[]) {
+	    Frame frame=new Frame();
+	    frame.setTitle("DrawDemo");
+	    frame.setLayout(new BorderLayout());
+	    DrawFrame dframe=new DrawFrame();
+	    dframe.init();
+	    frame.add(dframe,BorderLayout.CENTER);
+	    frame.addWindowListener(new WindowAdapter() {
+		    public void windowClosing(WindowEvent e) {
+			System.exit(0);
+		    }
+		});
+	    frame.setSize(450,350);
+	    frame.setVisible(true);
+	}
+	
+	public void actionPerformed(ActionEvent event) {
+	    if(event.getSource()==button4){
+		System.exit(0);
+	    }else if(event.getSource()==button5){
+		drawPanel.clearPanel();
+	    }else if(event.getSource()==button11){
+		if(dialog_p==null){
+		    final DrawFrame outer=this;
+		    dialog_p=new Frame("About");
+		    dialog_p.setLayout(new BorderLayout());
+		    Label lb=new Label("DrawFrame Ver.1.0");
+		    diab=new Button("OK");
+		    diab.setFont(new Font ("Dialog", 0, 11));
+		    diab.setBackground(new Color (212, 208, 200));
+		    diab.setForeground(Color.black);
+		    diab.addActionListener(new ActionListener(){
+			    public void actionPerformed(ActionEvent event1) {
+				if(event1.getSource()==outer.diab){
+				    outer.dialog_p.dispose();
+				    outer.dialog_p=null;
+				}
+			    }
+			});
+		    Panel pan=new Panel();
+		    pan.setBackground(new Color (212, 208, 200));
+		    pan.setForeground(Color.black);
+		    pan.add(diab);
+		    dialog_p.add(pan,BorderLayout.SOUTH);
+		    dialog_p.add(lb,BorderLayout.CENTER);
+		    dialog_p.addWindowListener(new WindowAdapter() {
+			    public void windowClosing(WindowEvent e) {
+				outer.dialog_p.dispose();
+				outer.dialog_p=null;
+			    }
+			});
+		    dialog_p.setSize(130,100);
+		    dialog_p.setBackground(new Color (212, 208, 200));
+		    dialog_p.setVisible(true);
+		}
+	    }
+	}    
+	
+	private Panel panel1;
+	private Panel panel2;
+	private Panel panel3;
+	private Panel panel4;
+	private Button button4;
+	private Button button5;
+	private static Frame dialog_p;
+	private Button button11;
+	private Button diab;
+
+	private Label label1;
+	private Choice choice1;
+	private DrawPanel drawPanel;
+	
+	private Color selected;
+	private int dia=4;
+	
+	public void init(){
+	    panel1 = new Panel();
+	    button4 = new Button();
+	    button5 = new Button();
+	    label1=new Label("Color:");
+	    choice1 = new Choice();
+	    this.setLayout(new BorderLayout());
+	    
+	    panel1.setFont(new Font ("Dialog", 0, 11));
+	    panel1.setBackground(new Color (212, 208, 200));
+	    panel1.setForeground(Color.black);
+
+	    this.add(panel1,BorderLayout.NORTH);
+
+	    panel2=new Panel();
+	    panel2.setFont(new Font ("Dialog", 0, 11));
+	    panel2.setBackground(new Color (212, 208, 200));
+	    panel2.setForeground(Color.black);
+	    panel2.setLayout(new GridLayout(10,1));
+	    this.add(panel2,BorderLayout.WEST);
+
+	    panel3=new Panel();
+	    panel3.setFont(new Font ("Dialog", 0, 11));
+	    panel3.setBackground(new Color (212, 208, 200));
+	    panel3.setForeground(Color.black);
+	    panel3.setLayout(new GridLayout(10,1));
+	    this.add(panel3,BorderLayout.EAST);
+	    
+	    panel4=new Panel();
+	    panel4.setFont(new Font ("Dialog", 0, 11));
+	    panel4.setBackground(new Color (212, 208, 200));
+	    panel4.setForeground(Color.black);
+	    //	    panel4.setLayout(new GridLayout(1,10));
+	    this.add(panel4,BorderLayout.SOUTH);
+	    
+	    button4.setFont(new Font ("Dialog", 0, 11));
+	    button4.setLabel("Exit");
+	    button4.setName("Exit");
+	    button4.setBackground(new Color (212, 208, 200));
+	    button4.setForeground(Color.black);
+	    button4.addActionListener(this);
+	    panel1.add(button4);
+	    
+	    
+	    button5.setFont(new Font ("Dialog", 0, 11));
+	    button5.setLabel("Clear");
+	    button5.setName("clear");
+	    button5.setBackground(new Color (212, 208, 200));
+	    button5.setForeground(Color.black);
+	    button5.addActionListener(this);
+	    panel1.add(button5);
+
+	    button11=new Button();
+	    
+	    button11.setFont(new Font ("Dialog", 0, 11));
+	    button11.setLabel("About");
+	    button11.setName("about");
+	    button11.setBackground(new Color (212, 208, 200));
+	    button11.setForeground(Color.black);
+	    button11.addActionListener(this);
+	    panel3.add(button11);
+	    
+	    
+	    label1.setFont(new Font ("Dialog", 0, 11));
+	    label1.setBackground(new Color (212, 208, 200));
+	    label1.setForeground(Color.black);
+	    label1.setAlignment(Label.RIGHT);
+	    panel1.add(label1);
+
+	    choice1.setFont(new Font ("Dialog", 0, 11));
+	    choice1.setName("Color");
+	    choice1.setBackground(Color.white);
+	    choice1.setForeground(Color.black);
+	    choice1.addItemListener(this);
+	    choice1.addItem("black");
+	    choice1.addItem("red");
+	    choice1.addItem("green");
+	    choice1.addItem("blue");
+	    panel1.add(choice1);
+
+	    selected=Color.black;
+	    drawPanel=new DrawPanel();
+	    drawPanel.initDrawPanel(this);
+	    this.add(drawPanel,BorderLayout.CENTER);
+	    drawPanel.setBackground(new Color (212, 208, 200));
+	}
+	
+	define Color selectColor(){
+	    return selected;
+	}
+	
+	define int getDiam(){
+	    return dia;
+	}
+	
+	public void itemStateChanged(ItemEvent event) {
+	    if(event.getSource()==choice1){
+		String arg=(String)choice1.getSelectedItem();
+		if(arg.equals("black")){
+		    selected=Color.black;
+		}else if(arg.equals("red")){
+		    selected=Color.red;
+		}else if(arg.equals("green")){
+		    selected=Color.green;
+		}else if(arg.equals("blue")){
+		    selected=Color.blue;
+		}
+	    }
+	}
+    }
+
+    define
+    class DrawPanel extends Canvas implements MouseListener,MouseMotionListener{
+	private int x_p,y_p;
+	private int x_last,y_last;
+	private int width_p,height_p;
+	private boolean dragged=false;
+	private Image b_image;
+	private Graphics bg;
+	
+	private DrawObject dobj;
+	private DrawFrame drawFrame_p;
+	private Stack obj_list;
+	
+	define
+	void initDrawPanel(DrawFrame drawFrame) {
+	    drawFrame_p=drawFrame;
+	    this.addMouseListener(this);
+	    this.addMouseMotionListener(this);
+	    width_p=400;
+	    height_p=300;
+	    this.setSize(width_p,height_p);
+	    obj_list=new Stack();
+	}
+	
+	public void paint(Graphics g){
+	    if(b_image==null){
+		b_image=this.createImage(width_p,height_p);
+		bg=b_image.getGraphics();
+		bg.setColor(Color.white);
+		bg.fillRect(0,0,width_p,height_p);
+	    }
+	    g.drawImage(b_image,0,0,this);
+	    if(dragged && dobj!=null){
+		dobj.draw(x_p,y_p,g,drawFrame_p.selectColor());
+	    }
+	}
+
+	public void update(Graphics g){
+	    this.paint(g);
+	}
+	
+	public void mouseDragged(MouseEvent e) {
+	    dragged=true;
+	    x_p=(int)e.getX();
+	    y_p=(int)e.getY();
+	    this.repaint();
+	}
+	
+	public void mouseMoved(MouseEvent e) {
+
+	}
+
+	public void mouseReleased(MouseEvent e) {
+	    if(dragged){
+		if(dobj!=null){
+		    dobj.draw(x_p,y_p,bg,drawFrame_p.selectColor());
+		    obj_list.push(dobj);
+		    dobj=null;
+		}
+		dragged=false;
+	    }
+	    this.repaint();
+	}
+	
+	public void mouseEntered(MouseEvent e) {
+	}
+	
+	public void mouseClicked(MouseEvent e) {
+	}
+	
+	public void mousePressed(MouseEvent e) {
+	    x_last=(int)e.getX();
+	    y_last=(int)e.getY();
+	    if(dobj!=null){
+		dobj.setPointOfRec(x_last,y_last);
+	    }
+	}
+	
+	public void mouseExited(MouseEvent e) {
+	}
+	
+	define void clearPanel() {
+	    bg.setColor(Color.white);
+	    bg.fillRect(0,0,width_p,height_p);
+	    obj_list=new Stack();
+	    this.repaint();
+	}
+	
+    }
+
+    
+    define abstract class DrawObject{
+	protected int x_i,y_i,x_f,y_f;
+	protected int x_d,y_d,x_dia,y_dia;
+	protected Color color_p;
+
+	define public abstract void draw(int x,int y,Graphics g,Color col);
+
+	define void drawSelf(Graphics g){
+	    this.draw(x_f,y_f,g,color_p);
+	}
+	
+	define void setPointOfRec(int x,int y){
+	    x_i=x;
+	    y_i=y;
+	}
+
+	define String getColor(){
+	    	    String color="";
+	    if(color_p.equals(Color.black)){
+		color="black";
+	    }else if(color_p.equals(Color.red)){
+		color="red";
+	    }else if(color_p.equals(Color.green)){
+		color="green";
+	    }else if(color_p.equals(Color.blue)){
+		color="blue";
+	    }
+	    return color;
+	}
+    }
+}
+
+//select objects
+
+module mjdemo.select extends mjdemo.base
+{
+    class DrawPanel{
+	private int index=-1;
+	private boolean selected=false;
+	private DrawObject tmpo;
+
+	public void mousePressed(MouseEvent e) {
+	    original(e);
+	    Enumeration objs=obj_list.elements();
+
+	    index=-1;
+	    int tmp=0;
+	    DrawObject dobj1;
+	    while(objs.hasMoreElements()){
+		dobj1=(DrawObject)objs.nextElement();
+
+		if(dobj1.isInner(x_last,y_last)){
+		    index=tmp;
+		}
+		tmp++;
+	    }
+	
+	    bg.setColor(Color.white);
+	    bg.fillRect(0,0,width_p,height_p);
+	    objs=obj_list.elements();
+	    tmp=0;
+	    while(objs.hasMoreElements()){
+		dobj1=(DrawObject)objs.nextElement();
+		if(tmp!=index){
+		    dobj1.drawSelf(bg);
+		}		
+		tmp++;
+	    }
+	    this.repaint();
+	}
+
+	public void paint(Graphics g){
+	    if(b_image==null){
+		b_image=this.createImage(width_p,height_p);
+		bg=b_image.getGraphics();
+		bg.setColor(Color.white);
+		bg.fillRect(0,0,width_p,height_p);
+	    }
+	    g.drawImage(b_image,0,0,this);
+	    if(dragged && index==-1 && dobj!=null){
+		dobj.draw(x_p,y_p,g,drawFrame_p.selectColor());
+	    }else if(index!=-1){
+		tmpo=(DrawObject)obj_list.elementAt(index);
+		tmpo.drawSelf(g);
+		tmpo.drawMark(g);	
+	    }else if(index==-1){
+		tmpo=null;
+	    }
+	}
+
+	void clearPanel(){
+	    index=-1;
+	    original();
+	}
+    }
+
+    class DrawObject{
+
+	define boolean isInner(int x,int y){
+	    if(x_d<=x && x<=x_d+x_dia && y_d<=y && y<=y_d+y_dia){
+		return true;
+	    }else{
+		return false;
+	    }
+	}
+
+	define void drawMark(Graphics g){
+	    g.setColor(Color.red);
+	    g.drawRect(x_d,y_d,x_dia,y_dia);
+	}
+    }
+}
+
+//delete objects
+
+module mjdemo.delete extends mjdemo.select
+{
+    class DrawFrame{
+	private Button button12;
+	
+	public void init(){
+	    original();
+	    button12 = new Button();
+	    button12.setFont(new Font ("Dialog", 0, 11));
+	    button12.setLabel("Del");
+	    button12.setName("del");
+	    button12.setBackground(new Color (212, 208, 200));
+	    button12.setForeground(Color.black);
+	    button12.addActionListener(this);
+	    panel2.add(button12);
+	}
+
+	public void actionPerformed(ActionEvent event) {
+	    original(event);
+	    if(event.getSource()==button12){
+		drawPanel.deleteObj();
+	    }
+	}
+    }
+
+    class DrawPanel{
+	    
+	define void deleteObj() {
+	    if(index!=-1){
+		obj_list.removeElementAt(index);
+		index=-1;
+		this.repaint();
+	    }
+	}
+    }
+}
+
+//move objects
+
+module mjdemo.move extends mjdemo.select
+{
+    class DrawPanel{
+	public void mouseReleased(MouseEvent e) {
+	    original(e);
+	    if(tmpo!=null){
+		tmpo.canOrgFlag();
+	    }
+	}
+
+	public void paint(Graphics g){
+	    original(g);
+	    if(tmpo!=null && dragged && dobj==null){
+		tmpo.moveObj(x_p-x_last,y_p-y_last,g);
+	    }
+	}
+    }
+
+
+    class DrawObject{
+	protected int x_i_org,y_i_org,x_f_org,y_f_org;
+	protected boolean org_updated=false;
+
+	define void setOrg(){
+	    x_i_org=x_i;
+	    y_i_org=y_i;
+	    x_f_org=x_f;
+	    y_f_org=y_f;
+	}
+
+	define void moveObj(int x_delta,int y_delta,Graphics g){
+	    if(!org_updated){
+		this.setOrg();
+		org_updated=true;
+	    }else{
+		x_i=x_i_org+x_delta;
+		y_i=y_i_org+y_delta;
+		x_f=x_f_org+x_delta;
+		y_f=y_f_org+y_delta;
+		this.draw(x_f,y_f,g,color_p);
+	    }
+	}
+
+	define void canOrgFlag(){
+	    org_updated=false;
+	}
+    }
+}
+
+//dump info of all objects
+
+module mjdemo.dump extends mjdemo.base
+{
+    class DrawFrame{
+	private static Frame dump;
+	private DumpArea tarea;
+	private Button dumb;
+	private Button button13;
+	
+	public void init(){
+	    original();
+	    button13 = new Button();
+	    button13.setFont(new Font ("Dialog", 0, 11));
+	    button13.setLabel("Dump");
+	    button13.setName("dump");
+	    button13.setBackground(new Color (212, 208, 200));
+	    button13.setForeground(Color.black);
+	    button13.addActionListener(this);
+	    panel2.add(button13);
+	}
+
+	public void actionPerformed(ActionEvent event) {
+	    original(event);
+	    if(event.getSource()==button13){
+		if(dump==null){
+		    final DrawFrame outer=this;
+		    dump=new Frame("Dump");
+		    dump.setLayout(new BorderLayout());
+		    Label lb=new Label("Figure Info:");
+		    tarea=new DumpArea();
+		    tarea.initDumpArea(drawPanel);
+		    tarea.setBackground(Color.white);
+		    tarea.setForeground(Color.black);
+		    tarea.currentDump();
+		    dumb=new Button("OK");
+		    dumb.setFont(new Font ("Dialog", 0, 11));
+		    dumb.setBackground(new Color (212, 208, 200));
+		    dumb.setForeground(Color.black);
+		    dumb.addActionListener(new ActionListener(){
+			    public void actionPerformed(ActionEvent event1) {
+				if(event1.getSource()==outer.dumb){
+				    outer.dump.dispose();
+				    outer.dump=null;
+				}
+			    }
+			});
+		    Panel pan=new Panel();
+		    pan.setBackground(new Color (212, 208, 200));
+		    pan.setForeground(Color.black);
+		    pan.add(dumb);
+		    dump.add(pan,BorderLayout.SOUTH);
+		    dump.add(tarea,BorderLayout.CENTER);
+		    dump.add(lb,BorderLayout.NORTH);
+		    dump.addWindowListener(new WindowAdapter() {
+			    public void windowClosing(WindowEvent e) {
+				outer.dump.dispose();
+				outer.dump=null;
+			    }
+			});
+		    dump.setSize(300,300);
+		    dump.setBackground(new Color (212, 208, 200));
+		    dump.setVisible(true);
+		}
+	    }
+	}
+    }
+    
+    define class DumpArea extends TextArea{
+	DrawPanel drawPanel;
+
+	define void initDumpArea(DrawPanel dpanel){
+	    this.setRows(15);
+	    this.setColumns(20);
+	    drawPanel=dpanel;
+	}
+
+	define void currentDump(){
+	    String[][] sts=drawPanel.getInfoOfObjs();
+	    int k=sts.length;
+	    for(int i=0;i<k;i++){
+		this.append("ID:"+i+" ");
+		int l=sts[i].length;
+		for(int j=0;j<l-1;j++){
+		    this.append(sts[i][j]+", ");
+		}
+		this.append(sts[i][l-1]);
+		this.append("\n");
+	    }
+	}
+    }
+ 
+    class DrawPanel{
+	define String[][] getInfoOfObjs(){
+	    int k=obj_list.size();
+	    String[][] sts=new String[k][];
+	    Enumeration objs=obj_list.elements();
+	    int i=0;
+	    while(objs.hasMoreElements()){
+		sts[i]=((DrawObject)objs.nextElement()).getInfoOfObj();
+		i++;
+	    }
+	    return sts;
+	}
+    }
+
+    class DrawObject{
+	define abstract String[] getInfoOfObj();
+    }
+}
+
+//total area of all objects 
+
+module mjdemo.area extends mjdemo.base
+{
+    class DrawFrame{
+	private TextField tf1;
+	private Label label2;
+	
+	public void init(){
+	    original();
+	    label2=new Label("Area:");
+	    label2.setFont(new Font ("Dialog", 0, 11));
+	    label2.setBackground(new Color (212, 208, 200));
+	    label2.setForeground(Color.black);
+	    label2.setAlignment(Label.RIGHT);
+	    panel4.add(label2);
+	    tf1=new TextField("0",20);
+	    tf1.setBackground(Color.white);
+	    tf1.setForeground(Color.black);
+	    tf1.setEditable(false);
+	    panel4.add(tf1);
+	}
+
+	define void setArea(String tota){
+	    tf1.setText(tota);
+	}
+    }
+
+    class DrawPanel{
+
+	public void mouseReleased(MouseEvent e) {
+	    original(e);
+	    this.updateArea();
+	}
+
+	define int askTotalArea(){
+	    Enumeration objs=obj_list.elements();
+	    int total_area=0;
+	    while(objs.hasMoreElements()){
+		total_area+=((DrawObject)objs.nextElement()).getArea();
+	    }
+	    return total_area;
+	}
+
+	define void updateArea(){
+	    drawFrame_p.setArea(new Integer(this.askTotalArea()).toString());
+	}
+    }
+
+    class DrawObject{
+	define abstract int getArea();
+    }
+}
+
+//Draw lines
+
+module mjdemo.line extends mjdemo.base
+{
+    class DrawFrame{
+	private Button button6;
+	public void init(){
+	    original();
+	    button6 = new Button();
+	    button6.setFont(new Font ("Dialog", 0, 11));
+	    button6.setLabel("Line");
+	    button6.setName("line");
+	    button6.setBackground(new Color (212, 208, 200));
+	    button6.setForeground(Color.black);
+	    button6.addActionListener(this);
+	    panel4.add(button6);
+	}
+
+	public void actionPerformed(ActionEvent event) {
+	    original(event);
+	    if(event.getSource()==button6){
+		drawPanel.createLine();
+	    }
+	}
+
+    }
+
+    class DrawPanel{
+	define public void createLine(){
+	    dobj=new DrawLine();
+	}
+    }
+
+    define class DrawLine extends DrawObject{
+
+	public void draw(int x,int y,Graphics g,Color col){
+	    x_f=x;
+	    y_f=y;
+	    x_d=Math.min(x_i,x_f);
+	    y_d=Math.min(y_i,y_f);
+	    x_dia=Math.abs(x_i-x_f);
+	    y_dia=Math.abs(y_i-y_f);
+	    color_p=col;
+	    g.setColor(color_p);
+	    g.drawLine(x_i,y_i,x_f,y_f);
+	}
+    }
+}
+
+//Draw rectangles
+module mjdemo.rect extends mjdemo.base
+{
+    class DrawFrame{
+	private Button button7;
+
+	public void init(){
+	    original();
+	    button7 = new Button();
+	    button7.setFont(new Font ("Dialog", 0, 11));
+	    button7.setLabel("Rect");
+	    button7.setName("rect");
+	    button7.setBackground(new Color (212, 208, 200));
+	    button7.setForeground(Color.black);
+	    button7.addActionListener(this);
+	    panel4.add(button7);
+	}
+
+	public void actionPerformed(ActionEvent event) {
+	    original(event);
+	    if(event.getSource()==button7){
+		drawPanel.createRect();
+	    }
+	}
+
+    }
+
+    class DrawPanel{
+
+	define public void createRect(){
+	    dobj=new DrawRect();
+	}
+    }
+
+    define class DrawRect extends DrawObject{
+
+	public void draw(int x,int y,Graphics g,Color col){
+	    x_f=x;
+	    y_f=y;
+	    x_d=Math.min(x_i,x);
+	    y_d=Math.min(y_i,y);
+	    x_dia=Math.abs(x_i-x);
+	    y_dia=Math.abs(y_i-y);
+	    color_p=col;
+	    g.setColor(color_p);
+	    g.fillRect(x_d,y_d,x_dia,y_dia);
+	}
+    }
+}
+
+//Draw ellipses
+
+module mjdemo.elli extends mjdemo.base
+{
+    class DrawFrame{
+	private Button button8;
+
+	public void init(){
+	    original();
+	    button8 = new Button();
+	    button8.setFont(new Font ("Dialog", 0, 11));
+	    button8.setLabel("Elli");
+	    button8.setName("elli");
+	    button8.setBackground(new Color (212, 208, 200));
+	    button8.setForeground(Color.black);
+	    button8.addActionListener(this);
+	    panel4.add(button8);
+	}
+
+	public void actionPerformed(ActionEvent event) {
+	    original(event);
+	    if(event.getSource()==button8){
+		drawPanel.createElli();
+	    }
+	}
+    }
+
+    class DrawPanel{
+
+	define public void createElli(){
+	    dobj=new DrawElli();
+	}
+    }
+
+    define class DrawElli extends DrawObject{
+
+	public void draw(int x,int y,Graphics g,Color col){
+	    x_f=x;
+	    y_f=y;
+	    x_d=Math.min(x_i,x);
+	    y_d=Math.min(y_i,y);
+	    x_dia=Math.abs(x_i-x);
+	    y_dia=Math.abs(y_i-y);
+	    color_p=col;
+	    g.setColor(color_p);
+	    g.fillOval(x_d,y_d,x_dia,y_dia);
+	}
+    }
+}
+
+//Draw triangles
+
+module mjdemo.tri extends mjdemo.base
+{
+    class DrawFrame{
+	private Button button9;
+
+	public void init(){
+	    original();
+	    button9 = new Button();
+	    button9.setFont(new Font ("Dialog", 0, 11));
+	    button9.setLabel("Tri");
+	    button9.setName("tri");
+	    button9.setBackground(new Color (212, 208, 200));
+	    button9.setForeground(Color.black);
+	    button9.addActionListener(this);
+	    panel4.add(button9);
+	}
+
+	public void actionPerformed(ActionEvent event) {
+	    original(event);
+	    if(event.getSource()==button9){
+		drawPanel.createTri();
+	    }
+	}
+    }
+
+    class DrawPanel{
+
+	define public void createTri(){
+	    dobj=new DrawTri();
+	}
+    }
+
+    define class DrawTri extends DrawObject{
+
+	public void draw(int x,int y,Graphics g,Color col){
+	    x_f=x;
+	    y_f=y;
+	    x_d=Math.min(x_i,x);
+	    y_d=Math.min(y_i,y);
+	    x_dia=Math.abs(x_i-x);
+	    y_dia=Math.abs(y_i-y);
+	    color_p=col;
+	    g.setColor(color_p);
+	    g.fillPolygon(new int[]{x_d,x_d+(int)(x_dia/2),x_d+x_dia},new int[]{y_d+y_dia,y_d,y_d+y_dia},3);
+	}
+    }
+}
+
+//Draw octgons
+
+module mjdemo.oct extends mjdemo.base
+{
+    class DrawFrame{
+	private Button button10;
+
+	public void init(){
+	    original();
+	    button10 = new Button();
+	    button10.setFont(new Font ("Dialog", 0, 11));
+	    button10.setLabel("Oct");
+	    button10.setName("oct");
+	    button10.setBackground(new Color (212, 208, 200));
+	    button10.setForeground(Color.black);
+	    button10.addActionListener(this);
+	    panel4.add(button10);
+	}
+
+	public void actionPerformed(ActionEvent event) {
+	    original(event);
+	    if(event.getSource()==button10){
+		drawPanel.createOct();
+	    }
+	}
+    }
+
+    class DrawPanel{
+
+	define public void createOct(){
+	    dobj=new DrawOct();
+	}
+    }
+
+    define class DrawOct extends DrawObject{
+
+	public void draw(int x,int y,Graphics g,Color col){
+	    x_f=x;
+	    y_f=y;
+	    x_d=Math.min(x_i,x);
+	    y_d=Math.min(y_i,y);
+	    x_dia=Math.abs(x_i-x);
+	    y_dia=Math.abs(y_i-y);
+	    color_p=col;
+	    g.setColor(color_p);
+	    g.fillPolygon(new int[]{x_d,x_d,x_d+(int)(x_dia*0.3),x_d+(int)(x_dia*0.7),x_d+x_dia,x_d+x_dia,x_d+(int)(x_dia*0.7),x_d+(int)(x_dia*0.3)},new int[]{y_d+(int)(y_dia*0.7),y_d+(int)(y_dia*0.3),y_d,y_d,y_d+(int)(y_dia*0.3),y_d+(int)(y_dia*0.7),y_d+y_dia,y_d+y_dia},8);
+	}
+    }
+}
+
+//complemental modules
+
+module mjdemo.dump_line complements mjdemo.dump,mjdemo.line
+{
+    class DrawLine{
+
+	String[] getInfoOfObj(){
+	    return new String[]{"shape=line",
+				"initial x="+x_i,
+				"initial y="+y_i,
+				"final x="+x_f,
+				"final y="+y_f,
+				"domain width="+x_dia,
+				"domain height="+y_dia,
+				"color="+this.getColor()};
+	}
+    }
+}
+
+module mjdemo.dump_rect complements mjdemo.dump,mjdemo.rect
+{
+    class DrawRect{
+
+	String[] getInfoOfObj(){
+	    return new String[]{"shape=rectangle",
+				"initial x="+x_i,
+				"initial y="+y_i,
+				"final x="+x_f,
+				"final y="+y_f,
+				"domain width="+x_dia,
+				"domain height="+y_dia,
+				"color="+this.getColor()};
+	}
+    }
+}
+
+module mjdemo.dump_tri complements mjdemo.dump,mjdemo.tri
+{
+    class DrawTri{
+
+	String[] getInfoOfObj(){
+	    return new String[]{"shape=triangle",
+				"initial x="+x_i,
+				"initial y="+y_i,
+				"final x="+x_f,
+				"final y="+y_f,
+				"domain width="+x_dia,
+				"domain height="+y_dia,
+				"color="+this.getColor()};
+	}
+    }
+}
+
+module mjdemo.dump_elli complements mjdemo.dump,mjdemo.elli
+{
+    class DrawElli{
+
+	String[] getInfoOfObj(){
+	    return new String[]{"shape=ellipse",
+				"initial x="+x_i,
+				"initial y="+y_i,
+				"final x="+x_f,
+				"final y="+y_f,
+				"domain width="+x_dia,
+				"domain height="+y_dia,
+				"color="+this.getColor()};
+	}
+    }
+}
+
+module mjdemo.dump_oct complements mjdemo.dump,mjdemo.oct
+{
+    class DrawOct{
+
+	String[] getInfoOfObj(){
+	    return new String[]{"shape=octagon",
+				"initial x="+x_i,
+				"initial y="+y_i,
+				"final x="+x_f,
+				"final y="+y_f,
+				"domain width="+x_dia,
+				"domain height="+y_dia,
+				"color="+this.getColor()};
+	}
+    }
+}
+
+module mjdemo.area_line complements mjdemo.area,mjdemo.line
+{
+    class DrawLine{
+	int getArea(){
+	    return 0;
+	}
+    }
+}
+
+module mjdemo.area_rect complements mjdemo.area,mjdemo.rect
+{
+    class DrawRect{
+	int getArea(){
+	    return x_dia*y_dia;
+	}
+    }
+}
+
+module mjdemo.area_tri complements mjdemo.area,mjdemo.tri
+{
+    class DrawTri{
+	int getArea(){
+	    return (int)(x_dia*y_dia/2+0.5);
+	}
+    }
+}
+
+module mjdemo.area_elli complements mjdemo.area,mjdemo.elli
+{
+    class DrawElli{
+	int getArea(){
+	    return (int)(Math.PI*x_dia*y_dia/4+0.5);
+	}
+    }
+}
+
+module mjdemo.area_oct complements mjdemo.area,mjdemo.oct
+{
+    class DrawOct{
+	int getArea(){
+	    return (int)(x_dia*y_dia*0.82+0.5);
+	}
+    }
+}
+

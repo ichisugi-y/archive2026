@@ -1,0 +1,48 @@
+#epp "ifdef"
+
+/*
+ How to test this file is:
+
+	epp -f Testifdef.java
+	epp -f -Dfoo=true Testifdef.java
+	epp -f -Dfoo Testifdef.java
+	epp -f -Dbar Testifdef.java
+	epp -f -Dfoo -Dbar Testifdef.java
+
+*/
+
+
+class Testifdef {
+  
+  public static void main(String argv[]){
+#ifdef foo
+    System.out.println("foo!");
+
+    // Nested ifdef.
+#ifdef bar
+    System.out.println("foo and bar!");
+#endif    
+
+#elif bar
+    System.out.println("bar!");
+#else
+    System.out.println("Neither foo nor bar!");
+#endif
+
+
+
+#ifndef foo
+    System.out.println("Not defined foo.");
+#else
+    System.out.println("foo.");
+#endif
+
+
+    
+#ifdef "user.timezone=JST"
+    System.out.println("Japan.");
+#else
+    System.out.println("Not Japan.");
+#endif
+  }
+}

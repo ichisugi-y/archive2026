@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=shift_jis">
+<title>脳とベイジアンネット</title>
+<style>
+
+h1{
+/*
+  color: #000080;
+  background-color: #CCFFFF; 
+  text-align: left;
+  border-color : #0000FF;
+  padding-top: 5px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  border-style: solid;
+  border-top-width: 2px;
+  border-right-width: 36px;
+  border-bottom-width: 2px;
+  border-left-width: 36px;
+  */
+}
+h2{
+  color: #000080;
+  text-align: left;
+  border-color : #0000FF;
+  padding-top: 4px;
+  padding-right: 4px;
+  padding-bottom: 4px;
+  padding-left: 4px;
+  border-style: solid;
+  border-top-width: 0px;
+  border-right-width: 0px;
+  border-bottom-width: 2px;
+  border-left-width: 24px;
+}
+h3{
+  color: #000080;
+}
+h4{
+  margin-left:25pt;
+  background-color:#fffff8;
+  padding-top: 2px;
+  padding-left: 4px;
+}
+h5{
+  margin-left:25pt;
+}
+
+p {
+	margin-left:50pt;
+	margin-right:50pt;
+	line-height:1.3;
+ }
+li {
+	margin-left:50pt;
+	margin-right:50pt;
+ }
+li {
+	margin-bottom: 5px;
+}
+</style>
+</head>
+
+<body bgcolor="#f0f0ff">
+
+<table border="0" align="center" style="width:750px">
+<tr><td>
+ 
+<table border="0" style="width:600px">
+<tr><td>
+<span style="font-size: small">
+&gt; <a href="http://www.aist.go.jp/">産業技術総合研究所</a>
+&gt; <a href="http://staff.aist.go.jp/y-ichisugi/j-index.html">一杉裕志</a>
+&gt; 脳とベイジアンネット
+</span>
+</td><td style="font-size: small" align="right">
+ 
+（
+<!-- #BeginDate format:IS1 -->2013-10-23<!-- #EndDate --> 
+更新）
+<span align=right>
+<IMG SRC="/cgi-bin/counter.cgi?df=y-ichisugi/besom-counter.dat&st=1" ALT="">
+</span>
+</td></tr></table>
+ 
+
+<h1>脳とベイジアンネット</h1>
+
+
+<table border="1" align="center" cellspacing="0" bordercolor="#8080FF">
+<tr><td   style="width:100px" valign="top">
+<small>
+<hr>
+<hr>
+<a href="http://besom1.blog85.fc2.com/">ブログ</a>
+<hr>
+</small>
+</td><td style="width:650px">
+
+
+
+<p>
+ベイジアンネットを用いて大脳皮質の機能を再現するモデルが少しづつ増えています。
+
+<p>
+ベイジアンネットは大脳皮質の複雑で多様な振る舞いを少ない仮定で計算論的にきれいに説明するだけでなく、アルゴリズムやデータ構造、それらを実現する神経回路にいたるまで、大脳皮質に対する幅広く詳細な説明を与えつつあります。 
+<p>
+ベイジアンネットに基づいて脳を理解することは、高い知能を持つロボットの実現に向けたブレークスルーになると考えています。
+
+
+<h2>解説</h2>
+<h3><a href="brain-bayesnet-faq.html">「脳とベイジアンネットＦＡＱ」</a></h3>
+<p>
+脳とベイジアンネットに関して私がよく聞かれる質問です。
+
+<h3><a href="29_412.pdf">「解説：大脳皮質とベイジアンネット」</a></h3>
+<p>
+日本ロボット学会誌に載せていただいた解説です。（この pdf ファイルは日本ロボット学会の著作物です。）<br>
+<small>一杉裕志, 解説：大脳皮質とベイジアンネット、
+日本ロボット学会誌 Vol.29 No.5, pp.412--415, 2011. </small>
+
+<h3><a href="2013nlp.pdf">「脳は計算機科学者に解明されるのを待っている －機械学習器としての脳－」(pdf)</a></h3>
+<p>
+言語処理学会第19回年次大会(NLP2013) 招待講演の講演スライドです。<br>
+<a href="http://www.ustream.tv/channel/nlp2013-invited">講演の Ustream の録画配信</a>もしていただいています。
+
+
+<h3><a href="20090612MPE.pdf">「ベイジアンネットとは」(pdf)</a></h3>
+<p>ベイジアンネット、ＭＰＥ (most probable explanation)、条件付確率表の学習（パラメタ学習, parameter learning）、構造学習(structure learning)の簡単な説明を書いてみました。 
+
+
+<h3><a href="20100226what-is-bp.pdf">「確率伝播アルゴリズムとは」(pdf)</a></h3>
+<p>
+脳の認識機構と関係が深い「確率伝播アルゴリズム」について、あまり予備知識を仮定せずに極力分かりやすく解説します。
+
+<h3><a href="20100325what-is-br.pdf">「belief revision アルゴリズムとは」(pdf)</a></h3>
+<p>
+脳の認識機構のモデルとして確率伝播アルゴリズムよりも有望な belief revision アルゴリズムについて解説します。
+
+
+<h3><a href="20090408norm.pdf">「総説論文「注意の正規化モデル」の紹介」(pdf)</a></h3>
+<p>
+注意に関する様々な電気生理学的実験データを統一的に説明するモデル[Reynolds and Heeger 2009]の紹介です。
+
+
+<h2>テクニカルレポート</h2>
+
+<ul>
+  <li>一杉裕志、「脳の情報処理原理の解明状況」<br>
+  産業技術総合研究所テクニカルレポート AIST07-J00012, Mar 2008.<br>
+    [ <a href="AIST07-J00012.pdf">AIST07-J00012.pdf</a> ]  </li>
+  <li>一杉裕志、「大脳皮質のアルゴリズムBESOM Ver.1.0」<br>
+  産業技術総合研究所テクニカルレポート AIST09-J00006, Sep 2009.<br>
+  [ <a href="AIST09-J00006.pdf">AIST09-J00006.pdf</a> ]</li>
+  <li>一杉裕志、「大脳皮質のアルゴリズムBESOM Ver.2.0」<br>
+    産業技術総合研究所テクニカルレポート AIST11-J00009, Sep 2011.<br>
+    [ <a href="AIST11-J00009.pdf">AIST11-J00009.pdf</a> ]</ul>
+    
+<h2>ダウンロード</h2>
+<p>
+    <a href="download.html">BESOM download のページ</a> <br>
+BESOM のソースコードとドキュメントを公開しています。    
+    
+    
+<h2>関連情報</h2>
+<ul>
+  <li>脳の情報処理原理の理解に必要な知識の良質な情報源を、独断で選んで紹介します。 <br>
+<a href="brain-memo.html">「脳を理解するための情報源メモ」</a>
+  <li>ＢＥＳＯＭモデルに関連する、研究者向けの情報発信をしていくブログです。<br>
+<a href="http://besom1.blog85.fc2.com/">ＢＥＳＯＭ（ビーソム）ブログ</a>
+  <li>調べたことや考えたことを、取り急ぎ、メモにまとめて順次公開しています。<br><a href="http://staff.aist.go.jp/y-ichisugi/rapid-memo/index.html">脳のアルゴリズムに関する取り急ぎメモ</a>
+
+</ul>
+ 
+
+
+
+
+</td></tr></table>
+<a href="http://staff.aist.go.jp/y-ichisugi/j-index.html">一杉裕志のページ</a><br>
+
+</table>
+</body>
+</html>

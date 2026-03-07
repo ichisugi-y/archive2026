@@ -1,0 +1,61 @@
+      Copyright notice and Licensing agreement for EPP
+
+Copyright 1997, 1998, 1999, 2000, 2001 Yuuji ICHISUGI
+
+This software is a property of Yuuji ICHISUGI and Agency of
+Industrial Science and Technology of Japan (AIST). The distribution of
+EPP is controlled by Yuuji ICHISUGI who is a researcher of
+Electrotechnical Laboratory of AIST.
+
+Permission to use, copy, modify and redistribution this software in
+whole and in part, for evaluation or research purposes and without fee
+is hereby granted provided this copyright notice accompanies any
+redistribution and under the following licensing conditions:
+
+What you can do:
+
+1) You can use, copy, modify and redistribute the whole or a part of
+   this software for research or 180 days evaluation purposes without fee.
+   If you use this software as a part of your commercial products,
+   please obtain commercial license (see below).
+
+What you must do:
+
+1) Provide this copyright notice if you use the whole or a part of
+   this software.
+2) The whole or a part of this software must be used for peaceful purposes.
+   Don't use it for military, weapons-related, defense-related, or 
+   anti-social activities.
+
+
+Other licensing conditions:
+
+1) This software is provided on an "AS IS" basis, without warranty
+   of any kind.  You must use this software at your risk.
+   Especially, this software is not fault-tolerant and is not designed
+   to operate for nuclear facilities, aircraft control, life support
+   systems and other high risk facilities.
+2) The author shall not be liable for any damages suffered by
+   you or others as a result of using, modifying or distributing this
+   software or its derivatives. One must use this software at one's own risk.
+3) Some APIs might be changed in future releases.
+4) The author has the right to change licensing condition in
+   future releases.
+5) The author owns copyright for original parts of derived works.
+   The author has the right to terminate the use of original parts in
+   derived works, if you or others infringe on the terms of this
+   license. On termination, you must be liable for any damages
+   resulting from the termination.
+6) This copyright and license agreement shall be governed by
+   the laws of Japan. A court related to this software is Tsuchiura
+   Chiho Saibansyo in Tsuchiura Japan or another court that the author
+   specify.
+
+Commercial License: 
+
+1) Commercial license will be available for use in commercial
+   products. Please contact to the author for more detail.
+
+
+If you have questions or requests about this license agreement, please
+send mail to the author.

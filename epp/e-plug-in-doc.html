@@ -1,0 +1,367 @@
+<HEAD>
+<html>
+<head>
+<title>EPP1.0 plug-ins</title>
+</head>
+<body>
+
+
+<h1>EPP1.0 plug-ins</h1>
+
+(Last update: 1998-02-22)
+<p>
+ This document explains plug-ins included in the EPP1.0 
+distribution package.
+<p>
+ Some explanations of plug-ins are followed by three links,
+"Plug-in source code", "Test program" and "Translated code".
+<ul>
+<li>"Plug-in source code" is the source code of the plug-in.<br>
+<li>"Test program" is a sample program which uses the plug-in.
+All method invocation of System.out.println will print true
+if the plug-in works correctly.<br>
+<li>"Translated code" is the result of translation with -readable option of EPP.
+</ul>
+
+<hr>
+<h3>Contents</h3><br>
+
+<h4>PRACTICAL PLUG-INS</h4>
+<UL>
+<LI> <a href="#AutoSplitFiles">AutoSplitFiles</a>
+Splits multiple public classes in one file to multiple files.
+<LI> <a href="#defmacro">defmacro</a>
+Macro definition with the same style as #define .
+<LI> <a href="#EmbedCopyright">EmbedCopyright</a>
+Embedding a message into all class files.
+<LI> <a href="#enum">enum</a>
+Constant integer definition.
+<LI> <a href="#OptParam">OptParam</a>
+Optional actual parameters.
+<LI> <a href="#UserOp">UserOp</a>
+Operators for user defined data types. 
+<LI> <a href="#Math">Math</a>
+Using java.lang.Math with easier way.
+<LI> <a href="#assert">assert</a>
+Assert macro.
+<LI> <a href="#noassert">noassert</a>
+Translates assert macros to null statemetns.
+</UL>
+<h4>Sample plug-ins for plug-in programmers</h4>
+(These are not included in epplib.jar of the EPP distribution package.)
+<UL>
+<LI> <a href="#SWAP">SWAP</a> SWAP macro.
+<LI> <a href="#CallByReference">CallByReference</a> Pseudo call by reference.
+<LI> <a href="#PComp">PComp</a> Python language style comparison operators.
+</UL>
+<h4>Plug-ins which is used for plug-in programming</h4>
+(These plug-ins can not be used for ordinary Java programs
+because they require runtime classes.)
+<UL>
+<LI> <a href="#SystemMixin">SystemMixin</a> Supporting programming-by-difference.
+<LI> <a href="#Symbol">Symbol</a> Same as lisp's symbols.
+<LI> <a href="#BackQuote">BackQuote</a> Same as lisp's back quote macro.
+<LI> <a href="#EppMacros">EppMacros</a> 
+Supporting definitions of non-terminals and binary operators.
+</UL>
+
+
+
+<hr>
+<h3> <a name="AutoSplitFiles"> AutoSplitFiles </a> </h3>
+If you incorporate this plug-in, 
+you can write multiple public classes in one file.
+EPP will split each classes into multiple files with adequate file names.
+Friendly classes (in other words, classes without "public" modifier),
+will be written in the file with the original file name.
+<p>
+Each line contained in each class will be emitted at the same line
+as in original file.
+For example, if two public classes A and C and a friendly class B
+are contained in a File.java, three files, File.java, A.java and B.java,
+will created under the directory eppout.
+Their contents will be as follows.
+
+<pre>
+ File.java          eppout/File.java  eppout/A.java    eppout/C.java
++--------------+    +--------------+ +--------------+ +--------------+ 
+|public class A|    |              | |public class A| |              | 
++--------------+    +--------------+ +--------------+ +--------------+ 
+|class B       | => |class B       | |              | |              | 
++--------------+    +--------------+ +--------------+ +--------------+ 
+|public class C|    |              | |              | |public class C| 
++--------------+    +--------------+ +--------------+ +--------------+ 
+</pre>
+
+When javac reports error during compilation of translated files,
+you can find the point of error by the reported class name and the line number.
+
+
+
+<hr>
+<h3> <a name="defmacro"> defmacro </a> </h3>
+By this plug-in,
+you can write macros with easy way as with #define of C pre-processor.
+<br>
+Examples:
+<pre>
+        defmacro max(a, b)  (a &gt b ? a : b)
+        defmacro swap(t, a, b) {t tmp; tmp = a; a = b; b = tmp;}
+</pre>
+Macro expansion pattern should begin with "(" or "{".
+If it starts with "(", it will be parsed as an expression.
+If it starts with "{", it will be parsed as a block.
+Unlike cpp,
+macro expansion is done for parsed trees.
+(Therefore, you can not extend the Java syntax with this macro.)
+<p>
+Macro definition part is restricted to a function call style.
+Unlike #define, defmacro can not be used for constant definitions.
+<pre>
+        defmacro  SIZE   1024            /* Not allowed. */
+</pre>
+Unlike #define,
+ you do not have to enclose parameters in expansion pattern
+with parentheses.
+<pre>
+        #define max(a, b)  ((a) &gt (b) ? (a) : (b))
+</pre>
+
+<br>
+<a href="plugins/src/defmacro/PlugIn.txt">Plug-in source code</a> / 
+<a href="plugins/src/test/Testdefmacro.txt">Test program</a> / 
+<a href="plugins/src/test/eppout/Testdefmacro.txt">Translated code</a>
+
+
+
+
+<hr>
+<h3> <a name="EmbedCopyright"> EmbedCopyright </a> </h3>
+This plug-in will embed message like "Copyright 1998 ..."
+into all class files.
+Before starting EPP,
+write a message in a file, Copyright.txt, under the current direcoty.
+Then, start EPP with this plug-in like this.
+
+<pre>
+        epp -plug-in EmbedCopyright *.java
+</pre>
+The contents of Copyright.txt  will be embedded 
+in all classes as initial values of static fields.
+
+<br>
+<a href="plugins/src/EmbedCopyright/PlugIn.txt">Plug-in source code</a> / 
+<a href="plugins/src/test/TestEmbedCopyright.txt">Test program</a> / 
+<a href="plugins/src/test/eppout/TestEmbedCopyright.txt">Translated code</a>
+
+
+<hr>
+<h3> <a name="enum"> enum </a> </h3>
+With plug-in, you can easily define continuous integer constants.
+<br>
+<a href="plugins/src/enum/PlugIn.txt">Plug-in source code</a> / 
+<a href="plugins/src/test/Testenum.txt">Test program</a> / 
+<a href="plugins/src/test/eppout/Testenum.txt">Translated code</a>
+
+
+<hr>
+<h3> <a name="OptParam"> OptParam </a> </h3>
+This plug-in enables you to define methods with optional parameters
+like C++.
+<br>
+<a href="plugins/src/OptParam/PlugIn.txt">Plug-in source code</a> / 
+<a href="plugins/src/test/TestOptParam.txt">Test program</a> / 
+<a href="plugins/src/test/eppout/TestOptParam.txt">Translated code</a>
+
+
+<hr>
+<h3> <a name="UserOp"> UserOp </a> </h3>
+With this plug-in you can use binary operators for
+user defined classes.
+The syntax of users operators resembles the 
+Mr. Nik Shaylor's jpp (http://www.digiserve.com/nshaylor).
+Binry operators listed below enclosed by parentheses will be
+expanded into method invocation expressions.
+The precedence of each operators are the same as their original operators.
+
+<pre>
+       a (+)  b     a.plus(b)   
+       a (-)  b     a.minus(b)
+       a (*)  b     a.times(b)
+       a (/)  b     a.divide(b)
+       a (%)  b     a.modulus(b)
+       a (<<) b     a.leftShift(b)
+       a (>>) b     a.rightShift(b)
+       a (>>>) b    a.unsignedRightShift(b)
+       a (==) b     a.equals(b)
+       a (!=) b    !a.equals(b)
+       a (&lt)  b     a.lessThan(b)
+       a (&gt)  b     a.greaterThan(b)
+       a (&lt=) b    !a.greaterThan(b)
+       a (&gt=) b    !a.lessThan(b)
+       a (&) b      a.and(b)
+       a (|) b      a.or(b)
+       a (^) b      a.not(b)
+</pre>
+ The implementation of this plug-in is a good example
+which extends lexical analyzer of EPP.
+
+<br>
+<a href="plugins/src/UserOp/PlugIn.txt">Plug-in source code</a> / 
+<a href="plugins/src/test/TestUserOp.txt">Test program</a> / 
+<a href="plugins/src/test/eppout/TestUserOp.txt">Translated code</a>
+
+
+
+<hr>
+<h3> <a name="Math"> Math </a> </h3>
+With plug-in, you can use static methods of class java.lang.Math
+as if they are global funcitons.
+For example, you can write "sin(x)" instead of "Math.sin(x)" .
+<br>
+<a href="plugins/src/Math/PlugIn.txt">Plug-in source code</a> / 
+<a href="plugins/src/test/TestMath.txt">Test program</a> / 
+<a href="plugins/src/test/eppout/TestMath.txt">Translated code</a>
+
+
+
+<hr>
+<h3> <a name="assert"> assert </a> </h3>
+This plug-in provides an assert macro.
+If the result of conditional expression of the assert macro
+is false, the file name and line number where the assert macro is written
+will be printed to "System.err" and a instance of class Error will be thrown.
+In order to expand assert macros into empty-statements,
+use the noassert plug-in.
+<br>
+<a href="plugins/src/assert/PlugIn.txt">Plug-in source code</a> / 
+<a href="plugins/src/test/Testassert.txt">Test program</a> / 
+<a href="plugins/src/test/eppout/Testassert.txt">Translated code</a>
+
+
+<hr>
+<h3> <a name="noassert"> noassert </a> </h3>
+This plug-in translates assert macros into empty-statements.
+The typical use of this plug-in will be as follows.
+<pre>
+        epp -plug-in noassert File1.java File2.java ...
+</pre>
+By adding noassert plug-in as a command line option of EPP,
+the function of assert plug-in will be overridden.
+
+<br>
+<a href="plugins/src/noassert/PlugIn.txt">Plug-in source code</a> / 
+<a href="plugins/src/test/Testnoassert.txt">Test program</a> / 
+<a href="plugins/src/test/eppout/Testnoassert.txt">Translated code</a>
+
+
+
+
+
+
+<hr>
+<h3> <a name="SWAP"> SWAP </a> </h3>
+This plug-in provides a SWAP macro.
+This is the simplest example of plug-in implementation.
+<br>
+<a href="plugins/sample/SWAP/PlugIn.txt">Plug-in source code</a> / 
+<a href="plugins/sample/test/TestSWAP.txt">Test program</a> / 
+<a href="plugins/sample/test/eppout/TestSWAP.txt">Translated code</a>
+
+
+<hr>
+<h3> <a name="CallByReference"> CallByReference </a> </h3>
+This plug-in adds a feature of "pseudo call by reference".
+The caller of methods can specify a variable with a prefix unary operator &amp.
+The callee should declare the parameter as an array type.
+In order to assign a value to the parameter,
+the callee should execute an assignment like "x[0] = value" .
+<p>
+In the current implementation, actual parameters which can be 
+specified with &amp is restricted to variables with int type.
+(Because current EPP does not treat type infomation at all.)
+
+<br>
+<a href="plugins/sample/CallByReference/PlugIn.txt">Plug-in source code</a> / 
+<a href="plugins/sample/test/TestCallByReference.txt">Test program</a> / 
+<a href="plugins/sample/test/eppout/TestCallByReference.txt">Translated code</a>
+
+
+
+
+<hr>
+<h3> <a name="PComp"> PComp </a> </h3>
+This plug-in changes the syntax of comparison operators
+to the Python langauges's one.
+Using this plug-in, you can write
+<pre>
+        if (0 &lt= x &lt max) ...;
+</pre>
+instead of the following.
+<pre>
+        if (0 &lt= x &amp&amp x &lt max) ...;
+</pre>
+<p>
+The other plug-ins extends the Java language,
+however, this plug-in replaces a part of original grammar rules of Java.
+(At the top of source code of this plug-in,
+there are codes which remove standard Java parser system mixins.)
+<p>
+This plug-in restricts the arguments of comparison operators
+to integer type expressions.
+<br>
+<a href="plugins/sample/PComp/PComp.txt">Plug-in source code</a> / 
+<a href="plugins/sample/test/TestPComp.txt">Test program</a> / 
+<a href="plugins/sample/test/eppout/TestPComp.txt">Translated code</a>
+
+
+
+
+
+<hr>
+<h3> <a name="SystemMixin"> SystemMixin </a> </h3>
+This plug-in is for plug-in programmers.<br>
+This plug-in adds system mixin feature, that encourages
+modularization of programs.
+
+<hr>
+<h3> <a name="Symbol"> Symbol </a> </h3>
+This plug-in is for plug-in programmers.<br>
+With this plug-in, you can use symbols, 
+that is the characteristic data type in the lisp language.
+Symbols is written as colomn followed by a identifier or a string,
+such as :foo or :"+".
+
+<hr>
+<h3> <a name="BackQuote">  </a>BackQuote</h3>
+This plug-in is for plug-in programmers.<br>
+This plug-in introduce a useful feature of Lisp into Java,
+backquote macro feature.
+Using backquote macro, the programmer can easily embed 
+abstract syntax trees in the plug-in source code.
+<p>
+The following code is an example of backquote macro 
+used in the Math plug-in.
+<pre>
+    Tree fname = tree.args()[0];
+    return `(invokeLong
+             (name (id java) (id lang) (id Math))
+             ,fname
+             (argumentList ,@args));
+</pre>
+
+
+<hr>
+<h3> <a name="EppMacros"> EppMacros </a> </h3>
+This plug-in is for plug-in programmers.<br>
+This plug-in provides the following two macros which 
+define a non-terminal symbol and a binary operator respectively.
+<pre>
+        defineNonTerminal(NonTerminalName, DefaultValue);
+        defineBinaryOperator(SystemMixinNAME, Token, PRECEDENCE);
+</pre>
+
+
+<hr>
+<A HREF="http://www.etl.go.jp/~epp">
+        To Home Page of EPP</A>

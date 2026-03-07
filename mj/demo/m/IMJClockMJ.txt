@@ -1,0 +1,248 @@
+//IMJdemoMJ.java
+
+module mj.demo.base
+imports com.nttdocomo.ui.*
+{
+
+    define
+    class IMJdemo extends IApplication{
+	public void start() {
+	    PhoneSystem.setAttribute(0,1); 
+	    EventCanvas c = new EventCanvas();
+	    c.init();
+	    c.start();
+	    Display.setCurrent(c);
+	    c.setSoftLabel(Frame.SOFT_KEY_1,"End");
+	}
+    }
+
+    define
+    class EventCanvas extends Canvas implements Runnable{
+	int height,width;
+	Thread thread=null;
+
+	define    
+	void init(){
+	    height=this.getHeight();
+	    width=this.getWidth();
+	    
+	    
+	}
+
+	define
+	void start(){
+	    if(thread==null){
+		thread = new Thread(this);
+		thread.start();
+	    }
+	}
+	    
+	define
+	void draw(Graphics gra){
+	}
+
+	define
+	void draw(Graphics gra,int itg){
+	}
+
+	void paint(Graphics gra){
+	    gra.lock();
+	    gra.setColor(gra.getColorOfRGB(255,255,255));
+	    gra.fillRect(0,0,width,height);
+	    for(int itg=9;itg>=0;itg--){
+		this.draw(gra,itg);
+	    }
+	    this.draw(gra);
+	    gra.unlock(true);
+	}
+	
+	void processEvent(int nType,int nParm) {
+	    if(nType == Display.KEY_PRESSED_EVENT && nParm==Display.KEY_SOFT1) {
+	        IApplication.getCurrentApp().terminate();   
+	    }
+	}
+
+	define
+	void lexec(){
+	    try {
+		    Thread.sleep(200);
+	    } catch(InterruptedException e) { }
+	}
+	
+	void run(){
+	    while(true) {
+		this.lexec();
+	    }
+	}
+    }
+}
+
+module mj.demo.cup extends mj.demo.base
+{
+    class EventCanvas{
+
+	int[] x=new int[10];
+	int[] y=new int[10];
+	
+	void init(){
+	    original();
+	    
+	    x[0]=width/2-5;
+	    y[0]=height/2-5;
+	    for(int itg=1;itg<10;itg++){
+        	x[itg]=-width/2+5;
+        	y[itg]=-height/2+5;
+	    }
+	}
+	
+	void draw(Graphics gra,int itg){
+	    original(gra,itg);
+
+	    int jtg=27*itg;
+	    gra.setColor(gra.getColorOfRGB(jtg,jtg,255));
+	    gra.fillPolygon(new int[]{x[itg],x[itg]+20,x[itg]+16,x[itg]+4},
+			    new int[]{y[itg],y[itg],y[itg]+20,y[itg]+20},4);
+	    gra.drawRect(x[itg]+13,y[itg],10,10);
+	}
+
+	define
+	void shift(int itg){
+	}
+
+	void lexec(){
+	    original();
+	    
+	    int v=x[0];
+	    int w=y[0];	    
+	    
+	    for(int itg=8;itg>=0;itg--){
+		this.shift(itg);
+	    }	    
+	    
+	    int nKeyState = this.getKeypadState();
+	    if((nKeyState & (1 << Display.KEY_DOWN)) != 0) y[0]+=20;
+	    if((nKeyState & (1 << Display.KEY_UP)) != 0) y[0]-=20;
+	    if((nKeyState & (1 << Display.KEY_RIGHT)) != 0) x[0]+=20;
+	    if((nKeyState & (1 << Display.KEY_LEFT)) != 0) x[0]-=20;
+	    
+	    if(x[0]<0||x[0]+20>=width||y[0]<0||y[0]+20>=height){
+		x[0]=v;
+		y[0]=w;
+	    }
+	    
+	    this.repaint();
+	}
+    }
+}
+
+module mj.demo.multi extends mj.demo.cup
+{
+    class EventCanvas{
+	void init(){
+	    original();
+	    for(int itg=1;itg<10;itg++){
+        	x[itg]=width/2-5;
+        	y[itg]=height/2-5;
+	    }
+	}
+
+	void shift(int itg){
+	    original(itg);
+	    x[itg+1]=x[itg];
+	    y[itg+1]=y[itg];
+	}
+    }
+}
+
+module mj.demo.vapor extends mj.demo.cup
+{
+    class EventCanvas{
+	int param=0;
+	int[] m=new int[10];
+	int[] n=new int[10];
+	int[] inten=new int[10];
+	int[] wave=new int[10];
+	int[] grad=null;
+
+	void init(){
+	    original();
+
+	    for(int itg=0;itg<10;itg++){
+        	m[itg]=width/2-5;
+        	n[itg]=height/2-5;
+	    }
+	    
+	    grad=new int[]{0,38,71,92,100,92,71,38,0,-38,-71,-92,-100,-92,-71,-38};
+	    
+	}
+
+	void draw(Graphics gra,int itg){
+	    gra.setColor(gra.getColorOfRGB(255,inten[itg],inten[itg]));
+	    gra.fillRect(m[itg],n[itg],wave[itg],2);
+	    original(gra,itg);
+	}
+
+	void shift(int itg){
+	    original(itg);
+
+	    m[itg+1]=m[itg];
+	    if(n[itg]<5){
+		n[itg+1]=n[itg];
+	    }else{
+		n[itg+1]=n[itg]-2;
+	    }	
+	}
+
+	void lexec(){
+	    original();
+	    
+	    for(int itg=0;itg<10;itg++){
+		inten[9-itg]=itg*250*grad[(param+itg)%16]/2000+255*(18-itg)/18;
+		wave[9-itg]=-20*grad[(param+itg)%16]/250+10;
+	    }
+
+	    m[0]=x[0]+(20-wave[0])/2;
+	    if(n[0]<5){
+		n[0]=y[0];
+	    }else{
+		n[0]=y[0]-2;
+	    }
+
+	    param=(++param)%16;
+	}
+    }
+}
+
+module mj.demo.time extends mj.demo.cup imports java.util.*
+{
+    class EventCanvas{
+	long lg=0;
+	String date="";
+	String[] time=new String[3];
+
+	void draw(Graphics gra){
+	    original(gra);
+	    gra.setColor(gra.getColorOfRGB(0,0,0));
+	    //	    gra.fillRect(0,0,80,20);
+	    //	    gra.setColor(gra.getColorOfRGB(255,255,255));
+	    gra.drawString(date,5,15);
+	}
+
+	void lexec(){
+	    original();
+	    lg=(new Date().getTime())/1000;
+	    time[0]=new Integer(((int)(lg/3600)+9)%24).toString();
+	    time[1]=new Integer(((int)(lg/60))%60).toString();
+	    time[2]=new Integer((int)(lg%60)).toString();
+	    for(int itg=0;itg<3;itg++){
+		int jtg=time[itg].length();
+		if(jtg==1){
+		    time[itg]=0+time[itg];
+		}
+	    }
+
+	    date=time[0]+":"+time[1]+":"+time[2]+" JST";
+
+	}
+    }
+}

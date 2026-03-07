@@ -1,0 +1,19 @@
+#epp "assert"
+
+class Testassert {
+  public static void main(String args[]){
+    int a = 2;
+
+    System.out.println(div(10, 2) == 5);
+
+    try {
+      div(10, 0);
+    } catch (Error e){
+    }
+  }
+
+  static int div(int x, int y){
+    assert(y != 0);
+    return x / y;
+  }
+}

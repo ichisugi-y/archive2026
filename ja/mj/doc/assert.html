@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<link rel="stylesheet" type="text/css" href="./style.css">
+<title> assert2 plug-in </title>
+</head> <body>
+<div class="header-link">
+[<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
+[<a href="index.html">Document index</a>]
+</div>
+<h1> assert2 plug-in</h1>
+<ul class="headers">
+</p></ul><p>
+</p><p>
+JDK1.4 の assert 文をプリプロセッサでエミュレートする assert2 plug-in が、
+標準で mjc コマンドに組み込まれています。
+</p><p>
+この assert 文は、引数の条件式が false だった場合は、
+標準エラー出力に assert マクロの位置の情報を出力した後、
+ java.lang.Error を throw します。
+</p><p>
+assert 文には１引数のものと２引数のものがあります。
+</p><p>
+<pre>
+        Statement:
+                assert exp;
+                assert exp : exp;
+</pre>
+</p><p>
+１引数の assert 文は、 exp が比較演算子である場合、
+両辺の値をメッセージに出してくれます。例えば、
+</p><p>
+<pre>
+      double d = 10;
+      assert(d / 2 &gt; d + 2);
+</pre>
+</p><p>
+を実行すると、次のようなエラーメッセージが出ます。
+</p><p>
+<pre>
+java.lang.Error: Assertion failed : (5.0 &gt; 12.0) is not true.
+</pre>
+</p><p>
+２引数の assert 文は、２つめの引数をメッセージに使います。
+２つめの引数は、１つめの引数が false であった時のみ評価されます。
+例えば、
+</p><p>
+<pre>
+    int y = 0;
+    assert y != 0 : "Zero divide.";
+</pre>
+</p><p>
+を実行すると、次のようなエラーメッセージが出ます。
+</p><p>
+<pre>
+java.lang.Error: Assertion failed : Zero divide.
+</pre>
+</p><p>
+コンパイル時に NDEBUG という property の値を true にすることで、
+assert マクロを空文に展開するようにできます。例：
+</p><p>
+<pre>
+ mjc -J-DNDEBUG=true Tutorial.java 
+Preprocessing phase.
+Compiling phase.
+Done.
+% mj t.assert
+assert test.
+</pre>
+</p><hr>
+<table width="100%"> <tr><td>
+<img src="images/img002.gif" alt="mj-logo">
+</td><td>
+<div class="last-update"> Last updated: 
+ Dec 19 17:30:14 2001
+</div>
+<div class="header-link">
+[<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
+[<a href="index.html">Document index</a>]
+</div>
+</td></table>
+</body></html>

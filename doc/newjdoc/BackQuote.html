@@ -1,0 +1,115 @@
+<html>
+<head>
+<title>BackQuote plug-in users manual</title>
+ <meta charset="UTF-8">
+</head>
+<body bgcolor="#FFFFFF">
+<a href="index.html"> Index </a>
+<hr>
+<img src="gif/epp-logo-small.gif" align=right><br>
+<h1>BackQuote plug-in users manual</h1>
+<hr>
+
+
+
+ lisp が持つ backquote macro の機能が、 plug-in として提供されています。
+これによって、抽象構文木を見やすい形でソースコード中に
+埋め込むことができます。
+
+ 例えば、
+<pre>
+	Tree t = `(+ (id x) (id y));
+</pre>
+は、次のコードと同じです。
+<pre>
+	Tree t = new Tree(:+, new Identifier(:x), new Identifier(:y));
+</pre>
+
+
+ tree.print() で出力した結果は、
+そのままカットアンドペーストして、バッククォート "`" のうしろに
+書くことで、ソースコード中に埋め込めます。
+（入力ミスなどを防ぐためにもカットアンドペーストでの入力をお勧めします。）
+
+<p>
+ lisp の backquote macro と同様に、 コンマ "," や 
+コンマ・アットマーク ",@" が使えます。
+"," は、その後ろに続く Java の式の値を評価した結果を tree に埋め込みます。
+",@" は、その後ろに続く Java の式の値を評価した結果を Tree の配列と見なして
+ tree に埋め込みます。
+
+例えば、
+<pre>
+	Tree t = `(+ (id x) ,val);
+</pre>
+は、次のコードと同じです。
+<pre>
+	Tree t = new Tree(:+, new Identifier(:x), val);
+</pre>
+ また、
+<pre>
+	Tree[] sa = { s2, s3, s4,};
+	Tree t = `(block ,s0 ,s1 ,@sa ,s5 ,s6);
+</pre>
+は、
+<pre>
+	Tree t = new Tree(:block, s0, s1, s2, s3, s4, s5, s6);
+</pre>
+と同じです。
+<p>
+ "," のうしろに続く式の型は Tree 、
+ ",@" のうしろに続く式の型は Tree[] または TreeVec でなければなりません。
+
+<p>
+ 文法上気をつけなければならない重要な点が１つあります。
+"," および ",@" の直後が変数名でない場合、すなわち複雑な式が来る場合は、
+それをかっこで囲まなければなりません。例えば、
+<pre>
+	`(= ,var ,val)
+</pre>
+は正しいですが、
+<pre>
+	`(= ,getVar() ,getVal())
+</pre>
+は、意図された通りに構文解析されません。
+<pre>
+	`(= ,(getVar()) ,(getVal()))
+</pre>
+のように書く必要があります。
+
+<p>
+なお、今のバージョンでは、次のような式は、許されません。
+<pre>
+	`(,tag ,arg1 ,arg2)
+	`(id ,name)
+	`(literalTree ,literalTag ,literalContents)
+</pre>
+次のような Java の式を使う必要があります。
+<pre>
+	new Tree(tag, arg1, arg2)
+	new Identifier(name)
+	new LiteralTree(literalTag, literalContents)
+</pre>
+
+
+<hr>
+<h2> Java シンタックスを用いたコード埋め込み</h2>
+
+ 将来、Ｓ式を使ったコード埋め込みよりも
+もっと読みやすい形で書けるようにする plug-in を提供する予定です。
+例えば、
+<pre>
+	Tree t = `(+ (* (id x) (id y)) (literalTree int "1"));
+</pre>
+ではなくて、
+<pre>
+	Tree t = CODE:E{ x * y + 1 };
+</pre>
+のように書けるようにする予定です。
+
+
+<hr>
+<a href="index.html"> Index </a>
+<img src="gif/epp-logo-small.gif" align=right><br>
+</body>
+</html>

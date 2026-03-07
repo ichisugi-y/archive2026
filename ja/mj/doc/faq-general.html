@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<link rel="stylesheet" type="text/css" href="./style.css">
+<title> 一般的な質問 </title>
+</head> <body>
+<div class="header-link">
+[<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
+[<a href="index.html">Document index</a>]
+</div>
+<h1>一般的な質問</h1>
+<ul class="headers">
+<li><a href="#mj-meaning">MJ の意味は？</a>
+<li><a href="#speed">実行速度は？</a>
+<li><a href="#speed">コンパイル速度（mjc の速度）が遅いのですが。</a>
+<li><a href="#license">ラインセンスは？</a>
+<li><a href="#suffix">なんでソースファイルの suffix が .mj とかではなく .java なの？</a>
+<li><a href="#collection-plugin"> 普通の Java + Collection plug-in として使いたいのですが。</a>
+<li><a href="#new-language3">Java が業界標準としての地位を築いているので、 Java をちょっと変えただけの言語が普及する余地はないのでは。</a>
+<li><a href="#application">アプリケーションはあるのでしょうか？</a>
+<li><a href="#results">実際にこの言語で書くと拡張性の高いアプリケーションが書けたという実績はあるのでしょうか？</a>
+<li><a href="#design-pattern"> MJ ならではのデザインパターンというものはないのですか？</a>
+</p></ul><p>
+</p><p>
+</p><h2><a name="mj-meaning">MJ の意味は？</a></h2><p>
+</p><p>
+MJ は、 Modular Java または Mixin-Layers Java の略です。
+飲物の名前ということで、 MixJuice の略でもある、ということにしています。
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="speed">実行速度は？</a></h2><p>
+</p><p>
+原理的には、普通の Java と同じ速度で動くはずです。
+MJ の実行時のモデルは Java と完全に同一ですから。
+しかし、現在の実装では、実装上の都合により、
+byte code 中に本来不要なキャストが残っています。
+これが原因で、メソッド呼び出しのコストが 50% くらい増えることがあります。
+この「余分なキャスト」は簡単に取り除くことができるので、
+将来のバージョンでは、オーバーヘッドはなくなると思います。
+</p><p>
+</p><h2><a name="speed">コンパイル速度（mjc の速度）が遅いのですが。</a></h2><p>
+</p><p>
+1GHz PentiumIII では、 1000 行のソースをコンパイルするのに
+５〜１５秒ほどかかるようです。
+</p><p>
+</p><p>
+一般に、 java, javac が日本語のエラーメッセージを出すような
+環境になっている場合、 java, javac の起動が遅いらしいです。
+ unsetenv LANG しておきましょう。
+</p><p>
+Java コンパイラのフェーズを速くするには、 jikes を使うのがお勧めです。
+</p><p>
+なお、将来的には EPP 2.0 を使って mjc を作り直すので、
+mjc の速度は倍以上は速くなると思います。
+</p><p>
+</p><p>
+</p><h2><a name="license">ラインセンスは？</a></h2><p>
+</p><p>
+非営利目的・評価目的ならば無料です。<br>
+将来的には、営利目的でも無料にできるかもしれません。
+</p><p>
+</p><p>
+</p><h2><a name="suffix">なんでソースファイルの suffix が .mj とかではなく .java なの？</a></h2><p>
+</p><p>
+EPP から見れば、 MJ という言語は Java 言語を拡張するための mjc plug-in という
+１つの plug-in にすぎないからです。
+suffix が .java になっているおかげで、 emacs の設定をまったくいじらなくても、
+ソースファイルを java-mode で編集することができます。
+</p><p>
+</p><h2><a name="collection-plugin"> 普通の Java + Collection plug-in として使いたいのですが。</a></h2><p>
+</p><p>
+最新版 EPP には Collection plug-in をライブラリとして入れる予定なので、
+EPP をインストールすれば使えます。
+ただし、 EPP 1.1 は分割コンパイルを完全にサポートしていないし、
+変換速度が遅いので、
+あまり実用にはならないと思います。
+EPP 2.0 まで待ってください。
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="new-language3">Java が業界標準としての地位を築いているので、 Java をちょっと変えただけの言語が普及する余地はないのでは。</a></h2><p>
+</p><p>
+これだけ普及している Java 言語を今すぐ置き換えるのは私も不可能だと思います。
+社会環境が変化し、 Java 言語に代わる新しいプログラミング言語の出現が
+必要とされたときに、 MJ の差分ベースモジュールが新しい言語に
+採用されることを望んでいます。
+</p><p>
+</p><p>
+</p><h2><a name="application">アプリケーションはあるのでしょうか？</a></h2><p>
+</p><p>
+とりあえず EPP 2.0 を MJ で書こうと思っています。
+MJ は、拡張性の高いアプリケーションの記述に
+特に向いていると思います。
+例えばメイリングリスト配信ツール、 web サーバー、エディタなどが
+考えられます。
+</p><p>
+</p><p>
+</p><h2><a name="results">実際にこの言語で書くと拡張性の高いアプリケーションが書けたという実績はあるのでしょうか？</a></h2><p>
+</p><p>
+MJ 自体では、まだ大きなアプリケーションはありませんが、
+MJ と同じ「差分＝モジュール」というスタイルを持つプログラミング言語で、
+すでに大きなアプリケーションを書いています。
+MJ の前身である Ld-2 という言語を用いたもので、
+Common Lisp 版 Ld-2 で記述した拡張可能コンパイラと、
+ Java 版 Ld-2 で記述した EPP1.1 があります。
+これらのソースコードは合わせて３万行近くになります。
+これらの経験から、「差分＝モジュール」というスタイルが
+非常に優れていることを実感しています。
+</p><p>
+Java で書かれた１万行の HTTP server を MJ で書き直しました。
+この論文を参照してください。<br>
+田中哲、一杉裕志：<br>
+「プログラミング言語 MixJuice による HTTP server のモジュール化」<br>
+<a href="http://www.fun.ac.jp/jssst2001/">ソフトウエア科学会第１８回大会</a>, Sep. 2001.
+<A HREF="http://staff.aist.go.jp/y-ichisugi/mj/papers/mj-jssst2001.pdf">mj-jssst2001.pdf</A>
+</p><p>
+また、 Mixin Layers のグループも C++ の template を使って
+差分を再利用の単位としたアプリケーション構築の有用性を主張しています。
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="design-pattern"> MJ ならではのデザインパターンというものはないのですか？</a></h2><p>
+</p><p>
+あります。 MJ で拡張性の高いアプリケーションを記述すると、
+いくつかの決まったパターンが違う場所に何度も現れることがあります。
+例えば、 if-then-else による条件分岐を別のメソッドに分けることで、
+条件分岐節を後から追加できるようにするのもパターンの１つです。
+</p><p>
+GoF が大量のソースコードを調べてパターンを抽出して整理したように、
+MJ のパターンを整理するにはまだ時間がかかります。
+まずは、大量のアプリケーションを書かなければなりません。
+</p><hr>
+<table width="100%"> <tr><td>
+<img src="images/img002.gif" alt="mj-logo">
+</td><td>
+<div class="last-update"> Last updated: 
+ Aug 27 11:47:08 2002
+</div>
+<div class="header-link">
+[<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
+[<a href="index.html">Document index</a>]
+</div>
+</td></table>
+</body></html>

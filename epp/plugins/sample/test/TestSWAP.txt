@@ -1,0 +1,10 @@
+#epp "SWAP"
+
+class TestSWAP {
+  public static void main(String argv[]){
+    int a = 1, b = 2;
+    System.out.println(a == 1 && b == 2);
+    SWAP(int, a, b);
+    System.out.println(a == 2 && b == 1);
+  }
+}

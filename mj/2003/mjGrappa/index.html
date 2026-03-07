@@ -1,0 +1,2363 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML>
+<HEAD>
+<TITLE>Porting Grappa to MixJuice</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=euc-jp">
+<LINK href="style.css" type="text/css" rel="stylesheet">
+</HEAD>
+<BODY>
+<H1 id=AEN2>Porting Grappa to MixJuice</H1>
+<div align="right" style="font-size:small">
+<a href="index_ja.html">[ Japanese page ]</a>
+</div>
+<H3 id=AEN6>National Institute of Advanced Industrial Science and Technology (AIST)</H3>
+<!--<SPAN class=releaseinfo>$Revision: 1.12 $<BR></SPAN>-->
+<HR>
+<DIV class=TOC>
+<DL>
+  <DT><B>Table of Contents</B>
+  <DT><A href="#preface">Preface</A>
+  <DD>
+  <DL>
+    <DT><A href="#whyGrappa">Choice of the Target Java Program</A></DT></DL>
+  <DT><A href="#porting">Porting</A>
+  <DD>
+  <DL>
+    <DT><A
+    href="#gettingGrappa">Getting Grappa</A>
+    <DT><A
+    href="#grappaOverview">Overview of Grappa</A>
+    <DT><A
+    href="#portingStrategy">Porting Strategy</A>
+    <DT><A
+    href="#refactorJava">Refactoring at the stage of Java</A>
+    <DD>
+    <DL>
+      <DT><A
+      href="#eliminateStatics">Move Static Fields/Methods to Another Class</A>
+      <DT><A
+      href="#eliminateInnerClass">Inner Class to Ordinary Class</A>
+      <DT><A
+      href="#prepModDiv">Trial of Change Preparing for Module Division</A>
+      <DT><A
+      href="#splitInterfaces">Classification of Constants</A>
+      <DT><A
+      href="#powerOfIDE">Benefit of Using IDE for Refactoring</A></DT></DL>
+    <DT><A
+    href="#portingToMJ">Porting to MixJuice</A>
+    <DD>
+    <DL>
+      <DT><A
+      href="#interfaceNimpl">Specification Modules and Implementation Modules</A>
+      <DT><A
+      href="#problemOnWindows">Problem of Compilation on Windows</A>
+      <DT><A
+      href="#longFlatCode">Problem of Long Flat Block</A>
+      <DT><A
+      href="#ignoresThrows">Invalidation of throws Clause of Original Method</A>
+      <DT><A
+      href="#implementingJavaInterface">Note on Disability to Implement Java Interfaces on MixJuice</A>
+      <DT><A
+      href="#nullPtr">NullPointerException of Unknown Reason</A>
+      <DT><A
+      href="#dollar">The Classes with $ in Their Names</A>
+      <DT><A
+      href="#dependency">Note on Module Dependency</A>
+      <DT><A
+      href="#moduleName">Java Package Name and MixJuice Module Name</A>
+      <DT><A
+      href="#inconsistentFQNNotation">Resolution of Ambiguous Names</A>
+      <DT><A
+      href="#implementsLower">Addition of Interfaces in Submodules</A>
+      <DT><A
+      href="#dupClass">Duplicated Definition of a Class</A>
+      <DT><A
+      href="#staticInitOrder">java.lang.ExceptionInInitializerError at Execution Time</A>
+      <DT><A
+      href="#errMsg">Typical Error Messages</A></DT></DL>
+    <DT><A
+    href="#MJRefactor">Refactoring on MixJuice</A>
+    <DD>
+    <DL>
+      <DT><A
+      href="#extractDump">Separation of Dump Function</A>
+      <DT><A
+      href="#AEN272">Separation/Integration of Modules</A>
+      <DT><A
+      href="#AEN292">Module of Constants</A>
+      <DT><A
+      href="#AEN303">Large Utility Class</A>
+      <DT><A
+      href="#makeItMVC">Support for MVC Implementation by Module Mechanism</A>
+      <DT><A
+      href="#AEN323">Separation of Specification Modules and Implementation Modules</A></DT>
+      <DT><A
+      href="#refactorProcess">Refactoring Process</A></DT></DL></DD></DL>
+  <DT><A
+  href="#howToBuild">How To Run the Ported Program</A>
+  <DD>
+  <DL>
+    <DT><A
+    href="#expand">Expanding Source</A>
+    <DT><A
+    href="#build">How to Build</A>
+    <DT><A
+    href="#howToRun">How to Run</A>
+    <DT><A
+    href="#restriction">Restriction</A></DT></DL>
+  <DT><A
+  href="#conclusion">Discussion</A>
+  <DD>
+  <DL>
+    <DT><A
+    href="#AEN446">Is it possible to divide the code into reusable units?</A>
+    <DT><A
+    href="#AEN476">Is it possible to divide the code into units easy to maintain?</A>
+    <DT><A
+    href="#AEN513">Is it possible to divide the code into units easy to hide information? </A>
+    <DT><A
+    href="#AEN521">Is it possible to divide the code into functional units?</A>
+    <DT><A
+    href="#AEN569">Is it possible to divide into the unit suitable for separate compilation? </A>
+    <DT><A
+    href="#AEN580">Is it possible to divide into units according to the division of work?</A></DT>
+  </DL></DD>
+</DL>
+</DIV>
+<DIV class=chapter>
+<HR>
+
+<H2><A name=preface></A>Preface</H2>
+<P>
+This document provides the knowledge obtained by porting a rather large Java program
+to MixJuice (the program has about 20 thousands lines including comments,
+10 thousands lines excluding comment).
+The aim of the task and the document is to validate whether
+the new module mechanism of MixJuice, namely difference-based modules,
+works well with a rather large programming development or not,
+from the following view points:
+</P>
+<UL>
+  <LI>
+Is it possible to divide the code into reusable units?
+  </li>
+  <LI>
+Is it possible to divide the code into units easy to maintain?
+  </li>
+  <LI>
+Is it possible to divide the code into units easy to hide information?
+  </li>
+  <LI>
+Is it possible to divide the code into functional units?
+  </li>
+  <LI>
+Is it possible to divide the code into units suitable for separate compilation?
+  </li>
+  <LI>
+Is it possible to make a module as the unit of task division?
+  </li>
+</UL>
+<p>
+The porting task will be done in two phases.
+The first phase will be devoted to porting to MixJuice,
+afterwards refactoring and extension with difference-based modules will take their place
+to make code be more MixJuice flavored in the second phase.
+As a result, the aims stated above will be clear in the second phase.
+</P>
+<DIV class=section>
+<HR>
+
+<H2 class=section><A name=whyGrappa></A>
+Choice of the Target Java Program
+</H2>
+<P>
+The following conditions are required for the target Java program to be ported to MixJuice:
+</P>
+<UL>
+  <LI>
+The Java program must have the publicly available source code.
+</li>
+  <LI>
+The modification of code and publishing it must be allowed.
+</li
+  <LI>
+The size of the source code must be about 10 thousands lines.
+</LI>
+</UL>
+<p>
+As an open source program satisfying conditions above,
+a Java library
+<A
+href="http://www.research.att.com/~john/Grappa/" target=_top>Grappa</A>(<A
+href="http://www.research.att.com/sw/tools/graphviz/license/index.html"
+target=_top>license</A>)
+to make graphs
+(not graphs visualizing numerical values but graphs in graph theory)
+is chosen.
+Some of the reasons of the choice are listed below:
+</P>
+<UL>
+  <LI>
+The size of code excluding comments matches the condition above.</li>
+  <LI>
+The characteristic of difference-based module seems applicable to
+the addition of forms of nodes and edges, the addition of UI (user interface) behavior, etc..
+</li>
+  <LI>
+The effect of module addition is visually recognizable.</li>
+  <LI>
+Grappa itself seems usable to visualize the inheritance relationships of ported Grappa modules.
+</LI>
+</UL>
+</DIV></DIV>
+<DIV class=chapter>
+<HR>
+
+<H2><A name=porting></A>Porting</H2>
+<P></P>
+<DIV class=section>
+<HR>
+
+<H2 class=section><A name=gettingGrappa></A>Getting Grappa</H2>
+<P>Grappa is available from
+<A href="http://www.research.att.com/~john/Grappa/" target=_top>http://www.research.att.com/~john/Grappa/</A>.
+The page of the URL says that
+&quot;Grappa is licensed under the same arrangements as are used for GraphViz&quot;,
+and it is available via the download page  of GraphViz(<A
+href="http://www.research.att.com/sw/tools/graphviz/download.html"
+target=_top>http://www.research.att.com/sw/tools/graphviz/download.html</A>).
+In the paragraph marked as bold &quot;Extras&quot; on the download page of GraphViz,
+there is a link to the Grappa distribution file grappa.tgz.
+To install Grappa, please download and expand it.
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H2 class=section><A name=grappaOverview></A>Overview of Grappa</H2>
+<P>
+Grappa is a Java library to plot on 2 dimensions a logical graph described in
+<A href="http://www.research.att.com/~erg/graphviz/info/lang.html"
+target=_top>dot</A> language.
+The input dot file contains the information of logical graph structure
+ made of nodes and connecting edges, fonts to plot on 2 dimensions, and
+geometrical informations such as line thickness and coordinates.
+Grappa draws the graph according to the description of the dot file.
+If there is no specification of coordinates, Grappa lays out the graph automatically.
+</P>
+<P>
+The center of Grappa is formed with the class hierarchy shown in <A href="#elementTree">figure 1</a>.
+Node and Edge classes constitute Subgraph,
+and the special top level subgraph is Graph
+(in the class hierarchy, Subgraph is the parent class of Graph).
+</p>
+<DIV class=figure><A name=elementTree></A>
+<P><IMG src="images/element-tree.png"></P>
+<p><b>figure 1. The Structure of Grappa</b></p></div>
+<p>
+The rather independent collaborations and aspects in Grappa are following:
+<DIV class=table><A name=grappaAspects></A>
+<P><B>table 1. Important Aspects in Grappa</B></P>
+<TABLE class=CALSTABLE cellSpacing=0 cellPadding=4 bgColor=#e0e0e0 border=1>
+  <THEAD>
+  <TR>
+    <TH vAlign=center align=left>No.</TH>
+    <TH vAlign=center align=left>aspect</TH>
+    <TH vAlign=center align=left>dependency</TH></TR></THEAD>
+  <TBODY>
+  <TR>
+    <TD vAlign=center align=left>1</TD>
+    <TD vAlign=center align=left>related to the logical structure of a graph</TD>
+    <TD vAlign=center align=left>&nbsp;</TD></TR>
+  <TR>
+    <TD vAlign=center align=left>2</TD>
+    <TD vAlign=center align=left>related to the geometrical representation of a graph</TD>
+    <TD vAlign=center align=left>depends on 1</TD></TR>
+  <TR>
+    <TD vAlign=center align=left>3</TD>
+    <TD vAlign=center align=left>related to parsing and dumping a dot file</TD>
+    <TD vAlign=center align=left>depends on 2</TD></TR>
+  <TR>
+    <TD vAlign=center align=left>4</TD>
+    <TD vAlign=center align=left>related to GUI</TD>
+    <TD vAlign=center align=left>depends on 2</TD></TR></TBODY></TABLE></DIV>
+<P></P>
+<p>When we ported Grappa, we thought that the modules can be divided according to the classification </a>
+<P>
+Grappa distribution includes the source for both JDK1.1 and 1.2.
+Our target is only the source for 1.2, which is in the directories src/jdk1.2 and DEMO/jdk1.2.
+The source code for 1.1 is, thus, deleted.
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H2 class=section><A name=portingStrategy></A>Porting Strategy</H2>
+<P>
+From the previous research result of MixJuice and from the structure of Grappa,
+we decided to port Grappa with the following strategy.
+The decision was made with emphasis on not to introduce new bugs.
+</P>
+<OL type=1>
+  <LI>
+Refactoring at the stage of Java source code in order to prepare to port to MixJuice (phase 1)
+  </li>
+  <LI>
+confirmation of operations (phase 1)
+  </li>
+  <LI>
+porting to MixJuice (phase 1)
+  </li>
+  <LI>
+confirmation of operations (phase 1)
+  </li>
+  <LI><A name=ord1></A>
+Refactoring for optimization with MixJuice (phase 2)
+  </li>
+  <LI><A name=ord2></A>
+confirmation of operations (phase 2)
+  </LI>
+</OL>
+<p>
+In phase 2,
+we iterate
+<A href="#ord1">5</A> and <A href="#ord2">6</A>.
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H2 class=section><A name=refactorJava></A>
+Refactoring at the stage of Java</H2>
+<P>
+The previous investigation shows that much parts of Java source code need to be changed
+to port to MixJuice.
+Especially, Java source code which has static methods and/or inner classes needs a lot of changes.
+For the efficiency and avoidance of introducing of bugs,
+We refactored at the stage of Java for porting to MixJuice.
+The followings are the details.
+</P>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=eliminateStatics></A>
+Move Static Fields/Methods to Another Class</h3>
+<P>
+MixJuice does not support static methods.
+Then, we moved static fields/methods to a newly created class and
+set their singleton instances to old class's static fields.
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=eliminateInnerClass></A>
+Inner Class to Ordinary Class</h3>
+<P>
+In Grappa source code, there are some inner classes.
+We changed them to ordinary classes.
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=prepModDiv></A>
+Trial of Change Preparing for Module Division</h3>
+<P>
+In the process of the refactoring Grappa,
+we thought the modules can be divided as the following:
+</P>
+<UL>
+  <LI>
+base module representing logical graph model (att.grappa.base)
+  </li>
+  <LI>
+module for geometrical layout of graph (att.grappa.patchwork)
+  </li>
+  <LI>
+module for managing various attributes (like fonts or line thickness) for drawing geometrical graph (att.grappa.attribute)
+  </li>
+  <LI>
+module for drawing various shapes of nodes (att.grappa.grappanexus.impl)
+  </li>
+  <LI>
+module for handling GUI menus and events(att.grappa.ui)
+  </li>
+</UL>
+<p>
+To prepare for the division, we tried to divide classes before porting MixJuice, at the time of refactoring Java.
+The code in methods, however, lies across aspects, and the trial of division was not so successful.
+It was, as a rare example, easy to divide the interface defining constants (GrappaConstants).
+</P>
+<P>
+If we look back this step after we finished the phase 2,
+we should have abstracted interfaces from classes and have separated interfaces from implementation,
+to make the module separation into specification module and implementation module on porting to MixJuice easy.
+However, we didn't think about separating specification module and implementation module
+when we were refactoring Java source code.
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=splitInterfaces></A>
+Classification of Constants</H3>
+<P>
+The interface GrappaConstants of original Grappa is
+ a collection of constants referred from various contexts.
+Moreover, almost all classes implements the interface and use its constants.
+As a result, it is unclear from which function each constant is referred.
+</P>
+<P>
+At first, then, at the stage of Java, we split the constants along with their domains,
+and we create 4 new interfaces;
+GCElementType, GCHighlightSettings, GCAttributes, and GCShapes.
+Moreover, we change GrappaConstants to extend these 4 interfaces.
+This makes clear to which domain each constants belongs.
+On the other hand, the constants which does not belong to any domain remain in the interface GrappaConstants.
+</P>
+<P>
+A class referring only limited domain constants should refer needed one among 4 interfaces.
+</p>
+<P>
+Note that GCElementType, GCHighlightSettings, GCAttributes, and
+GCShapes will become submodules of GrappaConstants in MixJuice.
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=powerOfIDE></A>
+Benefit of Using IDE for Refactoring</h3>
+<P>
+In order to refactor the source code, it is necessary to understand the program structure.
+Using function of eclipse such as searching and/or showing type hierarchy helped us to understand it.
+</P>
+<P>
+We also use eclipse for actual refactoring.
+There are functions like interface extraction and method extraction ready to use.
+</p>
+<P>
+It is important in refactoring process to clarify the influenced areas and not to introduce bugs.
+Using IDE, the influenced areas were shown as compile error,
+the refactorings were done with short cycles, and the introduction of bugs could be as little as possible.
+Especially, for large program as the present one the effect is enormous.
+We didn't see any problems caused by refactoring.
+</P>
+<P>
+Here is <A href="images/javaGrappa.pdf" target=_top>the class diagram</a> after refactoring at Java level.
+</P></DIV></DIV>
+<DIV class=section>
+<HR>
+
+<H2 class=section><A name=portingToMJ></A>
+Porting to MixJuice</H2>
+<P>
+We describe here the concrete steps of porting Java code to MixJuice.
+However, the very basic steps such as put define in front of the classes and methods are omitted.
+</P>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=interfaceNimpl></A>
+Specification Modules and Implementation Modules</h3>
+<P>
+First of all, as written in <A
+href="http://staff.aist.go.jp/y-ichisugi/ja/mj/doc/design.html#from-java"
+target=_top>The steps to rewrite in MixJuice the application written in Java (Japanese)</A>
+we tried to put every class into a module.
+The source code was, however, too huge, and it took unexpectedly long time to make it compilable.
+Moreover, a single huge source made efficiency go down
+(it took more time to compile, to point out the cause of error, to move the cursor, etc.).
+As a consequence, we decided to split complicated implementation classes into specification modules and implementation modules.
+</P>
+<P>
+In the specification modules, we did some module division as stated before
+(<A href="#grappaAspects">table 1<I>Important Aspects in Grappa</I></A> or
+section <A href="#prepModDiv"><I>Trial of Change Preparing for Module Division</I></A>).
+We made each implementation module extend all necessary specification modules,
+and we took care not to change the original methods.
+The reason is that it is probable to introduce bugs if we change the inside of the methods.
+We decided, in phase 1, to port to MixJuice without changing methods as much as possible,
+and after we confirmed the behavior, in phase 2, to make changes the contents of the methods.
+We made the decision because we can't confirm the behavior during porting to MixJuice.
+</P>
+<DIV class=tip>
+<P></P>
+<TABLE class=tip width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top align=middle width=25><IMG alt=tip hspace=5
+      src="./stylesheet-images/tip.gif"></TD>
+    <TH vAlign=center align=left>
+<B>use specification modules to rearrange complicated dependencies of classes and modules</B></TH></TR>
+  <TR>
+    <TD>&nbsp;</TD>
+    <TD vAlign=top align=left>
+      <P>Specification modules are helpful for untangling and understanding complicated
+dependencies among classes and/or modules.
+Interfaces relatively often belong to a single module.
+On the contrary, implementations in methods often belong to multiple modules.
+Because of the fact, it is difficult to divide modules if they contain implementation.
+We, thus, separated specification modules and implementation modules first,
+and divided specification modules into smaller pieces.
+The step made changes on the method implementations as small as possible,
+and we could avoid introducing bugs.
+      </P></TD></TR></TBODY></TABLE></DIV></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=problemOnWindows></A>Problem of Compilation on Windows</H3>
+<P>When the number of classes in modules became bigger,
+the length of argument passed to mjjavac during execution of mjc exceeded the limit of
+Windows command line, and it made compilation impossible.
+Since Windows JDK's javac has a function to read command line arguments from a file,
+we changed mjtools.jar to use the function to avoid the problem;
+the names of files for compilation are written to a temporary file and passed to javac
+as &quot;@temporary_filename&quot;.
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=longFlatCode></A>
+Problem of Long Flat Block
+</H3>
+<P>
+If a block has extremely many statement as shown in
+<A href="#longFlatCodeOrg">example 1</A>,
+at the mjc preprocess stage, stack overflow arises.
+We suspect the cause of it is that epp does not process them as loop but as recursion,
+or that there does not come to reduce but continues to shift.
+The class having 400 methods has been successfully compiled,
+the problem seems to emerge with a specific scope having so many elements.
+</P>
+<DIV class=example><A name=longFlatCodeOrg></A>
+<P><B>example 1. long flat block</B></P>
+    <PRE class=programlisting>{
+  hoge(0);
+  hoge(1);
+  hoge(2);
+// ...
+  hoge(100);
+}</PRE>
+<P>
+The problem can be avoided by sectioning the block
+at a point where name space can be divided without any problems as shown in
+<A href="#longFlatCodeFixed">example 2</A>.
+</P>
+<DIV class=example><A name=longFlatCodeFixed></A>
+<P><B>example 2. sectioning long flat block</B></P>
+<PRE class=programlisting>{
+  {
+  hoge(0);
+  hoge(1);
+// ...
+  hoge(50);
+  }
+  {
+  hoge(51);
+// ...
+  hoge(100);
+  }
+}</PRE>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=ignoresThrows></A>
+Invalidation of throws Clause of Original Method</H3>
+<P>
+When a method is defined as define, exceptions are specified with a throws clause.
+If the method is overridden in another module(<A href="#ignoredThrows">example 3</A>),
+normally,
+it is necessary to write try/catch or throws clause for overriding code
+since there is a possibility of arising exception specified at the throws clause
+with calling original().
+<DIV class=example><A name=ignoredThrows></A>
+<P><B>example 3. ignorance of throws</B></P>
+<PRE class=programlisting>module m {
+  define class MyException extends Exception {
+    define MyException() {}
+  }
+  define class Base {
+    define void func() throws MyException { throw new MyException(); }
+  }
+  define class Derived extends Base {
+    void func() {
+      try {
+        original(); // possibly MyException is thrown
+      }
+      catch (MyException e) {
+      }
+    }
+  }
+}</PRE></TD></TR></TBODY></TABLE></DIV>
+<P>
+However, calling original() is treated, in reality, as
+the exception specified with throws will never be thrown,
+and a compile error like the following emerges with try/catch.
+</P>
+<PRE class=programlisting>m\_Delta_m_Derived.java:11: exception m.MyException is never thrown in body of corresponding try statement
+      super.m_func(); } catch (
+                        ^
+</PRE></TD></TR></TBODY></TABLE>
+<P>
+To avoid the error, we wrote dummy throw statement to overriding code as follows:
+</P>
+<PRE class=programlisting>      try {
+        original();
+        if (false) throw new MyException(); // dummy
+      }
+      catch (MyException e) {
+      }
+</PRE></TD></TR></TBODY></TABLE>
+<P></P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=implementingJavaInterface></A>
+Note on disability to implement Java interfaces on MixJuice</H3>
+<P>
+A part of Java interfaces can not be implemented on MixJuice
+(see on the page of &quot;known bugs and workaround&quot; at MixJuice site).
+To work around the problem, it is necessary to create a class implementing the interface in Java,
+and to do extends the class in MixJuice.
+In the case, however, that the class in Java already has a parent class,
+since Java prohibits multiple inheritance, it is necessary to do extends the parent class.
+</P>
+<P>
+In the current porting project, Subgraph needs implement java.util.Comparator.
+We, then, prepared a Java class ComparatorWrapper implementing java.util.Comparator.
+As shown in <A href="#elementTree">figure 1<I>The Structure of Grappa</I></a>, however,
+Subgraph already has the parent class Element,
+we made Element change to do extends ComparatorWrapper.
+This caused that all descendants of Element to implement java.util.Comparator,
+and it means the equivalence between original and ported program was lost.
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=nullPtr></A>
+NullPointerException of Unknown Reason
+</H3>
+<P>
+Sometimes NullPointerException is arose from unknown reasons.
+The conditions we could observe were:
+</P>
+<UL>
+  <LI>
+It is arose from a module doing imports many modules.</LI>
+  <LI>
+Constructors can be one of the causes.
+  <LI>
+Module names are strongly related to the causes.
+  </LI>
+</UL>
+<P>
+The problems were usually solved with
+renaming modules or
+doing define problematic class constructors at higher level of inheritance hierarchy.
+Since the names of modules which had the problem had somewhat general names like panel.impl, parser, or demo,
+it is suspected that there should be naming conflicts.
+We avoided the problem with moving the constructor of GrappaPannel to grappa-base.java,
+renaming parser module to grappaparser module, etc..
+</P>
+<P>
+There existed the cause of NullPointerException resolved by
+adding a normally unnecessary cast from child class to parent class;
+the constructor of DemoFrame in demo.java.
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=dollar></A>
+The Classes with $ in Their Names
+</H3>
+<P>
+If a class with $ in its name is referred from two different modules,
+it causes an error at the link stage.
+</P>
+<PRE class=programlisting>module dollar1 {
+  define class doll$doll {
+    define doll$doll() {}
+  }
+  class SS {
+    doll$doll d = null;
+    void main(String[] args) {
+      d = new doll$doll();
+    }
+  }
+}
+module dollar2 extends dollar1 {
+  class SS {
+    void main(String[] args) {
+      original(args);
+      d = new doll$doll();
+    }
+  }
+}
+   </PRE></TD></TR></TBODY></TABLE>
+<P>
+The error message is as following:
+</P>
+<PRE class=programlisting>     java.lang.LinkageError: duplicate class definition: dollar1/_Dummy_dollar1_doll$doll
+   </PRE></TD></TR></TBODY></TABLE>
+<P>
+The solution is to stop using $ if the class is MixJuice class.
+If the class is Java class (remember that inner classes of Java have $ in their names),
+one must create a class named without $ inheriting the named with $, and use the inherited class in MixJuice.
+(We are experiencing difficulty without inheriting it in MixJuice again, but it can be caused by CLASSPATH.)
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=dependency></A>
+Note on Module Dependency
+</H3>
+<P>
+If there is a module inheritance tree such as module b inheriting module a.
+It is highly probable that recompilation of module b is required when module a has been changed.
+Sometimes, besides the recompilation, deletion of eppout directory is required.
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=moduleName></A>
+Java Package Name and MixJuice Module Name
+</H2>
+<P>
+It is impossible to create a module in MixJuice having the same name with a Java module.
+It can be solved by renaming one of them.
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=inconsistentFQNNotation></A>
+Resolution of Ambiguous Names
+</H3>
+<P>
+To resolve ambiguous names, the notation FQN[moduleName::simpleName] is used.
+However, the names of classes and/or interfaces must have moduleName.simpleName to be compiled,
+and it is inconsistent with FQN notation of member names.
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=implementsLower></A>
+Addition of Interfaces in Submodules
+</H3>
+<P>
+<PRE class=programlisting>module M {
+  define class A {}
+  define interface I {}
+}
+
+module M1 extends M {
+  class A implements I {}
+}
+
+module M2 extends M {
+  class A implements I {}
+}
+
+module M3 extends M1, M2 {
+}
+</PRE></TD></TR></TBODY></TABLE>
+<P>
+As in the example above,
+the multiple inheritance of module (module M3) from multiple modules (module M1, M2)
+in which a same interface (interface I) is added to a class (class A)
+causes the following runtime error:
+</P>
+<PRE class=programlisting>java.lang.ClassFormatError: Repetitive interface name
+</PRE></TD></TR></TBODY></TABLE></P>
+<P>
+First of all, it is unclear whether it is correct in MixJuice syntax that
+an implementation interface is added to a class in submodules.
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=dupClass></A>
+Duplicated Definition of a Class
+</H3>
+<P>
+<PRE class=programlisting>module m {
+  define class Base {
+  }
+}
+module m1 extends m {
+  class Base {
+    define void f() {}
+  }
+  class Base {
+    define void g() {}
+  }
+}
+</PRE></TD></TR></TBODY></TABLE>
+<P>
+As in the example above,
+defining the same name classes having different methods in a module cause a compile error.
+</P>
+<PRE class=programlisting>Preprocessing phase.
+test9.java:7: m.Base:(id f)
+    define void f() {}
+    ^
+java.lang.Error: MJC: FATAL ERROR : m.Base:(id f)
+</PRE></TD></TR></TBODY></TABLE></P>
+<P>
+First of all, there is no need to write the same class separately in a module,
+it seems incorrect description in MixJuice syntax.
+It is not a problem if the error message is appropriate.
+</P>
+<P>
+On the other hand, the following example shows that if they have the methods of the same name,
+the code can be compiled and executed.
+The result of execution is &quot;FOO&quot; only, and it seems that only the latter f() is effective.
+In such cases, error should be the result.
+</P>
+<PRE class=programlisting>module m {
+  define class Base {
+     define Base() {}
+  }
+}
+module m1 extends m {
+  class Base {
+    define void f() {System.out.println(&quot;FOOx&quot;);}
+  }
+  class Base {
+    define void f() {System.out.println(&quot;FOO&quot;);}
+  }
+  class SS {
+    void main(String[] str) {
+      (new Base()).f();
+    }
+  }
+}
+
+</PRE></TD></TR></TBODY></TABLE></P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A
+name=staticInitOrder></A>
+java.lang.ExceptionInInitializerError at Execution Time</H3>
+<P>
+When a normally compiled program is executed, sometimes it stops with
+java.lang.ExceptionInInitializerError.
+The error emerges in the case that the order of static initialization is important.
+In the example below, the exception is arose if Grappa.DICT is initialized after Grappa.self is initialized,
+but the example code does not cause the exception.
+We think that the phenomenon appears when the order of initialization is reversed as the result of module linearization.
+Simpler example can not be detected, though we tried.
+</P>
+<PRE class=programlisting>module att.grappa {
+  define class Grappa {
+    static final Grappa self = new Grappa();
+    define Grappa () {}
+  }
+}
+module att.grappa.base extends att.grappa {
+  class Grappa  {
+    static java.util.Map DICT = new java.util.HashMap();
+  }
+}
+module att.grappa.attribute extends att.grappa.base {
+  class Grappa  {
+    Grappa () {
+      original();
+      DICT.get(&quot;&quot;);
+    }
+  }
+}
+module m.all extends att.grappa.attribute {
+  class SS {
+    void main(String[] args) {
+      Grappa  x = Grappa.self;
+      System.out.println(&quot;ok&quot;);
+    }
+  }
+}
+</PRE></TD></TR></TBODY></TABLE></P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=errMsg></A>Typical Error Messages</H3>
+<P>
+Since the porting to MixJuice have a lot of stereotyped tasks,
+the errors are accordingly stereotyped.
+Here we show especially frequent error messages.
+</P>
+<DIV class=tip>
+<P></P>
+<TABLE class=tip width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top align=middle width=25><IMG alt="tip" hspace=5
+      src="./stylesheet-images/tip.gif"></TD>
+    <TH vAlign=center align=left><B>There are two define's for the same class</B></TH></TR>
+  <TR>
+    <TD>&nbsp;</TD>
+    <TD vAlign=top align=left>
+          <PRE class=programlisting>panel-impl.java:3: MJ: Ambiguous class name &quot;GrappaPanel&quot; is used at module panel.impl
+</PRE>
+      <P>
+This error is arose if there are two define's for the same class.
+The error message is too hard to understand, so we note here.
+  </P></TD></TR></TBODY></TABLE></DIV>
+<DIV class=tip>
+<P></P>
+<TABLE class=tip width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top align=middle width=25><IMG alt="tip" hspace=5
+      src="./stylesheet-images/tip.gif"></TD>
+    <TH vAlign=center align=left><B>There are two define's for the same method</B></TH></TR>
+  <TR>
+    <TD>&nbsp;</TD>
+    <TD vAlign=top align=left>
+      <P>
+          <PRE class=programlisting>subgraph-impl.java:1790: MJ: Reference to prepPatchWork(java.lang.String, int) of att.grappa.Subgraph is ambiguous. :
+    </PRE></P>
+      <P>
+          <PRE class=programlisting>subgraph-impl.java:1801: findMethodInfo: More than one MethodInfo found.
+
+java.lang.Error: MJC: FATAL ERROR : findMethodInfo: More than one MethodInfo found.
+</PRE></P>
+      <P>
+Both error can be arose if there are two define's for the same methods.
+Comparing the problematic method declaration and the invocation of the method,
+if the declaration is detected earlier by preprocessor the former message appears,
+the invocation the latter.
+The former message is harder to understand, so we note here.
+It is emerged in the case that define is attached to the method which is already defined in the parent class like equals method.
+</P></TD></TR></TBODY></TABLE></DIV>
+<DIV class=tip>
+<P></P>
+<TABLE class=tip width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top align=middle width=25><IMG alt="tip" hspace=5
+      src="./stylesheet-images/tip.gif"></TD>
+    <TH vAlign=center align=left><B>The class has no define</B></TH></TR>
+  <TR>
+    <TD>&nbsp;</TD>
+    <TD vAlign=top align=left>
+          <PRE class=programlisting>panel-impl.java:3: MJ: No class definition of GrappaPanel found.  Probably, missing &quot;define&quot; for it, missing &quot;extends&quot; declaration or misspelling.
+</PRE>
+      <P>This is caused if the class has no define.</P></TD></TR></TBODY></TABLE></DIV>
+<DIV class=tip>
+<P></P>
+<TABLE class=tip width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top align=middle width=25><IMG alt="tip" hspace=5
+      src="./stylesheet-images/tip.gif"></TD>
+    <TH vAlign=center align=left><B>The method has no define</B></TH></TR>
+  <TR>
+    <TD>&nbsp;</TD>
+    <TD vAlign=top align=left>
+          <PRE class=programlisting>panel-impl.java:49: MJ: In att.grappa.GrappaPanel at module panel.impl : Definition-method does not have &quot;define&quot; . : addGrappaListener
+</PRE>
+      <P>This is caused if the method has no define.</P></TD></TR></TBODY></TABLE></DIV>
+<DIV class=tip>
+<P></P>
+<TABLE class=tip width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top align=middle width=25><IMG alt="tip" hspace=5
+      src="./stylesheet-images/tip.gif"></TD>
+    <TH vAlign=center align=left><B>Assignment to a final field fails in constructor</B></TH></TR>
+  <TR>
+    <TD>&nbsp;</TD>
+    <TD vAlign=top align=left>
+          <PRE class=programlisting>subgraph/impl/_Delta_subgraph_impl_SubgraphEnumerator.java:2583: cannot assign a value to final variable subgraph_impl_self
+    ((subgraph.impl._Delta_subgraph_impl_SubgraphEnumerator)(Object)(this)).subgraph_impl_self =
+        (((subgraph.impl._Delta_subgraph_impl_SubgraphEnumerator)(Object)(this)).subgraph_impl_root = (self));
+    ^
+</PRE>
+      <P>
+If the error message has final, not limited to this case, the final must be removed.
+</P></TD></TR></TBODY></TABLE></DIV>
+<DIV class=tip>
+<P></P>
+<TABLE class=tip width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top align=middle width=25><IMG alt="tip" hspace=5
+      src="./stylesheet-images/tip.gif"></TD>
+    <TH vAlign=center align=left><B>static final variable is referred without class name qualification in constant context</B></TH></TR>
+  <TR>
+    <TD>&nbsp;</TD>
+    <TD vAlign=top align=left>
+          <PRE class=programlisting>panel/impl/_Delta_panel_impl_GrappaAdapter.java:1859: constant expression required
+        case ((att.grappa._Delta_att_grappa_GCElementType)(Object)(this)).att_grappa_SUBGRAPH :
+</PRE>
+      <P>Qualify static final variable with the class name.</P></TD></TR></TBODY></TABLE></DIV></DIV></DIV>
+<DIV class=section>
+<HR>
+
+<H2 class=section><A name=MJRefactor></A>Refactoring on MixJuice</H2>
+<P>
+By the works above, we succeeded, as a first step, to port Grappa to MixJuice.
+The next step is to refactor in order to make the program more natural and more maintainable as a MixJuice program.
+</P>
+<P>
+The followings are the contents of the refactoring and the knowledge obtained from it.
+</P>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=extractDump></A>
+Separation of Dump Function
+</H3>
+<P>
+The dump function is the function to dump the structure of a graph with dot format.
+Here are the original Java code's <A href="images/dump_java.pdf" target=_top>class diagram</A>
+and <A
+href="images/dump_MJ.pdf"
+target=_top>layered class diagram</A> of the MixJuice code after refactoring.</P>
+<P>
+Though the functions to output in dot format, which is used to describe the graph structure in Grappa,
+are scattered across modules
+att.grappa.element.impl, att.grappa.node.impl, att.grappa.graph.impl,
+att.grappa.subgraph.impl, and
+att.grappa.edge.impl,
+they belong to the same aspect.
+According to the idea, we created a module named att.grappa.dump,
+and moved dot format output functions into it.
+att.grappa.dump inherits all of
+att.grappa.element.impl,
+att.grappa.node.impl, att.grappa.graph.impl, att.grappa.subgraph.impl, and
+att.grappa.edge.impl.</P>
+<P>
+In each of
+att.grappa.element.impl, att.grappa.node.impl, att.grappa.graph.impl,
+att.grappa.subgraph.impl, and
+att.grappa.edge.impl modules,
+the dump functions occupy large parts of the code,
+and the readability of each modules decreased by the functions.
+Since we could collect the dump function into the att.grappa.dump module,
+the maintainability of each module increased.
+Moreover, since the module att.grappa.dump contains only the dump functions,
+it has become possible not to inherit the module if a client does not use the functions.
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=AEN272></A>Separation/Integration of Modules</H3>
+<DIV class=section>
+<H4 class=section><A name=AEN274></A>Separation of Large Function Group</H4>
+<P>
+Here shows the <A href="images/nexus_java.pdf" target=_top>class diagram</A>
+of the original Java code and <A href="images/nexus_MJ.pdf" target=_top>layered class diagram</A>
+of the MixJuice code after refactoring, concerning the activity below.</P>
+<P>
+In the module att.grappa.nexus.impl,
+there was a method named updateText,
+which parses an attribute held as a String and sets it to a member.
+The method was called when the Observable has been changed in order to refresh the state of class Nexus.
+The task of parsing the attribute string is highly specialized and complex,
+the mixture with other code made the readability of the module att.grappa.nexus.impl decreased.
+</P>
+<P>
+Then, we abstracted the process of parsing the attribute string from the module
+att.grappa.nexus.impl, and separated into a new module att.grappa.nexus.impl.parser
+inheriting att.grappa.nexus.impl.
+As a result, the readability of the module att.grappa.nexus.impl has been improved,
+and tracing the process of parsing attribute string has become easier.
+</P>
+<P>
+As explained in the paragraphs above,
+though the separation of specification module and implementation module is completed and
+they are settled in an appropriate aspect, if the size is too large
+or if a highly specialized code occupies the large part of the code,
+it is possible to increase the maintainability by dividing the module into smaller units.
+Of course, the effect can be expected only in restricted cases.
+For an extreme example, separating all methods into modules results merely harmful.
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H4 class=section><A name=AEN282></A>Integration of Small Function Group</H4>
+<P>
+Here shows the <A href="images/geom_java.pdf" target=_top>class diagram</A>
+of the original Java code and <A href="images/geom_MJ.pdf" target=_top>layered class diagram</A>
+of the MixJuice code after refactoring, concerning the activity below.</P>
+</P>
+<P>
+Since the classes GrappaBox, GrappaSize, GrappaPoint are required from wide range of various modules,
+each implementation is defined individually near the modules requiring it.
+They are, however, the basic utility classes of geometrical information, and they
+do not have the deep relationship with such modules.
+We created att.grappa.geom module at very high level of the module inheritance hierarchy,
+and integrate the classes into it.
+</P>
+<P>
+This made the maintainability of the modules to which the classes had belonged increased,
+and made clear not at the comment level but at the language level that the three classes are the group of basic classes for geometrical information.
+It is sometimes possible, contrary to the previous section,
+to make maintainability increased by arranging the same kind of classes into a module.
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H4 class=section><A name=AEN289></A>Conclusion of Separation/Integration</H4>
+<P>
+As explained above,
+there is no general principle to separate a module, to integrate modules, or not to do both.
+Therefore, the decision must be make case by case considering trade-off,
+and the possibility of choice of appropriate separation by cases is a great merit of MixJuice.
+Actually, comparing the original Java Grappa restricted to one class per one file and
+the Grappa ported to MixJuice,
+Java Grappa has 48 files from the minimum 34 lines to the maximum 2547 lines and
+MixJuice Grappa has 22 files from the minimum 311 lines to the maximum 2785 lines.
+The variance of translation unit sizes is smaller for MixJuice Grappa,
+and it appears that appropriate module division can be done with MixJuice.
+</P></DIV></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=AEN292></A>
+Module of Constants</H3>
+<P>As stated in the section <A href="#splitInterfaces"><I>Classification of Constants</I></A>,
+We have classified the constants in the interface GrappaConstants
+into some interfaces at the Java stage.
+</P>
+<DIV class=figure><A name=const-java-tree></A>
+<P><IMG src="images/const-java-hier.png"></P>
+<P><B>figure 2. The result of refactoring in Java</B></P></DIV>
+<P>
+In MixJuice, it is possible to control whether a constant can be referable or not
+by combinations of classes (interfaces) and modules.
+Therefore, instead of using multiple interfaces as we had done in Java,
+we declared all constants in the interface GrappaConstants
+(note that the constants were classified by modules).
+In the refactoring process in MixJuice,
+constants common to Grappa in the module att.grappa.constants,
+and each domain constant in the modules
+att.grappa.constants.highlightSettings,
+att.grappa.constants.attributes, att.grappa.constants.shapes, and
+att.grappa.constants.elementTypes
+are declared to be in the interface GrappaConstants.
+</P>
+<DIV class=figure><A name=const-mj-tree></A>
+<P><IMG src="images/const-mj-hier.png"></P>
+<P><B>figure 3. The result of refactoring in MixJuice</B></P></DIV>
+<P></P>
+<P>
+By the divided declarations, the usages of each constant became clearer, and
+the maintainability of the source code is increased.
+We consider that the description by module division is more precise than
+the description by inheritance in the object-oriented sense.
+As just described, the module mechanism of MixJuice is appropriate in the cases
+of dividing class of independent constants into modules.
+(On the other hand, there are more than a little complicated cases, we will state,
+in which it is difficult to express with the mechanism.)
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=AEN303></A>Large Utility Class</H3>
+<P>
+The class GrappaSupport was a class consisted of only static methods,
+providing widely necessary functions, functions hard to belong in a specified class
+(such as required by two classes of neighboring domains), and so on.
+We created the module att.grappa.support in higher layer of the inheritance tree at an early stage of porting MixJuice,
+and placed the class in.
+The methods only used locally but placed in GrappaSupport
+because of hardness to find the class to fit
+were moved to more appropriate lower layer modules.
+</P>
+<P>
+As a result,
+the methods from GrappaSupport have distributed in very large number of modules,
+and the class has become hard to specify the positions of its method definitions.
+For a person who does not grasp the entire project,
+it has become hard to find the method definitions.
+The problem will be able to be relaxed with a good code browser,
+but never solved completely,
+and in the current situation without such a tool the problem is still big.
+</P>
+<P>
+A solution can be giving different symbol names to GrappaSupport classes of each domain.
+For example, the function used only in grappaparser can be moved to a newly defined class GrappaParserSupport.
+The solution, however, inevitably brings the increase of small classes.
+Moreover, a number of functions in GrappaSupport are considered to be used from other modules in future,
+it will not be a quite hopeful solution.
+</P>
+<P>
+As just described,
+utility classes to be used from anywhere are considered that
+it is better for maintainability not to distribute their methods in various modules
+but to pack them in a module where the classes are done define.
+In the case of the class GrappaSupport,
+it is considered that moving all methods back to att.grappa.support is the most appropriate way.
+Then, all methods are publicly available to almost all modules,
+but it does not matter because they are utility methods.
+</P>
+<P>
+In actual situations, the solution above and the solutions according to the situation
+(moving a part of functions to an appropriate class, for example) should be combined to solve the problems.
+In the refactoring of this time, the solution has not been realized,
+but we could recognize the module division of large utility class is a hard problem.
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=makeItMVC></A>Support for MVC Implementation by Module Mechanism</H3>
+<P>
+Here are the <A
+href="images/UI_java.pdf"
+target=_top>class diagram</A> of original Java code
+and the <A
+href="images/UI_MJ.pdf"
+target=_top>layered class diagram</A> of MixJuice code after refactoring,
+concerning this section.
+</P>
+<P>
+The class GrappaPanel in the module att.grappa.panel.impl was a big class equipped all of MVC.
+Since it obscured the code of user interface,
+we separated the part implementing *Listener methods and moved it to the module att.grappa.ui.
+The result gave the clear meaning to att.grappa.ui, which had had only an unclear meaning,
+that it has responsibility to C of MVC (controller, literally),
+it also reversed the inheritance relation between the modules att.grappa.panel.impl and att.grappa.ui.
+(CVStag:
+FIX_8 see <A
+href="#refactorProcess">section <I>Refactoring Process</I></A>)
+</P>
+<P>
+At this stage, because the class GrappaPanel declared in the module att.grappa.panel.impl
+had to override the *Listener methods, it implements the *Listener interfaces.
+The module att.grappa.panel.impl was, however, the module for model and view of MVC,
+it was unnatural to import the packages including *Listener interfaces; such as java.awt.event.* etc..
+Then, we defined a new class GrappaPanelControl implementing *Listener interfaces
+and having the role of controller, and moved it to att.grappa.ui,
+to make the module att.grappa.panel.impl to be independent from java.awt.event.* etc..
+(CVStag:
+FIX_9 see <A
+href="#refactorProcess">section <I>Refactoring Process</I></A>)
+</P>
+<P>
+The following is a simplified model of the refactoring.
+the module view is corresponding att.grappa.panel.impl and the model control att.grappa.ui.
+</P>
+<PRE class=programlisting>// before FIX_8
+module view {
+  define class View extends JFrame implements SomeListener {
+    define View() {
+     // initialize...
+     addSomeListener(this);
+    }
+
+    void handleSomeEvent(SomeEvent ev) {
+     // handling...
+    }
+  }
+}
+   </PRE></TD></TR></TBODY></TABLE>
+<PRE class=programlisting>// after FIX_8
+module view {
+  define class View extends JFrame implements SomeListener {
+    define View() {
+     // initialize...
+     addSomeListener(this);
+    }
+  }
+}
+
+module control {
+  class View {
+    handleSomeEvent(SomeEvent ev) {
+     // handling...
+    }
+  }
+}
+</PRE></TD></TR></TBODY></TABLE>
+<PRE class=programlisting>// after FIX_9
+module view {
+  define class View extends JFrame {
+    define View() {
+     // initialize...
+    }
+  }
+}
+
+module control {
+  define Control implements SomeListener {
+    View view;
+    define Control(View view) {
+     this.view = view;
+    }
+    handleSomeEvent(SomeEvent ev) {
+      view.updateView(...);
+    }
+  }
+
+  class View {
+    Control control;
+
+    View() {
+     original();
+     addSomeListener(control);
+    }
+
+    define updateView(...) {
+     // ...
+    }
+  }
+}
+   </PRE></TD></TR></TBODY></TABLE></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=AEN323></A>Separation of Specification Modules and Implementation Modules</H3>
+<P>
+In the refactoring process, the separation of specification modules and implementation modules
+always brought us good results.
+</P>
+<P>
+The first merit of separating specification modules and implementation modules is
+it enables to minimize the number of dependent modules of a specification modules.
+If the specification and the implementations are in the same module,
+one must extend the modules required for implementations, or writing the contents of methods.
+By separating specification and implementation into different modules,
+it is possible to limit the dependent module for the specification modules to
+ones required for resolving types appearing on interfaces.
+As a result, the information hiding is efficiently realized.
+</P>
+<P>
+In the following example, the modules mod1 and mod2 are specification modules.
+They, mod1 and mod2, are independent at interface (specification) level.
+On the other hand, at implementation level (in module mod12.impl), method1 and method2
+depend on each other.
+</P>
+<PRE class=programlisting>module mod0 {
+  define class Grappa {
+    define Grappa() {}
+    define boolean isX() { return false; }
+  }
+}
+module mod1 extends mod0 {
+  class Grappa {
+    define abstract void method1();
+  }
+}
+module mod2 extends mod0 {
+  class Grappa  {
+    define abstract void method2();
+  }
+}
+module mod extends mod1 {
+  class SS {
+    void main(String[] args) {
+       Grappa g = new Grappa();
+       g.method1();
+    }
+  }
+}
+module mod12.impl extends mod1, mod2 {
+  class Grappa  {
+    void method1() {
+       System.out.println("method1");
+       method2();
+    }
+    void method2() {
+       System.out.println("method2");
+       if (isX())
+          method1();
+    }
+  }
+}
+</PRE></TD></TR></TBODY></TABLE></P>
+<P>
+Without separation of specification modules and implementation modules,
+the interface of mod2 is visible from a client of mod1 (module mod).
+</P>
+<P>
+The second merit of separating specification modules and implementation modules is
+the decrease in compilation time.
+Because in compilation of a client module using an interface of a specification module
+only the specification module is needed to be referred, the compilation speeds up.
+In addition, when an implementation module is changed, there is no need to recompile client modules,
+but only the recompilation of the implementation module is necessary.
+As a consequence, the time to build the program is significantly decreased.
+</P>
+<P>
+Though the merit like this is also obtainable using the Java interface,
+we could recognize that the merit can be obtained by generalizing the idea to modules.
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H2 class=section><A name=refactorProcess></A>Refactoring Process</H2>
+<P>
+For analyzing the refactoring process afterwards,
+we tagged on the source in CVS at each turning point during the refactoring.
+The followings are the tags and corresponding refactorings:
+</P>
+<DIV class=tip>
+<P></P>
+<TABLE class=tip width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top align=middle width=25><IMG alt="tip" hspace=5
+      src="./stylesheet-images/tip.gif"></TD>
+    <TH vAlign=center align=left><B>FIX_1(only att-grappa-support.java using revision
+      1.1) The change of the inheritance base of the module grappaparser</B></TH></TR>
+  <TR>
+    <TD>&nbsp;</TD>
+    <TD vAlign=top align=left>
+      <P>Since there exists a constructor of the class Graph in the module att.grappa.graph.impl,
+by declaring abstract constructor in the module att.grappa.base,
+we made the module grappaparser independent from the module att.grappa.graph.impl.
+As a result, the module grappaparser became dependent on the modules lexer and att.grappa.attribute.
+We also changed the file name of the module grappaparser from parser.java to grappaparser.java.
+  </P></TD></TR></TBODY></TABLE></DIV>
+<DIV class=tip>
+<P></P>
+<TABLE class=tip width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top align=middle width=25><IMG alt="tip" hspace=5
+      src="./stylesheet-images/tip.gif"></TD>
+    <TH vAlign=center align=left><B>FIX_2
+The extraction of geometrical classes to att.grappa.geom</B></TH></TR>
+  <TR>
+    <TD>&nbsp;</TD>
+    <TD vAlign=top align=left>
+      <P>
+We extracted some geometrical classes GrappaBox, GrappaPoint, etc. in the modules like
+att.grappa.support to the module att.grappa.geom.
+      </P></TD></TR></TBODY></TABLE></DIV>
+<DIV class=tip>
+<P></P>
+<TABLE class=tip width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top align=middle width=25><IMG alt="tip" hspace=5
+      src="./stylesheet-images/tip.gif"></TD>
+    <TH vAlign=center align=left><B>FIX_3
+The change of the inheritance base of the module att.grappa.graph.impl
+to att.grappa.element.impl</B></TH></TR>
+  <TR>
+    <TD>&nbsp;</TD>
+    <TD vAlign=top align=left>
+      <P>
+We changed the module att.grappa.graph.impl inheriting the module
+att.grappa.subgraph.impl to inherit the module
+att.grappa.element.impl.
+      </P></TD></TR></TBODY></TABLE></DIV>
+<DIV class=tip>
+<P></P>
+<TABLE class=tip width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top align=middle width=25><IMG alt="tip" hspace=5
+      src="./stylesheet-images/tip.gif"></TD>
+    <TH vAlign=center align=left><B>FIX_4
+The trial of change the inheritance base of the module
+att.grappa.nexus.impl to att.grappa.element.impl and att.grappa.patchwork</B></TH></TR>
+  <TR>
+    <TD>&nbsp;</TD>
+    <TD vAlign=top align=left>
+      <P>
+It seemed that
+the module att.grappa.nexus.impl did not need to inherit the module
+att.grappa.edge.impl by nature.
+We tried to change it instead of inheriting att.grappa.edge.impl
+to inherit the module att.grappa.element.impl, but
+the module att.grappa.nexus.impl was referring an implementation of the module
+att.grappa.edge.impl (direct reference of a field),
+we suspended the change.
+      </P></TD></TR></TBODY></TABLE></DIV>
+<DIV class=tip>
+<P></P>
+<TABLE class=tip width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top align=middle width=25><IMG alt="tip" hspace=5
+      src="./stylesheet-images/tip.gif"></TD>
+    <TH vAlign=center align=left><B>FIX_5
+Purge of empty method only with asserts.
+</B></TH></TR>
+  <TR>
+    <TD>&nbsp;</TD>
+    <TD vAlign=top align=left>
+      <P>
+Once we had misunderstood compile errors of other cause as errors
+for abstract methods by define abstract, and
+had edited the methods as a dummy implementation having only assert false;.
+We edited back them to abstract methods, except the following case.
+As we stated in <A href="#implementingJavaInterface"><I>Note on disability to implement Java interfaces on MixJuice</I></A>,
+because of the limitation of MixJuice, the class Subgraph had implemented java.util.Comparator interface in Java
+but the parent class Element instead of Subgraph implemented java.util.Comparator interface in MixJuice.
+As a side effect, the calls of Node.compare and Edge.compare have become logically possible,
+though they are bugs in reality.
+These methods, thus, has been keeping their contents assert false; as before.
+</P></TD></TR></TBODY></TABLE></DIV>
+<DIV class=tip>
+<P></P>
+<TABLE class=tip width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top align=middle width=25><IMG alt="tip" hspace=5
+      src="./stylesheet-images/tip.gif"></TD>
+    <TH vAlign=center align=left><B>FIX_6
+Separation of dumping parts of states of each element(see <A
+      href="#extractDump">section <I>Separation of Dump Function</I></A>)</B></TH></TR>
+  <TR>
+    <TD>&nbsp;</TD>
+    <TD vAlign=top align=left>
+      <P>
+We moved the methods related to dump distributing in
+the modules
+att.grappa.element.impl, att.grappa.node.impl, att.grappa.graph.impl,
+att.grappa.subgraph.impl, and att.grappa.edge.impl
+to the module att.grappa.dump.</P></TD></TR></TBODY></TABLE></DIV>
+<DIV class=tip>
+<P></P>
+<TABLE class=tip width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top align=middle width=25><IMG alt="tip" hspace=5
+      src="./stylesheet-images/tip.gif"></TD>
+    <TH vAlign=center align=left><B>FIX_7
+Separation of parsing part of nexus</B></TH></TR>
+  <TR>
+    <TD>&nbsp;</TD>
+    <TD vAlign=top align=left>
+      <P>
+We separated the parsing process in nexus into
+att.grappa.nexus.impl.parser.
+Actually, att.grappa.patchwork had almost nothing with parsing.
+Instead of it, there are some methods related to dump in
+att.grappa.patchwork.</P></TD></TR></TBODY></TABLE></DIV>
+<DIV class=tip>
+<P></P>
+<TABLE class=tip width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top align=middle width=25><IMG alt="tip" hspace=5
+      src="./stylesheet-images/tip.gif"></TD>
+    <TH vAlign=center align=left><B>FIX_8 ui - make panel MVC - part 1(see <A
+      href="#makeItMVC"><I>Support for MVC Implementation by Module Mechanism</I></A>)</B></TH></TR>
+  <TR>
+    <TD>&nbsp;</TD>
+    <TD vAlign=top align=left>
+      <P>
+We made att.grappa.panel.impl responsible to M and V, att.grappa.ui to C.
+According to the change,
+while ui had inherited panel before the refactoring step,
+att.grappa.panel.impl has been inheriting att.grappa.ui.
+At the same time, a higher module att.grappa.panel.impl also has been changed
+to inherit att.grappa.nexus.impl.
+</P></TD></TR></TBODY></TABLE></DIV>
+<DIV class=tip>
+<P></P>
+<TABLE class=tip width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top align=middle width=25><IMG alt="tip" hspace=5
+      src="./stylesheet-images/tip.gif"></TD>
+    <TH vAlign=center align=left><B>FIX_9 ui - make panel MVC - part 2(see <A
+      href="#makeItMVC"><I>Support for MVC Implementation by Module Mechanism</I></A>)</B></TH></TR>
+  <TR>
+    <TD>&nbsp;</TD>
+    <TD vAlign=top align=left>
+      <P>
+In part 1, the class GrappaPanel was responsible to both V and C,
+the declaration time of the class GrappaPanel, it was required to do implements
+*Listener interfaces.
+Consequently, it was necessary to import the modules related to events for att.grappa.panel.impl.
+To avoid the problem, we introduced a new class GrappaPanelControl which inherit the *Listener
+interfaces of GrappaPanel and to which the role to register callbacks moves.
+</P></TD></TR></TBODY></TABLE></DIV>
+<DIV class=tip>
+<P></P>
+<TABLE class=tip width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD vAlign=top align=middle width=25><IMG alt="tip" hspace=5
+      src="./stylesheet-images/tip.gif"></TD>
+    <TH vAlign=center align=left><B>FIX_10 Removal of unnecessary code</B></TH></TR>
+  <TR>
+    <TD>&nbsp;</TD>
+    <TD vAlign=top align=left>
+      <P>
+We removed unnecessary code and updated the build file.
+</P></TD></TR></TBODY></TABLE></DIV></DIV></DIV></DIV>
+<DIV class=chapter>
+<HR>
+
+<H2><A name=howToBuild></A>How To Run the Ported Program</H2>
+<P>
+In this section, we will explain how to compile Grappa ported to MixJuice.
+</P>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=expand></A>Expanding Source</H3>
+<P>
+Expanding the attached mjGrappa.jar with jar command results
+a directory named mjGrappa including source under it.
+$MJGRAPPA denotes the mjGrappa directory.
+</P>
+<PRE class=programlisting>% jar xvf mjGrappa.jar
+% cd mjGrappa
+% MJGRAPPA=$PWD
+</PRE></TD></TR></TBODY></TABLE></P>
+<P>The following is the list of files:
+<DIV class=table><A name=fileContents></A>
+<P><B>figure 1. list of files</B></P>
+<TABLE class=CALSTABLE cellSpacing=0 cellPadding=4 bgColor=#e0e0e0 border=1>
+  <THEAD>
+  <TR>
+    <TH vAlign=center align=left>directory</TH>
+    <TH vAlign=center align=left>contents</TH></TR></THEAD>
+  <TBODY>
+  <TR>
+    <TD vAlign=center align=left>src/jdk1.2</TD>
+    <TD vAlign=center align=left>Java Grappa after refactoring</TD></TR>
+  <TR>
+    <TD vAlign=center align=left>src/jdk1.2/java_cup</TD>
+    <TD vAlign=center align=left>a part of source code above used also from MixJuice ported Grappa</TD></TR>
+  <TR>
+    <TD vAlign=center align=left>DEMO/jdk1.2</TD>
+    <TD vAlign=center align=left>demo programs written in Java</TD></TR>
+  <TR>
+    <TD vAlign=center align=left>javawrap</TD>
+    <TD vAlign=center
+    align=left>Java classes unusable directly from MixJuice or implementations of interfaces</TD></TR>
+  <TR>
+    <TD vAlign=center align=left>demo.java</TD>
+    <TD vAlign=center align=left>DEMO/jdk1.2 directory demos ported to MixJuice</TD></TR>
+  <TR>
+    <TD vAlign=center align=left>other *.java's</TD>
+    <TD vAlign=center align=left>Grappa ported to MixJuice</TD></TR>
+  <TR>
+    <TD vAlign=center align=left>build.xml</TD>
+    <TD vAlign=center
+  align=left>build file to build and/or run Grappa ported to MixJuice</TD></TR></TBODY></TABLE></DIV>
+<P></P>
+<P>Here shows the <A
+href="images/module-hier.pdf"
+target=_top>module structure</A> of Grappa after ported to MixJuice.</P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=build></A>How to Build</H3>
+<P>
+Create a file named ant.properties in $MJGRAPPA including the following contents according to your environment.
+<PRE class=programlisting>MJ_EXT=.cmd                     <A name=MJ_EXT><B>(1)</B></A>
+JAVA_EXT=.exe                   <A name=JAVA_EXT><B>(2)</B></A>
+JAVA_HOME=C:\opt\j2sdk1.4.2     <A name=JAVA_HOME><B>(3)</B></A>
+MJ_HOME=C:\Program Files\mj     <A name=MJ_HOME><B>(4)</B></A>
+</PRE></TD></TR></TBODY></TABLE>
+<DIV class=calloutlist>
+<DL compact>
+  <DT><A
+  href="#MJ_EXT"><B>(1)</B></A>
+  <DD>In case of UNIX, this should be an empty string.
+  <DT><A
+  href="#JAVA_EXT"><B>(2)</B></A>
+  <DD>In case of UNIX, this should be an empty string.
+  <DT><A
+  href="#JAVA_HOME"><B>(3)</B></A>
+  <DD>Specify the directory in which JDK is installed.
+  <DT><A
+  href="#MJ_HOME"><B>(4)</B></A>
+  <DD>Specify the directory in which MJ is installed.</DD></DL></DIV>
+<P></P>
+<P>
+On the environment where ant can be run, do as the following:
+</P>
+<PRE class=programlisting>% ant
+</PRE></TD></TR></TBODY></TABLE></P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=howToRun></A>How to Run</H3>
+<P>Do as the following:
+<PRE class=programlisting>% ant run
+</PRE></TD></TR></TBODY></TABLE></P>
+<P>
+If the window like the following picture appears, it runs correctly.
+<DIV class=figure><A name=demo-win></A>
+<P><IMG src="images/demo-win.png"></P>
+<P><B>figure 1. screen shot of demo</B></P></DIV>
+<P></P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=restriction></A>Restriction</H3>
+<P>
+The original Grappa enables anti-aliasing, but on porting MixJuice we disabled anti-aliasing.
+The reason is the following.
+To enable anti-aliasing it is required to use some constants of java.awt.RenderingHints.Key type
+like java.awt.RenderingHints.VALUE_ANTIALIAS_ON, and it forces us to care about the problem
+explained in <A
+href="#dollar">section <I>The Classes with $ in Their Names</I> of chapter <I>Porting</I></A>
+We decided to omit the care and to comment out the part since the problem is not so influential.
+</P>
+<P>
+Currently, we don't see any other problems.
+</P></DIV></DIV>
+<DIV class=chapter>
+<HR>
+
+<H2><A name=conclusion></A>Discussion</H2>
+<P>
+In this chapter, we will give the knowledges and discussions from the tasks including the phase 2.
+The phase 1 was merely a thoughtless porting to MixJuice, and it could not use the potential of MixJuice.
+In the phase 2, we refactored the source to get the merit of MixJuice, and could get some knowledge to be given here.
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=AEN446></A>Is it possible to divide the code into reusable units?</H3>
+<P>
+With the current MixJuice, it is hard to create reusable modules,
+but, in some sense, it is possible to divide into maintainable units.
+The form of reuse to which MixJuice aims is considered to be likely with mixin,
+but it seems hard to reuse as mixin from the two reasons below.
+</P>
+<P>
+The first reason is that, as it is mentioned in MixJuice FAQ,
+a difference is only applicable to a specific class.
+For example, assuming that there is a linked list module,
+it is not possible to apply the module to multiple classes.
+We hope that a difference could be applied to various classes
+like a Java interface is implemented to various classes,
+then a module will become more reusable.
+</P>
+<P>
+The second reason is that it can not be specified
+whether a certain module should be applied or not with each instantiation,
+and the application influences the whole program.
+(Is it the case of 'I want to use in an application both existing class hierarchy and
+extended class hierarchy' in the FAQ?)
+For example, if there is a class DomNode in a module m and we extend it in a module m2,
+we sometimes need both instances; one applied m2 and one not applied m2.
+</P>
+<P>
+From the discussion above we conclude that
+the current difference-based module mechanism of MixJuice is better to
+ease the extension of existing program or
+to divide some complex class collaborations into simpler collaborations
+than to increase productivity reusing the modules.
+In other words, it is literally good for development based on difference (not reuse).
+</P>
+<P>
+We classify the forms of reuse below.
+The mixin we stated here is supposed as equivalent to
+Self(<A href="http://research.sun.com/research/self/"
+target=_top>http://research.sun.com/research/self/</A>)'s mixin (described in <A
+href="http://www.cs.ucsb.edu/labs/oocsb/self/language.html" target=_top>The Self
+Programmer's Reference Manual</A> 3.2.3 Mixins)</P>
+<DIV class=table><A name=mjFeature></A>
+<P><B>table 1. The forms of reuse</B></P>
+<TABLE class=CALSTABLE cellSpacing=0 cellPadding=4 bgColor=#e0e0e0 border=1>
+  <THEAD>
+  <TR>
+    <TH vAlign=center align=left>mechanism</TH>
+    <TH vAlign=center align=left>form of reuse</TH>
+    <TH vAlign=center align=left>easiness to reuse</TH></TR></THEAD>
+  <TBODY>
+  <TR>
+    <TD vAlign=center align=left>class inheritance</TD>
+    <TD vAlign=center align=left>reuse the code of parent classes in child classes</TD>
+    <TD vAlign=center align=left>low</TD></TR>
+  <TR>
+    <TD vAlign=center align=left>difference-based module of MixJuice</TD>
+    <TD vAlign=center align=left>reuse the code of parent modules in child modules</TD>
+    <TD vAlign=center align=left>middle</TD></TR>
+  <TR>
+    <TD vAlign=center align=left>mixin</TD>
+    <TD vAlign=center align=left>reuse mixin in various classes</TD>
+    <TD vAlign=center align=left>high</TD></TR></TBODY></TABLE></DIV></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=AEN476></A>Is it possible to divide the code into units easy to maintain?</H3>
+<P>
+In this section, we will discuss the maintainability from the view point of easiness
+to fix bugs and to change for function extension.</P>
+<P>
+About the change at the source code level,
+it is simply necessary to fix bugs if there are bugs.
+There is no distinction between MixJuice and Java, in the case.
+Suppose there be the following program.
+The implementation of the method Job.execute() is wrong,
+and the correct behavior is to print &quot;no bug&quot;.
+</P>
+<DIV class=example><A name=originalSource></A>
+<P><B>example 1. original source</B></P>
+<PRE class=programlisting>module mod {
+  define class Job {
+    define abstract Job();
+    define abstract void execute();
+  }
+}
+module mod.impl extends mod {
+  class Job {
+    Job(){}
+    define void enter() {}
+    define void leave() {}
+    void execute(){
+      enter();
+      System.out.println("bug");
+      leave();
+    }
+  }
+}
+module m.all extends mod {
+  class SS {
+    void main(String[] args) {
+      Job job = new Job();
+      job.execute();
+    }
+  }
+}
+</PRE></TD></TR></TBODY></TABLE></DIV>
+<P>
+To fix the bug, it is natural to correct the string &quot;bug&quot; in the original source
+to &quot;no bug&quot;.
+Therefore, if the correction of original source is possible,
+it is not preferable to fix bug by adding the new module like the following:
+</P>
+<PRE class=programlisting>module mod.impl.fix extends mod.impl {
+  class Job {
+    void execute(){
+      enter();
+      System.out.println("no bug");
+      leave();
+    }
+  }
+}
+</PRE></TD></TR></TBODY></TABLE>
+<P>
+In the case that the original source can not be changed,
+the addition of the module mod.impl.fix above fixes the bug.
+However, the correctness of the implementation of the module mod.impl.fix
+depends on the fact the original code is available.
+If the original source is hidden, it is dangerous to replace the method
+with the module mod.impl.fix.
+In addition, if the original source is publicly available, it is usually possible
+to correct the original source.
+</P>
+<P>
+On the other hand, if the reason to modify the code is not for bug fixes
+but for extensions or customizes to a specific needs,
+the difference based module of MixJuice is very useful.
+There is no reason to preserve the code for a bug, and it is preferable
+to change the original source code with a bug.
+In contrast, in case of extensions for a specific needs or so, while modification is required,
+there is a reason to preserve the original code.
+Usual way to carry out it is by branching the source code or by conditional compilation,
+but MixJuice can deal with it as addition of modules.
+The maintainability of branched versions or sources with many conditional compilation is rather low.
+</P>
+<P>To extend the previous <A
+href="#originalSource">example 1</A>
+to print &quot;extension&quot; instead of &quot;bug&quot;,
+modify the module mod.impl at first as the following:
+</P>
+<PRE class=programlisting>module mod.impl extends mod {
+  class Job {
+    Job(){}
+    define void enter() {}
+    define void leave() {}
+    define void doIt() { // method extraction
+      System.out.println("bug");
+    }
+    void execute(){
+      enter();
+      doIt(); // call of the extracted method
+      leave();
+    }
+  }
+}
+</PRE></TD></TR></TBODY></TABLE>
+<P>then, add the following module:
+</P>
+<PRE class=programlisting>module mod.impl.ext extends mod.impl {
+  class Job {
+    void doIt(){
+      System.out.println("extension");
+    }
+  }
+}
+</PRE></TD></TR></TBODY></TABLE></P>
+<P>
+In object-oriented programming, by creating subclasses,
+it is possible to make extension as similar to the module addition.
+There are, however, advantages gained by MixJuice module addition.
+</P>
+<DIV class=table><A name=extAdv></A>
+<P><B>table 2. advantages of MixJuice for extension</B></P>
+<TABLE class=CALSTABLE cellSpacing=0 cellPadding=4 bgColor=#e0e0e0 border=1>
+  <THEAD>
+  <TR>
+    <TH vAlign=center align=left>merit</TH>
+    <TH vAlign=center align=left>contents</TH></TR></THEAD>
+  <TBODY>
+  <TR>
+    <TD vAlign=center align=left>instantiation</TD>
+    <TD vAlign=center
+      align=left>
+Extending with subclassing, the points of instantiation must be changed.
+The extension is predictable,
+the instantiations can be localized with, for example, factory method.
+Otherwise, many points should be modified.
+Using MixJuice module can, without influencing instantiations,
+change the behavior, if the arguments of constructors remain the same.
+</TD></TR>
+  <TR>
+    <TD vAlign=center align=left>extension of classes other than most derived</TD>
+    <TD vAlign=center
+      align=left>
+Extending classes with derived classes by subclassing requires a lot of changes in the original code.
+On the other hand, by using MixJuice module extending classes other than most derived is also easy.
+</TD></TR>
+  <TR>
+    <TD vAlign=center align=left>putting extended parts together</TD>
+    <TD vAlign=center
+      align=left>
+When an extension needs changes of multiple classes,
+MixJuice can group them by describing the changes of each class in a module.
+This makes easy to understand the relationship of the changes of classes and to maintain them.
+</TD></TR></TBODY></TABLE></DIV>
+<P></P>
+<P>
+As stated above, MixJuice can extend methods with method addition,
+but using the function too much makes readability decreased and traceability in debugging harder.
+In Java, sometimes a process is fragmented in parent and child classes.
+In the following example, the behavior of the child class when it accept an event
+can not be understood without reading the methods handle in each of parent and child classes.
+</P>
+<PRE class=programlisting>  // parent class
+  public void handle(Event e) {
+    // ...
+  }
+  // child class
+  public void handle(Event e) {
+    super(e);
+    // ...
+  }
+</PRE></TD></TR></TBODY></TABLE>
+<P>
+In MixJuice, the fragmentation occurs by not only the class inheritances
+ but also module inheritances.
+It means that the module mechanism increases the maintainability to some degree,
+but decreases if it is used too much.
+We conclude that the appropriate use of MixJuice difference-based module enables to
+manage the extensions, which must be in multiple source branches in Java,
+in the easily maintainable unit.
+</P>
+<P>
+In addition, concerning the maintainability, the documentation is an important part.
+The informations needed for maintenance are
+the difference-based module provides what kind of difference and
+the combination of difference-based module results what kind of class.
+Especially, in the latter case, the documents need be merged as the programs do.
+In the example below, the semantic interface of the fortune method varies
+with according to the application of the module mod.ext.
+Therefore, the way of documentation about interpretation of arguments, exceptions thrown,
+result, etc. and the system of creating documentation is required.
+</P>
+<PRE class=programlisting>module mod {
+  define class Fortune {
+    define Fortune() {}
+    /**
+     * Tell fortune.
+     * @return "happy" or "unhappy"
+     */
+    define String fortune(int seed) {
+       switch (Math.abs(seed % 5)) {
+         case 0:
+           return "happy";
+       }
+       return "unhappy";
+    }
+  }
+}
+module mod.ext extends mod {
+  class Fortune {
+    /**
+     * Tell fortune.
+     * @return "heartbreak" or "lose money" or {@original}
+     */
+    String fortune(int seed) {
+       switch (Math.abs(seed % 5)) {
+         case 1:
+           return "heartbreak";
+         case 2:
+           return "lose money";
+       }
+       return original(seed);
+    }
+  }
+}
+module mod.main extends mod {
+  class SS {
+    void main(String[] str) {
+      Fortune f = new Fortune();
+      for (int i = -5; i &lt; 6; i++)
+        System.out.println(f.fortune(i));
+    }
+  }
+}
+</PRE></TD></TR></TBODY></TABLE></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=AEN513></A>
+Is it possible to divide the code into units easy to hide information?
+</H3>
+<P>
+The unit of information hiding is considered appropriate, basically.
+However, the inheritance of a module means inheritance of the name space,
+the terminal module, which inherit many modules, can be suffered with name collision;
+as in Java importing java.awt.* and java.util.* causes a collision of List.
+The collision can be avoided by FQN and it is not fatal, but
+the numbers get the more, the maintainability of program become the lower.
+In MixJuice, the name spaces are inherited with rather big units, namely modules,
+there is a possibility that in a huge program the problem of collisions of names will be critical.
+Thus, to use MixJuice in a huge project it is required to be easy
+for developers of lower ability than average level to handle without failure
+and it is required an safety device like limitation.
+</P>
+<P>
+The unit of information hiding is appropriate, but the unit is module ,
+and the module is also a unit of dividing interfaces with aspect and
+a unit of extending a program.
+The module has, as stated above, various roles,
+and the appropriate division of modules can vary with the roles.
+For example, we divide Java program into modules with hiding information and at the same time
+according to the aspects.
+</P>
+<PRE class=programlisting>package test;
+
+public class Sample {
+    public static Sample createSample() {
+        return new SampleImpl();
+    }
+    protected Sample() {
+    }
+
+    /*  aspect A */
+    public void methodA() {
+        methodAut();
+    }
+    private void methodAut() {
+    }
+
+    /*  aspect B */
+    public void methodB() {
+    }
+}
+
+class SampleImpl extends Sample {
+    SampleImpl() {
+        super();
+    }
+}
+</PRE></TD></TR></TBODY></TABLE>
+<P>
+First of all, considering information hiding requires at least three layered modules
+for public, protected, private (here we ignore the package scope).
+Then, considering aspects requires to divide specification modules also into three
+as AandB, A and B.
+As a consequence, there must be 6 modules;
+6 is not from 3+3, it can be 7 or more.
+</P>
+<PRE class=programlisting>module m { // specification module common to aspect A,B
+  define class SampleFactory {
+    define SampleFactory() {}
+    define abstract Sample createSample();
+  }
+  define class Sample {
+  }
+}
+module mA extends m { // specification module for aspect A
+  class Sample {
+    define abstract void methodA();
+  }
+}
+module mB extends m { // specification module for aspect B
+  class Sample {
+    define abstract void methodB();
+  }
+}
+module m.protect extends mA, mB { // specification module for implementer of subclass of Sample
+  class Sample {
+    define abstract Sample();
+  }
+}
+module m.sub extends m.protect { // implementation module for SampleImpl
+  define class SampleImpl extends Sample {
+    define SampleImpl() {
+      super();
+    }
+  }
+}
+module m.impl extends m.sub { // implementation module for Sample
+  class SampleFactory {
+    Sample createSample() {
+      return new SampleImpl();
+    }
+  }
+  class Sample {
+    Sample() {
+    }
+    define void methodAut() {
+    }
+    void methodA() {
+      methodAut();
+    }
+    void methodB() {
+    }
+  }
+}
+</PRE></TD></TR></TBODY></TABLE>
+<P>
+As in the example, using modules for various usages segments modules.
+Too much segmentation makes program hard to maintain.
+It is possible to use module as the unit of information hiding,
+but it is rather realistic to use other methods (using access specifier public etc., for example)
+for the purpose.
+It also eases to think about module division with reducing the things to be considered.
+</P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=AEN521></A>
+Is it possible to divide the code into functional units?</H3>
+<P>
+MixJuice is the best at the division into functional units,
+and the difference-based module offers advantages.
+At the time of porting Grappa, we added:</P>
+<P></P>
+<UL>
+  <LI style="LIST-STYLE-TYPE: disc">
+the function to output in dot format to the descendant classes of the Element class
+by the module att.grappa.dump,
+  </LI>
+  <LI style="LIST-STYLE-TYPE: disc">
+the GUI function to the class GrappaPanel which had had only function to output graph
+by the module att.grappa.ui, and
+  </li>
+  <LI style="LIST-STYLE-TYPE: disc">
+the constants to the interface GrappaConstants aggregating constants
+by the modules att.grappa.constants.highlightSettings etc..
+  </LI>
+</UL>
+<P>
+Since the task was a porting Grappa from the original Java implementation,
+it is appropriate to call it separation rather than extension,
+but anyway, it is possible to extend by functional unit.
+</P>
+<P>
+In addition, because the units of extension are not classes or interfaces but
+modules collecting multiple classes and interfaces,
+the whole extended functions can be easily grasped.
+</P>
+<P>
+Grappa has some implementations that there are several functions (aspects) in each method.
+It is a situation commonly seen.
+There are also many cases that a method interface lie across several aspects.
+We will give some discussions about such cases.
+</P>
+<DIV class=section>
+<HR>
+
+<H4 class=section><A name=AEN534></A>The case aspects can not be separated clearly</H4>
+<P>
+As shown in the picture below, in the case where the class Z has
+the method A belonging to the aspect A,
+the method C belonging to the aspect C, and the method B positioning in between A and C,
+it is difficult to decide how to divide them into modules.
+Generally, a class is not made as a unit of aspect,
+the real programs is often with the case.
+Moreover, if this kind of overwraps appears here and there,
+the code seems in state of deadlock,
+we feel suffering from how to divide into modules.
+</P>
+<DIV class=figure><A name=crossAspect></A>
+<P><IMG src="images/cross-aspect_en.png"></P>
+<P><B>figure 1. The case aspects can not be separated clearly</B></P></DIV>
+<P>
+If the method B depends both aspect A and C for implementation,
+it is solvable by division into a specification module and an implementation module.
+However, the method B as interface positioning in between aspect A and C,
+The solution can be one of the followings:
+</P>
+<P></P>
+<OL type=1>
+  <LI><A name=xX1></A>
+Divide into three modules;
+module A (method A), module AC(method B), and module C(method C).</LI>
+  <LI><A name=xX2></A>
+Make only a module AC(methods A,B, and C).</LI>
+  <LI>
+Divide into two modules;
+module A-(method A) and module C(methods B and C), or vice versa.</LI>
+</OL>
+<P>
+For the development of a framework, strict module division like
+<A href="#xX1">1</A> seems preferable.
+On the other hand, for much of application development,
+strict module division (and Java packaging, too) has less important meaning,
+and it is realistic to choose not to divide like <A href="#xX2">2</A>
+rather than spending time for module division.
+</P>
+<P>
+In the porting, the method createElement of the class Subgraph is one of the ambiguous methods
+hard to decide to which module it should belong.
+The reason is the following:
+<DIV class=table><A name=ambMod></A>
+<P><B>table 3. The reason why the createElement method is ambiguous which module it should be in </B></P>
+<TABLE class=CALSTABLE cellSpacing=0 cellPadding=4 bgColor=#e0e0e0 border=1>
+  <THEAD>
+  <TR>
+    <TH vAlign=center align=left>module</TH>
+    <TH vAlign=center align=left>the reason to be in the module</TH></TR></THEAD>
+  <TBODY>
+  <TR>
+    <TD vAlign=center align=left>att.grappa.attribute</TD>
+    <TD vAlign=center
+      align=left>
+The method has an argument of type Attribute, automatically it can belong to the module
+collecting operations of attributes.
+</TD></TR>
+  <TR>
+    <TD vAlign=center align=left>att.grappa.base</TD>
+    <TD vAlign=center
+      align=left>
+Considering the function of the method (appending graph elements to a subgraph),
+it is not the operation of attributes but a characteristic function of the class Subgraph.
+If we put importance on it, the method should belong to the module collecting
+core methods representing graph structure.
+</TD></TR>
+  <TR>
+    <TD vAlign=center align=left>att.grappa.ui</TD>
+    <TD vAlign=center
+      align=left>
+The method is called only from the method related to UI, and it would mean
+the method is only needed for realization of UI.
+In such cases, the method should belong to the module.
+</TD></TR></TBODY></TABLE></DIV>
+<P></P></DIV></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=AEN569></A>
+Is it possible to divide into the unit suitable for separate compilation?
+</H3>
+<P>
+It is possible to employ separate compilation, but it requires advanced build system.
+For example, we consider the case of 1 module per 1 source file.
+There is the dependency that parent modules must be compiled before child modules,
+only the build systems which understands the inheritance relations of module (or source file)
+can compile in the required order.
+As a result, for safety, all source files are recompiled.
+On the other hand, to understand the inheritance relations of modules,
+it is paradoxically necessary to compile them.
+</P>
+<P>
+To solve the problem, it needs to prepare an IDE which always grasp the dependency relations
+between modules and minimize the compilation time.
+Another solution can be obtained by making a path to grasp the dependency relations before build,
+like makedepend and make used in compiling X window.
+</P>
+<P>
+In addition, separating specification modules and implementation modules minimize the
+necessity of recompilations.
+</P>
+<P>
+The merit that it is possible to select modules on run time is worth mentioning.
+For example, you can use it as the following:
+<P></P>
+<UL>
+  <LI style="LIST-STYLE-TYPE: disc">
+It is possible to use stub implementation modules on the unit test,
+and to use regular implementation modules after the combined test.
+</LI>
+  <LI style="LIST-STYLE-TYPE: disc">
+It is possible to choose depending on the executed environment from implementations;
+one tuned to speed, or one tuned to memory.
+</LI></UL>
+<P></P></DIV>
+<DIV class=section>
+<HR>
+
+<H3 class=section><A name=AEN580></A>
+Is it possible to divide into units according to the division of work?
+</H3>
+<P>
+If one can suppose to divide into specification modules and implementation modules,
+it is possible to divide tasks according to the modules.
+Otherwise, the recompilations of derived submodules are required
+each time the implementation is changed,
+it is difficult to share the work (or to develop simultaneously).
+</P>
+<P>
+In usual application development is carried out in two orthogonal axes.
+</P>
+<DIV class=figure><A name=cross-dir></A>
+<P><IMG src="images/cross-dir_en.png"></P>
+<P><B>figure 2. The result of refactoring in MixJuice</B></P></DIV>
+<P>
+Creating base modules from the implementations of architecture side
+and creating submodules for each application functions
+seems to make the division of application development smooth;
+the division according to the functional units of the application.
+For example, to create DataAccessObject for accessing a database,
+the following code make the partition of development easy:
+</P>
+<PRE class=programlisting>module dao {
+  define class DAO {
+    define void open() {
+      //...
+    }
+    define java.sql.Connection getConnection() {
+      // ...
+      return null;
+    }
+    define void commit() {
+      //...
+    }
+    define void rollback() {
+      //...
+    }
+    define void close() {
+      //...
+    }
+  }
+}
+module dao.addUser extends dao {
+  class DAO {
+    define void addUser(java.util.Map userData) {
+      //...
+    }
+  }
+}
+module dao.buy extends dao {
+  class DAO {
+    define void buy(int userId, int productId, int amount) {
+      //...
+    }
+  }
+}
+</PRE></TD></TR></TBODY></TABLE>
+<P>
+In this example, the module dao should be developed first as the application architecture,
+then each person responsible to an application function implements the function
+as the submodules; dao.addUser or dao.buy.
+As we seen, the difference-based module of MixJuice adapt to the typical development style
+and make it possible to develop applications in natural pattern.
+</P></DIV></DIV></DIV>
+<hr>
+<table width="100%"> <tr><td>
+<img src="./aist-images/img002.gif" alt="mj-logo">
+</td><td>Copyright(C) National Institute of Advanced Industrial Science and Technology (AIST). All rights reserved. </td><td>
+<div class="last-update"> Last updated:
+$Date: 2003/12/26 04:16:52 $
+</div>
+<div class="header-link">
+[<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Top page</a>]
+</div>
+</td></table>
+</BODY></HTML>

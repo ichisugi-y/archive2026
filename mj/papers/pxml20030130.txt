@@ -1,0 +1,560 @@
+   pxml plug-in チュートリアル
+   ---------------------------
+					産業技術総合研究所 情報処理研究部門
+					一杉裕志      y-ichisugi@aist.go.jp
+					http://staff.aist.go.jp/y-ichisugi/
+								2003-01-30
+◆概要
+ pxml plug-in は、 XML の処理を非常に簡単にする構文を、
+Java 言語に追加するものです。
+追加された構文を使うことによって、DOM や XSLT で行うような処理を、
+簡潔に、素直に、より間違いにくく記述することが可能です。
+具体的には下記の構文が、 Java 言語に追加されます。
+
+	Ｓ式風のシンタックス(pxml)によるテンプレート記述構文
+	ループ構文 foreach
+	タグリテラル
+	XPath 風の検索機構
+	名前空間宣言
+
+ pxml plug-in は、我々が開発したシステムである EPP および MixJuice と
+協調して動作します。
+
+
+◆開発の現状
+ 現在、最初のバージョンが動いています。
+ 論文、 Web 上等での公表はまだ行っていません。
+
+ 研究・開発パートナー、ビジネスパートナーを募集中です。
+ 特に、 Java プログラミングや XML 処理の現場で活躍されている企業の方と
+コラボレーションしていくことを強く望んでいます。
+
+
+◆ pxml plug-in と EPP, MixJuice
+ pxml plug-in は、 EPP に追加する plug-in の１つです。
+
+ EPP （Extensible Java Pre-Processor、拡張可能 Java プリプロセッサ）は、
+Java 言語に新しい機能を簡単に追加できるプリプロセッサです。
+EPP に言語拡張 plug-in を追加することで、
+オリジナルの Java 言語にないさまざまな言語機能が利用可能になります。
+
+さまざまな plug-in を、 pxml plug-in と同時に追加して利用することも可能です。
+
+例えば MixJuice 言語は、
+「差分ベースモジュール」と呼ぶモジュール機構を採用した、拡張 Java 言語です。
+MixJuice のコンパイラも EPP を用いて実現されているため、
+pxml plug-in を MixJuice コンパイラに追加して利用することも可能です。
+
+EPP と MixJuice についてはそれぞれ下記の URL を参照して下さい。
+	http://staff.aist.go.jp/y-ichisugi/epp/
+	http://staff.aist.go.jp/y-ichisugi/mj/
+
+
+◆クラス階層
+ pxml plug-in では、下記のクラスを使って XML 文書を表現します。
+
+	Node		--- 要素。
+	TextNode	--- テキストノード。 Node のサブクラス。
+	Attribute	--- 属性。
+	Tag		--- 要素名、属性名。名前空間の prefix を含む。
+	NameSpace	--- 名前空間。
+
+ DOM と同様に XML 文書の木構造すべてをメモリに保持して処理する
+スタイルになります。
+ API は、 DOM よりもはるかにシンプルで使いやすくなっています。
+
+
+◆ pxml を使った tree 表現
+ ` （バッククォート）のうしろに pxml と呼ぶＳ式風の表現を使って、
+ XML の tree をプログラム中に埋め込むことができます。
+例：
+
+	Node doc = `(html (head (title "Hello World"))
+			  (body
+			   (h1 "Hello World")
+			   (p "This is a test.")
+			   (a href="http://www.yahoo.co.jp/" yahoo)
+			   ));
+
+この例では、下記の XML 文書を表す tree が変数 doc に代入されます。
+
+	<html>
+	<head>
+	<title>Hello World</title>
+	</head>
+	<body>
+	<h1>Hello World</h1>
+	<p>This is a test.</p>
+	<a href="http://www.yahoo.co.jp/">yahoo</a>
+	</body>
+	</html>
+
+
+ pxml による表現は、 XML そのものを文字列リテラルとしてプログラム中に
+埋め込む方法に比べると、以下のようにさまざまな利点があります。
+
+	・多くの場合、 XML よりも簡潔に書ける。
+
+	・ well-formed な XML になることが保証される。
+
+	・ Java の文法と相性がよい。
+	例えば emacs の java-mode で快適に編集できる。
+
+	・プログラマーにとっては文法を習得しやすい。
+	単なるかっこと識別子と文字列リテラルの組み合わせ。
+
+	・閉じタグを書かなくてもよい。
+
+	・論理的構造に対応したインデントができる。
+
+	・空白の扱いに関するトラブルがない。
+
+	・ // や /* */ を使って、コメントが素直に書ける。
+	後述の #+comment を使えば、コメントのネストもできる。
+
+	・コンパイラが XML 文書構造を認識するので、
+	静的な validation が原理的に可能。
+
+
+ なお、この pxml という記法は、
+ SXML という scheme 用に考えられた XML 表現方法をベースに、
+少し拡張を加えたものです。
+SXML については下記の URL を参照下さい。
+
+	http://okmij.org/ftp/Scheme/SXML.html
+
+
+◆ #+comment によるコメントアウト
+pxml の中で、あるノードの直前に #+comment と書くことで、
+そのノードを無効にすることができます。
+#+comment はネストできます。
+
+例：
+	Node html = `(html (head (title "Hello World"))
+			  #+comment
+			  (body
+			   (h1 "Hello World")
+			   #+comment
+			   (p "This is a test.")
+			   (a href="http://www.yahoo.co.jp/" yahoo)
+			   ));
+
+この例は、結局下記のプログラムと同等です。
+
+	Node html = `(html (head (title "Hello World")));
+
+
+◆ tree の中の式の埋め込み
+ pxml で書かれたテンプレートの中に、
+, （コンマ）で始まる Java の式を埋め込むことができます。
+その式の型が Node 型であれば、そのノードが子要素として埋め込まれます。
+その式の型が String 型であれば、その値がテキストノードとして埋め込まれます。
+その式の型が int 型であれば、その数値が文字列に変換されてから、
+テキストノードとして埋め込まれます。
+
+例：
+	int i = 123;
+	Node n1 = `(th ,i);
+	Node n2 = `(table (tr ,n1));
+
+この例では、変数 n1, n2 にはそれぞれ下記の XML tree が入ります。
+
+	<th>123</th>
+	<table><tr><th>123</th></hr></table>
+
+
+◆ループ構文 foreach
+foreach 構文は、
+データ構造の要素に対するループを簡潔に記述できる構文です。
+パラメタ付き型を扱うため、
+型エラーは実行時ではなくコンパイル時に検出できます。
+
+例えば、ノード n の子要素に対するループは次のように書きます。
+
+	foreach (Node child in n.iter()){
+		System.out.println("child = " + child);
+	}
+
+
+この他に、３つの組み込みのデータ構造（配列 T[] 、 可変長配列 Vec<T> 、
+ハッシュ表 Table<T1,T2> ）の要素に対して、 foreach 構文でループすることが
+できます。
+例：
+	Vec<int> v = {10, 20, 30};
+	foreach (int x in v){
+		System.out.println(x);
+	}
+
+
+◆タグリテラル
+ 要素名と属性名は、 Tag というクラスで表現されます。
+ タグのリテラルは、 ` （バッククォート）の直後にタグ名を書くことで
+表現します。
+ タグ同士の同一性は、 == 演算子で高速に比較することができます。
+
+例：
+	Node tree = `(root (a "1") (b "2") (c "3"));
+	foreach (Node n in tree.iter()){
+		if (n.getTag() == `b){	// 要素名が b か？
+			System.out.println(n.get(0).getText()); // -> "2"
+		}
+	}
+	
+
+◆ノードの検索： pxml path
+ XPath と同様の機能を提供する pxml path 構文があります。
+ pxml path 構文は、 % で開始します。
+
+例：
+	%tag	--- 対象ノードの子要素のうち "tag" という要素名を持つ要素
+	%..	--- 対象ノードの親ノード
+	%_	--- 対象ノードのすべての子要素	（XPath の * に相当）
+	%/ /	--- 対象ノード以下のすべての要素（XPath の // に相当）
+
+ pxml path 構文を引数にとるメソッドには、 get1, get, iter があります。
+ node.get1(path) は、マッチするノードのうち最初の１つを値として返します。
+ node.get(path) は、マッチするノードすべてを、可変長配列 Vec<Node> の値として
+返します。
+ node.iter(path) は、マッチするノードに対するイテレータを返します。
+ 
+
+例：
+	Node books
+	        = `(books
+                     (book (title "title1") (auther "auther1") (price 2200))
+                     (book (title "title2") (auther "auther2") (price 3800)));
+	// すべての book の title を出力
+	foreach (Node title in books.iter(%book/title/_)){
+	  System.out.println("title: "+ title.getText());
+	}
+	// すべての book の auther を取得
+	Vec<Node> authers = books.get(%book/auther/_);
+	System.out.println(authers.get(0).getText());	// -> "auther1"
+  	
+
+◆名前空間宣言
+ プログラム中に記述するタグには名前空間を表す prefix を付けることができます。
+ 使用する prefix は xmlns 構文で宣言しておく必要があります。
+
+例：
+	xmlns:style="http://openoffice.org/2000/style";
+	xmlns:draw="http://openoffice.org/2000/drawing";
+	foreach (Node n in doc.iter(%/ /style:properties)){
+	   Attribute a = n.getAttribute(`draw:stroke);
+	   System.out.println(a.getValue());
+	}
+
+
+◆デバッグ用 print
+ノードには print というデバッグ用メソッドが用意されており、
+XML 文書を pxml 表現で簡潔に、かつインデントをつけて出力することが可能です。
+この時、テキストノードの内容は Java の文字列リテラルと同様のルールで
+エスケープされるため、特殊文字にまつわるトラブルがありません。
+
+例：
+	Node n = `(p "line 1\n" "line 2\n" "line 3\n");
+	n.print("n:");
+
+この例では、下記の文字列が標準エラー出力に出力されます。
+
+	n:
+	(p
+	  "line 1\n"
+	  "line 2\n"
+	  "line 3\n")
+
+
+◆入出力
+外部 URI からの入力は Node.readXML(String uri) 、
+ストリームへの出力は node.toXMLStream(InputStream in) で行います。
+
+例：
+      Node n = Node.readXML("http://aaa.ccc.ddd/");
+      n.toXMLStream(System.out);
+
+
+ XML 文書としての入出力の実装には j2sdk1.4 の JAXP API を用いています。
+
+
+◆関連研究
+
+DOM よりも使いやすい API を目指すライブラリとしては、
+Java 言語用に JDOM, dom4j, XOM 、 Python 言語用に PyDOM 、
+Ruby 用に REXML などがあります。
+これらの多くは、オープンソースソフトウエアとして、
+インターネット上の組織の垣根を超えた開発体制のもとで開発が進んでいます。
+また、東大渕研究室による xFAX という提案もあります。
+しかしいずれも既存のプログラミング言語の構文を拡張しない、
+「純粋なライブラリ」として実装されているため、
+その記述力にはどうしても限界があります。
+
+一方、 XML を Java 言語そのものが持つデータ構造に対応づけてしまう
+アプローチとして、 Data binding と呼ばれる方法もあります。
+サンマイクロシステムズ社が中心となる組織 JCP による JAXB の他、
+浅海智晴氏による Relaxer が有名です。
+Data binding を用いれば簡潔かつ安全なプログラミングが可能です。
+しかし、 Data binding を利用するには別途スキーマ定義が
+必要になるという制約があります。
+
+XSLT のように、XML 文法（あるいは類似文法）を用いた一種のプログラミング言語を
+提供するアプローチとしては、Zope 社の DTML や、
+国内の非営利団体ベイキットによる Xi があります。
+しかし、構文に XML を用いているため、プログラムの見た目は
+非常に見通しの悪いものになってしまいます。
+
+Lisp 言語のＳ式を用いて XML を処理するアプローチとしては、
+カナダ Naval Postgraduate School の SXML 、
+東大玉井研究室紙名氏の XPoLがあります。
+Ｓ式による XML 表現は非常に簡潔であり、
+また Lisp はもともと木構造の処理に向いているため、
+複雑な処理をするのに向いています。
+しかし、もともとＳ式にない属性や名前空間の扱いにやや難点があります。
+また、 lisp 言語自体がポピュラーでないという問題もあります。
+
+XML 処理専用のプログラミング言語としては、
+ペンシルバニア大の XDuce, ロンドン大の ProXML があります。
+このように専用言語を提供するアプローチは潜在的に高い記述力を達成する
+可能性がありますが、一般に独自言語を普及させるには、
+ライブラリや開発環境整備などの難しい課題があります。
+
+pxml plug-in のように、既存の汎用プログラミング言語に XML 処理構文を
+加えるアプローチを取る研究は少なく、
+我々が知る限りペンシルバニア大の Xtatic のみです。
+Xtatic は、 C# の拡張で、XDuce と同様に、プログラム中の XML の静的型チェックを
+行えるという特徴があります。
+しかし pxml plug-in が提供するようなテンプレート記述やループ抽象のための構文は
+持ちません。
+
+このようにさまざまなアプローチによる代替案が乱立している状況は、
+現在の XML 処理技術がいかに不便であるかを如実に示しています。
+
+
+◆将来の機能追加予定
+・コンパイル時の安全性の検証
+コンパイラが XML 処理プログラムの安全性を
+ある程度静的に検証することが可能です。
+これは、テンプレート、要素名、属性名、パスのすべてを
+言語処理系が構文解析して解釈しているために初めて可能になります。
+例えば DTD をコンパイラのオプションとして与えることで、
+プログラム中に使用する要素名のスペルミスを見つけたり、
+DTD に違反する可能性のあるテンプレートを見つけたりすることができます。
+
+・コンパイラによる最適化
+pxml path 等をコンパイル時に解析・処理できるため、
+高度な最適化が可能です。
+
+・ pxml path の高機能化
+現在は XPath の機能のごく一部しか実装されていませんが、
+Java 言語の表現力を活用したより強力な検索機構を導入できます。
+
+・ Eclipse 等の IDE との統合。
+例えば DTD を与えることで、プログラム中でのタグ名の補完などを
+実現することが可能です。
+
+・ Java 以外の言語に対する pxml 拡張構文の追加。
+例えば Ruby, python などのスクリプト言語を拡張すれば、
+非常に実用性の高い XML 処理言語になるはずです。
+
+この他にも、デバッグ支援、周辺ツール、ライブラリ等に関して、
+様々なアイデアを持っています。
+
+
+◆文法
+ここでは Java 言語に対する差分のみを、拡張 BNF で記述します。
+大文字で始まる名前は非終端記号を表します。
+_opt がついた終端記号は、省略可能であることを表します。
+非終端記号の直後の * は、０個以上の繰り返しを表します。
+<original alternatives> は、 Java 言語仕様書で定義されている選択肢を表します。
+
+Primary:
+	<original alternatives>
+	` Tag
+	` Node
+	% PathElem*
+
+Statement:
+	xmlns = StringLiteral ;
+	xmlns : Identifier = StringLiteral ;
+        foreach ( Type Identifier in Expression ) Block
+        foreach ( Type Identifier , Type Identifier in Expression ) Block
+
+Node:
+	Atom
+	List
+
+Atom:
+	StringLiteral
+	IntLiteral
+	, ( Expression )
+	, Identifier
+
+List:
+	( Tag AttributeList_opt Node* )
+
+AttributeList:
+	( @ Attribute* )
+	EqualAttribute*
+
+Attribute:
+	( Tag )
+	( Tag Atom )
+
+EqualAttribute:
+	Tag = Atom
+
+Tag:
+	Identifier
+	Identifier : Identifier
+
+PathElem:
+	Tag
+	_
+	.
+	..
+	/
+
+
+◆例：九九の表作成プログラム
+/*
+
+ kuku program, written in MixJuice with pxml plug-in
+
+ */
+module mj.mjdom.kuku_table extends mj.mjdom.jaxp {
+  class SS {
+    void main(String[] args){
+      original(args);
+      Node html = `(html (head (title "kuku-table"))
+		    (body
+		     (h1 "kuku-table")
+		     ));
+
+      Node body = html.get1(%body);
+
+      Node table = `(table border=1 (caption "kuku"));
+      Node row0 = `(tr (th));
+      for (int i = 1; i < 10; i++){
+	row0.add(`(th ,i));
+      }
+      table.add(row0);
+      for (int i = 1; i < 10; i++){
+	Node row = `(tr);
+	row.add(`(th ,i));
+	for (int j = 1; j < 10; j++) {
+	  row.add(`(td ,(i*j)));
+	}
+	table.add(row);
+      }
+      body.add(table);
+
+      html.toXMLStream(System.out);
+    }
+  }
+}
+
+
+◆参考： DOM による九九の表作成プログラム
+/*
+
+ kuku program, written in Java with JAXP API
+
+ */
+
+package domkuku;
+import javax.xml.parsers.*;
+import org.w3c.dom.*;
+import java.io.*;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+public class Test {
+  public static void main(String[] args) throws Throwable {
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder builder = factory.newDocumentBuilder();
+    
+    String template = "<html><head><title>kuku-table</title></head>"+
+      "<body><h1>kuku-table</h1></body></html>";
+    Document doc = builder.parse(new StringBufferInputStream(template));
+
+    Element html = (Element)doc.getFirstChild();
+    Node body = html.getElementsByTagName("body").item(0);
+
+    Element table = doc.createElement("table");
+    table.setAttribute("border", "1");
+    Node caption = doc.createElement("caption");
+    caption.appendChild(doc.createTextNode("kuku"));
+    table.appendChild(caption);
+
+    Node row0 = doc.createElement("tr");
+    row0.appendChild(doc.createElement("th"));
+    for (int i = 1; i < 10; i++){
+      Node th = doc.createElement("th");
+      th.appendChild(doc.createTextNode(""+ i));
+      row0.appendChild(th);
+    }
+    table.appendChild(row0);
+    for (int i = 1; i < 10; i++){
+      Node row = doc.createElement("tr");
+      Node th = doc.createElement("th");
+      th.appendChild(doc.createTextNode(""+ i));
+      row.appendChild(th);
+      for (int j = 1; j < 10; j++){
+	Node td = doc.createElement("td");
+	td.appendChild(doc.createTextNode(""+ i*j));
+	row.appendChild(td);
+      }
+      table.appendChild(row);
+    }
+    body.appendChild(table);
+  
+    Transformer transformer = TransformerFactory.newInstance().newTransformer();
+    transformer.transform(new DOMSource(doc), new StreamResult(System.out));
+
+  }
+}
+
+
+◆生成される html
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>kuku-table</title>
+</head>
+<h1>kuku-table</h1>
+<body>
+<table border="1">
+<caption>kuku</caption>
+<tr>
+<th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th>
+</tr>
+<tr>
+<th>1</th><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td>
+</tr>
+<tr>
+<th>2</th><td>2</td><td>4</td><td>6</td><td>8</td><td>10</td><td>12</td><td>14</td><td>16</td><td>18</td>
+</tr>
+<tr>
+<th>3</th><td>3</td><td>6</td><td>9</td><td>12</td><td>15</td><td>18</td><td>21</td><td>24</td><td>27</td>
+</tr>
+<tr>
+<th>4</th><td>4</td><td>8</td><td>12</td><td>16</td><td>20</td><td>24</td><td>28</td><td>32</td><td>36</td>
+</tr>
+<tr>
+<th>5</th><td>5</td><td>10</td><td>15</td><td>20</td><td>25</td><td>30</td><td>35</td><td>40</td><td>45</td>
+</tr>
+<tr>
+<th>6</th><td>6</td><td>12</td><td>18</td><td>24</td><td>30</td><td>36</td><td>42</td><td>48</td><td>54</td>
+</tr>
+<tr>
+<th>7</th><td>7</td><td>14</td><td>21</td><td>28</td><td>35</td><td>42</td><td>49</td><td>56</td><td>63</td>
+</tr>
+<tr>
+<th>8</th><td>8</td><td>16</td><td>24</td><td>32</td><td>40</td><td>48</td><td>56</td><td>64</td><td>72</td>
+</tr>
+<tr>
+<th>9</th><td>9</td><td>18</td><td>27</td><td>36</td><td>45</td><td>54</td><td>63</td><td>72</td><td>81</td>
+</tr>
+</table>
+</body>
+</html>

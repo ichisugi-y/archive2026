@@ -1,0 +1,296 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=shift_jis">
+<title>脳の主要な器官の機能とモデル</title>
+<style>
+
+h1{
+  color: #000080;
+  background-color: #CCFFFF; 
+  text-align: left;
+  border-color : #0000FF;
+  padding-top: 5px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  border-style: solid;
+  border-top-width: 2px;
+  border-right-width: 36px;
+  border-bottom-width: 2px;
+  border-left-width: 36px;
+}
+h2{
+  color: #000080;
+  text-align: left;
+  border-color : #0000FF;
+  padding-top: 4px;
+  padding-right: 4px;
+  padding-bottom: 4px;
+  padding-left: 4px;
+  border-style: solid;
+  border-top-width: 0px;
+  border-right-width: 0px;
+  border-bottom-width: 2px;
+  border-left-width: 24px;
+}
+h3{
+  color: #000080;
+}
+h4{
+  margin-left:25pt;
+  background-color:#fffff8;
+  padding-top: 2px;
+  padding-left: 4px;
+}
+h5{
+  margin-left:25pt;
+}
+
+p {
+	margin-left:50pt;
+	margin-right:50pt;
+	line-height:1.3;
+ }
+li {
+	margin-left:50pt;
+	margin-right:50pt;
+	margin-bottom: 5px;
+ }
+</style>
+</head>
+
+<body bgcolor="#f0f0ff">
+
+<table border="0" align="center" style="width:650px">
+<tr><td>
+
+
+<table border="0" style="width:640px">
+<tr><td>
+<span style="font-size: small">
+&gt; <a href="http://www.aist.go.jp/">産業技術総合研究所</a>
+&gt; <a href="http://staff.aist.go.jp/y-ichisugi/j-index.html">一杉裕志</a>
+&gt; <a href="http://staff.aist.go.jp/y-ichisugi/brain-archi/j-index.html">全脳アーキテクチャ解明に向けて</a>
+&gt; 脳の主要な器官の機能とモデル
+<!--
+&gt; <a href="http://staff.aist.go.jp/y-ichisugi/besom/j-index.html">BESOM</a>
+-->
+</span>
+</td><td style="font-size: small" align="right" width=150px>
+（
+<!-- #BeginDate format:IS1 -->2013-11-11<!-- #EndDate --> 
+更新）
+</td></tr></table>
+
+
+
+
+<h1>脳の主要な器官の機能とモデル</h1>
+<p>
+脳を構成する主要な器官の計算論的モデルは
+<strong>不完全ながらすでに出そろっています</strong>。
+これらの器官がどう連携するのかを明らかにすれば、脳全体の機能を再現できるでしょう。
+このページでは、脳の主要な器官の機能とモデルを簡単に説明します。
+
+<h2>脊椎動物の脳は「奇跡のアーキテクチャ」</h2>
+<p>
+かつては哺乳類の脳とそれ以前の脊椎動物の脳はかなり異なっていると考えられていました。
+しかし、最近の研究によると、魚類の脳でさえ、
+哺乳類の大脳皮質、大脳基底核、海馬、小脳、扁桃体に対応する部位を持っているようです。
+<p>
+魚類は最初の脊椎動物としておよそ５億年前に出現しました。
+脳の基本アーキテクチャはその時点ですでに完成し、
+その後すべての脊椎動物が継承したということになります。
+それは脊椎動物を地球上での繁栄に導いた
+<strong>「奇跡のアーキテクチャ」</strong>と言えるかもしれません。
+
+<p>
+では、このアーキテクチャの特徴は何でしょうか？
+<p>
+私が最大の特徴ではないかと考えるのは、
+汎用の意思決定装置である大脳基底核と、
+汎用の連想記憶装置である海馬の両方を備えているという点です。
+これらはコンピュータに例えればＣＰＵとメモリに対応し、
+原理的にはこの２つだけで非常に複雑な動作が可能なはずです。
+
+<p>
+もう１つの大きな特徴は、制御プログラムを、
+あらかじめ与えなくても、自分で学習して獲得していくという点です。
+ここは、普通のコンピュータとの大きな違いです。
+
+<p>
+プログラムを自分で獲得していくという機能は、
+原理的にはコンピュータ上でも強化学習と教師なし学習で実現可能です。
+しかし脳はとてつもなく高性能です。
+どうやら脳は、
+学習機構の性能を上げるための様々な工夫を進化によって獲得し、
+巧妙に組み合わせているようなのです。
+<strong>１人でも多くの計算機科学者が、脳が行っている性能向上の工夫に注目すべきだと思います。</strong>
+
+
+
+
+<h2>大脳皮質</h2>
+<p>
+大脳皮質はヒトの知能に最も深く関係する器官です。
+その基本的な機能は感覚器からの入力の<strong>認識と学習</strong>です。
+学習の目的は、おそらく教師なし学習によって外界の近似モデルを脳内に構築することです。
+この近似モデルを使って、「この状況でこうしたら何が起きるか」を<strong>予測</strong>することもできます。
+画像認識、音声認識、意思決定、運動制御、思考、推論、言語理解など様々な高次機能が大脳皮質によって実現されています。
+
+<p>
+大脳皮質は、ほぼどの領野も同じ６層構造をしていることから、
+機能によらず同じ原理で動作していると推察されます。
+
+
+<p>
+大脳皮質の認識能力・抽象化能力には、
+Deep learning 、自己組織化マップ、ベイジアンネットなどの機械学習技術が関係します。
+私はこれらの機械学習技術を組み合わせたモデルを設計中です。
+パターン認識など基本的な機能は動くものの、
+さらなる安定動作と有用性を示すデモを動かすことが最優先課題です。
+
+
+<p>
+ベイジアンネットに基づいた大脳皮質のモデルについては、
+こちらの解説をご覧ください。<br>
+<ul>
+  <li>一杉裕志, 解説：大脳皮質とベイジアンネット、<br>
+日本ロボット学会誌 Vol.29 No.5, pp.412--415, 2011. [ <a href="http://staff.aist.go.jp/y-ichisugi/besom/29_412.pdf">pdf</a> ]<br>
+<small>（この pdf ファイルは日本ロボット学会の著作物です。公開は日本ロボット学会著作権規程に従っています。）</small>
+</ul>
+<p>
+また、大脳皮質と deep learning についてはこちらもご参照ください。
+大脳皮質の知見に学ぶことは、 deep learning の性能向上に大きく貢献するのではないかと思います。
+<ul>
+<li><a href="http://staff.aist.go.jp/y-ichisugi/rapid-memo/brain-deep-learning.html">大脳皮質と deep learning の類似点と相違点</a>
+</ul>
+
+<h2>大脳基底核</h2>
+<p>
+大脳基底核は強化学習に関与しています。
+つまり、様々な状況における行動の価値を経験から学習し、
+その結果に基づいて、自分の利益が最大になるように<strong>意思決定</strong>を行うという、
+生物にとって重要な機能に関わっています。
+<p>
+
+<p>
+大脳基底核には、
+平行した４つの大脳皮質－大脳基底核ループや、
+ハイパー直接路・直接路・間接路、
+といった様々な興味深い解剖学的構造があります。
+
+<p>
+大脳基底核の計算論的モデルについてはこちらの解説をご覧ください。
+<ul>
+<li>鮫島和行; 銅谷賢治. <a href="http://www.cns.atr.jp/~samejima/papers/biomechanism.pdf">強化学習と大脳基底核</a>. バイオメカニズム学会誌, 25, 4, 167-171, 2001.
+</ul>
+
+<p>
+大脳基底核に関するいくつかの解剖学的特徴は、
+脳が<strong>階層型強化学習</strong>を実現していることを示唆しています。
+階層型強化学習は、
+強化学習の学習性能を飛躍的に向上させる手段として古くから研究されていますが、
+いまだに完成しているとは言い難い技術です。
+脳に学ぶことこそが、階層型強化学習を完全に動作させる最短経路だろうと私は思います。
+
+
+
+
+<h2>海馬</h2>
+<p>
+海馬は<strong>エピソード記憶</strong>を一時的に保持する器官です。
+エピソード記憶とは個人的体験や出来事についての記憶です。
+人間が体験したエピソードは一度海馬に蓄えられ、
+寝ている間に少しずつ大脳皮質に移動するらしいです。
+
+<p>
+臨床医学では即時記憶・近時記憶・遠隔記憶という用語が用いられますが（<a href="http://gogomitiru.web.fc2.com/kioku1.html">参考</a>）、
+海馬はこの中の近時記憶を行う器官です。
+用語がややこしいですが、心理学でいう短期記憶は即時記憶に、
+長期記憶は近時記憶と遠隔記憶に相当します。
+
+<p>
+動物における海馬の典型的な用途は地図の記憶かもしれません。
+げっ歯類は、自分が経験した迷路の地図を海馬に記憶します。
+地図は結局、迷路内を探索した際のエピソードの集合ということかもしれません。
+
+
+<p>
+海馬は解剖学的には歯状回、ＣＡ３、ＣＡ１、海馬支脚といった部分から構成され、
+また、大脳皮質の一部である嗅内皮質と密接に連携してその機能を実現しています。
+
+<p>
+海馬の模式的な回路図としては脳科学大事典 p.194 の図がわかりやすいです。
+
+<p>
+ＣＡ３は海馬の中核部分です。
+ホップフィールド・ネットワーク<a href="http://ja.wikipedia.org/wiki/%E3%83%9B%E3%83%83%E3%83%97%E3%83%95%E3%82%A3%E3%83%BC%E3%83%AB%E3%83%89%E3%83%BB%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF">(Wikipedia)</a>に似た自己連想ネットワークであり、
+過去に記憶したパターンの一部の入力が与えられると、
+入力されていない残りの部分を補って想起します。
+
+<p>
+中核部分の動作原理が明快であるにも関わらず、
+海馬全体の機能や大脳皮質との関係は意外と複雑で、
+まだわかっていないことが多いです。
+これを解明することが、全脳アーキテクチャ解明の最大のブレークスルーになるかもしれません。
+
+
+<p>
+海馬のモデルの現状については英語ですがこちらをご覧ください。
+<ul>
+<li><a href="http://www.scholarpedia.org/article/Models_of_hippocampus">Models of hippocampus - Scholarpedia</a>
+</ul>
+
+<h2>小脳</h2>
+<p>
+小脳は、運動を滑らかにする役割を果たします。
+小脳を損傷しても体を動かすことはできますが、震えるなどして
+正確な運動ができなくなります。
+<p>
+小脳は教師あり学習をしていると考えられています。
+こちらの解説をご覧ください。
+<ul>
+<li>山崎匡, <a href="http://www.jnns.org/20/yamazaki.pdf">小脳の計算機構の完全理解とその応用を目指して</a>,
+ 日本神経回路学会誌, 16巻 4号, 190-195, 2009.
+</ul>
+
+
+<p>
+小脳への教師信号は、おそらく生得的に作り込まれている回路からか、
+大脳皮質から来るのでしょう。
+しかし、小脳と大脳皮質が具体的にどう連携するのかについては、わかっていません。
+
+
+<h2>扁桃体</h2>
+<p>
+扁桃体は情動と条件刺激の間の連合学習を行っています。
+大脳皮質、大脳基底核、海馬などと連絡を持っており、
+これらの器官との関係はそれなりに複雑そうです。
+<p>
+扁桃体は知能とは直接は関わりません。
+しかし、ロボットに好奇心や人間への服従心、
+ある程度の自己防衛欲求などを持たせるためには、
+扁桃体の機能の理解と再現が不可欠でしょう。
+<p>
+扁桃体や感情と欲求について、
+私なりの理解をこちらにまとめましたのでご覧ください。
+<ul>
+<li><a href="http://staff.aist.go.jp/y-ichisugi/rapid-memo/emotion.html">感情や欲求の正体</a>
+</ul>
+
+<hr>
+間違いの指摘、コメント、質問などお待ちしております。
+<img src="http://staff.aist.go.jp/y-ichisugi/ichisugi-mail.gif" width="160" height="21">
+<hr>
+<!--
+<a href="http://staff.aist.go.jp/y-ichisugi/besom/j-index.html">BESOM トップページ</a><br>
+-->
+<a href="http://staff.aist.go.jp/y-ichisugi/j-index.html">一杉裕志のページ</a><br>
+
+</td></tr></table>
+
+</body>
+</html>

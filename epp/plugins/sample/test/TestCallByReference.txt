@@ -1,0 +1,14 @@
+#epp "CallByReference"
+
+public class TestCallByReference {
+  public static void main(String argv[]){
+    int rest = 0;
+    System.out.println(divide(10, 3, &rest) == 3);
+    System.out.println(rest == 1);
+  }
+
+  static int divide(int x, int y, int[] rest){
+    rest[0] = x % y;
+    return x / y;
+  }
+}

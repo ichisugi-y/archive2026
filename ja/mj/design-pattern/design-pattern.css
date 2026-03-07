@@ -1,0 +1,29 @@
+body {
+  background-color: white;
+  color: black;
+}
+table {
+  border-collapse: collapse;
+}
+pre {
+  padding: 1em;
+  border-style: ridge;
+  background: #EEEEEE;
+}
+h1 {
+  padding: 0.1em 0.5em;
+  border-style: solid;
+  border-top-width: 0.1em;
+  border-bottom-width: 0.1em;
+  border-right-width: 2em;
+  border-left-width: 2em;
+}
+h2 {
+  padding: 0.1em 0.5em;
+  border-style: solid;
+  border-color: gray;
+  border-top-width: 0.1em;
+  border-bottom-width: 0.1em;
+  border-right-width: 1em;
+  border-left-width: 1em;
+}

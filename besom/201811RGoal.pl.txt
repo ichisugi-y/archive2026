@@ -1,0 +1,202 @@
+/**
+
+Copyright (c) 2018 National Institute of Advanced Industrial Science and Technology (AIST), All Rights Reserved.
+Author: Yuuji Ichisugi
+						2018-11-15
+
+Prototype "RGoal language" interpreter
+
+Tested on SWI-Prolog version 7.6.0 on Windows 10
+
+Paper:
+一杉裕志、高橋直人、中田秀基、佐野崇
+「単一化の機構を利用した階層型強化学習のテーブル圧縮手法の検討」
+第10回 人工知能学会 汎用人工知能研究会(SIG-AGI), 2018.
+
+
+*/
+
+%--------------------------------------------------
+% 環境
+% 状態 s においてプリミティブな行動 a をとったときに s' になるとき、
+% 下記のように宣言する。
+% e(s,s',a).
+
+% 物体をつかむ。
+e([open,P1,O1,P1,O2,P2], [hld1,P1,O1,P1,O2,P2], hold1).
+e([open,P2,O1,P1,O2,P2], [hld2,P2,O1,P1,O2,P2], hold2).
+
+% 物体をはなす。
+e([hld1,P1,O1,P1,O2,P2], [open,P1,O1,P1,O2,P2], release).
+e([hld2,P2,O1,P1,O2,P2], [open,P2,O1,P1,O2,P2], release).
+
+% 物体を持っていない状態で手を移動する。
+e([open,0,O1,P1,O2,P2], [open,1,O1,P1,O2,P2], right).
+%e([open,0,O1,P1,O2,P2], [open,2,O1,P1,O2,P2], right).
+e([open,1,O1,P1,O2,P2], [open,0,O1,P1,O2,P2], left).
+e([open,1,O1,P1,O2,P2], [open,2,O1,P1,O2,P2], right).
+e([open,2,O1,P1,O2,P2], [open,1,O1,P1,O2,P2], left).
+%e([open,2,O1,P1,O2,P2], [open,0,O1,P1,O2,P2], left).
+
+% 物体 O1 をつかんだ状態で手を移動する。
+e([hld1,0,O1,0,O2,P2], [hld1,1,O1,1,O2,P2], right).
+%e([hld1,0,O1,0,O2,P2], [hld1,2,O1,2,O2,P2], right).
+e([hld1,1,O1,1,O2,P2], [hld1,0,O1,0,O2,P2], left).
+e([hld1,1,O1,1,O2,P2], [hld1,2,O1,2,O2,P2], right).
+e([hld1,2,O1,2,O2,P2], [hld1,1,O1,1,O2,P2], left).
+%e([hld1,2,O1,2,O2,P2], [hld1,0,O1,0,O2,P2], left).
+
+% 物体 O2 をつかんだ状態で手を移動する。
+e([hld2,0,O1,P1,O2,0], [hld2,1,O1,P1,O2,1], right).
+%e([hld2,0,O1,P1,O2,0], [hld2,2,O1,P1,O2,2], right).
+e([hld2,1,O1,P1,O2,1], [hld2,0,O1,P1,O2,0], left).
+e([hld2,1,O1,P1,O2,1], [hld2,2,O1,P1,O2,2], right).
+e([hld2,2,O1,P1,O2,2], [hld2,1,O1,P1,O2,1], left).
+%e([hld2,2,O1,P1,O2,2], [hld2,0,O1,P1,O2,0], left).
+
+
+%--------------------------------------------------
+% プリミティブ行動を実行するルール。
+% 他のプログラムから基本ライブラリのように利用される。
+% s から g に a を経由して到達可能であれば下記のように宣言する。
+% m(s,g,a).
+%
+% e(s,s',a) とは違って、 s から g への到達に２ステップ以上必要なルールも
+%含まれる。
+
+% 物体をつかむ。
+m([open,P1,O1,P1,O2,P2], [hld1,P1,O1,P1,O2,P2], hold1).
+m([open,P2,O1,P1,O2,P2], [hld2,P2,O1,P1,O2,P2], hold2).
+
+% 物体をはなす。
+m([hld1,P1,O1,P1,O2,P2], [open,P1,O1,P1,O2,P2], release).
+m([hld2,P2,O1,P1,O2,P2], [open,P2,O1,P1,O2,P2], release).
+
+% 物体を持っていない状態で手を移動する。
+m([open,0,O1,P1,O2,P2], [open,1,O1,P1,O2,P2], right).
+m([open,0,O1,P1,O2,P2], [open,2,O1,P1,O2,P2], right).
+m([open,1,O1,P1,O2,P2], [open,0,O1,P1,O2,P2], left).
+m([open,1,O1,P1,O2,P2], [open,2,O1,P1,O2,P2], right).
+m([open,2,O1,P1,O2,P2], [open,1,O1,P1,O2,P2], left).
+m([open,2,O1,P1,O2,P2], [open,0,O1,P1,O2,P2], left).
+
+% 物体 O1 をつかんだ状態で手を移動する。
+m([hld1,0,O1,0,O2,P2], [hld1,1,O1,1,O2,P2], right).
+m([hld1,0,O1,0,O2,P2], [hld1,2,O1,2,O2,P2], right).
+m([hld1,1,O1,1,O2,P2], [hld1,0,O1,0,O2,P2], left).
+m([hld1,1,O1,1,O2,P2], [hld1,2,O1,2,O2,P2], right).
+m([hld1,2,O1,2,O2,P2], [hld1,1,O1,1,O2,P2], left).
+m([hld1,2,O1,2,O2,P2], [hld1,0,O1,0,O2,P2], left).
+
+% 物体 O2 をつかんだ状態で手を移動する。
+m([hld2,0,O1,P1,O2,0], [hld2,1,O1,P1,O2,1], right).
+m([hld2,0,O1,P1,O2,0], [hld2,2,O1,P1,O2,2], right).
+m([hld2,1,O1,P1,O2,1], [hld2,0,O1,P1,O2,0], left).
+m([hld2,1,O1,P1,O2,1], [hld2,2,O1,P1,O2,2], right).
+m([hld2,2,O1,P1,O2,2], [hld2,1,O1,P1,O2,1], left).
+m([hld2,2,O1,P1,O2,2], [hld2,0,O1,P1,O2,0], left).
+
+
+%--------------------------------------------------
+% タスク１
+%  物体 O1 を場所 P1 から P2 に移動する。
+
+% 1. 手を P1 に移動する。
+m([open,P0,O1,P1,O2,P2], [open,P2,O1,P2,O2,P2], g([open,P1,O1,P1,O2,P2])).
+% 2. O1 をつかむ。
+m([open,P1,O1,P1,O2,P2], [open,P2,O1,P2,O2,P2], g([hld1,P1,O1,P1,O2,P2])).
+% 3. 手を P2 に移動する。
+m([hld1,P1,O1,P1,O2,P2], [open,P2,O1,P2,O2,P2], g([hld1,P2,O1,P2,O2,P2])).
+% 4. 手をはなす。
+% 定義不要。
+
+
+%--------------------------------------------------
+% タスク２
+%  物体 O1 と O2 を場所 P0 に移動する。（移動の順序は任意。）
+
+% 物体 O1 を場所 P0 に移動する。
+m([open,P0,O1,P1,O2,P2], [open,P0,O1,P0,O2,P0], g([open,P0,O1,P0,O2,P2])).
+% 物体 O2 を場所 P0 に移動する。
+m([open,P0,O1,P1,O2,P2], [open,P0,O1,P0,O2,P0], g([open,P0,O1,P1,O2,P0])).
+
+
+% 物体 O1 を場所 P0 に移動するサブルーチン。
+
+% 1. 手を P1 に移動する。
+m([open,P0,O1,P1,O2,P2], [open,P0,O1,P0,O2,P2], g([open,P1,O1,P1,O2,P2])).
+% 2. O1 をつかむ。
+m([open,P1,O1,P1,O2,P2], [open,P0,O1,P0,O2,P2], g([hld1,P1,O1,P1,O2,P2])).
+% 3. 手を P0 に移動する。
+m([hld1,P1,O1,P1,O2,P2], [open,P0,O1,P0,O2,P2], g([hld1,P0,O1,P0,O2,P2])).
+% 4. 手をはなす。
+% 定義不要。
+
+% test
+% ?- episode([open,1,r,0,c,2],[open,1,r,1,c,2],Log), printList(Log).
+
+
+% 物体 O2 を場所 P0 に移動するサブルーチン。
+
+% 1. 手を P2 に移動する。
+m([open,P0,O1,P1,O2,P2],[open,P0,O1,P1,O2,P0], g([open,P2,O1,P1,O2,P2])).
+% 2. O2 をつかむ。
+m([open,P2,O1,P1,O2,P2],[open,P0,O1,P1,O2,P0], g([hld2,P2,O1,P1,O2,P2])).
+% 3. 手を O2 に移動する。
+m([hld2,P2,O1,P1,O2,P2],[open,P0,O1,P1,O2,P0], g([hld2,P0,O1,P1,O2,P0])).
+% 4. 手をはなす。
+% 定義不要。
+
+% test
+% ?- episode([open,1,r,0,c,2],[open,1,r,0,c,1],Log), printList(Log).
+
+
+
+%--------------------------------------------------
+% Interpreter with stack  
+
+episode(S,G,Log) :- episodeN(S,G,0,Log), nl.
+episodeN(S,G,50,Log) :- !, fail.   % Max 50 steps 
+episodeN(S,G,N,Log) :- nl, print(N), 
+		chooseAction(S,G,A),
+		mainLoop(S,G,A,[],0,N,Log).
+episodeN(S,G,N,Log) :- N1 is N+1, episodeN(S,G,N1,Log).
+
+mainLoop(S,G,ret,[],I,N,[[S,G,ret]]) :- I=N, !.
+mainLoop(S,G,ret,[],I,N,Log) :- !, fail.
+mainLoop(S,G,A,Stack,I,N,Log) :- I=N, !, fail.
+mainLoop(S,G,A,Stack,I,N,[[S,G,A]|Log]) :- print([I]),
+    takeAction(S,G,A,S1,G1,Stack,Stack1),
+    chooseAction(S1,G1,A1),
+    I1 is I+1,
+    mainLoop(S1,G1,A1,Stack1,I1,N,Log).
+
+chooseAction(S,G,A) :- S=G, !, A=ret.
+chooseAction(S,G,A) :- m(S,G,A).
+
+takeAction(S,G,A,S1,G1,[GG|Stack],Stack) :- A=ret, !, S1=S, G1=GG.
+takeAction(S,G,A,S1,G1,Stack,[G|Stack]) :- A=g(M), !, S1=S, G1=M.
+%takeAction(S,G,A,S1,G1,Stack,Stack) :- S1=G, G1=G.  % think-mode
+takeAction(S,G,A,S1,G1,Stack,Stack) :- e(S,S1,A), G1=G. % execution-mode
+
+
+%--------------------------------------------------
+% 得られた行動リストを可視化。
+printList([]).
+printList([C|Cs]) :- print(C), nl, printList(Cs).
+
+%--------------------------------------------------
+% Query
+
+% タスク１のテスト
+
+%?- episode([open,1,r,0,c,2],[open,2,r,2,c,2],Log), printList(Log).
+%?- episode([open,2,r,0,c,2],[open,2,r,2,c,2],Log), printList(Log).
+%?- episode([open,1,r,2,c,2],[open,2,r,2,c,2],Log), printList(Log).
+
+
+% タスク２のテスト
+%?- episode([open,0,r,1,c,2],[open,0,r,0,c,0],Log), printList(Log).
+%?- episode([open,1,r,0,c,2],[open,1,r,1,c,1],Log), printList(Log).
+%?- episode([open,0,r,2,c,2],[open,0,r,0,c,0],Log), printList(Log).
+%?- episode([open,0,r,0,c,2],[open,0,r,0,c,0],Log), printList(Log).

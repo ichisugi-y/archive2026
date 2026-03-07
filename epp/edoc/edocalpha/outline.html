@@ -1,0 +1,231 @@
+<html>
+<head>
+<title>EPP Architecture Overview</title>
+</head>
+<body bgcolor="#FFFFFF">
+<a href="index.html"> Index </a>
+<hr>
+<img src="gif/epp-logo-small.gif" align=right><br>
+<h1>EPP 1.1.0 Architecture Overview</h1>
+<hr>
+
+<h2>Required Knowledge</h2>
+ In order to understand EPP documents, you will need basic knowledge of the
+Java lanaguage as well as basic knowledge of compilers.
+Specifically, you must understand the following words.
+<pre>
+	pass
+	recursive descent parser
+	token
+	literal
+	AST (Abstract Syntax Tree)
+	non-terminal
+	bootstrap
+</pre>
+ However, advanced expert knowledge should not be required.
+
+<p>
+ Furthermore, the following concepts familiar to lisp programmers appear.
+<blockquote>
+	macro, 
+	immutable object, 
+	symbol, 
+	S-expression,
+	backquote macro, 
+	dynamic variable
+</blockquote>
+ I shall explain these concepts as much as I can, so that readers who are not
+experienced in lisp can understand them.
+
+<hr>
+
+
+<h2>EPP Description Language, Ld-2</h2>
+The source code of EPP is written using Java language that is extended with EPP.
+Specifically, the following five plug-ins are used.
+<ul>
+<li><a href="API/epp.Symbol.html">Symbol</a>
+<li><a href="SystemMixin.html"> SystemMixin</a>
+<li><a href="BackQuote.html">BackQuote</a>
+<li>AutoSplitFiles
+<li>EppMacros
+</ul>
+The source code for these five plug-ins are also written using these
+five plug-ins.
+Other than this, we have the Common Lisp source code for the EPP main portion,
+and source codes for five plug-ins. Using these to bootstrap, EPP can work
+even if you only have Java.
+
+<p>
+Of the five plug-ins, the <a href="SystemMixin.html">SystemMixin</a>
+ plug-in is especially important.
+The SystemMixin plug-in implements a new object oriented language called Ld-2
+on top of Java.
+
+<p>
+<center><table border>
+<tr> <th> (Application Programs) </th> </tr>
+<tr> <th> EPP Plug-ins </th> </tr>
+<tr> <th> EPP Core / Java Grammar definition </th> </tr>
+<tr> <th> Object-Oriented Language Ld-2 </th> </tr>
+<tr> <th> JavaVM </th> </tr>
+</table></center>
+
+<p>
+The Ld-2 lanaguage has a special inheritance mechanism that is different
+from that of the Java language.  With this mechanism, a single class can
+be divided into multiple "components" called "mixins" which can be described
+separately.
+A class is built up by merging the multiple mixins.
+
+<center><img src="gif/img002.GIF"></center>
+
+<p>
+In the current implementation, Ld-2 classes created by merging mixins
+are not compatible with classes of the Java language, and are defined
+using a different syntax. The syntax for calling methods is also different.
+
+
+<hr>
+<h2>EPP Main Routine</h2>
+When EPP is invoked, a program named 
+<a href="API/epp.Epp.html">EPP main routine</a>
+executes.
+The program is a Java class with the following name.
+<pre>      jp.go.etl.epp.epp.Epp </pre>
+The EPP main routine builds an EPP preprocessor with different
+configurations for each file to be processed, and invokes those
+preprocessors.
+<p>
+An EPP preprocessor is an Ld-2 class created by merging multiple
+mixins.  A preprocessor for a specific file is built by creating
+an Ld-2 class combining the mixin for the plug-in that was specified
+at the beginning of the file, and the "mixin that defines the standard
+preprocessor".
+
+<p>
+Plug-ins can only extend the behavior of EPP preprocessors.
+They cannot extend the behavior of the EPP main routine.
+However, by creating a subclass of the jp.go.etl.epp.epp.Epp
+Java class, you can create a customized EPP main routine.
+
+<p>
+EPP executes the translation process on a file-by-file basis by
+default. However, if you specify the -global option, EPP goes into
+<a href="API/epp.Global.html">Global Processing Mode</a>
+and will process all files globally.
+
+<center><img src="gif/img003.GIF"></center>
+
+
+<hr>
+<h2>EPP Preprocessor</h2>
+When the EPP preprocessor is invoked from the EPP main routine, the
+<a href="API/epp.EppCore.html#initializationPass">initialization method</a>
+is called.
+After that, the input file is processed through the
+following four passes: 
+<a href="API/epp.Parser.html">parsing pass</a>, 
+<a href="API/epp.Macro.html">macro expanssion pass</a>, 
+<a href="API/epp.TypeChecker.html">type checking pass</a>, and
+<a href="API/epp.Emitter.html">code emitting pass</a>.
+
+<p>
+The parsing pass will call the 
+<a href="API/epp.Lex.html">lexical analyzer</a>
+as required.
+The lexical analyzer will read character-by-character from 
+<a href="API/epp.EppInputStream.html">EppInputStream</a>, 
+a class that is the input stream for the EPP.
+
+
+<p>
+Plug-ins can extend the EppInputStream, lexical analyzer,
+parsing pass, macro expanssion pass, type checking pass, and
+code emitting pass.
+<p>
+You can also add additional passes prior to, and after the four passes.
+For further information on adding passes, refer to 
+<a href="API/epp.EppCore.html"> EPP Preprocessor Core</a>.
+
+<center><img src="gif/img004.GIF"></center>
+
+
+<hr>
+<h2>Data Structure</h2>
+Within the preprocessor, three data structures that
+describe the 
+<a href="API/epp.Token.html">token</a>, 
+<a href="API/epp.Tree.html">abstract syntax tree</a>, and
+<a href="API/epp.Type.html">type</a> are particularly important.
+<p>
+ Tokens are data types that are returned by the lexical analyzer.
+<p>
+The abstract syntax tree is created by the parsing pass, and then
+translated by the type checking pass, passed to the code emitting pass
+for conversion to character strings and finally written to the output file.
+<p>
+The abstract syntax tree has nodes that have type information and those that do not. The type checking pass converts an abstract syntax tree without type information into an abstract syntax tree with type information.
+
+<p>
+The three data types mentioned above are all immutable objects.
+That is, you cannot modify their internal state from within a program.
+
+<p>
+Plug-ins cannot define subclasses of a class that describes tokens or
+abstract syntax trees.
+The data structure of tokens and abstract syntax trees are very
+versatile and new tokens and syntaxes can be expressed without
+adding new subclasses.
+
+
+<hr>
+<h2>The Principle of the Extendable Parser</h2>
+The parser is basically written in recursive descend style.
+You can add a mixin and extend the method of the parser in order to
+add a new alternative to the non-terminal.
+By backtracking and proceeding with context sensitive processing,
+the parser can handle non LL(1) type syntaxes.
+It can also handle left recursive rules.
+
+<p>
+For further information please refer to the following paper: <br>
+<a href="index.html#pro98-paper"><???IDEAC>"高いモジュラリティと拡張性を持つ構文解析器"</???IDEAC></a><br>
+
+<hr>
+<h2>Related Information</h2>
+For further information regarding writing plug-ins, please refer to
+the following.
+<br>
+<a href="API/epp.EppUserError.html">Error Handling</a><br>
+<a href="API/epp.Dynamic.html">Dynamic Variables</a><br>
+<a href="API/epp..html"></a><br>
+<a href="API/epp..html"></a><br>
+
+
+
+<hr>
+<h2>The Role of Each Source File</h2>
+The source code for the EPP main portion is located under epp/src/level0/epp
+of the distributio package. The major fuctions of the files are shown below.
+
+<pre>
+Epp.java		EPP main routine definition
+EppCore.java		EPP preprocessor main portion
+EppInputStream.java	EPP input stream
+Lex.java		lexical analyzer
+CompUnit.java		Java program top level syntax definition
+TypeDecl.java		class, interface, method, field syntax defintion
+Statement.java		statement syntax definition
+ExpNonTerm.java		non-terminal definition related to expressions
+Exp.java		expression syntax definition
+TypeSystem.java		definition of the Type class and definition of type semantics
+TypeCheck.java		definition of the standard Java type checking object
+FileSig.java		definition of class types and seperate compilation processing
+</pre>
+
+<hr>
+<a href="index.html"> Index </a>
+<img src="gif/epp-logo-small.gif" align=right><br>
+</body>
+</html>

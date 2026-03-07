@@ -1,0 +1,996 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=shift_jis">
+<title>脳を理解するための情報源メモ</title>
+<style>
+
+h1{
+  color: #000080;
+  background-color: #CCFFFF; 
+  text-align: left;
+  border-color : #0000FF;
+  padding-top: 5px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  border-style: solid;
+  border-top-width: 2px;
+  border-right-width: 36px;
+  border-bottom-width: 2px;
+  border-left-width: 36px;
+}
+h2{
+  color: #000080;
+  text-align: left;
+  border-color : #0000FF;
+  padding-top: 4px;
+  padding-right: 4px;
+  padding-bottom: 4px;
+  padding-left: 4px;
+  border-style: solid;
+  border-top-width: 0px;
+  border-right-width: 0px;
+  border-bottom-width: 2px;
+  border-left-width: 24px;
+}
+h3{
+  color: #000080;
+}
+h4{
+  margin-left:25pt;
+  background-color:#fffff8;
+  padding-top: 2px;
+  padding-left: 4px;
+}
+
+
+
+p {
+	width:400pt;
+	margin-left:50pt;
+	margin-right:200pt;
+ }
+li {
+	width:400pt;
+	margin-left:50pt;
+	margin-right:200pt;
+ }
+</style>
+</head>
+
+<body bgcolor="#f0f0ff">
+
+
+<a name="top"></a>
+
+<span style="font-size: small">
+&gt; <a href="http://www.aist.go.jp/">産業技術総合研究所</a>
+&gt; <a href="http://staff.aist.go.jp/y-ichisugi/j-index.html">一杉裕志</a>
+&gt; <a href="http://staff.aist.go.jp/y-ichisugi/besom/j-index.html">脳とベイジアンネット</a>
+&gt; 脳を理解するための情報源メモ
+</span>
+
+<h1>脳を理解するための情報源メモ</h1>
+<!--
+<em>随時更新中</em>
+-->
+<p>
+脳を理解し <a href="http://staff.aist.go.jp/y-ichisugi/besom/AIST07-J00012.pdf">
+BESOM モデル</a>を拡張するために必要な知識の
+良質な情報源を、独断で選んで紹介します。
+
+（
+<!-- #BeginDate format:IS1 -->2014-06-04<!-- #EndDate --> 
+更新）
+
+<p>
+（2013-02-07: 内容が一部古くなっています。
+また、少し敷居を上げ過ぎた感があるので、もう少し絞り込んで整理し直したいと思っています。）
+
+<p>
+<font color=red>★★★</font>・・・ 必読。脳を理解しようとする人は必ず目を通すべきだと思います。<br>
+<font color=red>★</font>・・・ おすすめ。大変役に立ちます。<br>
+
+<p>
+* こちらもご覧ください。<br>
+<a href="http://besom1.blog85.fc2.com/blog-entry-2.html">「脳を理解するための情報源メモ」更新予定メモ</a>
+<!--
+<p>
+大事なことですが、これらの文献はすべて「脳がまだ理解されていない時代」
+のものです。書かれていることを全て文字通りに受け取ってしまうと
+「過学習」に陥りますので、くれぐれもご注意ください。
+-->
+<h2>目次</h2>
+
+<h3><a href="#brain-science">脳科学全般</a></h3>
+
+<h3><a href="#machine-learning">機械学習</a></h3><p>
+<a href="#pattern-recognition">パターン認識</a>、
+<a href="#self-organizing-map">自己組織化マップ</a>、
+<a href="#Bayesian-network">ベイジアンネット</a>、
+<a href="#independent-component-analysis">独立成分分析</a>、
+<a href="#principal-components-analysis">主成分分析</a>、
+<a href="#reinforcement-learning">強化学習</a>、
+<a href="#feature-selection">特徴選択</a>、
+<a href="#regularisation">正則化</a>、
+<a href="#frame">フレーム</a>、
+<a href="#deep-learning">Deep Learning</a>
+
+<h3><a href="#cognitive-science">認知科学・心理学</a></h3><p>
+<a href="#executive-functioning">遂行機能</a>、
+<a href="#event-related-potential">事象関連電位</a>、
+<a href="#affordance">アフォーダンス</a>、
+<a href="#selective-attention">選択的注意</a>
+
+<h3><a href="#neuro-science">神経科学</a></h3><p>
+<a href="#neuroanatomy">神経解剖学</a>、
+<a href="#computational-neuroscience">計算論的神経科学</a>
+
+<h3><a href="#philosophy">哲学</a></h3><p>
+<a href="#consciousness">意識</a>、
+<a href="#free-will">自由意志</a>
+
+<h3><a href="#others">その他</a></h3>
+
+
+<h3><a href="#society">国内関連学会</a></h3>
+
+
+<a name="brain-science"></a>
+<h2>脳科学全般</h2>
+
+<h4>「脳科学大事典」 <font color=red>★★★</font></h4><p>
+甘利 俊一 (編集), 外山 敬介 (編集)
+出版社: 朝倉書店 (2000/04)  <br>
+ISBN-13: 978-4254101560
+
+<p>
+すばらしいです。神経科学から機械学習まで幅広い分野を網羅していて、
+たいていのことが載っています。
+日本中の神経科学者・情報処理技術研究者がこの事典の全ページに目を通せば、
+脳の機能はすぐにでも解明されることでしょう。
+
+
+<h4>朝倉書店の黄色い本 <font color=red>★</font></h4><p>
+「脳と計算論」「脳の高次機能」「脳とニューラルネット」「脳の計算機構」
+「脳の情報表現」「脳と意識」
+
+
+<h4><a href="http://www.moriyama.com/netscience/">NetScience Interview Mail</a> </h4><p>
+森山和道氏による、神経科学、認知科学、ロボットなどを含む分野の国内有名研究者へのインタビュー。
+
+
+
+<a name="machine-learning"></a>
+<h2>機械学習</h2><p>
+「脳にしかできない」と一般に思われている概念獲得、直感的判断、合目的的行動
+といった機能は、
+実は機械学習分野における要素技術としてすでに実現されています。
+そして、それらを実際に脳が行っていると思われる証拠が見つかってきています。
+脳はこれらの要素技術を適切に組み合わせた情報処理装置であると私は考えています。
+
+<a name=""></a>
+<h3>機械学習全般</h3>
+
+<h4><a href="http://ibisforest.org/index.php?PRML">パターン認識と機械学習 - ベイズ理論による統計的予測</a> <font color=red>★</font></h4><p>
+Christopher M. Bishop著“Pattern Recognition and Machine Learning”の日本語版「パターン認識と機械学習 - ベイズ理論による統計的予測」のサポートページ。
+通称「PRML」または「ビショップ本」。必携。
+<p>
+<small>
+・ パターン認識と機械学習 上 - ベイズ理論による統計的予測<br>
+C. M. ビショップ (著), 元田 浩 (翻訳), 栗田 多喜夫 (翻訳), 樋口 知之 (翻訳), 松本 裕治 (翻訳), 村田 昇 (翻訳) 
+出版社: シュプリンガー・ジャパン株式会社 (2007/12/10) 
+ISBN-13: 978-4431100133 
+<br>
+・ パターン認識と機械学習 下 - ベイズ理論による統計的予測<br>
+C. M. ビショップ (著), 元田 浩 (翻訳), 栗田 多喜夫 (翻訳), 樋口 知之 (翻訳), 松本 裕治 (翻訳), 村田 昇 (翻訳) 
+出版社: シュプリンガー・ジャパン株式会社 (2008/7/11) 
+ISBN-13: 978-4431100317 
+</small>
+
+<p>
+この本は難しいけど、少なくとも第１章だけは早いうちに読んでおくべきです。
+重要な概念が一通り載っています。
+本の説明だけで用語のイメージがわかない場合は、根気強くネットで検索して、いろいろな解説や具体例を読むようにすると
+よいと思います。
+<p>
+他に脳と関係が深いのは第５章（ニューラルネット）、第８章（ベイジアンネット）、第９章（ＥＭアルゴリズム）、
+第１１章（ギブスサンプリング）、第１３章（ＨＭＭ）あたり。
+
+
+<h4><a href="http://ibisforest.org/index.php?FrontPage">朱鷺の杜Wiki</a> <font color=red>★</font></h4><p>
+機械学習に関連したエントリが毎日追加されているので、毎日チェックすれば
+少しづつ機械学習に詳しくなれるかもしれません。
+<a href="http://ibisforest.org/index.php?People">研究者</a>、
+<a href="http://ibisforest.org/index.php?Book">書籍</a>、
+<a href="http://ibisforest.org/index.php?%E3%82%A2%E3%83%AB%E3%82%B4%E3%83%AA%E3%82%BA%E3%83%A0">アルゴリズム</a>
+などのページも必見。
+
+
+<h4>「エージェントアプローチ人工知能 第2版」 <font color=red>★</font></h4><p>
+S.J.Russell (著), P.Norvig (著), 古川康一 (翻訳) <br>
+出版社: 共立出版; 第2版 (2008/7/10)<br>
+ISBN-13: 978-4320122154
+<p>
+人工知能の大変詳しい教科書。
+ベイジアンネットも載っています。
+
+
+<h4>「人工知能学事典」</h4><p>
+人工知能学会 (著) <br>
+出版社: 共立出版 (2005/12) 
+ISBN-13: 978-4320121072 
+
+
+<h4>「AI 事典 第2版」</h4><p>
+土屋 俊 (編集), 中島 秀之 (編集), 中川 裕志 (編集), 橋田 浩一 (編集), 松原 仁 (編集), 大澤 幸生 (編集), 高間 康史 (編集) <br>
+出版社: 共立出版; 第2版 (2003/3/18) <br>
+ISBN-13: 978-4320120631
+<p>
+事典というよりエッセイ集ですが、それはそれで面白いです。
+
+
+<h4><a href="http://bruch.sfc.keio.ac.jp/course/">Lecture Information</a></h4><p>
+<a href="http://bruch.sfc.keio.ac.jp/">古川先生</a>の人工知能関連の講義資料。
+
+
+<a name="pattern-recognition"></a>
+<h3><a href="http://ja.wikipedia.org/wiki/%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3%E8%AA%8D%E8%AD%98">パターン認識</a> (<a href="http://en.wikipedia.org/wiki/Pattern_recognition">Pattern recognition</a>)</h3>
+<h4>「わかりやすいパターン認識」 <font color=red>★★★</font></h4><p>
+石井 健一郎 (著), 前田 英作 (著), 上田 修功 (著), 村瀬 洋 (著)<br>
+出版社: オーム社 ; ISBN: 4274131491 ; (1998/08) <p>
+非常に一般性の高い枠組みのもとで、実用的なパターン認識技術の根本原理を
+解説する、けっこう読み応えのある本です。
+「パターン認識は純粋な工学的技術であって脳の情報処理とは無関係ではないか」と
+思いつつこの本を読み始めましたが、大きな間違いでした。
+本書で定式化されている問題から根本的にはずれたパターン認識手法は、
+想像することすら難しいです。
+<p>
+例えば「損失関数」が陰にせよ陽にせよ与えられないパターン認識装置など、
+あり得ようはずがありません。
+脳の場合、ＴＥ野と大脳基底核のループによる強化学習によって
+損失関数を学習しているのではないか、と思います。
+
+
+<a name="self-organizing-map"></a>
+<h3>自己組織化マップ （<a href="http://ja.wikipedia.org/wiki/%E8%87%AA%E5%B7%B1%E7%B5%84%E7%B9%94%E5%8C%96%E5%86%99%E5%83%8F">自己組織化写像</a>、ＳＯＭ、<a href="http://en.wikipedia.org/wiki/Self-organizing_map">Self-organizing map</a>）</h3>
+<p>
+ＳＯＭは、脳の機能の１つである概念獲得を行うことができる、
+教師なし学習アルゴリズムです。
+ＳＯＭが自己組織化するものと似たコラム構造と呼ばれる構造が、
+大脳皮質の複数の場所から見つかっています。
+
+
+<h4>「自己組織化マップ」（改訂版） <font color=red>★</font></h4><p>
+T. コホネン (著), Teuvo Kohonen (原著), 徳高 平蔵 (著), 堀尾 恵一 (著), 大北 正昭 (著), 大薮 又茂 (著), 藤村 喜久郎 (著) <br>
+出版社: シュプリンガーフェアラーク東京; 改訂版 (2005/06) <br>
+ISBN-13: 978-4431711544 
+<p>
+ＳＯＭの提唱者コホネンによる本。
+<p>
+p.128 の図はユークリッド座標から関節座標への変換テーブルを教師なしで
+学習する一次運動野のモデルと解釈できて、興味深いです。
+（本文にはそう書いてないですが。）
+<p>
+p.189 には、大脳皮質において、ある種の化学物質の拡散によって
+近傍学習が実現されているかもしれないというアイデアが述べられています。
+（物質の候補として NO が挙げられていますが、アセチルコリンも
+あり得ると思います。）
+
+
+<a name="Bayesian-network"></a>
+<h3><a href="http://ja.wikipedia.org/wiki/ベイジアンネットワーク">ベイジアンネット</a>（<a href="http://en.wikipedia.org/wiki/Bayesian_network">Bayesian network</a>）</h3>
+<p>
+ベイジアンネットは、脳の機能の１つである直感や連想記憶と
+似た働きをします。
+ベイジアンネットを使うと、
+外界の状態の一部に関する曖昧な情報が与えられたとき、
+過去の経験に基づいて、外界の観測されていない状態について推定することができます。
+大脳皮質には領野間に双方向の結合があり、
+ベイジアンネットと構造がとてもよく似ています。
+<p>
+日本語の文献では、
+  <a href="http://ibisforest.org/index.php?PRML">ビショップ本</a>（下）第８章「グラフィカルモデル」に、
+  ベイジアンネットの定義などがしっかり書かれています。
+<p>
+状態の推定を効率的に行う方法の１つに
+確率伝播アルゴリズム（信念伝搬アルゴリズム, <a href="http://en.wikipedia.org/wiki/Belief_propagation">Belief propagation</a> algorithm）が
+あります。
+確率伝播アルゴリズムは、「人工知能学事典」 p.738 などに載っています。
+
+<h4><a href="j-index.html">脳とベイジアンネット</a></h4><p>
+脳とベイジアンネットに関する情報をまとめたページを作りました。
+下記の説明資料などが置いてあります。
+<p>
+<a href="brain-bayesnet-faq.html">「脳とベイジアンネットＦＡＱ」</a>
+<a href="20090612MPE.pdf">「ベイジアンネットとは」</a>
+<a href="20100226what-is-bp.pdf">「確率伝播アルゴリズムとは」</a>
+<a href="20100325what-is-br.pdf">「belief revision アルゴリズムとは」</a>
+
+
+<h4><a href="http://www.ne.jp/asahi/hiroki/suyari/BayesianNetworkIntro1.pdf">ベイジアンネットワーク入門(1)</a>、
+<a href="http://www.ne.jp/asahi/hiroki/suyari/BayesianNetworkIntro2.pdf">ベイジアンネットワーク入門(2)</a> <font color=red>★</font></h4><p>
+ベイジアンネットの大変分かりやすい解説。
+
+<h4> <a href="http://www.sakurai.comp.ae.keio.ac.jp/classes/infosem-class/2007/07BayesianNetworks.pdf">
+情報意味論(第7回)ベイジアンネットワーク</h4><p>
+<a href="http://www.sakurai.comp.ae.keio.ac.jp/profile.html">櫻井先生</a>による
+講義資料。
+（<a href="http://www.sakurai.comp.ae.keio.ac.jp/class.html">他の講義資料</a>も必見。）
+
+<!--
+<h4><a href="http://watanabe-www.pi.titech.ac.jp/~shiga/BNshiga.pdf">ベイジアンネットワーク</a></h4><p>
+ベイジアンネットおよび確率伝播アルゴリズムに関する説明資料。
+いろいろ誤植があるようですが、比較的分かりやすいです。
+-->
+
+
+<!--   リンク切れ
+<h4><a href="http://www.cs.wisc.edu/~jerryzhu/cs540/bn.pdf">Bayes Nets</a></h4><p>
+英語ですがとても丁寧で分かりやすい解説。
+条件付確率表のスムージング(Smoothing)についても触れています。
+-->
+
+<h4>「Probabilistic Reasoning in Intelligent Systems: Networks of Plausible Inference」</h4><p>
+Judea Pearl (著)
+出版社: Morgan Kaufmann Pub ; ISBN: 1558604790 ; (1997/05/31)<p>
+ベイジアンネットの教科書。
+
+<h4><a href="http://people.cs.ubc.ca/~murphyk/Bayes/bayes.html">Graphical Models</a></h4><p>
+英語ですが分かりやすく重要事項を広くカバーする解説。
+
+<h4><a href="http://robotics.stanford.edu/~koller/BNtut/index.htm">Bayesian Networks and Decision-Theoretic Reasoning  for Artificial Intelligence</a></h4><p>
+英語ですが重要事項を広くカバーするスライド。
+
+<h4><a href="http://research.microsoft.com/apps/pubs/default.aspx?id=69588">A Tutorial on Learning With Bayesian Networks
+</a></h4><p>
+David Heckerman
+March 1995
+<p>
+ベイジアンネットの学習のチュートリアル。パラメタ学習、構造学習など。
+基本事項が詳しく書いてあって、一度は読んでおくとよさそう。
+
+
+<h4><a href="http://staff.aist.go.jp/y.motomura/bn.html">ベイジアンネット (Bayesian Network)</a></h4><p>
+本村陽一氏によるベイジアンネットの解説等へのリンク。
+
+
+
+<a name="independent-component-analysis"></a>
+<h3><a href="http://ja.wikipedia.org/wiki/独立成分分析">独立成分分析</a> （<a href="http://en.wikipedia.org/wiki/Independent_component_analysis">Independent component analysis</a>, ICA）</h3>
+<p>
+ＩＣＡは、脳と同じように、感覚器の入力信号だけから
+外の世界が持っている構造を教師なしで構築する働きをします。
+脳の一次視覚野がＩＣＡを行っているらしい証拠が見つかっています。
+
+<h4>「詳解 独立成分分析」 <font color=red>★★★</font></h4><p>
+アーポ ビバリネン (著), エルキ オヤ (著), ユハ カルーネン (著), Aapo Hyv¨arinen (原著), Erkki Oja (原著), Juha Karhunen (原著), 根本 幾 (翻訳), 川勝 真喜 (翻訳) <br>
+出版社: 東京電機大学出版局 (2005/02) 
+ISBN-13: 978-4501538606 
+<p>
+すばらしく分かりやすく整理された教科書です。
+数式を飛ばして読んでも、ＩＣＡの様々な側面が深く理解できます。
+<p>
+p.431 にはＩＣＡとスパース符号化
+(スパースコーディング、<a href="http://en.wikipedia.org/wiki/Sparse_coding">Sparse coding</a>)の関係が述べられています。
+
+<a name="principal-components-analysis"></a>
+<h3><a href="http://ja.wikipedia.org/wiki/%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90">主成分分析</a> (<a href="http://en.wikipedia.org/wiki/Karhunen-Lo%C3%A8ve_transform">Principal components analysis</a>, PCA)</h3>
+<h4><a href="http://www.ism.ac.jp/editsec/toukei/pdf/49-1-009.pdf">大脳皮質視覚野の情報表現を眺める</a> <font color=red>★</font></h4><p>
+大脳皮質の情報表現がＰＣＡで次元圧縮したものと近いことを示す
+文献等が紹介されています。
+（ＰＣＡではなくＩＣＡで
+情報圧縮しても同じような結果になるのかも？）
+
+
+<a name="reinforcement-learning"></a>
+<h3><a href="http://ja.wikipedia.org/wiki/%E5%BC%B7%E5%8C%96%E5%AD%A6%E7%BF%92">強化学習</a> (<a href="http://en.wikipedia.org/wiki/Reinforcement_learning">Reinforcement learning</a>)</h3>
+<p>
+強化学習は、脳の機能の１つである、欲求と選好から生じる合目的的な
+行動を再現することができる機械学習アルゴリズムです。
+いくつかの証拠から大脳基底核が強化学習の機構の一部であることが
+確実になってきています。
+
+<h4>「強化学習」 <font color=red>★</font></h4><p>
+Richard S.Sutton (著), Andrew G.Barto (著), 三上 貞芳 (著), 皆川 雅章 (著) <br>
+出版社: 森北出版 (2000/12) 
+ISBN-13: 978-4627826618 
+<p>
+分かりやすいと評判の定番教科書。
+英語の<a href="http://www.cs.ualberta.ca/%7Esutton/book/ebook/the-book.html">HTML版</a>もあります。
+
+<h4><a href="http://nao.s164.xrea.com/RL-FAQ-j.html">Sutton さんの強化学習 FAQ 日本語版</a> <font color=red>★</font></h4><p>
+<a href="http://www.cs.ualberta.ca/~sutton/RL-FAQ.html">RL FAQ</a>（強化学習ＦＡＱ）の日本語訳。
+
+
+
+<h4><a href="http://www.fe.dis.titech.ac.jp/research/rl/index.html">強化学習とは？(What is Reinforcement Learning?)</a></h4><p>
+強化学習の理論等の解説。
+
+<!--
+<a name="fuzzy"></a>
+<h3>ファジィ (<a href="http://en.wikipedia.org/wiki/Fuzzy_logic">Fuzzy logic</a>)</h3>
+<p>
+上記ベイジアンネットが曖昧な情報を使った認識・制御の要素を持っていますので、
+ことさらファジィ情報処理の勉強をする必要はないと思います。
+-->
+
+<!--
+<a name="curse-of-dimensionality">
+<h3>)</h3>
+<p>
+-->
+
+<a name="feature-selection"></a>
+<h3>特徴選択 （<a href="http://en.wikipedia.org/wiki/Feature_selection">Feature selection</a>）</h3><p>
+<a href="http://ibisforest.org/index.php?%E7%89%B9%E5%BE%B4%E9%81%B8%E6%8A%9E">特徴選択</a>は、脳が処理するような高次元の入力ベクト
+ルに対して、機械学習アルゴリズムの性能を劣化させな
+いために不可欠な技術です。脳の<a href="#selective-attention">選択的注意</a>という機
+能は、明らか特徴選択と同じ効果があると思います。
+<p>
+多くの機械学習アルゴリズムは、入力ベクトルの次元（例えばセンサーの数）が大きくなると、
+様々な理由から事実上動作しなくなります。
+この現象を機械学習研究者は「次元の呪い」 
+（<a href="http://en.wikipedia.org/wiki/Curse_of_dimensionality">Curse of dimensionality</a>）
+と呼びます。
+次元の呪いを避ける方法としては、特徴選択の他に、
+次元圧縮、事前知識の作り込み（階層化等）などがあります。
+私は、脳もこれらの方法を組み合わせることで
+次元の呪いを回避しているのだと思います。
+
+
+<h4><a href="http://www.kamishima.net/jp/clustering/">クラスタリングとは (クラスター分析とは)</a></h4><p>
+クラスタリングの解説。クラスタリングにおける次元の呪いの回避方法も解説されています。
+
+<h4><a href="http://www.msi.co.jp/splus/support/salon/userconf/ronbun/3rd/ishikawa.pdf">データマイニングはデータで決まる</a></h4><p>
+「良質かつ厳選されたデータ集合」を用いることでデータマイニングを
+成功させようという実践的解説。
+次元の呪いを回避するための特徴選択についても解説しています。
+（個人的には図２の特徴数とクラスの関係が目から鱗でした。）
+この著者による
+<a href="http://www5.ocn.ne.jp/~shinya91/">データマイニングの宝箱</a>
+のページも勉強になります。
+
+<a name="regularisation"></a>
+<h3>正則化 （<a href="http://en.wikipedia.org/wiki/Regularisation">Regularization</a>） </h3><p>
+<a href="http://ibisforest.org/index.php?cmd=read&page=%E6%AD%A3%E5%89%87%E5%8C%96&word=%E6%AD%A3%E5%89%87%E5%8C%96">正則化</a>は、脳が持つような、学習していない事象にも
+対処可能な能力（<a href="http://ibisforest.org/index.php?cmd=read&page=%E6%B1%8E%E5%8C%96%E8%83%BD%E5%8A%9B&word=%E6%AD%A3%E5%89%87%E5%8C%96">汎化能力</a>）を高めるために、機械学習
+において一般的に行われる手法です。
+不良設定問題(ill-posed problem)になるような
+<a href="http://ja.wikipedia.org/wiki/%E9%80%86%E5%95%8F%E9%A1%8C">逆問題</a>
+(<a href="http://en.wikipedia.org/wiki/Inverse_problem">Inverse problem</a>)を
+解くためにも用いられます。
+<p>
+私は、脳が持つ「観測と予測の不一致の検
+出」という機能が、正則化に関係すると考えています。
+また、<a href="http://ja.wikipedia.org/wiki/%E8%87%AA%E9%96%89%E7%97%87">自閉症</a> （<a href="http://en.wikipedia.org/wiki/Autism">Autism</a>）
+の子どもは般化（心理学用語ではこの字を使うようです）が困難である、という事実にも注目しています。
+
+<a name="frame"></a>
+<h3>フレーム （<a href="http://en.wikipedia.org/wiki/Frame_%28Artificial_intelligence%29">Frame</a>）</h3><p>
+フレーム表現は、 Minsky が提唱した、
+人工知能における<a href="http://ja.wikipedia.org/wiki/%E7%9F%A5%E8%AD%98%E8%A1%A8%E7%8F%BE">知識表現</a>
+方法の一つです。
+「知識表現 フレーム」で検索すればフレームの分かりやすい具体例がいろいろ見つかると思います。
+
+
+<h4><a href="http://web.media.mit.edu/~minsky/papers/Frames/frames.html">A Framework for Representing Knowledge</a></h4><p>
+Marvin Minsky<br>
+MIT-AI Laboratory Memo 306, June, 1974.
+<p>
+まだ読んでいませんが、重要そうです。
+
+
+<a name="deep-learning"></a>
+<h3>ディープ・ラーニング（<a href="http://en.wikipedia.org/wiki/Deep_learning">Deep Learning</a>）</h3><p>
+<p>
+Deep Learning は、従来よりも多くの層を持ったニューラルネットを用いる技術です。画像認識、音声認識などの分野で、
+いろいろなベンチマークで従来技術を超える性能を出しており、
+注目を集めています。
+Deep Learning のネットワークの基本構造や性能を上げる技法の一部は大脳皮質のモデルに起源を持ちます。
+
+<p>
+<a href="http://besom1.blog85.fc2.com/blog-entry-113.html">ＢＥＳＯＭ（ビーソム）ブログ deep learning 日本語チュートリアル資料など</a><br>
+<a href="http://staff.aist.go.jp/y-ichisugi/rapid-memo/deep-learning.html">Deep learning 用語集</a><br>
+<a href="http://staff.aist.go.jp/y-ichisugi/rapid-memo/brain-deep-learning.html">大脳皮質と deep learning の類似点と相違点</a><br>
+
+<a name="cognitive-science"></a>
+<h2>認知科学・心理学</h2>
+<a name=""></a>
+<h3>認知科学・心理学全般</h3>
+
+<h4>「心理学辞典」 <font color=red>★</font></h4><p>
+中島 義明 (編集), 子安 増生 (編集), 繁桝 算男 (編集), 箱田 裕司 (編集), 安藤 清志 (編集), 坂野 雄二 (編集), 立花 政夫 (編集)<br>
+有斐閣 ; ISBN: 4641002592 ; (1999/01) 
+<p>
+神経科学の用語も結構カバーしています。
+
+
+<h4>「認知科学辞典」</h4><p>
+日本認知科学会 (編集) <br>
+出版社: 共立出版 (2002/07) 
+ISBN-13: 978-4320094451 
+<p>
+CD-ROM 版の「デジタル認知科学辞典」(ISBN-13: 978-4320121058)
+もあるので、パソコンに入れておくよいかもしれません。
+
+<h4>「まなざしの誕生―赤ちゃん学革命」 </h4><p>
+下條 信輔 (著) <br>
+出版社: 新曜社; 新装版 (2006/6/6) 
+ISBN-13: 978-4788510005 
+<p>
+専門書ではありませんが、赤ちゃんの能力、
+すなわち人間が生得的に持っている能力についてのイメージがよくつかめます。
+近々赤ちゃんが生まれる予定の方はぜひこれを読んでから
+観察に望まれるとよいと思います。
+
+<h4><a href="http://www4.ocn.ne.jp/~murakou/documents.html">論文のレジュメや研究会・シンポジウムの発表資料など</a> </h4><p>
+すごい量の資料。
+
+<a name="executive-functioning"></a>
+<h3>遂行機能 （実行機能、 <a href="http://en.wikipedia.org/wiki/Executive_functioning">Executive functioning</a> ）</h3><p>
+「脳の中の脳」といわれる前頭前野の機能は、今日では「遂行機能」として
+理解されています。
+遂行機能についてはいろいろな表現で説明されていますが、
+いくつか眺めてみれば、決して計算機上で再現できない機能ではないことが
+よく分かると思います。
+
+<h4><a href="http://www2.odn.ne.jp/~cdv50380/index.htm">Actes</a> <font color=red>★</font></h4><p>
+<a href="http://www2.odn.ne.jp/~cdv50380/frontal/frontal.htm">前頭葉機能障害</a>のページで損傷部位と症状の関係が
+とても簡潔にまとめられています。
+
+<!--
+<h4><a href="http://www.jil.go.jp/institute/chosa/118.html">前頭葉の構造と機能－職業適性の生物学的基礎－</a></h4><p>
+この文書では、前頭葉の機能を
+(1)環境の認知、(2)行動の選択枝の発見、(3)計画立案，意志決定、
+(4)実行、(5)評価の５つにまとめています。
+-->
+
+
+<a name="event-related-potential"></a>
+<h3>事象関連電位 (<a href="http://en.wikipedia.org/wiki/Event-related_potential">Event-related potential</a>, ERP)</h3>
+<p>
+ＥＲＰは脳波の一種です。
+大脳皮質６層構造、選択的注意、正則化の機構と関係が深そうなので
+現在勉強中。
+
+<h4><a href="http://home.hiroshima-u.ac.jp/nittono/erp_eng_psych.pdf">事象関連電位（ERP）と認知活動：工学心理学での利用を例に</a></h4><p>
+<a href="http://home.hiroshima-u.ac.jp/nittono/index.html">入戸野先生</a>による
+ＥＲＰの解説。
+Figure 2 によると、陰性電位は浅い層への興奮性入力か深い層への抑制性入力、
+陽性電位は浅い層への抑制性入力か深い層への興奮性入力、ということでしょうか。
+
+<h4><a href="http://www.med.kyushu-u.ac.jp/neurophy/jisho.pdf">事象関連電位とミスマッチ陰性電位</a></h4><p>
+代表的な成分の解説など。 CNV, P1-N1-P2, NA, Nd, N2b, P300(P3b), P3a, 
+ MMN, N400 。
+
+<h4><a href="http://dspace.wul.waseda.ac.jp/dspace/bitstream/2065/308/2/Honbun-honbun.pdf">エラー関連陰性電位によるエラー検出の研究</a></h4><p>
+目次は<a href="http://dspace.wul.waseda.ac.jp/dspace/bitstream/2065/308/1/Honbun-mokuji.pdf">ここ</a>。
+エラー関連陰性電位(error-related negativity, ERN)について詳しい。
+
+
+<a name="affordance"></a>
+<h3><a href="http://ja.wikipedia.org/wiki/%E3%82%A2%E3%83%95%E3%82%A9%E3%83%BC%E3%83%80%E3%83%B3%E3%82%B9">アフォーダンス</a> (<a href="http://en.wikipedia.org/wiki/Affordance">Affordance</a>)</h3>
+
+<h4><a href="http://www.kousakusha.com/ks/ks-t/ks-t-4-46.html">アフォーダンス</a></h4><p>
+アフォーダンスの簡潔な解説。
+
+<h4>「アフォーダンス-新しい認知の理論」</h4><p>
+佐々木 正人 (著)<br>
+出版社: 岩波書店 (1994/05) 
+ISBN-13: 978-4000065122 
+<p>
+ギブソンのアフォーダンスについての分かりやすい解説。
+３章後半あたりからようやく面白くなってきます。
+（私はこの本で述べられている「知覚と行為のカップリング」とは
+運動前野が学習する状態行動対のことだろうと思っています。）
+
+
+<a name="selective-attention"></a>
+<h3>選択的注意 (<a href="http://en.wikipedia.org/wiki/Selective_attention">Selective attention</a>)</h3><p>
+選択的注意については、認知科学の分野で長く研究されています。
+脳科学大事典 p.414 等をご覧ください。
+<p>
+私は、注意は機械学習の分野で言う特徴選択に相当すると考えています。
+
+<!--
+<a name="working-memory"></a>
+<h3><a href="http://ja.wikipedia.org/wiki/%E3%83%AF%E3%83%BC%E3%82%AD%E3%83%B3%E3%82%B0%E3%83%A1%E3%83%A2%E3%83%AA">ワーキングメモリ</a> (<a href="http://en.wikipedia.org/wiki/Working_memory">Working memory</a>)</h3>
+おすすめできる情報源はいまのところありません。
+-->
+
+
+<a name="neuro-science"></a>
+<h2>神経科学</h2><p>
+脳の情報処理機構に関して確定的なことはほとんど分かっていないと
+言われていますが、確定的でなくてよければ膨大なことが分かっています。
+重要な情報を適切に取捨選択すれば、脳の全体像を把握することは
+決して難しくはありません。
+
+<a name=""></a>
+<h3>神経科学全般</h3>
+
+<h4><a href="http://web2.chubu-gu.ac.jp/web_labo/mikami/brain/index.html">脳の世界：京都大学霊長類研究所・行動発現分野</a> <font color=red>★</font></h4><p>
+神経科学入門的な解説記事から専門的な論文紹介まであり、
+とても読み応えがあります。
+
+
+<h4>「脳のなかの幽霊」</h4><p>
+V.S. ラマチャンドラン (著), サンドラ ブレイクスリー (著), V.S. Ramachandran (原著), Sandra Blakeslee (原著), 山下 篤子 (翻訳) <br>
+出版社: 角川書店 (1999/08) 
+ISBN-13: 978-4047913202 <p>
+<a href="http://www.geocities.jp/toryon33/nouyuurei.html">こちらの書評</a>が
+詳しいです。
+
+
+<h4>「生存する脳―心と脳と身体の神秘」</h4><p>
+アントニオ・R. ダマシオ (著), Antonio R. Damasio (原著), 田中 三彦 (翻訳) <br>
+出版社: 講談社 (2000/01) 
+ISBN-13: 978-4062100410 <p>
+前頭前・腹内側部（BA11, 12 ？）の損傷が引き起こす症状について詳しい。
+pp.297--298 の損傷患者の様子が、
+<a href="http://ja.wikipedia.org/wiki/%E3%83%95%E3%83%AC%E3%83%BC%E3%83%A0%E5%95%8F%E9%A1%8C">フレーム問題</a>
+ (<a href="http://en.wikipedia.org/wiki/Frame_problem">Frame problem</a>)
+にはまったロボットととても似ていて興味深いです。
+
+
+<h4><a href="http://ja.wikipedia.org/wiki/%E3%82%AA%E3%83%AA%E3%83%90%E3%83%BC%E3%83%BB%E3%82%B5%E3%83%83%E3%82%AF%E3%82%B9">オリバー・サックス</a>の本</h4><p>
+「妻を帽子とまちがえた男」「火星の人類学者」など。
+
+<h4>「脳と運動―アクションを実行させる脳」 <font color=red>★★★</font></h4><p>
+丹治 順 <br>
+出版社: 共立出版 (1999/11) <br>
+ASIN: 432005394X 
+<p>
+運動細胞、一次運動野、運動前野、補足運動野、小脳、大脳基底核、帯状皮質運動野、前頭前野を含む、
+運動に関係するありとあらゆる領域を完全に網羅し、それぞれの領域の機能を損傷した場合の症例などと共に
+詳しく分かりやすく解説する、一般の人向けの本。
+<p>
+下記「脳と視覚」と合わせれば脳の全貌がほぼ把握できます。
+
+<h4>「脳と視覚―何をどう見るか」 <font color=red>★</font></h4><p>
+福田 淳 (著), 佐藤 宏道 (著) <br>
+出版社: 共立出版 (2002/02) 
+ISBN-13: 978-4320053915 
+<p>
+視覚に関する知見を広く詳しくまとめた本。上記「脳と運動」と同じシリーズですが、かなり専門的です。
+
+
+<h4>「Principles of Neural Science」 <font color=red>★</font></h4><p>
+＃<strong>近々第５版の日本語訳が出るようです！</strong><br>
+＃<a href="http://www.medsi.co.jp/kandel/">カンデル神経科学｜MEDSi メディカル・サイエンス・インターナショナル</a>
+
+<p>
+神経科学の標準的教科書。通称「カンデル」。
+あちこちで輪講されているため、検索すれば日本語の
+輪講資料が見つかるかもしれません。
+<p>
+なお、この分厚い本をいきなり最初から読もうとするのは無謀なのでやめた方がよいです。
+図が非常に優れているので、図だけはすべて目を通して
+何が書いてあるか理解しておくとよいかもしれません。
+（第５版になって図がさりげなくパワーアップしてます。）
+
+<p>
+Principles of Neural Science 5th ed. [ハードカバー] <br>
+Eric R. Kandel (著) <br>
+出版社: McGraw-Hill Companies; 5版 (2012/10/26) <br>
+ISBN-13: 978-0071390118 
+
+
+<h4><a href="http://physi1-05.med.toho-u.ac.jp/system_neuro/sys_neuro.html">システム神経生理学</a> <font color=red>★</font></h4><p>
+<a href="http://physi1-05.med.toho-u.ac.jp/">有田先生</a>による、
+各種神経系の解剖学的特徴、機能的意義等の詳しい総説。
+書籍になってます。
+比較的マイナーないろいろな神経核の解剖学的な特徴だけでなく、
+機能に関しても様々な知見を統合したシステム論的な見方の解釈をずばっと
+書いてくれるので、（それを文字通り信じてはいけないですが）読みやすいです。
+<p>
+脳内物質のシステム神経生理学―精神精気のニューロサイエンス<br>
+有田 秀穂 (著) 
+出版社: 中外医学社 (2006/10) 
+ISBN-13: 978-4498128200 
+
+<h4><a href="http://pooneil.sakura.ne.jp/">pooneilの脳科学論文コメント</a></h4><p>
+pooneil さんのブログ。
+
+<h4><a href="http://www.mumumu.org/~viking/blog-wp/">大「脳」洋航海記</a></h4><p>
+viking さんのブログ。
+
+<h4><a href="http://blog.livedoor.jp/brain_network/">脳とネットワーク/The Swingy Brain（旧）</a>、
+<a href="http://swingybrain.blogspot.com/">The Swingy Brain（新）</a>  <font color=red>★</font>
+</h4><p>
+Shuzo さんのブログ。
+<a href="http://blog.livedoor.jp/brain_network/archives/50889103.html">確率推論とニューロン </a>、
+<a href="http://blog.livedoor.jp/brain_network/archives/50959844.html">オシレーション特集</a>、
+<a href="http://blog.livedoor.jp/brain_network/archives/50968197.html">まとめてスパースコーディング</a>、
+<a href="http://blog.livedoor.jp/brain_network/archives/50979644.html">感覚野の層と機能</a>。
+
+<a name="neuroanatomy"></a>
+<h3>神経解剖学</h3>
+<p>
+私が脳を理解しようとする際に最も頼りにしているのは神経解剖学的知見です。
+解剖学的事実は、
+脳の情報処理機構を推測する上で非常に強いヒントを与えてくれます。
+（電気生理学や脳機能イメージングで得られている知見は、
+実験条件の問題、統計処理の問題、
+実験結果の解釈の問題等により、
+すべてが１００％信用できるものではないと思っています。）
+
+
+<h4>脳模型　A形  <font color=red>★★★</font></h4><p>
+株式会社<a href="http://www.kyotokagaku.co.jp/">京都科学</a>製の脳の模型。
+込み入った大脳基底核、海馬、視床あたりも分解して立体構造を知ることができます。
+大脳皮質にはブロードマンの領野の番号が、視床には特殊核の略称が、
+他の様々な場所にも私の知らない略称が書き込まれています。
+脳の勉強を始めたころは毎日３０分以上は眺めてました。
+高いですが、脳を研究する研究室にはぜひ置いておいて欲しい一品。
+（<a href="http://www.kyotokagaku.jp/">オンラインカタログのページ</a>から
+"11029-000" で検索してください。）
+
+<h4><a href="http://www.kids-clinic.jp/e/dic/c.php?c=effort">こどもクリニック医学英和・和英辞書</a> <font color=red>★</font></h4><p>
+難しい解剖学用語もひくことができるオンライン辞書。とても助かります。
+
+<h4>「脳単」 <font color=red>★</font></h4><p>
+原島 広至 (著), 河合 良訓 (著) 
+出版社: エヌ・ティー・エス (2005/04) <br>
+ISBN-13: 978-4860430757 
+<p>
+脳の主要な組織の名称と役割を語源や３Ｄの絵とともに解説する、解剖学英単語集。
+解剖学用語は英語も日本語も読み方すら分からないことが多いですが、
+この本は両方にふりがな振ってあり、とても助かります。
+
+<h4><a href="http://ja.wikipedia.org/wiki/%E8%A7%A3%E5%89%96%E5%AD%A6%E3%81%AB%E3%81%8A%E3%81%91%E3%82%8B%E6%96%B9%E5%90%91%E3%81%AE%E8%A1%A8%E7%8F%BE">
+解剖学における方向の表現 - Wikipedia</a></h4><p>
+解剖学でとてもよく出てくる
+superior, inferior, anterior, posterior, ventral, dorsal, rostal, caudal などの用語の意味の説明。
+
+
+<h4>「カラー図解 神経解剖学講義ノート」 <font color=red>★</font></h4><p>
+寺島俊雄 (著) <br>
+出版社: 金芳堂 (2011/12/5) <br>
+ISBN-13: 978-4765315067 
+<p>
+神戸大学の寺島先生による神経解剖学の詳しい資料。
+かつてネットで無料公開されていた神戸大学の講義資料が書籍化されたようです。
+理工系の人にもわかりやすいらしいです。
+
+
+<h4>「カーペンター 神経解剖学」</h4><p>
+Malcolm B. Carpenter (著), Jerome Sutin (著), 近藤 尚武 (翻訳), 千葉 胤道 (翻訳)<br>
+出版社: 西村書店; 第8版 (1995/04) 
+ISBN-13: 978-4890132362 <p>
+詳しい神経解剖学の本。
+
+<!--
+<h4>翻訳ソフト <font color=red>★</font></h4><p>
+神経科学のよい論文はオンラインで読めるものが多く、
+医学用語辞書が入った翻訳ソフトで機械翻訳すれば斜め読みする際にとても助かります。
+-->
+
+<h4><a href="http://www.jnns.org/niss/2003/text/textAosaki.pdf">線条体ニューロンの局所回路とその働き</a></h4><p>
+非常に重要な「５つの大脳皮質－基底核ループ」の絵が図２に引用されています。
+ちなみに、この絵の引用元は、２０００回以上も引用されている
+とても有名なこの論文です。
+<p>
+ALEXANDER GE, DELONG MR, STRICK PL<br>
+PARALLEL ORGANIZATION OF FUNCTIONALLY SEGREGATED CIRCUITS LINKING BASAL GANGLIA AND CORTEX <br>
+ANNUAL REVIEW OF NEUROSCIENCE 9: 357-381 1986
+
+
+<h4><a href="http://gaya.jp/research/index.htm">「海馬」を究めよう</a> <font color=red>★</font></h4><p>
+<a href="http://gaya.jp/ikegaya.htm">池谷先生</a>による
+専門家向けの海馬の解説。
+（<a href="http://gaya.jp/english/neuroterm.htm">英語の発音を敢えてカタカナで表してみよう</a>のページもありがたいです。）
+
+<a name="computational-neuroscience"></a>
+<h3><a href="http://ja.wikipedia.org/wiki/%E8%A8%88%E7%AE%97%E7%A5%9E%E7%B5%8C%E7%A7%91%E5%AD%A6">計算論的神経科学</a> (<a href="http://en.wikipedia.org/wiki/Computational_neuroscience">Computational neuroscience</a>)</h3>
+
+<h4>ネオコグニトロン (<a href="http://en.wikipedia.org/wiki/Neocognitron">Neocognitron</a>)<font color=red>★★★</font></h4><p>
+ネオコグニトロンは脳の視覚野の解剖学的特徴を参考に作られた
+パターン認識を行う神経回路モデルです。
+<p>
+原論文よりも、「脳とニューラルネット」 pp.75--92 または
+「脳科学大事典」 pp.851--859 の解説の方が、分かりやすくておすすめです。
+
+
+<h4><a href="http://jstore.jst.go.jp/cgi-bin/research/advanced/detail.cgi?data_id=1574">思考する記憶機械 PATON</a> <font color=red>★★★</font></h4><p>
+PATON は、脳の機能の１つである、シンボル処理とパターン処理を統合した
+推論を実現する神経回路モデルです。
+その実現には、脳の特徴的な振る舞いの１つである選択的注意がかぎとなります。
+PATON は、シンボル処理のみに基づく人工知能技術が直面している
+<a href="http://ja.wikipedia.org/w/index.php?title=%E3%82%B7%E3%83%B3%E3%83%9C%E3%83%AB%E3%82%B0%E3%83%A9%E3%82%A6%E3%83%B3%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E5%95%8F%E9%A1%8C&action=edit">シンボルグラウンディング問題</a> (<a href="http://en.wikipedia.org/wiki/Symbol_grounding">Symbol grounding problem</a>)を解決していると思います。
+<p>
+PATON の詳細は「脳科学大事典」 pp.544--551 をご覧ください。
+
+
+<h4><a href="http://www.cns.atr.jp/~doya/naist/">計算神経科学 講義資料</a>
+<font color=red>★★★</font></h4><p>
+銅谷先生の講義資料。
+数理科学の連載「計算神経科学への招待」の草稿があり必読です。
+<p>
+「大脳皮質が<a href="http://ja.wikipedia.org/wiki/%E6%95%99%E5%B8%AB%E3%81%AA%E3%81%97%E5%AD%A6%E7%BF%92">教師なし学習</a>、小脳が<a href="http://ja.wikipedia.org/wiki/%E6%95%99%E5%B8%AB%E3%81%82%E3%82%8A%E5%AD%A6%E7%BF%92">教師あり学習</a>、大脳基底核が<a href="http://ja.wikipedia.org/wiki/%E5%BC%B7%E5%8C%96%E5%AD%A6%E7%BF%92">強化学習</a>を
+行っている」という整理は大変分かりやすいです。
+神経修飾物質である<a href="http://ja.wikipedia.org/wiki/%E3%83%89%E3%83%BC%E3%83%91%E3%83%9F%E3%83%B3">ドーパミン</a>、
+<a href="http://ja.wikipedia.org/wiki/%E3%82%BB%E3%83%AD%E3%83%88%E3%83%8B%E3%83%B3">セロトニン</a>、
+<a href="http://ja.wikipedia.org/wiki/%E3%83%8E%E3%83%AB%E3%82%A2%E3%83%89%E3%83%AC%E3%83%8A%E3%83%AA%E3%83%B3">ノルアドレナリン</a>、
+<a href="http://ja.wikipedia.org/wiki/%E3%82%A2%E3%82%BB%E3%83%81%E3%83%AB%E3%82%B3%E3%83%AA%E3%83%B3">アセチルコリン</a>が、
+それぞれ機械学習アルゴリズムの変数である
+ＴＤ誤差δ、報酬割引率γ、逆温度β、学習率αに対応するという
+仮説も大変分かりやすいですが、
+セロトニンとノルアドレナリンについては、まだまだ検証が必要ではないかと思います。
+
+
+
+<h4>「脳の計算理論」 <font color=red>★</font></h4><p>
+川人 光男 (著) <br>
+出版社: 産業図書 (1996/03) 
+ISBN-13: 978-4782815144 
+<p>
+計算論的神経科学の入門書。
+運動制御の話に多くのページが割かれています。
+小脳の「フィードバック誤差学習モデル」など。
+
+
+<!--
+<h4>エルマンネット</h4><p>
+リカレントニューラルネットワークを使って簡単な文法を獲得するモデルです。
+私は再帰的な構造を持った BESOM ネットワークで同様のことができるのではないかと
+考えています。
+
+<h4>Kanerva のSDM 。</h4><p>
+SDM と BESOM は表面的には違いますが実はとてもよく似ています
+（BESOM における入力ベクトルと参照ベクトルの類似度の対数をとったものは
+ハミング距離と解釈できます。）
+頑健性などの SDM の利点はすべて BESOM にも当てはまるでしょう。
+
+-->
+
+
+<h4><a href="http://www.cis.twcu.ac.jp/~asakawa/waseda2002/">ニューラルネットワークモデル論</a> <font color=red>★</font></h4><p>
+<a href="http://www.cis.twcu.ac.jp/~asakawa/">浅川先生</a>による、ニューラルネットワークの講義資料。
+パーセプトロン、エルマンネット、
+ホップフィールドネットワーク、Linsker のモデル、ＳＯＭを含む
+古典的モデルの詳しい解説。
+
+
+<h4>"The Handbook of Brain Theory and Neural Networks: Second Edition"</h4><p>
+Michael A. Arbib (Editor) <br>
+Publisher: The MIT Press; 2 Sub edition (November 15, 2002)  <br>
+ISBN-13: 978-0262011976 
+<p>
+ニューロンレベルからシステムレベルに到るまで、脳に関する有名なモデルを
+数多く載せています。
+これを眺めれば逆に脳の理解がいかに進んでいないかを知ることができます。
+
+
+
+
+<a name="philosophy"></a>
+<h2>哲学</h2><p>
+「意識」や「知能」のように捉えにくい曖昧な概念についての理解を深めたいと思う人は、
+システム工学やソフトウェア工学における
+<a href="http://ja.wikipedia.org/wiki/%E8%A6%81%E6%B1%82%E5%88%86%E6%9E%90">要求分析</a> （<a href="http://en.wikipedia.org/wiki/Requirements_analysis">Requirements analysis</a>）の技法（<a href="http://ja.wikipedia.org/wiki/%E3%83%A6%E3%83%BC%E3%82%B9%E3%82%B1%E3%83%BC%E3%82%B9">ユースケース</a>など）
+の修行を積むと役に立つかもしれません。
+例えば知能とは何かについて考えたいならば、
+「知能を持つ機械を作って欲しい」という仮想的な顧客の要求分析を（妥協することなしに）行えば、
+知能についてとても理解が深まると思います。
+
+<a name="consciousness"></a>
+<h3><a href="http://ja.wikipedia.org/wiki/%E6%84%8F%E8%AD%98">意識</a> (<a href="http://en.wikipedia.org/wiki/Consciousness">Consciousness</a>, <a href="http://en.wikipedia.org/wiki/Awareness">Awareness</a>)</h3>
+<h4><a href="http://www.qualia-manifesto.com/nikkei.html">意識のなぞ</a></h4><p>
+<a href="http://www.qualia-manifesto.com/kenmogi.html">茂木健一郎氏</a>による
+日本経済新聞の連載記事。
+意識に関連した神経科学の話題を幅広くカバーしています。
+
+<h4>意識の探求―神経科学からのアプローチ (上) </h4><p>
+クリストフ・コッホ (著), 土谷 尚嗣 (著), 金井 良太 (著) <br>
+出版社: 岩波書店 (2006/06) 
+ISBN-13: 978-4000050531 
+<h4>意識の探求―神経科学からのアプローチ (下) </h4><p>
+クリストフ・コッホ (著), 土谷 尚嗣 (著), 金井 良太 (著) <br>
+出版社: 岩波書店 (2006/06) 
+ISBN-13: 978-4000050548 
+<p>
+訳者の１人<a href="http://www.emotion.caltech.edu/~naotsu/Site/Translation.html">土谷さんのページ</a>にて、
+１章、２０章、フランシス・クリックの序文、著者前書き、訳者前書きが
+サンプルとして pdf で読めます。
+
+
+<a name="free-will"></a>
+<h3><a href="http://ja.wikipedia.org/wiki/%E8%87%AA%E7%94%B1%E6%84%8F%E5%BF%97">自由意志</a> (<a href="http://en.wikipedia.org/wiki/Free_will">Free will</a>)</h3>
+<h4><a href="http://ja.wikipedia.org/wiki/%E5%88%91%E6%B3%95%E5%AD%A6">刑法学 - Wikipedia</a></h4><p>
+刑法学の近代学派（19世紀末）はすでに人間の自由意志を否定しているようです。刑法学者おそるべし。
+「被告を有罪にしても犯罪抑止にはつながらないなら無罪、
+つながるなら有罪」という判断基準ならば、確かに自由意志という
+概念は必要としませんね。
+
+<h4><a href="http://blog.livedoor.jp/brain_network/archives/50682027.html">脳とネットワーク/The Swingy Brain:人はホントに自由か？～自由意志の問題～</a></h4><p>
+<a href="http://blog.livedoor.jp/brain_network/">Shuzo さん</a>による、
+自由意志に関するニューヨーク・タイムズの記事についての解説。
+
+
+
+<h3></h3>
+<h3></h3>
+
+<a name="others"></a>
+<h2>その他</h2>
+<p>私見ですが、大脳皮質は下記の情報処理技術を用いていないと思っています。
+
+
+<h3>多層<a href="http://ja.wikipedia.org/wiki/%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3">パーセプトロン</a> (<a href="http://en.wikipedia.org/wiki/Perceptron">Perceptron</a>)</h3><p>
+大脳皮質が<a href="http://ja.wikipedia.org/wiki/%E3%83%90%E3%83%83%E3%82%AF%E3%83%97%E3%83%AD%E3%83%91%E3%82%B2%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3">バックプロパゲーション</a>（誤差逆伝播法, <a href="http://en.wikipedia.org/wiki/Backpropagation">Backpropagation</a>）をやっている
+という証拠は見つかっていません。
+教師信号をどうやって与えるか、という問題もあります。
+
+<h3><a href="http://ja.wikipedia.org/wiki/%E3%83%9B%E3%83%83%E3%83%97%E3%83%95%E3%82%A3%E3%83%BC%E3%83%AB%E3%83%89%E3%83%BB%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF">ホップフィールド・ネットワーク</a> (<a href="http://en.wikipedia.org/wiki/Hopfield_net">Hopfield net</a>)</h3><p>
+BESOM モデルはホップフィールド・ネットワークと似たところがありますが、
+教師なし学習により階層的に情報を圧縮しているところが本質的に違います。
+
+<h3>ボルツマンマシン (<a href="http://en.wikipedia.org/wiki/Boltzmann_machine">Boltzmann machine</a>)</h3><p>
+指数オーダの時間をかけてゆっくり温度をさげて
+厳密解を求める、ということを脳がやっているとは思えません。
+（ではＣＤ法は？）
+
+<h3><a href="http://ja.wikipedia.org/wiki/%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%83%99%E3%82%AF%E3%82%BF%E3%83%BC%E3%83%9E%E3%82%B7%E3%83%B3">サポートベクターマシン</a> (<a href="http://en.wikipedia.org/wiki/Support_vector_machine">Support vector machine</a>, SVM)</h3><p>
+オンラインで行うのが難しそうです。スパース化によって汎化能力を上げる、
+ということは脳もやっていると思います。
+
+<h3>パーティクルフィルタ (<a href="http://en.wikipedia.org/wiki/Particle_filter">Particle filter</a>)</h3><p>
+神経回路による実現が難しそうです。
+<h4><a href="http://www.ieice.org/jpn/books/kaishikiji/2005/200512.pdf">粒子フィルタ</a></h4><p>
+分かりやすいパーティクルフィルタの解説。
+
+
+<h3>マルコフ連鎖モンテカルロ (<a href="http://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a>, MCMC)</h3><p>
+神経回路による実現が難しそうです。(いや、ギブスサンプリングは簡単に実現できそうですね。)
+
+
+
+
+<a name="society"></a>
+<h2>国内関連学会</h2>
+<p>
+国内の学会の全国大会に出れば、その分野の研究者の価値観、方法論、
+現在ホットな話題が何かがだいたい分かります。
+学生さんの発表は前半でその分野の常識を分かりやすく説明してくれるので、
+とても助かります。
+大御所の先生は質疑応答でするどいコメントをするので、とても勉強になります。
+ポスターセッションでは多くの方にいろいろ教えていただきました。
+大変感謝しております。
+
+<h3><a href="http://www.ai-gakkai.or.jp/jsai/">人工知能学会</a></h3><p>
+現在私の活動にもっとも近い国内学会。<br>
+以前と違って脳や人間のような知能に対しても本格的に取り組みつつあります。
+全国大会の予稿集も論文誌もすべて pdf で無償でアクセスできます。
+すばらしい。
+
+<h3><a href="http://www.jnns.org/">日本神経回路学会</a></h3><p>
+脳の回路レベルでの振る舞いを対象とする学会。
+<br>
+学会誌の<a href="http://www.jnns.org/web/index.html">電子ジャーナル版</a>ができました。非常に分かりやすい解説記事が毎号載っており、重要です。
+
+<h3><a href="http://www.jnss.org/">日本神経科学学会</a></h3><p>
+とても大きな大会が開かれます。
+<a href="http://web.sfn.org/index.cfm">The Society for Neuroscience</a>（SfN, 北米神経科
+学会）はもっとすごいらしいですが。
+
+<h3><a href="http://www.ieice.org/jpn/index.html">電子情報通信学会</a></h3>
+<h4><a href="http://www.ieice.org/iss/nc/jpn/">ニューロコンピューティング研究会</a></h4><p>
+毎年３月の玉川大での開催には大勢の研究者が参加します。
+
+<h4><a href="http://ibisforest.org/index.php?IBIS">情報論的学習理論ワークショップ(IBIS)</a></h4><p>
+機械学習に関する理論を扱う研究会。
+<h3><a href="http://jcss.gr.jp/">日本認知科学会</a></h3><p>
+心理学、人工知能、脳神経科学も含んだ学際的領域を対象とする学会。
+
+<h3><a href="http://www.rsj.or.jp/">日本ロボット学会</a></h3><p>
+強化学習や知能の創発といった話題もいちおう対象のようです。
+
+
+<hr>
+<a href="#TOP">このページの先頭</a><br>
+<a href="http://staff.aist.go.jp/y-ichisugi/j-index.html">一杉裕志のページ</a><br>
+</html>

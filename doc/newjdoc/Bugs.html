@@ -1,0 +1,49 @@
+<html>
+<head>
+<title>BUGS</title>
+ <meta charset="UTF-8">
+</head>
+<body bgcolor="#FFFFFF">
+<a href="../../epp/index.html"> To Home Page of EPP</a>.
+<a href="../../index.html"> To Home Page of Y.Ichisugi</a>.
+<hr>
+<img src="gif/epp-logo-small.gif" align=right><br>
+<h1>BUGS</h1>
+<hr>
+ 現在のバージョン（epp110beta10）の型チェック機構には、以下の制限・バグが
+あります。
+<br>
+
+<pre>
+
+・分割コンパイルがサポートされていない。
+-type-check オプションを指定した時は、 -global オプションの指定が必ず必要。
+
+・初期化式で、式の型があっているかどうかチェックしていない。
+ int x = "str";  のような式も、 EPP はエラーにせずに通してしまう。
+
+・inner class 関係の型チェックには、まだバグがある。
+例えば JDK1.2 のライブラリのソースコードが型チェックできない。
+
+・メソッドやフィールドのアクセス権チェックは一切無視。
+ private メソッドを呼び出すコードも、エラーにならない。
+
+・static method から instance 変数や非 static method に
+アクセスしても、エラーにならない。
+
+・例外のチェックは、一切行なわない。
+例えば必要な throws 宣言がなくてもエラーにならない。
+
+・ constant expression を解釈しない。そのせいで、 (a ? b : c) の型が
+正しく決められない場合がある。代入変換のエラーチェックもできない。
+
+
+</pre>
+
+<hr>
+<a href="../../epp/index.html"> To Home Page of EPP</a>.
+<a href="../../index.html"> To Home Page of Y.Ichisugi</a>.
+<img src="gif/epp-logo-small.gif" align=right><br>
+
+</body>
+</html>

@@ -1,0 +1,392 @@
+<html>
+<head>
+<title>EPP が受理する Java 文法</title>
+ <meta charset="UTF-8">
+</head>
+<body bgcolor="#FFFFFF">
+<a href="index.html"> Index </a>
+<hr>
+<img src="gif/epp-logo-small.gif" align=right><br>
+<h1>EPP が受理する Java 文法</h1>
+<hr>
+
+
+ このドキュメントは、 EPP が受理する Java 文法を、拡張 BNF 記法で
+書いたものです。
+<p>
+plug-in は、このドキュメント中の非終端記号に新たな選択肢を追加して、
+文法を拡張することができます。
+<p>
+実装上、非終端記号には２種類あり、拡張方法が違います。
+<ul>
+<li>非終端記号のうしろに # がついていないものは、
+defineNonTerminal マクロを使って定義された非終端記号です。
+ xxxTop, xxxLeft, xxxRight というメソッドを拡張することで、
+前置演算子、左再帰ルール、右結合演算子などの選択肢を追加できます。
+メソッド xxx そのものは、拡張してはいけません。
+<li>非終端記号のうしろに # がついているものは、defineNonTerminal を
+使わない、普通のメソッドとして定義されているものです。
+この種類の非終端記号には、 xxxTop, xxxLeft, xxxRight は使えません。
+メソッド xxx を拡張して選択肢を追加します。
+</ul>
+（ xxx は、非終端記号の先頭の文字を小文字にしたものです。）
+
+<hr>
+
+<pre>
+メタ記号について：
+・空 (&lte&gt)
+・直前の記号の0回以上の繰り返し (&lt*&gt)
+・直前の記号二つの0回以上の繰り返し (&lt**&gt)
+・直前の記号二つの1回以上の繰り返し (&lt..&gt)
+・直前の記号二つ(A Bとする)の、A B &lt**&gt Aの形の繰り返し (&lt...&gt)
+
+
+
+# CompUnit.java
+
+StartTop#:
+	CompilationUnit
+
+CompilationUnit#:
+	PackageDeclaration ImportDeclarations TypeDeclarations
+
+PackageDeclaration:
+	PackageDeclarationBody
+
+PackageDeclarationBody#:
+	&lte&gt
+	package name ;
+
+ImportDeclarations:
+	ImportDeclarationsBody
+
+ImportDeclarationsBody#:
+	ImportDeclaration &lt*&gt
+
+ImportDeclaration:
+	ImportDeclarationBody
+
+ImportDeclarationBody#:
+	import name .* ;
+	import name ;
+
+TypeDeclarations:
+	TypeDeclarationsBody
+
+TypeDeclarationsBody#:
+	TypeDeclaraion &lt*&gt
+
+TypeDeclaration:
+	;
+	TypeDeclarationOtherwise
+
+# TypeDecl.java
+
+Extends:
+	ExtendsOtherwise
+
+ExtendsOtherwise#:
+	&lte&gt
+	extends Name , &lt...&gt
+
+Implements:
+	ImplementsOtherwise
+
+ImplementsOtherwise#:
+	implements Name , &lt...&gt
+
+Throws:
+	ThrowsOtherwise
+
+ThrowsOtherwise#:
+	throws Name , &lt...&gt
+
+FormalParameter:
+	FormarlParameterOtherwise
+
+FormalParameterList#:
+	FormalParameter , &lt...&gt
+
+FormalParameterOtherwise#:
+	Modifiers Type VariableDeclaratorId
+
+TypeDeclarationOtherwise#:
+	Modifiers ClassDeclaration
+
+ClassDeclaration#:
+	Identifier Identifier Extends Implements Throws ClassBody
+
+ClassBody#:
+	{ ClassBodyRest
+
+ClassBodyRest#:
+	ClassBodyDeclaration &lt*&gt }
+
+ClassBodyDeclaration:
+	StaticInitializer
+	Block
+	;
+	Modifier ClassBodyDeclarationAfterModifiers
+
+StaticInitializer#:
+	static Block
+
+ClassBodyDeclarationAfterModifiers#:
+	ClassDeclaration
+	ConstructorDeclaration
+	MethodOrFieldDeclaration
+
+ConstructorDeclaration#:
+	Identifier ( FormalParameterList ) Throws Block
+
+MethodOrFieldDeclaration#:
+	Type MethodDeclaration
+	Type FieldDeclaration
+
+MethodDeclaration#:
+	Identifier ( FormalParameterList ) [ ] &lt**&gt Throws Statement
+	Identifier ( FormalParameterList ) [ ] &lt**&gt Throws Block
+
+FieldDeclaration#:
+	VariableDeclarators ;
+
+# Statement.java
+
+Statement:
+	Block
+	;
+	switch ( Expression ) Block
+	case Expression :
+	default :
+	do Statement while ( Expression ) ;
+	break ;
+	break Identifier ;
+	continue ;
+	continue Identifier ;
+	return ;
+	return Expression ;
+	synchronized ( Expression ) Block
+	throw Expression ;
+	try Block CatchClause &lt*&gt FinallyClause_opt
+	if ( Expression ) Statement else Statement
+	if ( Expression ) Statement
+	while ( Expression ) Statement
+	for ( Statement Expression_opt ; Expression_opt ) Statement
+	StatementOtherwise
+
+StatementOtherwise#:
+	Expression ;
+	Expression :			# Expressionがidでない場合はエラー
+	LocalVariableDecl
+
+Block:
+	BlockOtherwise
+
+BlockOtherwise#:
+	{ BlockRest
+
+BlockRest#:
+	Statement &lt*&gt }
+
+CatchClause#:
+	catch ( FormalParameter ) Block
+
+FinallyClause#:
+	finally Block
+
+Modifiers:
+	ModifiersOtherwise
+
+Modifier:
+	&lte&gt
+	public protected private static abstract final
+		native synchronized transient volatile
+
+LocalVariableDecl#:
+	Modifiers ClassDeclaration
+	Modifiers Type VariableDeclarators ;
+
+ModifiersOtherwise#:
+	Modifier &lt*&gt
+
+VariableDeclarators#:
+	variableDeclarator , &lt...&gt
+
+VariableDeclarator#:
+	VariableDeclaratorId
+	VariableDeclaratorId = VariableInitializer
+
+VariableDeclaratorId:
+	Identifer
+	VariableDeclaratorId [ ]
+
+VariableInitializer#:
+	ArrayInitializer
+	ExpressionNoComma
+
+ArrayInitializer#:
+	{ , }
+	{ }
+	{ VariableIntializer , &lt...&gt , }
+	{ VariableIntializer , &lt...&gt }
+
+# Exp.java, ExpNonTerm.java
+
+Primary:
+	Literal
+	this ( ArgumentList )
+	this
+	super ( ArgumentList )
+	super . Identifier ( ArgumentList )
+	super . Identifier
+	( Expression ) unaryExpression		# Expressionが基本型である場合
+	( Expression ) unaryExpressionNotPlusMinus # Expressionが型の場合
+	( Expression )
+	InstanceCreation
+	Primary . InstanceCreation
+	Primary . class
+	Primary . Identifier ( ArgumentList )
+	Primary . Identifier
+	Primary [ ]
+	Primary [ Expression ]
+	PrimaryOtherwise
+
+Type#:
+	Primary
+
+InstanceCreation#:
+	new Name ( ArgumentList ) ClassBody
+	new Name ( ArgumentList )
+	new Name ArrayCreation
+
+ArrayCreation#:
+	[ ] ArrayInitializer_opt
+	[ Expression ] ArrayInitializer_opt
+
+PostfixExpression:
+	PostfixExpression ++
+	PostfixExpression --
+	Primary
+
+UnaryExpressionNotPlusMinus:
+	‾ UnaryExpression
+	! UnaryExpression
+	PostfixExpression
+
+UnaryExpression:
+	++ UnaryExpression
+	-- UnaryExpression
+	+ UnaryExpression
+	- UnaryExpression
+	UnaryExpressionNotPlusMinus
+
+MemberSectionExpression:
+	MemberSectionExpression .* UnaryExpression
+	UnaryExpression
+
+MultipicativeExpression:
+	MultiplicativeExpression * MemberSectionExpression
+	MultiplicativeExpression / MemberSectionExpression
+	MultiplicativeExpression % MemberSectionExpression
+	MemberSectionExpression
+
+AdditiveExpression:
+	AdditiveExpression + MultiplicativeExpression
+	AdditiveExpression - MultiplicativeExpression
+	MultiplicativeExpresson
+
+ShiftExpression:
+	ShiftExpression &lt&lt AdditiveExpression
+	ShiftExpression &gt&gt AdditiveExpression
+	ShiftExpression &gt&gt&gt AdditiveExpression
+	AdditiveExpression
+
+RelationalExpression:
+	RelationalExpression &lt ShiftExpression
+	RelationalExpression &gt ShiftExpression
+	RelationalExpression &lt= ShiftExpression
+	RelationalExpression &gt= ShiftExpression
+	RelationalExpression instanceof ShiftExpression
+	ShiftExpression
+
+EqualityExpression:
+	EqualitExpression == RelationalExpression
+	EqualitExpression != RelationalExpression
+	RelationalExpression
+
+AndExpression:
+	AndExpression & EqualitiExpression
+	EqualityExpression
+
+ExclusiveOrExpression:
+	ExclusiveOrExpression ^ AndExpression
+	AndExpression
+
+InclusiveOrExpression:
+	InclusiveOrExpression | ExclusiveOrExpression
+	ExclusiveOrExpression
+
+ConditionalAndExpression:
+	ConditionalAndExpression && InclusiveOrExpression
+	InclusiveOrExpression
+
+ConditionalOrExpression:
+	ConditinalOrExpression || ConditionalAndExpression
+	ConditionalAndExpression
+
+ConditionalExpression:
+	ConditionalOrExpression ? Expression : ConditionalExpression
+	ConditionalOrExpression
+
+AssignmentExpression:
+	ConditionalExpression = AssignmentExpression
+	ConditionalExpression *= AssignmentExpression
+	ConditionalExpression /= AssignmentExpression
+	ConditionalExpression %= AssignmentExpression
+	ConditionalExpression += AssignmentExpression
+	ConditionalExpression -= AssignmentExpression
+	ConditionalExpression &lt&lt= AssignmentExpression
+	ConditionalExpression &gt&gt= AssignmentExpression
+	ConditionalExpression &gt&gt&gt= AssignmentExpression
+	ConditionalExpression &= AssignmentExpression
+	ConditionalExpression ^= AssignmentExpression
+	ConditionalExpression |= AssignmentExpression
+	ConditionalExpression
+
+ExpressionNoComma:
+	AssignmentExpression
+
+CommaExpression:
+	CommaExpression , ExpressionNoComma
+	ExpressionNoComma
+
+Expression:
+	CommaExpression
+
+Name#:
+	Identifier . &lt...&gt
+
+PrimaryOtherwise#:
+	Identifier . &lt..&gt InstanceCreation
+	Identifier . &lt..&gt class
+	Identifier ( ArgumentList )
+	Identifier
+	Identifier . &lt...&gt ( ArgumentList )
+	Identifier . &lt...&gt
+
+Argument:
+	ExpressionNoComma
+
+ArgumentList#:
+	Argument , &lt...&gt
+
+
+</pre>
+
+
+<hr>
+<a href="index.html"> Index </a>
+<img src="gif/epp-logo-small.gif" align=right><br>
+</body>
+</html>

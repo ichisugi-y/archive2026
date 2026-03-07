@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<head>
+<title> Demo Applets of MJ </title>
+</head>
+<link rel="stylesheet" type="text/css" href="./style.css">
+<body>
+<h1>Demo Applets of MJ </h1>
+<ul class="headers">
+<li><a href="#draw">Drawing tool</a>
+<li><a href="#coffee-cup">Coffee cup</a>
+</p></ul><p>
+</p><p>
+</p><p>
+</p><h2><a name="draw">Drawing tool</a></h2><p>
+</p><h3>Abstract</h3><p>
+As an example of a typical object-oriented application, 
+we implemented a drawing tool,
+ by which the user can draw figures such as circles
+and rectangles.
+This program is extensible by adding extension modules. Extension
+modules can add new kinds of figures or new kinds of operations to the
+figures.
+
+</p><p>
+Currently, the following 11 modules have been implemented.
+</p><p>
+<ul>
+<li>base : Framework of this tool
+<li>select extends base : Selection of a figure
+<li>delete extends select : Deletion of a selected figure
+<li>move extends select : Moving of a selected figure
+<li>dump extends base : Dumping of information of the displayed figures
+<li>area extends base : Display of the total area of the displayed figures
+<li>line extends base : Lines
+<li>rect extends base : Rectangles
+<li>elli extends base : Ellipses
+<li>tri extends base : Triangles
+<li>oct extends base : Octagons
+</ul>
+More than 2^9 varieties of applications can be realized because all
+modules except <tt>base</tt> and <tt>select</tt> can be arbitrarily selected. 
+</p><p>
+</p><p>
+</p><h3>Screenshot</h3><p>
+</p><p>
+This is a screenshot of the drawing tool incorporating all modules currently
+implemented.
+<div align=center>
+<img src="../ja/mj/images/DrawFrameMJT.gif">
+</div>
+</p><p>
+</p><p>
+</p><p>
+</p><h3>Applets</h3><p>
+The following are some of the possible combinations: <br>
+(If you are using the Netscape browser, the first applet loaded may be cached. To load another applet, restart the browser.)
+<ol>
+<li><a href="demo/m/DrawFrameMJ-f-base.html">{ base }</a><br>
+<li><a href="demo/m/DrawFrameMJ-f-line.html">{ base, line }</a><br>
+<li><a href="demo/m/DrawFrameMJ-f-fig.html">{ base, line, rect, elli, tri, oct }</a><br>
+<li><a href="demo/m/DrawFrameMJ-f-select.html">{ base, line, rect, elli, tri, oct, select }</a><br>
+<li><a href="demo/m/DrawFrameMJ-f-delete.html">{ base, line, rect, elli, tri, oct, select, delete }</a><br>
+<li><a href="demo/m/DrawFrameMJ-f-move.html">{ base, line, rect, elli, tri, oct, select, move }</a><br>
+<li><a href="demo/m/DrawFrameMJ-f-dump.html">{ base, line, rect, elli, tri, oct, dump }</a><br>
+<li><a href="demo/m/DrawFrameMJ-f-area.html">{ base, line, rect, elli, tri, oct, area }</a><br>
+<li><a href="demo/m/DrawFrameMJ-f.html">{ base, line, rect, elli, tri, oct, select, delete, move, dump, area }</a><br>
+</ol>
+How to use the Drawing Tool: <br>
+Select one of the figure buttons on the lower tool-bar; 
+then to draw the figure, drag the white canvas. 
+</p><p>
+</p><p>
+</p><h3>Source code</h3><p>
+<a href="demo/m/DrawFrameMJT.txt">DrawFrameMJT.txt</a><br>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="coffee-cup">Coffee cup</a></h2><p>
+</p><h3>Abstract</h3><p>
+</p><p>
+This is a simple applet demonstration program: "I-appli" (Java for NTT DoCoMo cellular phones), where a coffee-cup moves with the arrow keys. 
+</p><p>
+This program consists of the following 5 Modules:
+<ul>
+<li>base : The framework
+<li>cup extends base : Drawing of a coffee cup
+<li>multi extends cup : Drawing of a cup with many cups fading along the path to the left
+<li>vapor extends cup : Drawing of vapor
+<li>time extends cup : Drawing of a digital clock 
+</ul>
+</p><p>
+</p><p>
+</p><h3>Applets</h3><p>
+Three modules (multi, vapor and time) can be arbitrarily selected. <br>
+The following are some of the possible combinations: <br>
+ (If you are using the Netscape browser, the first applet loaded may be cached.
+ To load another applet, restart the browser).
+<ol>
+<li><a href="demo/m/IMJdemo-cup.html">{ base, cup }</a>
+<li><a href="demo/m/IMJdemo-multi.html">{ base, cup, multi }</a>
+<li><a href="demo/m/IMJdemo-vapor.html">{ base, cup, vapor }</a>
+<li><a href="demo/m/IMJdemo.html">{ base, cup, vapor, multi }</a>
+<li><a href="demo/m/IMJClock.html">{ base, cup, vapor, multi, time }</a>
+</ol>
+These applets utilize the "iEmulator", by T. Fukuno
+<a href="http://uni.himitsukichi.com/iap/">(http://uni.himitsukichi.com/iap/)</a>
+in order to execute I-appli as applets.<br>
+</p><p>
+</p><p>
+</p><h3>I-appli</h3><p>
+Only for Japanese NTT DoCoMo cellular phones.<br>
+<a href="demo/i/index.html">demo/i/index.html</a>
+</p><p>
+</p><p>
+</p><h3>Source code</h3><p>
+<ul>
+<li><a href="demo/m/IMJClockMJ.txt">Source code for I-appli</a>
+<li><a href="demo/m/IMJdemoEmulator.txt">Source code for Applet</a>
+</ul>
+</p><p>
+</p><hr>
+[<a href="index.html">MJ Top page</a>]
+</div>
+</td></table>
+</body></html>

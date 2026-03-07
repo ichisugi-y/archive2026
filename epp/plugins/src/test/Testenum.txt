@@ -1,0 +1,17 @@
+#epp "enum"
+
+class Testenum {
+  enum {RED, GREEN, BLUE}
+  enum {
+    MALE,
+    FEMALE,
+  }
+  
+  public static void main(String argv[]){
+    System.out.println(Testenum.RED == 0);
+    System.out.println(Testenum.GREEN == 1);
+    System.out.println(Testenum.BLUE == 2);
+    System.out.println(Testenum.MALE == 0);
+    System.out.println(Testenum.FEMALE == 1);
+  }
+}

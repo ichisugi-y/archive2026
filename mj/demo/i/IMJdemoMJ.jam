@@ -1,0 +1,5 @@
+AppName = IMJdemoMJ
+PackageURL = IMJdemoMJ.jar
+AppSize = 7096
+AppClass = mj.demo.base.IMJdemo
+LastModified = Wed, 28 Feb 2001 16:22:33

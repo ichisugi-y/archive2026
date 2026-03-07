@@ -1,0 +1,978 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<link rel="stylesheet" type="text/css" href="./style.css">
+<title> MJ 言語仕様メモ </title>
+</head> <body>
+<div class="header-link">
+[<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
+[<a href="index.html">Document index</a>]
+</div>
+<h1>MJ 言語仕様メモ</h1>
+<ul class="headers">
+<li><a href="#note"><div style="color:red">注意</div></a>
+<li><a href="#glossary">用語定義</a>
+<li><a href="#what-is-extends"> module の extends, uses, complements, imports</a>
+<li><a href="#method-selector">「メソッド単純名」「メソッド完全限定名」「メソッドセレクタ」「メソッド拡張点」「メソッド断片名」</a>
+<li><a href="#module">モジュール定義</a>
+<li><a href="#class-interface-method-field">クラス・インターフェース定義、メソッド定義、フィールド定義</a>
+<li><a href="#constructor">コンストラクタ</a>
+<li><a href="#class-extension">クラスの拡張</a>
+<li><a href="#interface-extension">インターフェースの拡張</a>
+<li><a href="#">メソッドの拡張</a>
+<li><a href="#fqn"> FQN （完全限定名）の使い方</a>
+<li><a href="#statement"> Statement</a>
+<li><a href="#expression"> Expression</a>
+<li><a href="#naming-convention"> naming convention</a>
+<li><a href="#unsupported-java-features">サポートしない Java の機能</a>
+<li><a href="#other-features">その他の機能</a>
+<li><a href="#syntax">文法</a>
+</p></ul><p>
+</p><p>
+</p><h2><a name="note"><div style="color:red">注意</div></a></h2><p>
+このドキュメントは、「MJ 言語仕様書」に書くべき内容をとりあえず
+メモにしたもで、
+あいまいな点や間違っている点を含んでいる場合があります。
+また、先頭から読んで分かるような構成になっていません。
+</p><p>
+内容はすべて、「 Java 言語に対する違い」という形で説明してあります。
+したがって、 Java 言語の知識はあるものと仮定しています。
+</p><p>
+本当はプログラム例をふんだんに示して説明すべきですが、
+まだほとんど書いてありません。
+</p><p>
+<hr>
+<div style="font-size:x-large">用語定義と概念の説明</div>
+<hr>
+</p><p>
+</p><h2><a name="glossary">用語定義</a></h2><p>
+</p><p>
+<dl>
+<dt> sub-module, super-module
+<dd>
+</p><p>
+m2 uses m1 の時、 m1 は m2 の super-module 、 m2 は m1 の sub-module 
+と呼ぶ。
+（なお、 m2 extends m1, m2 complements m1 は、ともに
+m2 uses m1 をも意味するものとする。）
+</p><p>
+<dt> Java class, MJ class
+<dd>
+</p><p>
+Java 言語で書かれたクラスを Java class 、
+MJ 言語で書かれたクラスを MJ class と呼ぶ。
+（Java class を継承する MJ class を定義できるが、逆は不可。）
+</p><p>
+<dt> Java method, MJ method
+<dd>
+</p><p>
+Java class が定義したメソッドセレクタを Java method 、
+MJ class が定義したメソッドセレクタを MJ method と呼ぶ。
+（Java class は Java method しか持ち得ないが、
+MJ class は Java method と MJ method の両方を持ち得る。
+MJ class は、 super class から Java method を継承するため。）
+</p><p>
+MJ 言語によって Java method に対し差分を追加した場合も、
+それは MJ method と呼ばず、 Java method と呼ぶ。
+</p><p>
+</p><p>
+<dt> SS class
+<dd>
+</p><p>
+SS class は startup-singleton class の略。
+プログラムの起動に使われる singleton object を定義するクラス。
+</p><p>
+<dt>module graph
+<dd>
+</p><p>
+モジュール間の uses 関係（すなわち継承関係）を有向グラフで表現したもの。
+</p><p>
+<dt>linearized list
+<dd>
+</p><p>
+モジュールを topological sort によって１列に並べた結果のリスト。
+例えば、 m1 extends m0, m2 extends m0 の時、 m0, m1, m2 の linearized list は
+(m0 m1 m2) と表記することにする。 super module 側が左に来るように書く。
+また、「linearized list 上で、m1, m2 よりも上にある」という表現を用いる。
+（右、左、前、後という表現は、誤解を招きやすいので使用しない。）
+</p><p>
+</p><p>
+</dl>
+</p><p>
+</p><h2><a name="what-is-extends"> module の extends, uses, complements, imports</a></h2><p>
+</p><p>
+<dl>
+<dt> extends 宣言
+<dd>
+</p><p>
+ extends 宣言は、従来の言語の require, import, makefile, patch を兼ねている。
+これらの機能を１つの宣言に unify したものが module の extends である。
+</p><p>
+もっと詳しく説明すると extends 宣言が有する機能は、
+他の言語における以下に挙げる機能に相当する。
+</p><p>
+</p><p>
+<dl>
+<dt>「実行時・リンク時に必要なモジュールの宣言」
+<dd>    Emacs Lisp, Common Lisp の require<br>
+        C の cc -l<br>
+        Java は明示的な宣言はない。
+        （使用するクラスは自動的に load される。）<br>
+</p><p>
+<dt>「モジュールの名前空間の利用」
+<dd>    Emacs Lisp, Common Lisp の require<br>
+        C, C++ の #include        <br>
+        C++ の uses namespace （？）<br>
+        Java の import<br>
+</p><p>
+<dt>「モジュールの名前空間の継承」
+<dd>    Emacs Lisp, Common Lisp の require<br>
+        Common Lisp の「package の継承」<br>
+        C, C++ の #include のネスト<br>
+        C++, Java のクラス継承（field, method の名前空間を継承する。）<br>
+        C++ の namespace のネスト<br>
+        Java の nested class（内側のクラスが外側の名前空間を継承する）<br>
+</p><p>
+<dt>「モジュール間の依存関係の宣言」
+<dd>    C, C++ の makefile （ #include を見て makedepend で自動生成可能？）<br>
+        Java のクラスファイル（javac が解析して class file に埋め込む。）<br>
+</p><p>
+<dt>「モジュールの差分的拡張」
+<dd>    Emacs Lisp の advice <br>
+         C++, Java のクラス継承（ただしクラス単位の差分）<br>
+        objective-C の category <br>
+        CLOS, Dylan などマルチメソッドの言語におけるメソッド宣言の追加<br>
+        任意の言語のソースコードの patch <br>
+</dl>
+</p><p>
+</p><p>
+</p><p>
+<dt> uses 宣言
+<dd>
+</p><p>
+ extends 宣言は、 module を linearize するときの上下関係の制約の宣言も
+兼ねている。 
+そのため、「extends の関係」にサイクルがあると、コンパイル時エラーになる。
+</p><p>
+ しかし、特にプログラムの設計の初期段階では、 module 間の相互依存が許されないと
+非常にプログラミングがしにくい。
+ そこで、用いるのが uses 宣言である。
+ uses 宣言は extends 宣言と似ているが、
+linearize するときの上下関係に制約を加えない。
+</p><p>
+</p><p>
+<dt> complements 宣言
+<dd>
+</p><p>
+（省略。）
+</p><p>
+<dt> imports 宣言
+<dd>
+</p><p>
+Java 言語のライブラリを利用するために便利だから存在しているにすぎない。
+（もしすべてのライブラリが MJ 言語で書かれれていれば、この機能は不要。）
+</dl>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="method-selector">「メソッド単純名」「メソッド完全限定名」「メソッドセレクタ」「メソッド拡張点」「メソッド断片名」</a></h2><p>
+</p><p>
+<dl>
+<dt>メソッド単純名とメソッド完全限定名
+<dd>
+</p><p>
+メソッド名には単純名と完全限定名がある。
+単純名は単なる Java の identifier 。例えば foo 。
+完全限定名は、モジュール名と単純名の組。例えば FQN[a.b::foo] 。
+</p><p>
+</p><p>
+<dt>メソッドセレクタ
+<dd>
+</p><p>
+メソッドセレクタは、
+<ul>
+<li>    「ターゲットとなるオブジェクトの静的な型の型名」
+<li>    「メソッド完全限定名」
+<li>    「仮引数の型名の組」
+</ul>
+</p><p>
+の組である。
+</p><p>
+</p><p>
+MJ のプログラム中で新たなメソッドセレクタを定義するときには、
+メソッド宣言に "define" を付ける必要がある。
+</p><p>
+メソッドセレクタは、メソッド呼び出し処理だけではなく
+ override 処理でも使われる。
+クラス継承およびメソッド継承においては、
+「同じメソッドセレクタを持つメソッド断片」が override される。
+</p><p>
+</p><p>
+<dt>メソッド拡張点（あるいは hook ）
+<dd>
+</p><p>
+これは、 MJ 以外の言語にはない概念である。
+また、 MJ においても、コンパイル時にしか存在しない概念である。
+</p><p>
+「メソッド拡張点、 extensible point for method」とは、
+「既存の部品を拡張するためのソケット」のようなものである。
+</p><p>
+メソッド拡張点を一意に指定するためには、
+<ul>
+<li>    「メソッドセレクタ」
+<li>    「クラス完全限定名」
+</ul>
+</p><p>
+の情報が必要である。
+</p><p>
+ここで、「クラス完全限定名」の情報は、次の理由で必要となる。
+クラス C の subclass SubC があり、 C がメソッド m1 を持っているとする。
+このシステムに対して差分を追加するとき、
+ C の m1 を拡張するのか、 SubC の m1 を拡張するのかを、
+区別する必要があるためである。
+</p><p>
+</p><p>
+</p><p>
+<dt>メソッド断片名
+<dd>
+</p><p>
+ソースコード中の method body 、すなわち { ... } の部分を、
+「メソッド断片、 method fragment 」と名付ける。
+あるいは、単に「メソッド」と呼ぶ場合もある。
+メソッド断片は、コンパイル時にも実行時にも存在する概念である。
+（実行時には、スタックトレースの各行がメソッド断片に対応する。）
+</p><p>
+メソッド断片を一意に指定するには、
+<ul>
+<li>    「モジュール名」
+<li>    「クラス完全限定名」
+<li>    「メソッドセレクタ」
+</ul>
+</p><p>
+の３つの組の情報が必要である。
+この組を「メソッド断片名」と呼ぶ。
+</p><p>
+</dl>
+</p><p>
+</p><h3>メソッドに関する補足説明</h3><p>
+</p><p>
+・実行時にクラスが持つ「メソッドテーブル」は、
+「メソッドセレクタ」から「メソッド断片」を得るための表である。
+</p><p>
+・ MJ ではメソッドセレクタに「ターゲットの静的な型の型名」の
+情報が入っている点に注意。
+</p><p>
+Car というクラスと Figure というクラスが共に move というメソッドを
+持っていたとしても、もしそれぞれが別々に定義されたものであるならば、
+２つの move は全く別のものである。
+</p><p>
+従来のオブジェクト指向言語には、この２つの move を区別しないものもある。
+Smalltalk, CLOS は全く区別しない。
+Eiffel は、区別する。
+C++ は区別するが、多重継承で２つのメソッドが同一になってしまうため、
+区別が不完全である。
+また、 template と g++ の signature という機能では、区別していない。
+Java はクラスが定義するメソッドに関しては多重継承がないので
+区別する必要がない。interface が定義するメソッドについては区別していない。
+Java の Reflection API でも区別していない。
+</p><p>
+</p><p>
+・ MJ の言語仕様を厳密に説明するには、
+「メソッド単純名」「メソッド完全限定名」「メソッドセレクタ」
+「メソッド拡張点」「メソッド断片名」の５つの概念を区別する必要がある。
+</p><p>
+従来のオブジェクト指向言語には、このうち、
+「メソッド完全限定名」と「メソッド拡張点」という概念は存在しない。
+（「メソッド完全限定名」は多重継承における名前の衝突の問題を解決するために
+導入された概念であり、「メソッド拡張点」はプログラムに対する
+差分の追加を可能にするために導入された概念である。）
+</p><p>
+</p><p>
+つまり従来のオブジェクト指向言語では
+「メソッド名」「メソッドセレクタ」「メソッド（のＩＤ）」の３つの概念ですむ。
+</p><p>
+overload がない言語ならば、「メソッドセレクタ」と「メソッド」の２つですむ。
+</p><p>
+・ Java においては、 a.b.C#foo(int, String) という書き方で、
+メソッド（MJ でいうメソッド断片）を指定することができた。
+MJ では、実行時の話ならばこれでもよいが、
+ソースコード上の話をするときには不十分である。
+MJ でメソッド断片を指定するには、
+<pre>
+        FQN[m1::C]#FQN[m1::foo](int, String)@m2
+</pre>
+</p><p>
+という表記を用いることにする。
+ メソッド完全限定名が必要になる場合はあまりないし、
+クラス完全限定名は m1.C と表記できるので、次の簡略記法も用いる。
+<pre>
+        m1.C#foo(int, String)@m2
+</pre>
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+・Java におけるメソッドセレクタについて。
+</p><p>
+言語仕様上は、メソッドセレクタは「メソッド名」と「引数の型」の情報のみで
+同定される。
+Reflection API もそれにしたがったデザインになっている。
+</p><p>
+コンパイラ内部では、 public でない同名のメソッドが複数ある場合を
+区別するために、名前空間（＝ターゲットのクラス名）の情報を
+つけて区別しているように想像できる。
+</p><p>
+JavaVM では、「ターゲットのクラス名」に加えて「返値の型名」の情報も加わる。
+（ちなみに GJ は、返値の型だけを変えたメソッド定義のコードを生成する。）
+</p><p>
+</p><p>
+・現在の MJ の文法では、実は次のような不都合がある。
+次の場合に、 C がどのメソッドを参照しているのかがあいまいになる。
+<pre>
+module m {
+  define interface I1 { define void foo(); }
+  define interface I2 { define void foo(); }
+  define class C implements I1, I2 {
+    void FQN[m::foo](){ //あいまい。
+      ...
+      this.FQN[m::foo]();//あいまい。
+    }
+  }
+}
+</pre>
+</p><p>
+このように、同一モジュール内で定義された同じ名前を多重継承したために衝突する
+問題については、今は考慮していない。
+この衝突を回避するために、方法は２つある。
+</p><p>
+１つは、メソッドセレクタを指定するときに、
+定義通りに、「ターゲットとなるオブジェクトの静的な型の型名」の情報を
+書くようにする方法である。
+しかし、この方法は、メソッドセレクタの記述方法が一層繁雑になるという
+欠点がある。
+</p><p>
+２つめは、同一モジュール内の異なるクラスで、
+同じ単純名・引数を持つメソッドを「定義」してはいけない、というルールを
+入れるという方法。このような制約を入れても、実用上は、多分困らない。
+</p><p>
+</p><p>
+</p><p>
+<hr>
+<div style="font-size:x-large">言語仕様</div>
+<hr>
+</p><p>
+</p><h2><a name="module">モジュール定義</a></h2><p>
+</p><p>
+</p><p>
+</p><h3>uses</h3><p>
+</p><p>
+・他のモジュールで「定義」された名前を、モジュール内から「利用」可能にする。
+ここで、「利用」とは、以下のことを意味する。
+</p><p>
+<ul>
+<li>クラス名に関しては、変数宣言、引数・返値、インスタンス生成式で型名として用いること。
+<li>メソッド名に関しては、メソッド呼び出しを行うこと。
+<li>フィールド名に関しては、参照・代入を行うこと。
+</ul>
+</p><p>
+</p><p>
+・モジュール同士は相互に uses しあってもかまわない。
+</p><p>
+ただし、相互依存するモジュールが含まれる全てのソースファイルは、
+mjc の引数に同時に渡されなければならない。
+逆に言えば、相互依存する複数のモジュールを分割コンパイルすることは不可能。
+</p><p>
+・ uses していないモジュール中の名前は、
+完全限定名を用いても利用することができない。
+（ただし Java class のクラス名は、完全限定名で利用できる。）
+</p><p>
+・ module m3 uses m1, m2 と宣言されていて、
+もしリンク時にリンク対象モジュールに m3 が指定されたなら、
+m1, m2 も自動的に link される。
+</p><p>
+・ m2 uses m1, m3 uses m2 ならば m3 uses m1 であるとする。
+</p><p>
+・ uses 宣言で他のモジュール中の名前をアクセス可能にすることを
+「名前空間の継承」と呼ぶ。
+</p><p>
+</p><p>
+</p><h3>extends</h3><p>
+・ extends 宣言は、 module を linearize するときの制約条件になる。
+例えば module m3 extends m1, m2 と宣言した場合、
+linearized list において、 m1, m2 が必ず m3 の上に来る。
+（super-module 側を「上」と定義する。）
+</p><p>
+m1 と m2 の順序関係に関しては、制約はつかない。
+</p><p>
+・（linearize のアルゴリズムの詳細は省略。
+現在実装されているアルゴリズムは、
+モジュール名の情報を使って monotonic な linearize を行う。）
+</p><p>
+</p><p>
+・ class, interface, method を「拡張」する時は、
+それらの名前が定義されている module を extends 宣言しなければならない。
+ここで、「拡張」とは、以下のことを意味する。
+</p><p>
+<ul>
+<li>クラス名に関しては、 subclass を作るか、差分を追加すること。
+<li>インターフェースに関しては、クラスでそれを implements するか、
+        インターフェースでそれを extends するか、差分を追加すること。
+<li>メソッド名に関しては、 override すること。
+<li>（フィールド名に関しては、拡張という概念はない。フィールドの章参照。）
+</ul>
+</p><p>
+（ extends しないでこれらの拡張を行った場合はコンパイルエラーになるべきだが、
+現在は正しく実装されていない。）
+</p><p>
+・ m2 extends m1, m3 extends m2 ならば m3 extends m1 であるとする。
+</p><p>
+・以上述べたことを除けば、 extends は uses と同じ。
+</p><p>
+</p><p>
+</p><h3> complements</h3><p>
+</p><p>
+・ complements は、補完の対象となるモジュールを指定する。
+例えば module m3 complements m1, m2 と宣言した場合、
+もしリンク時にリンク対象モジュールに m1, m2 が含まれていたら、
+m3 も自動的に link される。
+</p><p>
+・（補完モジュールの選択アルゴリズムの詳細は省略。）
+</p><p>
+・以上述べたことを除けば、 complements 宣言は extends 宣言と同じ。
+（つまり、 m3 は必ず m1, m2 の下に link される。）
+</p><p>
+</p><p>
+</p><h3> imports</h3><p>
+</p><p>
+・ imports a.b.* と宣言されていれば、そのモジュール内で、
+a.b.* というクラス名を単純名でアクセスすることができるようになる。
+ imports a.b.C というふうに単一のクラスを指定することもできる。
+これにより、 a.b.C を C という単純名でアクセスすることができる。
+</p><p>
+ただし、 a.b は Java のクラスライブラリの package 名でなければならない。
+MJ の module 名を imports 宣言で指定するとコンパイル時エラーになる。
+（コンパイラは、 MJModuleLoader という名前のクラスを持つ package は、
+Java の package ではなく MJ の module と見なす。）
+</p><p>
+・ imports 宣言は、 sub-module に継承される。
+例えば super-module が imports a.b.* と宣言していれば、
+すべての sub-module は自動的に imports a.b.* の宣言をしたことになる。
+（名前空間を汚染しないために、できるだけ module graph の上の方では
+ imports 宣言を用いない方が望ましい。）
+</p><p>
+・ imports で宣言したクラス名と、名前空間の継承で参照可能になったクラス名で
+同一のものがある場合、その名前を単純名で参照すると ambiguous error になる。
+その場合は、どちらかを完全限定名で指定する必要がある。
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="class-interface-method-field">クラス・インターフェース定義、メソッド定義、フィールド定義</a></h2><p>
+</p><p>
+・クラス、インターフェース、メソッドを定義するときには、
+"define" を先頭につける必要がある。
+"define" がついていないと、コンパイラは、
+「定義」ではなく「拡張」であると判断する。
+</p><p>
+・フィールド定義には "define" をつける必要はない。
+コンパイラは、常に「定義」であると判断する。
+super-module で同じ単純名のフィールドが定義されている場合でも、
+コンパイルエラーにはならない。
+（ただし、アクセスには完全限定名が必要になる。）
+</p><p>
+・あるモジュールが参照する名前は、そのモジュール自身か、
+そのモジュールの先祖モジュールの中の
+ちょうど１箇所で定義されている必要がある。
+</p><p>
+・クラスを定義するときは、 superclass, superinterface に、
+Java class か MJ class を指定することができる。
+superclass を指定しない場合は java.lang.Object が superclass になる。
+クラス定義には abstract modifier を指定することができる。
+public/protected/private が指定されると、現在の実装では無視される。
+その他の modifier については、どういう動作になるか不明。
+</p><p>
+・メソッド定義は、 abstract にすることができる。
+public/protected/private が指定されると、現在の実装では無視される。
+その他の modifier については、どういう動作になるか不明。
+throws 宣言は、多分正しく動作する。
+</p><p>
+・フィールド定義も、
+ public/protected/private が指定されると、現在の実装では無視される。
+static と final については、正しく処理される。
+その他の modifier については、どういう動作になるか不明。
+</p><p>
+</p><p>
+</p><h2><a name="constructor">コンストラクタ</a></h2><p>
+<ul>
+<li>すべてのクラスは、コンストラクタが少なくとも１つ定義されている
+必要がある。
+（Java と違い、コンストラクタが１つも定義されていない場合に
+「デフォルトコンストラクタ」が自動的に追加されることはない。）
+<li>コンストラクタにも「定義」と「拡張」がある。
+定義の前には define を付ける必要がある。
+<li>コンストラクタ本体の先頭は Java 同様、特別扱いされる。
+先頭に super(...), this(...), original(...) のいずれもなければ、
+先頭に自動的に super() が追加される。
+（ original(...) の書き忘れはチェックされないので注意。）
+<li> super(...) （引数を持った super class のコンストラクタ呼び出し）は、
+ super class が Java 言語の class である場合はサポートされない。
+コンパイルエラーになる。
+ただし、引数がない場合だけは許される。
+</ul>
+</p><p>
+</p><p>
+</p><h2><a name="class-extension">クラスの拡張</a></h2><p>
+</p><p>
+クラスの拡張では、以下のことができる。
+</p><p>
+<ul>
+<li>implements 宣言で、 superinterface を追加することができる。
+<li>新たなフィールドを定義することができる。
+<li>新たなメソッドを定義することができる。
+<li>既存のメソッドを override することができる。
+</ul>
+</p><p>
+</p><h2><a name="interface-extension">インターフェースの拡張</a></h2><p>
+</p><p>
+インターフェースの拡張では、以下のことができる。
+<ul>
+<li>新たなフィールドを定義することができる。
+<li>extends 宣言で、 superinterface を追加することができる。<br>
+（ただし完全には実装されていない。）
+<li>新たなメソッドを定義することができる。<br>
+（ただし完全には実装されていない。）
+</ul>
+</p><p>
+</p><h2><a name="">メソッドの拡張</a></h2><p>
+</p><p>
+</p><h3> definition method</h3><p>
+</p><p>
+・ "define" がついたメソッド断片は definition method と呼ぶ。
+</p><p>
+・メソッド断片を１列に並べたとき、
+最初が definition でなくてはならず、
+最初以外は definition であってはならない。
+</p><p>
+・ Java method は、 Java 言語の世界で定義されているので、
+それを MJ class が継承して override する場合は "define" を
+付ける必要はない。
+</p><p>
+・ interface のメソッドについて。 （省略。）
+</p><p>
+</p><p>
+</p><h3> abstract class / abstract method</h3><p>
+</p><p>
+・クラス定義時に abstract modifier を付けたクラスは、 abstract class 、
+定義時に abstract modifier を付けたメソッドは abstract method と呼ぶ。
+（MJ には abstract constructor もある。以下の説明で使う
+abstract method という言葉はabstract constructor も含むものとする。）
+</p><p>
+・ Java 言語では、
+ abstract でないクラスで abstract method を定義・継承することは許されないが、
+ MJ では許される。
+</p><p>
+ただし、リンク時に「 abstract method の実装もれ」がチェックされる。
+リンク結果のプログラムにおいて、 abstract でないクラスが
+abstract method を持っているときは、リンク時エラーとなる。
+</p><p>
+・ Java 言語は abstract でないメソッドを abstract method で
+override することができるが、 MJ ではできない。
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h3>throws 宣言</h3><p>
+</p><p>
+・メソッドを拡張する際には、オリジナルのメソッドの throws 宣言と
+同一の throws 宣言を書かなければならない。
+（宣言を減らしたり増やしたりしてはならない。）
+</p><p>
+なお、 Java 言語と同様に、 subclass で superclass の throws 宣言を
+減らすことはできる。
+</p><p>
+</p><p>
+</p><p>
+</p><h3>実装の衝突</h3><p>
+</p><p>
+コンパイラを通ったモジュール同士であっても、
+組み合わせて linearize したときにリンク時エラーにすべき場合がある。
+</p><p>
+例えば、１つの abstract method を別々に「実装」するモジュールを、
+同時に使用すると、エラーにすべきである。
+これを「実装の衝突」と呼ぶ。
+現在の処理系は、このリンク時の実装の衝突のチェックを行っていない。
+</p><p>
+</p><p>
+</p><h2><a name="fqn"> FQN （完全限定名）の使い方</a></h2><p>
+</p><p>
+・ほとんど全ての場所で、クラス名・メソッド名・フィールド名の単純名のかわりに、
+完全限定名が使える。
+</p><p>
+例外として、フィールド宣言では、完全限定名を使うことはできない。
+（フィールドには「拡張」がないので、フィールド宣言に FQN は不要。
+モジュール m 内のフィールド f の宣言は、必ず m::f という名前の宣言を表す。）
+</p><p>
+・FQN の指定は、単純名のあいまいさの解消に用いられる。
+（Java 言語のように、 import していない名前を参照する手段としては
+使えない。）
+</p><p>
+・あいまいさがない場合、すなわち単純名で正確に１つの対象を指定できる場合に、
+あえて FQN を使用してもかまわない。
+ただし、その場合、その FQN は、
+単純名によって選択される対象の FQN と一致していなければならない。
+一致しない場合はコンパイルエラーとなる。
+</p><p>
+・例として、 method overloading 解決のアルゴリズムについて、
+疑似コードで説明する。
+</p><p>
+<pre>
+まず、ターゲットの型、メソッド単純名、実引数の型で、
+呼び出されるメソッドの候補をしぼる。
+（この段階では、メソッドの完全限定名の情報は使わない。）
+候補が１つもなければ、 No method matching xxx found.
+候補が１つ以上あれば、その中から most specific method を選ぶ。
+        most specific method が １つもなければ、  ambiguous error 。
+        most specific method が １つあった場合、
+                プログラマがメソッド単純名で呼び出していたなら、呼び出し先確定。
+                プログラマーが FQN で呼び出していたなら、
+                候補の FQN とプログラマが指定した FQN が一致するかを調べ、
+                        一致しているなら、呼び出し先確定。
+                        一致していないなら、 No method matching xxx found. 
+        most specific method が複数あった場合、
+                プログラマがメソッド単純名で呼び出していたなら、 ambiguous error 。
+                プログラマーが FQN で呼び出していたなら、
+                候補の中から FQN が一致するものを選ぶ。
+                        見つかったならば、呼び出し先確定。
+                        見つからなかったら、 No method matching xxx found. 
+</pre>
+</p><p>
+ただし、 most specific method とは、全ての i に対し
+ i 番目の仮引数の型  T1_i が、
+他の全ての候補メソッドの i 番目の仮引数の型  T2_i の、
+subtype か等しい型であるものを言う。
+（Java では、 most specific method が１つ存在するか、
+１つも存在しないかのどちらかだが、
+MJ では、異なる完全限定名を持った複数の most specific method が
+存在する可能性がある。）
+</p><p>
+</p><p>
+・ Java 言語で a.b.C という「クラス名の完全限定名」が使える場所では、
+MJ でも同様に a.b.C と書ける。その場所で FQN[a.b::C] と書いてもかまわない。
+Java 言語で「クラス名の単純名」しか許されない場所では、
+単純名か FQN[a.b::C] のみが使え、 a.b.C という書き方は許されない。
+</p><p>
+・ Java class で定義されたフィールド・メソッド名 n の
+完全限定名は FQN[java::n] となる。
+</p><p>
+</p><p>
+</p><h2><a name="statement"> Statement</a></h2><p>
+現在のところ、 Statement に関しては Java 言語と全く変わらない。
+</p><p>
+</p><p>
+</p><h2><a name="expression"> Expression</a></h2><p>
+</p><p>
+</p><h3>メソッド呼び出し</h3><p>
+</p><p>
+・ Java class, MJ class の呼び出しは普通に行える。
+例：
+</p><p>
+<pre>
+        c.foo();
+</pre>
+</p><p>
+</p><p>
+・メソッド名に完全限定名を用いることができる。
+例：
+</p><p>
+<pre>
+c.FQN[m::foo]();
+FQN[m::foo]();
+</pre>
+</p><p>
+</p><p>
+</p><h3>フィールドアクセス</h3><p>
+</p><p>
+・自分自身（および自分の superclass）のフィールドは、普通にアクセスできる。
+例：
+</p><p>
+<pre>
+        f
+</pre>
+</p><p>
+・自分以外の Java class, MJ class のフィールドにも普通にアクセスできる。
+例：
+</p><p>
+<pre>
+        c.f
+</pre>
+</p><p>
+（ただし、自分以外の MJ class のフィールドアクセスには、将来は制限が付く予定。
+class invariant を破壊する恐れがあるので避けるべきである。
+直接アクセスせずに、アクセスメソッドを通すことを推奨。）
+</p><p>
+・フィールド名に完全限定名を用いることができる。
+例：
+</p><p>
+<pre>
+x = c.FQN[m::f];
+x = FQN[m::f];
+</pre>
+</p><p>
+・ Java では subclass の field が super class の同名の field を hide するが、
+MJ では field の hide は起きない。
+単純名でそのフィールド名を参照した場合、 ambiguous error になる。
+完全限定名を指定すれば、どちらの field　も参照することができる。
+</p><p>
+・ローカル変数で同名の field を shadow することは、 Java 同様にできる。
+</p><p>
+・外側のローカル変数・メソッド引数と同じ名前のローカル変数を
+内側で宣言することは、 Java 同様できない。宣言するとコンパイルエラーとなる。
+</p><p>
+</p><p>
+</p><p>
+</p><h3> original 呼び出し</h3><p>
+</p><p>
+・ original 呼び出しの signature は、その original 呼び出しが含まれるメソッドと
+一致していなければならない。
+（ Java では super.foo(args) という構文によって、自分とは異なる signature の、
+super のメソッドを呼び出せるが、 MJ ではできない。）
+</p><p>
+</p><p>
+</p><p>
+</p><h3> anonymous class</h3><p>
+</p><p>
+・ Java class/interface の anonymous class を作ることができる。
+MJ class/interface の anonymous class は、現在の実装はサポートしない。
+つまり、 new A(){...} と書いたとき、 A が MJ 言語で定義された
+class または interface である場合は、コンパイルエラーになる。
+</p><p>
+</p><p>
+・ anonymous class は、だいたいは、 Java と同じように使える。
+ただし、（現在の実装では、）
+ outer class の field/method にアクセスすることはできない。
+OuterClass.this という構文もサポートしていない。
+この問題に対処するには、次のようにする。
+</p><p>
+<pre>
+      final Draw outer = this;               // outer という final 変数を宣言
+      b.addActionListener(new ActionListener(){
+        public void actionPerformed(ActionEvent e){
+          Graphics g = outer.getGraphics();  // outer class の method 呼び出し
+          ...;
+        }});
+</pre>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="naming-convention"> naming convention</a></h2><p>
+</p><p>
+・モジュール名はすべて小文字。
+（package 名が Java のクラス名と衝突すると javac が
+わかりにくいエラーメッセージを出してしまうので、それを避けるため。）
+</p><p>
+・モジュール名には、 a.b.c というふうに identifier を "." で
+区切ったものも使える。
+ドメイン名の prefix を付ける必要はない。
+（モジュール名の衝突は、外部ツールによる rename によって対処する。）
+</p><p>
+・モジュールの rename をするツールを提供する予定。（未実装）
+</p><p>
+<pre>
+        mjrnp in.jar out.jar foo jp.go.etl
+</pre>
+</p><p>
+で、 in.jar の中に現れる "foo." ではじまる module 名が、
+ "jp.go.etl." ではじまる module 名にに変換される。
+（開発するときは短い名前で開発し、配布するときにドメイン名をつける、
+という使い方を推奨。）
+</p><p>
+・ "java" というモジュール名は使えない。
+</p><p>
+・ Java のパッケージ名として許されないものは、 MJ の module 名でも許されない。
+（例えば p.class.a は、 class というキーワードを含んでいるのでエラーになる。）
+</p><p>
+・外部インターフェースを定義するモジュールには短い名前を、
+内部実装モジュールを定義するモジュールには、
+ postfix を付けて長くした名前を付けるとよいと思う。
+</p><p>
+例： p.collection と p.collection.implementation
+</p><p>
+具体的にどういうスタイルで名前を付けるのがよいかは、今後考える。
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="unsupported-java-features">サポートしない Java の機能</a></h2><p>
+</p><p>
+・ MJ class 内部での member class, block local class の定義はできない。
+</p><p>
+・ Java class の member class の継承はできない。
+</p><p>
+・クラス、メソッドを final にできない。
+（field とローカル変数は final にできる。）
+</p><p>
+・ abstract/public/protected/private/final 以外の modifier については、
+どういう動作になるか不明。
+</p><p>
+</p><p>
+</p><h2><a name="other-features">その他の機能</a></h2><p>
+</p><p>
+・ #+comment <br>
+（省略）
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="syntax">文法</a></h2><p>
+</p><p>
+ここでは Java 言語の文法に対する差分のみを記述する。
+&lt;original alternatives&gt; は、 Java 言語における選択肢を
+表している。<br>
+大文字で始まる記号は非終端記号、それ以外は終端記号を表す。<br>
+&lt;e&gt; は空文字列を表す。
+</p><p>
+<pre>
+</p><p>
+MJCompilationUnit:
+        MJModule*
+</p><p>
+MJModule:
+        ;
+        { MJModule* }
+        #+ SharpPlusExpression MJModule
+        #- SharpPlusExpression MJModule
+        module MJModuleName MJModuleHeaderDeclaration* {
+            MJTypeDeclaration*}
+</p><p>
+MJModuleHeaderDeclaration:
+        complements MJModuleNameList
+        extends MJModuleNameList
+        uses MJModuleNameList
+        imports MJImportedPackageNameList
+</p><p>
+MJModuleNameList:
+        MJModuleName
+        MJModuleName , MJModuleNameList
+</p><p>
+MJImportedPackageNameList:
+        MJImportedPackageName
+        MJImportedPackageName , MJImportedPackageNameList
+</p><p>
+MJImportedPackageName:
+        Name
+        Name . *
+</p><p>
+MJTypeDeclaration:
+        MJClass
+        ;
+        #+ SharpPlusExpression MJTypeDeclaration
+        #- SharpPlusExpression MJTypeDeclaration
+</p><p>
+MJClass:
+        MJDefine Modifier* MJClassKeyword MJName Extends Implements { 
+                MJClassBodyDeclaration* }
+</p><p>
+MJClassKeyword:
+        class
+        interface
+</p><p>
+MJClassBodyDeclaration:
+        MJFieldDeclaration
+        MJConstructorDeclaration
+        MJMethodDeclaration
+        ;
+        #+ SharpPlusExpression MJClassBodyDeclaration
+        #- SharpPlusExpression MJClassBodyDeclaration
+</p><p>
+MJFieldDeclaration:
+        MJDefine Modifier* Type VariableDecorators   // FQN is not allowed.
+</p><p>
+MJConstructorDeclaration:
+        MJDefine Modifier* MJName ( FormalParameterList )
+                Throws MJMethodBody
+</p><p>
+MJMethodDeclaration:
+        MJDefine Modifier* Type MJName ( FormalParameterList )
+                Throws MJMethodBody
+</p><p>
+MJDefine:
+        &lt;e&gt;
+        define
+</p><p>
+MJMethodBody:
+        ;
+        Block   
+</p><p>
+Statement:
+        &lt;original alternatives&gt;
+        #+ SharpPlusExpression Statement
+        #- SharpPlusExpression Statement
+</p><p>
+Primary:
+        &lt;original alternatives&gt;
+        original ArgumentList
+        MJFQN                                   // this field access
+        MJFQN ArgumentList                      // this method invocation
+        Expression . MJFQN                      // field access
+        Expression . MJFQN ArgumentList         // method invocation
+        Name . MJFQN                            // static field access
+        Name . MJFQN ArgumentList               // static method invocation
+        MJFQN . MJFQN                           // static field access
+        MJFQN . MJFQN ArgumentList              // static method invocation
+        new MJFQN ...                           // instance creation
+</p><p>
+Type:
+        &lt;original alternatives&gt;
+        MJFQN   
+</p><p>
+MJName:
+        Identifier
+        MJFQN
+</p><p>
+MJFQN:
+        FQN [ MJModuleName :: Identifier ]
+        // This "FQN" is not a non-terimnal symbol, but a token.
+</p><p>
+MJModuleName:
+        Name
+</p><p>
+SharpPlusExpression:
+        Identifier
+        String                  // e.g. "debug=true"
+</p><p>
+VariableDecorators:
+        &lt;original alternatives&gt;
+</p><p>
+ArgumentList:
+        &lt;original alternatives&gt;
+</p><p>
+Expression:
+        &lt;original alternatives&gt;
+</p><p>
+Name:
+        &lt;original alternatives&gt;
+</p><p>
+Modifier:
+        &lt;original alternatives&gt;
+</p><p>
+Identifier:
+        &lt;original alternatives&gt;
+</p><p>
+String:
+        &lt;original alternatives&gt;
+</p><p>
+</pre>
+</p><hr>
+<table width="100%"> <tr><td>
+<img src="images/img002.gif" alt="mj-logo">
+</td><td>
+<div class="last-update"> Last updated: 
+ Dec 19 14:16:52 2001
+</div>
+<div class="header-link">
+[<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
+[<a href="index.html">Document index</a>]
+</div>
+</td></table>
+</body></html>

@@ -1,0 +1,209 @@
+/**
+Copyright (c) 2018 National Institute of Advanced Industrial Science and Technology(AIST), All Rights Reserved.
+Author: Yuuji Ichisugi
+							2018-03-09
+
+CCG semantic analyzer without lambda calculus
+
+Tested on SWI-Prolog version 7.6.0 on Windows 10
+
+*/
+
+%----------------------------------------------------
+% Utilities
+
+concatLists([], []).
+concatLists([L|Ls], R) :- concatLists(Ls, R1), append(L, R1, R).
+
+printLists([]).
+printLists([X|Xs]) :- print(X), nl, printLists(Xs).
+
+%----------------------------------------------------
+%  Semantic Representation Memory
+
+% Make memory
+makeAllM(M) :-
+    Msconj=[[[sconj, '-', '-'],_]],
+    makeAllR(c1,M1),
+    makeAllR(c2,M2),
+    concatLists([Msconj, M1, M2], M).
+makeAllR(C,M) :-
+    Fs=[size,color,entity],
+    makeAllF(C,agent,Fs,Magent),
+    makeSingleRs(C,[modality,action],Mds),
+    makeAllF(C,patient,Fs,Mpatient),
+    concatLists([Magent,Mds,Mpatient], M).
+makeSingleRs(C,[],[]).
+makeSingleRs(C,[R|Rs], [[[C,R,'-'],_] | M])
+	:- makeSingleRs(C,Rs,M).
+makeAllF(C,R,[],[]).
+makeAllF(C,R,[F|Fs],[[[C,R,F],_] | M]) :- makeAllF(C,R,Fs,M).
+
+% Access to an element of the Semantic Representation
+% bind(Memory, Address, Data)
+%bind(M,A,D) :- print(['bind:', A, D]), nl, fail.
+bind(M,A,D) :- bind1(M,A,D).
+%bind1([],A,D) :- print(['error:bind', A,D]), fail.
+bind1([[A, D]|_],A,D) :- !.
+bind1([_|Rest],A,D) :- bind1(Rest,A,D).
+
+%----------------------------------------------------
+% Inference rules.
+
+% reduce(Conclusion, Premise1, Premise2)
+reduce(X, f(X, Y), Y).   % X/Y, Y -> X  (>)
+reduce(X, Y, b(X, Y)).   % Y, X\Y -> X  (<)
+
+reduce(f(X, Z), f(X, Y), f(Y, Z)). % X/Y Y/Z -> X/Z  (>B)
+reduce(b(X, Z), b(Y, Z), b(X, Y)). % Y\Z X\Y -> X\Z  (<B)
+
+reduce(f(Y, Z), X, f(b(Y, X), Z)). % X, (Y\X)/Z -> Y/Z  (>T and >B)
+
+% These two rules are not used by the shift-reduce parser.
+raiseL(f(T, b(T, X)), X). % X -> T/(T\X)  (>T)
+raiseR(b(T, f(T, X)), X). % X -> T\(T/X)  (<T)
+
+%----------------------------------------------------
+% Lexicon
+
+% lexicalItem(Phoneme, Category, Address, Data)
+lexicalItem('if', f(f(s(c1),s(c2)),s(c1)),  [sconj,'-','-'], if).
+lexicalItem('before', f(f(s(c1),s(c1)),s(c2)),  [sconj,'-','-'], before).
+lexicalItem('white', f(np(C,R), np(C,R)), [C,R,color], white).
+lexicalItem('black', f(np(C,R), np(C,R)), [C,R,color], black).
+lexicalItem('big', f(np(C,R), np(C,R)), [C,R,size], big).
+lexicalItem('small', f(np(C,R), np(C,R)), [C,R,size], small).
+lexicalItem('dogs', np(C,R), [C,R,entity], dogs).
+lexicalItem('cats', np(C,R), [C,R,entity], cats).
+lexicalItem('mice', np(C,R), [C,R,entity], mice).
+lexicalItem('eat', f(b(s(C), np(C,agent)), np(C,patient)), [C,action,'-'], eat).
+lexicalItem('chase', f(b(s(C), np(C,agent)), np(C,patient)), [C,action,'-'], chase).
+lexicalItem('areEatenBy', f(b(s(C), np(C,patient)), np(C,agent)), [C,action,'-'], eat).
+lexicalItem('areChasedBy', f(b(s(C), np(C,patient)), np(C,agent)), [C,action,'-'], chase).
+lexicalItem('may', f(b(s(C), np(C,R)), b(s(C), np(C,R))), [C,modality,'-'], may).
+lexicalItem('must', f(b(s(C), np(C,R)), b(s(C), np(C,R))), [C,modality,'-'], must).
+lexicalItem('which', f(b(np(c1,R1),np(c1,R1)), b(s(c2),np(c2,R2))), [c2,R2,entity], [c1,R1,entity]).	%  (NP\NP)/(S\NP), nominative case
+lexicalItem('which', f(b(np(c1,R1),np(c1,R1)), f(s(c2),np(c2,R2))), [c2,R2,entity], [c1,R1,entity]).	% (NP\NP)/(S/NP), objective case
+
+%----------------------------------------------------
+% Check if the given parse tree is correct
+
+checkParseTree(Words, ParseTree) :- makeAllM(M),
+		maplist(lexicalItem, Words, Categories, As, Ds), printLists(Categories), nl,
+		call(ParseTree, Categories),
+		printLists(Categories), nl,
+		printLists(As), nl,
+		printLists(Ds), nl,
+		maplist(bind(M), As, Ds), printLists(M).
+
+
+% [[black cats] [eat mice]]
+% [[C1 C2] [C3 C4]]
+parseTree1(Categories) :- [C1,C2,C3,C4]=Categories,
+	   reduce(C14, C12, C34),
+	   reduce(C12, C1, C2),
+	   reduce(C34, C3, C4).
+test1() :- checkParseTree([black, cats, eat, mice], parseTree1).
+% ?- test1().
+
+% [[[black cats] eat] mice]
+% [[[[C1 C2]] C3] C4]
+parseTree2(Categories) :- [C1,C2,C3,C4]=Categories,
+	   reduce(C14, C13, C4),
+	   reduce(C13, T12, C3),
+	   raiseL(T12, C12),
+	   reduce(C12, C1, C2).
+test2() :- checkParseTree([black, cats, eat, mice], parseTree2).
+% ?- test2().
+
+% [[mice [which [[dogs] chase]]] [areEatenBy cats]]
+% [[C1 [C2 [[C3] C4]]] [C5 C6]]
+parseTree3(Categories) :- [C1,C2,C3,C4,C5,C6]=Categories,
+	   reduce(C16, C14, C56),
+	   reduce(C14, C1, C24),
+	   reduce(C24, C2, C34),
+	   reduce(C34, T3, C4),
+	   raiseL(T3, C3),
+	   reduce(C56, C5, C6).
+test3() :- checkParseTree([mice, which, dogs, chase, areEatenBy, cats], parseTree3).
+% ?- test3().
+
+%----------------------------------------------------
+% Shift-reduce parser
+
+% parse(Stack, Buffer, TargetCategory)
+parse([S],[],S).
+parse([C2,C1|Stack],Cs,S):- reduce(C,C1,C2), parse([C|Stack],Cs,S).
+parse(Stack,[C|Cs],S):- parse([C|Stack],Cs,S).
+
+%----------------------------------------------------
+% Translation between words and semantic representation memories.
+
+% trans(Words, TargetCategory, Memory)
+trans(Words, C, M) :-
+    maplist(lexicalItem, Words, Categories, As, Ds),
+    parse([], Categories, C),
+    maplist(bind(M), As, Ds).
+% Note: When traslating from M to Words, Words should be
+% a fixed-length list such as [W1,W2,W3,W4].
+
+% This version allows unrestricted length of Words.
+% It tries translation to words with length 0, 1, 2 and so on.
+trans2(Words, C, M) :- transNwords(Words, [], C, M).
+transNwords(Words, Nwords, C, M) :- Words = Nwords, trans(Words, C, M);
+	transNwords(Words, [W | Nwords], C, M).
+
+%----------------------------------------------------
+%----------------------------------------------------
+% Query examples
+
+/*
+Translation from sentences to semantic representations.
+=======
+?- makeAllM(M), trans([black, cats, eat, mice], C, M),printLists(M).
+
+?- makeAllM(M), trans([if, small, mice, areChasedBy, big, dogs, black, cats, may, eat, mice], C, M),printLists(M).
+
+?- makeAllM(M), trans([mice, which, dogs, chase, areEatenBy, cats], C, M),printLists(M).
+
+* Note that complex sentences produce a lot of same solutions
+probably because of "spurious ambiguity" of CCG.
+For example,  "black cats eat mice" can be parsed as
+[[black cats] [eat mice]] or [[[black cats] eat] mice],
+but both parse trees produce exactly the same semantic representation.
+
+
+Translation from semantic representations to sentences with fixed number of words.
+=======
+% [black,cats,eat,mice]
+?- M=[[[c1,agent,color],black],[[c1,agent,entity],cats],[[c1,action,-],eat],[[c1,patient,entity],mice]], W=[W1,W2,W3,W4], trans(W, s(c1), M),  print(W), nl, fail.
+
+% [mice, which, dogs, chase, areEatenBy, cats]
+?- M=[[[c1,patient,entity],mice],[[c2,patient,entity],[c1,patient,entity]],[[c2,agent,entity],dogs],[[c2,action,-],chase],[[c1,action,-],eat],[[c1,agent,entity],cats]], W=[W1,W2,W3,W4,W5,W6], trans(W, s(c1), M), print(W), nl, fail.
+	% It takes a few minutes.
+
+
+Translation from a semantic representations to sentences with unrestricted number of words.
+=======
+% [black,cats,eat,mice]
+?- M=[[[c1,agent,color],black],[[c1,agent,entity],cats],[[c1,action,-],eat],[[c1,patient,entity],mice]], trans2(W, s(c1), M),  print(W), nl, fail.
+
+% [mice, which, dogs, chase, areEatenBy, cats]
+?- M=[[[c1,patient,entity],mice],[[c2,patient,entity],[c1,patient,entity]],[[c2,agent,entity],dogs],[[c2,action,-],chase],[[c1,action,-],eat],[[c1,agent,entity],cats]], trans2(W, s(c1), M), print(W), nl, fail.
+	% It takes a few minutes.
+
+
+Utterances resembling Broca aphasia
+=======
+% [black,cats,eat,mice]
+?- M=[[[c1,agent,color],black],[[c1,agent,entity],cats],[[c1,action,-],eat],[[c1,patient,entity],mice]], Ws=[W1,W2,W3,W4], maplist(lexicalItem, Ws, Cs, As, Ds), /* parse([], Cs, s(c1)),*/ maplist(bind(M), As, Ds), print(Ws), nl, fail.
+
+
+Utterances resembling Wernicke aphasia
+=======
+?- /* M=[[[c1,agent,color],black], [[c1,agent,entity],cats], [[c1,action,-],eat], [[c1,patient,entity],mice]],*/ Ws=[W1,W2,W3,W4], maplist(lexicalItem, Ws, Cs, As, Ds), parse([], Cs, s(c1)), maplist(bind(M), As, Ds), print(Ws), nl, fail.
+
+
+*/
+%----------------------------------------------------
+

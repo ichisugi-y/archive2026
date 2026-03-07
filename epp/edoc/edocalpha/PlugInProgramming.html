@@ -1,0 +1,288 @@
+<html>
+<head>
+<title>Plug-in Development Reference</title>
+</head>
+<body bgcolor="#FFFFFF">
+<a href="index.html"> Index </a>
+<hr>
+<img src="gif/epp-logo-small.gif" align=right><br>
+<h1>Plug-in Development Reference</h1>
+							1998-07-01
+<hr>
+<pre>
+
+
+Introduction
+------------
+ This document describes the general procedures for developing a plug-in. 
+ The final chapter details how to bootstrap the EPP source code.
+
+
+
+Development Environment
+-----------------------
+ Currently, only the following two development environments are supported.
+( only shell scripts for sh and bash are available. )
+
+	Solaris/Linux, JDK1.1 and later
+	Windows, bash from gnu-win32, JDK1.1 and later
+
+ However, I guess you can use JavaVMs and Java compilers other than those
+provided with JDK (for exaple, fastjavac, jvc, jview) by modifying the
+shell scripts.
+
+
+
+Design
+------
+<LI>In order to develop a plug-in, you must begin with designing it.
+
+<LI>Determine a name for your plug-in.
+Here, we assume that the plug-in name is "Foo".
+
+<LI>Determine the grammar of your extended feature.
+When determining the grammar, make sure it does not conflict with the
+Java grammar and other plug-ins and does not confuse editors.
+It preferable not to extend grammar.
+Consider implementing it as normal Java class libraries or
+implementing it using InvokeStyleMacro.
+
+<LI>Determine the macro expansion policy
+Write code before expansion and after expansion and see if there
+are any potential problems.
+
+
+
+Implementation
+--------------
+<LI>The file epp/sample/Sample/PlugIn.java is a template source code
+for plug-ins.
+First, under the current directory, create a directory with the name
+of the plug-in you are going to create, and copy the template file
+into that directory.
+
+	% mkdir Foo
+	% cp epp/sample/Sample/PlugIn.java Foo
+
+<LI>Edit PlugIn.java.
+
+<LI>Begin with implementing the grammar extension portion.
+ For example if you want to add a new statement, extend the method
+named "statementTop".
+
+<LI>Implement your macro expansion function.
+In order to do so, begin with translating the code after expansion
+into an S-expression.
+
+	epp -tree -logfile Test.tree Test.java
+
+Then, cut and paste from Tree.tree and embed it into
+PlugIn.java using the back quote macro.
+After that, embed any code with commas.
+
+<LI>When complete implementing, make sure of the following.
+ "package Foo;" is specified.
+ "import epp.*;" is specified.
+ The macro expansion function is registered properly.
+
+<LI>Make sure that your node name does not conflict with any other
+existing names.
+ The name of SystemMixin should also not conflict with any other
+existing names.
+
+
+
+Testing
+-------
+<LI>Testing a plug-in involves the following five steps.
+
+	1. Expanding the plug-in source code with EPP.
+	2. Compile the expanded *.java file into a *.class file.
+	3. Expand the test program using the plug-in.
+	4. Compile the expanded test program into a *.class file.
+	5. Execute the compiled test program.
+
+For each step, you will have to specify an appropriate CLASSPATH and execute
+java or javac in an appropriate directory.
+
+ The tryplugin command executes all of the above steps automatically,
+while setting up the appropriate environment.
+( Currently, only sh and bash scripts are available. )
+
+ The usage of tryplugin is described below.
+
+
+<LI>First, assume that the following files and directories are
+under the current directory.
+
+ Foo/PlugIn.java	// source file of the plug-in
+ test/TestFoo.java	// test program. Must have #epp Foo specified.
+ eppout/		// output directory of the translated Foo/PlugIn.java
+ test/eppout/		// output directory of the translated test/TestFoo.java
+
+ If you execute the following, tryplugin will automatically perform the five steps.
+
+	% tryplugin Foo 
+
+If any error occurs, execution will stop.
+ The solutions for errors occuring at each step are detailed below.
+
+
+1. Syntax error when expanding Foo/PlugIn.java with EPP.
+
+ Fix the syntax error using the line number in the error message as a clue.
+
+
+2. Compilation error when compiling the EPP expanded source code.
+
+ Fix the source file according to the error message.
+ Since you are using the SystemMixin plug-in, the error message produced
+may be misleading. However, you may be able to guess the actual cause
+by reading the "Error Message Reference" in epp/doc/SystemMixin.txt.
+
+
+3. Error during expansion test of the plug-in.
+
+ If a NullPointerException error occurs because of a bug in Foo/PlugIn.java,
+invoke the debugger and identify the exact location of the error.
+In order to do so, execute the following in the current directory.
+
+	% jdbplugin TestFoo.java
+
+You do not need to change directories.
+When the debugger starts, just enter "run".
+You should be able to determine the cause of the error.
+
+
+4. Complilation error when compiling the test program source code expanded using the plug-in.
+
+ If the test program has a bug, fix it.
+ If it does not seem to have any bugs, try debugging Foo/PlugIn.java using
+methods such as including print statements.
+
+
+5. Execution error of the test program expanded using the plug-in.
+
+ As with step 4, fix the test program or debug Foo/PlugIn.java.
+
+
+<LI>If no errors occur but the behavior does not seem to be right,
+identify the wrong place using methods such as insering tree.print(),
+or specifying the -tree option.
+
+	% testplugin -tree -logfile tree.log Foo
+
+I plan to enhance plug-in debugging features in future versions.
+
+
+
+Installation
+------------
+<LI>After you complete debugging, you must install the plug-in so it
+can be used from other locations.
+
+ To do so, copy the eppout/Foo/*.class files that are under the current
+directory to a location included in the path designated by CLASSPATH.
+For example if ~/lib/epp is included in CLASSPATH, do the following.
+
+	% mkdir ~/lib/epp/Foo
+	cp eppout/Foo/*.class ~/lib/epp/Foo
+
+You would be able to use the plug-in.
+
+
+
+Sample Plug-in
+--------------
+The following plug-ins are relatively easy implementations
+which are provided for your reference.
+
+ Under epp/src/level0,
+	Math/PlugIn.java
+	enum/PlugIn.java
+	assert/PlugIn.java
+	defmacro/PlugIn.java
+	UserOp/PlugIn.java
+
+
+
+
+How to the EPP source code
+--------------------------
+ In order to compile the EPP source code (which is also written
+using the EPP plug-in), do as follows.
+
+ 1. Preperation
+ --------------
+ First, create the eppout directory under epp/src directory of the
+distribution package.
+
+	% cd epp/src
+	% mkdir eppout
+
+(Note: A large amount of small files will be generated when compiling
+ EPP.  Note that file generation and deletion on Unix operationg systems
+ is slow.  For example if you create eppout under /tmp and not under the
+ usual file system, compilation time may decrease significantlly.
+ In order to do so, do as follows.
+
+	% mkdir /tmp/tmpeppout
+	% cd epp/src
+	% ln -s /tmp/tmpeppout eppout
+Åj
+
+ 2. Source Translation
+ ---------------------
+ Next, translate the EPP source code into normal Java code.
+ You will have specify the -plug-in-package-prefix jp.go.etl.epp option.
+ If you want to change the package name of translated EPP, specify the
+-plug-in RenamePackage option.
+
+	% epp -plug-in-package-prefix jp.go.etl.epp -r level0
+	Process files under level0
+	Process files under level0/epp
+	Translating level0/epp/Symbol.java
+	Translating level0/epp/CompUnit.java
+	...
+	37 Java files were translated.
+	%
+
+ 3. Compilation of the Translated Source Code
+ --------------------------------------------
+ Compile the translated source code.
+You do not need to set the CLASSPATH.
+The default heap size of javac will not be sufficient, so increase it
+by specifying appropriate options. If you use fastjavac of JavaWorkshop2.0
+you do not need to specify any options.
+
+	% cd eppout/level0
+	% javac -J-mx32m */*.java
+	%
+
+ 4. Execution of the compiled EPP
+ --------------------------------
+ You can try out the compiled EPP.
+Here too, you do not have to set the CLASSPATH.
+
+	% mkdir eppout
+	% java epp.Epp epp/Tree.java
+	Translating epp/Tree.java
+	1 Java files were translated.
+	%
+
+ By examining the first line of the expanded file, you will be able to
+identify the version of EPP used to build it.
+
+	% head -1 eppout/epp/Tree.java
+	/* Generated by EPP 1.1.0 (by 1.1.0 (by 1.1.0 (by lisp-epp1.1.0))) */
+	%
+ 
+
+
+</pre>
+
+<hr>
+<a href="index.html"> Index </a>
+<img src="gif/epp-logo-small.gif" align=right><br>
+</body>
+</html>

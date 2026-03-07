@@ -1,0 +1,424 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="./style.css">
+<title>FAQ about language spec of MixJuice</title>
+</head><body>
+<div class="header-link">
+[<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MixJuice Home Page </a>]
+[<a href="index.html">Document index</a>]
+</div>
+<h1>FAQ about language spec of MixJuice</h1>
+<ul class="headers">
+<li><a href="#is-aop">Is MixJuice an aspect-oriented language ?</a>
+<li><a href="#other-than-java">Is difference-based module applicable to other than the Java language ?</a>
+<li><a href="#multiple-inheritance">It isn't preferable to have possibility of multiple inheritance of modules, is it ?</a>
+<li><a href="#package">What is the difference between the MixJuice module and the Java package ?</a>
+<li><a href="#modularize">Doesn't it take too much time to modularize if I want to keep extensibility and reusability high ?</a>
+<li><a href="#unmodular-program">The language allows to write a program with bad modularity or bad extensibility, doesn't it ?</a>
+<li><a href="#code-fragments">Doesn't it makes hard to read the program that a class definition is fragmented into several modules ?</a>
+<li><a href="#multiple-inheritance-of-class">Is multiple inheritance of class supported ?</a>
+<li><a href="#inheritance-is-not-import">Import and inheritance of name space are different concepts. Should it be divided ?</a>
+<li><a href="#security">Without public/private, how the security mechanism works ?</a>
+<li><a href="#rename">Can I avoid name collisions brought by multiple inheritance by "rename" ?</a>
+<li><a href="#fqn-syntax">I think the syntax of FQN is ugly.</a>
+<li><a href="#encapsulation">When <code>m2</code> extends <code>m1</code>, <code>m2</code> can access to the fields defined in <code>m1</code>. Doesn't it threaten the information hiding ?</a>
+<li><a href="#local-precedence-order">Writing &quot;<code>c</code> extends <code>a</code>, <code>b</code>&quot; does not determine whether <code>a</code> extends first or <code>b</code>.
+Isn't it problematic ?</a>
+<li><a href="#code-inheritance">I appreciate the division of module from class, but you should divide inheritance of implementation and inheritance of interface (i.e. subtyping) also.</a>
+<li><a href="#inner-outer">Is sub-module an inner module of the super-module, or an outer module ?</a>
+<li><a href="#parameterized-module">Is there a mechanism for parameterized modules ?</a>
+<li><a href="#copy-class-hierarchy">I want to use in an application both existing class hierarchy and extended class hierarchy.</a>
+<li><a href="#copy-difference">I want to add a difference to many classes.</a>
+<li><a href="#dynamic-loading">Can I add a module dynamically ?</a>
+<li><a href="#differential-programming">Since there are class inheritance and module inheritance as the differential programming mechanisms redundantly, I am not certain which mechanism should be used.</a>
+<li><a href="#before-after">Aren't there before, after and around advices ?</a>
+<li><a href="#upper-compati">Why MixJuice is not an upper compatible language of Java?</a>
+<li><a href="#module">The word "module" means usually a unit which provides a function by itself, but a module in MixJuice is a difference.  Isn't it merely a block of codes ?</a>
+</p></ul><p>
+</p><p>
+</p><h2><a name="is-aop">Is MixJuice an aspect-oriented language ?</a></h2><p>
+Yes, MixJuice is an aspect-oriented language in a broad sense.
+It is possible to make codes that crosscut some classes in a separate module.
+</p><p>
+However, the idea of MixJuice differs from that of a typical aspect-oriented language <a href="http://aspectj.org/">AspectJ</a>.
+AspectJ emphasizes the separation of aspects, which are different from the main functionality of the program, such as debugging, synchronization or performance, but MixJuice does not.
+</p><p>
+The problems MixJuice try to solve are rather near to those which
+<a href="http://www.research.ibm.com/hyperspace/">Hyper/J</a> try to solve.
+Traditional imperative languages or object-oriented languages force the only way to create modules (procedures or classes) to programmers,
+Hyper/J and MixJuice make possible free ways to create modules.
+</p><p>
+Moreover, the most important points of designing MixJuice are the simplicity of language specification and the safety of linking modules.
+MixJuice is significantly different to other AOP systems in these points.
+</p><p>
+</p><h2><a name="other-than-java">Is difference-based modules applicable to other than the Java language ?</a></h2><p>
+</p><p>
+It seems that difference-based modules are applicable not only to object-oriented languages but also to imperative languages, logical languages, hardware description languages, etc.
+Most programming languages <i>name</i> some kinds of code units.
+The idea of MixJuice's module mechanism is simple; one adds a difference to a code element corresponding to a <i>name</i> in the original program.
+Therefore, difference-based modules are applicable to most programming languages.
+</p><p>
+For example,
+<a href="http://staff.aist.go.jp/y-ichisugi/mj/dm-elisp/index.html">dm-elisp</a> is a kind of emacs-lisp to which difference-based modules are applied.
+</p><p>
+There are some languages to which the module mechanism of MixJuice is not applicable.
+For example, since term rewriting systems do not have <i>names</i> on code units, difference-based modules are not applicable.
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="multiple-inheritance">It isn't preferable to have possibility of multiple inheritance of modules, is it ?</a></h2><p>
+</p><p>
+Among problems of multiple inheritance, name collision problem has been solved completely by introducing fully qualified names of fields and methods.
+</p><p>
+Another problem, or semantical collision can be solved by applying the ideas of Design by Contract and Behavioral Subtyping to difference-based modules.
+(See <a href="http://staff.aist.go.jp/y-ichisugi/mj/papers/tr2003.pdf">
+this paper</a> for more details.)
+</p><p>
+However, it is certain that for human beings tree structures are easier to handle than general graph structures.
+On the programming in MixJuice, we do not recommend a complex multiple inheritance of modules.
+Any inheritance graphs of modules should be programmed in form as simple as possible.
+</p><p>
+The ideal inheritance graph of modules is in the form that its inheritance depth is shallow and width is wide.
+If an inheritance graph has such a form, maintenance of the program should be easy.
+</p><p>
+</p><p>
+</p><h2><a name="package">What is the difference between the MixJuice module and the Java package ?</a></h2><p>
+</p><p>
+Java has the package mechanism besides the syntax of class, but their division of responsibilities is not complete.
+Both package and class share the role of name space.
+MixJuice classifies and divides the responsibilities of class and module, in order to make the language specification simple.
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="modularize">Doesn't it take too much time to modularize if I want to keep extensibility and reusability high ?</a></h2><p>
+</p><p>
+As it is said in XP community, it is not worth spending time to modularize considering extensibility and reusability from the beginning.
+</p><p>
+It requires energy to keep extensibility and reusability high for any languages including MixJuice.
+If you modularize to have high extensibility and reusability thinking about future development, it is not paid until the program will actually be extended and reused.
+Programmers should think about the trade-off and allocate his/her time accordingly.
+</p><p>
+A good point of OOP is that it is needed only to write a class modeling a domain object in order to make a program with high extensibility and reusability to some degree.
+That is, since the equation &quot;class = module&quot; is valid at least approximately, merely designing a class leads to a modestly good modularization.
+It is one of the merits of object-oriented paradigm.
+</p><p>
+The inherited merit is one of the MixJuice's merits.
+If you don't have a time to be annoyed by the perfect modularization, you can make a class per module as you do in other languages.
+Only doing so might make modularization accomplished to some degree.
+You can wait rethinking about modularization until the time when a problem will appear during development and maintenance.
+</p><p>
+The task to change modularization is called refactoring.
+We hope there will be tools to support refactoring in MixJuice, in the future.
+</p><p>
+</p><p>
+</p><h2><a name="unmodular-program">The language allows to write a program with bad modularity or bad extensibility, doesn't it ?</a></h2><p>
+</p><p>
+You are right.
+The object-oriented design and the refactoring are important activities in MixJuice programming, too.
+</p><p>
+</p><p>
+</p><h2><a name="code-fragments">Doesn't it makes hard to read the program that a class definition is fragmented into several modules ?</a></h2><p>
+</p><p>
+Traditional object-oriented languages have been getting similar criticism:
+&quot;A program is hard to read because a class definition is devided into superclass and subclass.&quot;
+There are two responses.
+</p><p>
+The first one is a practice of Design by Contract. 
+If each public interface of class and method is clarified, there is no need to read its implementation codes.
+Thus, it is not a problem even though the inner implementation is scattered.
+In other words, information hiding make the unnecessary names of classes and methods invisible, and readability of program increases.
+This is also true for difference-based modules.
+</p><p>
+The second one is a documentation using UML or something.
+Since the problems treated by object-oriented languages are much more complex than those treated by old languages, it is impossible to understand the whole picture by reading the source-code.
+Then, it is needed to understand with UML or something.
+This is also, again, true for difference-based modules.
+If you use a layered class diagram, which is an extension of UML class diagram,
+it is possible to express visually and in easy-to-understand manner how a module extends the program.
+</p><p>
+</p><p>
+</p><h2><a name="multiple-inheritance-of-class">Is multiple inheritance of class supported ?</a></h2><p>
+</p><p>
+We think multiple inheritance of class is a necessary function for object-oriented languages.
+However, as far as MixJuice is a language executed on the JavaVM, there is no plan to support it.
+If one implements a multiple inheritance of class mechanism on the JavaVM, there is no way to avoid slow execution speed.
+</p><p>
+</p><p>
+</p><h2><a name="inheritance-is-not-import">Import and inheritance of name space are different concepts. Should it be divided ?</a></h2><p>
+</p><p>
+Szyperski, C.A.:
+"Import is Not Inheritance, Why We Need Both: Modules and Classes",
+ In Proc. of ECOOP'92. <br>
+It is said that inheritance of class should not be used instead of import of library in the paper cited above.
+</p><p>
+It is, however, a common practice of designing a programming language to realize essentially different concepts in one language mechanism.
+For example, Java uses class as a unit of information hiding, a unit of defining type, a unit of semaphore, a unit of allocating memory, etc.
+Unifying many features in one language mechanism in such fashion make it possible for the language to satisfy simultaneously the contradicting requirements: multifunctionality and simplicity of the language.
+</p><p>
+MixJuice separates the function of name space from class, and unifies name space and the differential programming mechanism instead.
+It seems succeeded.
+</p><p>
+Import and inheritance are similar by nature as functions.
+In Eiffel culture, its inheritance mechanism is used as a library import mechanism willingly.
+For example, when a class uses standard I/O library from inside, it inherits the class which provides the function.
+(Note that Eiffel does not provide implicit inheritance of library interface.)
+</p><p>
+</p><p>
+</p><h2><a name="security">Without public/private, how the security mechanism works ?</a></h2><p>
+</p><p>
+MixJuice should not be used &quot;outside sandbox&quot; or &quot;for dynamically loading unsafe codes&quot;.
+From the security viewpoint, every class name, field name and method name defined in MixJuice should be understood as &quot;public&quot;.
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="rename">Can I avoid name collisions brought by multiple inheritance by &quot;rename&quot; ?</a></h2><p>
+</p><p>
+The problem of name collision is solved by introducing the FQNs of methods.
+There are, however, kinds of collisions not solved only by the FQNs of methods.
+For example, let's think about the following situation:
+an abstract method <code>foo</code> is defined in module <code>m1</code>, sub-modules <code>m2</code> and <code>m3</code> implement <code>m1</code> each, and there is a sub-module <code>m4</code> inheriting both <code>m2</code> and <code>m3</code>.
+Then, from the standpoint of <code>m4</code>, either implementation of <code>foo</code> in <code>m2</code> or <code>m3</code> is hidden by an override.
+</p><p>
+If there is a demand to use in <code>m4</code> both implementations of <code>foo</code> from <code>m2</code> and <code>m3</code>,
+we might need to have a mechanism like the method rename of the Eiffel language.
+In the future, the mechanism may be implemented in MixJuice.
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="fqn-syntax">I think the syntax of FQN is ugly.</a></h2><p>
+</p><p>
+The syntax was designed as it is, because the Java language has the problem that it uses "." for both the punctuation character of package names and the access operator for members.
+If the problem will be solved, the syntax will be acceptable.
+(Using an alias of a name space for prefix like XML might make the syntax clear.
+We may have it in a future version.)
+</p><p>
+MixJuice can minimize the depending name space, the probability that name collision occurs is supposed to be much lower than those of other object-oriented languages.
+Therefore, we suspect that there are not so many chances for programmers to specify the FQN in real programming activities.
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="encapsulation">When <code>m2</code> extends <code>m1</code>, <code>m2</code> can access to the fields defined in <code>m1</code>.
+Doesn't it threaten the information hiding ?</a></h2><p>
+</p><p>
+In the context of MixJuice, &quot;<code>m2</code> extends <code>m1</code>&quot; should be understood as &quot;<code>m2</code> is defined inside the class <code>m1</code>&quot; in the context of Java.
+From inside, all names defined outside are accessible.
+</p><p>
+In some sense, all names in MixJuice have access modifiers "protected".
+As the protected fields of superclass are visible from its subclasses in the Java language, all names of super-module are visible from its sub-modules in MixJuice.
+It is needed, then, the programmers whose modules extend <code>m1</code> should be conscious of being not a user but an implementer of <code>m1</code> while they are programming.
+</p><p>
+</p><p>
+Though it is not in the current language specification, "final module" like mechanism might be in MixJuice, in the future;
+it is a module which does not allow to create its sub-module, like "final class" of Java.
+Then, the names defined in a final module are supposed to be all "private".
+</p><p>
+The final module mechanism is a mechanism for foolproof.
+If a programmer writes a program depending on the inner implementations as well as the outer interfaces, the one who suffer a penalty is obviously the programmer him/herself.
+When an inner implementation is modified, the programmer must rewrite his/her program.
+</p><p>
+We plan to implement the assertion mechanism like one in Eiffel, then the programmer who writes programs depending on implementations will suffer more penalties.
+The programmers who only use outer interfaces should care about only preconditions, but the programmers who use also the knowledge of inner implementations should care about postconditions and invariants also.
+In other words, those programmers are forced to program with stronger constraints.
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="local-precedence-order">Writing &quot;<code>c</code> extends <code>a</code>, <code>b</code>&quot; does not determine whether <code>a</code> extends first or <code>b</code>.
+Isn't it problematic ?</a></h2><p>
+</p><p>
+In the languages like CLOS, the declaration &quot;<code>c</code> extends <code>a</code>, <code>b</code>&quot; is interpreted as <code>a</code> is prior to <code>b</code>.
+It is called "local precedence order".
+In these languages, the local precedence order is preserved with a linearization.
+</p><p>
+</p><p>
+In MixJuice, because we attach importance to the protection from link-time errors for an end user who combines modules, we do not include the local precedence order in the language specification.
+Let's think about the following example:
+<pre>
+module c extends a, b {...}
+module d extends b, a {...}
+</pre>
+</p><p>
+In the case where an end user combines modules <code>c</code> and <code>d</code>, it impossible to linearize as preserving the local precedence order.
+In languages like CLOS, it is error, in the case.
+</p><p>
+If there is a merit which exceeds the demerit that it might cause a link-time error, we might take the local precedence order in the language specification.
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="code-inheritance">I appreciate the division of module from class, but you should divide inheritance of implementation and inheritance of interface (i.e. subtyping) also.
+</a></h2><p>
+</p><p>
+It is certain that inheritance of implementation and inheritance of interface are different concept, but we disagree your point that they each should have own language mechanism.
+Since subtypes usually have common behaviors to their supertypes, subtypes should inherit the implementations automatically for programmers' convenience.
+</p><p>
+Moreover, comparing with preparing two mechanisms, preparing only one mechanism, or class inheritance mechanism, have a big merit that the language specification is simplified.
+</p><p>
+We know there are cases that one wants to inherit implementations without subtyping or one want to make a subtype without inheriting implementations.
+For the former case, a mechanism like private inheritance of C++ can be useful.
+For the latter case, it is desirable that the implementer of the framework should define specification modules and implementation modules separately.
+If the framework is not in such a fashion, it is possible to neglect the implementation of superclass by overriding every method.
+</p><p>
+</p><h2><a name="inner-outer">Is sub-module an inner module of the super-module, or an outer module ?</a></h2><p>
+</p><p>
+The answers vary with the module relations on which you focus attention.
+</p><p>
+Answering with an image of the Java's nested class, sub-modules are inside super-modules.
+From a sub-module all the names of the super-module can be accessed, and it is corresponding to the fact in the nested class case that from an inner class all the names of the outer class can be accessed.
+Generally, the outer modules are for abstract public interfaces, and the inner modules are for concrete implementations.
+In other words, from the viewpoint of "relationship between modules that inner one is hidden", a super-module hides a sub-module.
+Therefore, sub-module is inside super-module.
+</p><p>
+This can be understood with comparing with the nesting module relations of the real world.
+For example, there are modules, a hard disk, a motherboard, etc. in a PC case, and each of them also consists of smaller modules.
+The outside modules tend to hide inside and provide functions with higher abstraction.
+As the example shows, super-modules and sub-modules are corresponding to outer modules and inner modules of real world respectively.
+</p><p>
+In contrast, concerning "accompaniment relation" and "dependency relation", the correspondence of MixJuice modules and the real world is different.
+</p><p>
+In the real world, a movement of an outer module causes a movement of the inner modules.
+To put it simply, the inner modules accompany the outer module.
+On the other hand, in MixJuice, specifying a sub-module at link time, the super-module is also linked automatically.
+In other words, the super-module accompanies the sub-module.
+The relation has the opposite direction to the nesting relation.
+</p><p>
+At last, how is it seen from the viewpoint of "dependency relation"?
+In the real world, a motherboard module, for example, has a CPU module.
+Which does depend on another, a motherboard or a CPU?
+(Think about the case that both motherboards and CPUs are provided from various makers and they all have compatibilities.)
+From the MixJuice viewpoint, both a specific motherboard product and a specific CPU product don't depend on each other.
+The fact that they can be connected results from that both of them implement the "specification of CPU socket" correctly.
+Using MixJuice syntax, we can express:
+<pre>
+module cpuSpec {...}
+module motherBoardSpec {...}
+module cpuImplementation extends cpuSpec {...}
+module motherBoardImplementation extends cpuSpec, motherBoardSpec {...}
+</pre>
+</p><p>
+The "specification of CPU socket" is expressed in MixJuice as a specification module.
+However, the specification in the real world is merely written on the paper, and it does not exist normally as a substantial module.
+Thus, a dependency relation in MixJuice does not correspond to a real world module relation.
+</p><p>
+We can summarize as the following:
+</p><p>
+hiding relation: super-module is outside, sub-module is inside,
+</p><p>
+accompaniment relation: super-module is inside, sub-module is outside,
+</p><p>
+dependency relation: sub-module depends on super-module, no correspondence in the real world.
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="parameterized-module">Is there a mechanism for parameterized module ?</a></h2><p>
+</p><p>
+MixJuice doesn't have any kinds of generics mechanisms, which generate various modules from a template module with types or static values arguments.
+</p><p>
+</p><p>
+</p><h2><a name="copy-class-hierarchy">I want to use in an application both existing class hierarchy and extended class hierarchy.</a></h2><p>
+</p><p>
+It is impossible now, but we plan to implement a mechanism to make a copy of class hierarchy, in the future.
+</p><p>
+</p><p>
+</p><h2><a name="copy-difference">I want to add a difference to many classes.</a></h2><p>
+</p><p>
+It is impossible now, since the name of the class, which is the target to make an addition of a difference is fixed.
+We plan to implement a mechanism to change the name of the target class.
+</p><p>
+</p><p>
+</p><h2><a name="dynamic-loading">Can I load a module dynamically ?</a></h2><p>
+</p><p>
+No, you can't.
+A dynamic loading of a class is possible as in Java.
+</p><p>
+</p><p>
+</p><h2><a name="differential-programming">Since there are class inheritance and module inheritance as the differential programming mechanisms redundantly, I am not certain which mechanism should be used.
+</a></h2><p>
+</p><p>
+The class inheritance should be used with is-a relations, and it should not be used as a tool for differential programming without careful consideration.
+On this point, MixJuice is same with C++ or Java.
+(In Smalltalk community, we are not sure but maybe because it has no static type checking, class inheritance is used as a tool of differential programming.)
+</p><p>
+</p><h2><a name="before-after">Aren't there before, after and around advices ?</a></h2><p>
+No, there aren't in the current MixJuice, but we think there should be.
+People may think the following program can be a substitution of before advice.
+<pre>
+module m1 extends m0 {
+  class C {
+    void foo() {
+      m1BeforeFoo();
+      original();
+    }
+  }
+}
+</pre>
+</p><p>
+The intention of the programmer who wrote <code>m1</code> is probably that &quot;I want <code>doBeforeFoo()</code> be executed before the execution of the body of <code>foo</code>.&quot;
+It can be realized.
+However, there is a case that it is insufficient.
+Another programmer may need to add a process between &quot;the process which his/her super-module adds before the body of <code>foo</code>&quot; and &quot;the original body of <code>foo</code>&quot;.
+(This kind of requests is a usual one.)
+He/she may write the following code, but it doesn't work:
+<pre>
+module m2 extends m1 {
+  class C {
+    void foo() {
+      m2BeforeFoo();
+      original();
+    }
+  }
+}
+</pre>
+</p><p>
+By the code above, the process <code>m2BeforeFoo()</code> is executed before <code>m1BeforeFoo()</code>.
+</p><p>
+This kind of problem can be solved if the framework prepares the before hook in advance.
+<pre>
+module m0 {
+  define class C {
+    define void beforeFoo(){}
+    define void foo() {
+      beforeFoo();
+      defaultFooBehavior();
+    }
+  }
+}
+</pre>
+</p><p>
+However, it might not be predictable at the time of constructing a framework whether it will need to have hooks for before, after and around.
+Moreover, it is impossible in reality to have before, after and around hooks in every method because of possible needs.
+From these reasons, we are considering to have a certain language mechanism to treat before, after and around hooks.
+</p><p>
+</p><h2><a name="upper-compati">Why MixJuice is not an upper compatible language of Java ?</a></h2><p>
+It is usual for language researchers to propose a new language as an upper compatible language of an already existing language.
+If one makes a new language upper compatible to Java, it is easy to move from Java and it assures that the descriptive power of language is not less than that of Java.
+</p><p>
+On the other hand, it is definitely hard to include the idea of MixJuice's module mechanism keeping consistency with Java's module mechanisms such as package, public/protected/private or nested class.
+Even if it is possible to design such a language, the language specification must be too complex and its implementation must be very hard, and it is impossible to make it a useful language.
+</p><p>
+</p><p>
+</p><h2><a name="module">The word &quot;module&quot; means usually a unit which provides a function by itself, but a module in MixJuice is a difference.  Isn't it merely a block of code?</a></h2><p>
+</p><p>
+A sub-module alone does not have a function, but with super-modules it provides a set of classes that has functions.
+</p><p>
+The situation is same with that of subclass in OOP.
+A code of subclass alone has no meanings, but with the code of the superclasses it becomes meaningful class definitions.
+</p><hr>
+<table width="100%"> <tr><td>
+<img src="../ja/mj/images/img002.gif" alt="mj-logo" width="64" height="51">
+</td>
+<td>
+<div class="last-update"> Last updated: 
+ Nov 16, 2004
+</div>
+<div class="header-link">
+[<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MixJuice Home Page </a>]
+[<a href="index.html">Document index</a>]
+</div>
+</td></table>
+</body></html>

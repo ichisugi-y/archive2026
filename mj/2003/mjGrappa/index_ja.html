@@ -1,0 +1,3485 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML lang="ja"
+><HEAD
+>
+<meta http-equiv="Content-Type" content="text/html; charset=EUC-JP">
+<link rel="stylesheet" type="text/css" href="./style.css">
+<TITLE
+>GrappaのMixJuiceへの移植</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"></HEAD
+><BODY
+CLASS="book"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="BOOK"
+><A
+NAME="AEN1"
+></A
+><DIV
+CLASS="TITLEPAGE"
+><H1
+CLASS="title"
+><A
+NAME="AEN2"
+></A
+>GrappaのMixJuiceへの移植</H1
+>
+<div align="right" style="font-size:small">
+<a href="index.html">[ English page ]</a>
+</div>
+<H4
+CLASS="author"
+><A
+NAME="AEN6"
+></A
+>産業技術総合研究所(AIST)</H4
+><!--<SPAN
+CLASS="releaseinfo"
+>$Revision: 1.18 $<BR></SPAN
+>--><HR></DIV
+><DIV
+CLASS="TOC"
+><DL
+class="headers"
+><DT
+><B
+>&#30446;&#27425;</B
+></DT
+><DT
+><A
+HREF="#preface"
+>はじめに</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#whyGrappa"
+>移植対象Javaプログラムの選定</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="#porting"
+>移植作業</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#gettingGrappa"
+>Grappaの入手</A
+></DT
+><DT
+><A
+HREF="#grappaOverview"
+>Grappaの概要</A
+></DT
+><DT
+><A
+HREF="#portingStrategy"
+>移植の方針</A
+></DT
+><DT
+><A
+HREF="#refactorJava"
+>Javaの段階でのリファクタリング</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#eliminateStatics"
+>staticフィールド/メソッドを別のクラスに移す</A
+></DT
+><DT
+><A
+HREF="#eliminateInnerClass"
+>内部クラスを通常のクラスにする</A
+></DT
+><DT
+><A
+HREF="#prepModDiv"
+>モジュール分けに備えた変更の試み</A
+></DT
+><DT
+><A
+HREF="#splitInterfaces"
+>定数の分類</A
+></DT
+><DT
+><A
+HREF="#powerOfIDE"
+>リファクタリングにおけるIDEの有用性</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="#portingToMJ"
+>MixJuiceへの移植</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#interfaceNimpl"
+>仕様モジュールと実装モジュール</A
+></DT
+><DT
+><A
+HREF="#problemOnWindows"
+>Windowsでのコンパイルの問題</A
+></DT
+><DT
+><A
+HREF="#longFlatCode"
+>フラットな長いブロックの問題</A
+></DT
+><DT
+><A
+HREF="#ignoresThrows"
+>originalメソッドでのthrows節が無効になる</A
+></DT
+><DT
+><A
+HREF="#implementingJavaInterface"
+>一部のJava interfaceをMixJuiceで実装できない時の注意点</A
+></DT
+><DT
+><A
+HREF="#nullPtr"
+>原因不明のNullPointerException</A
+></DT
+><DT
+><A
+HREF="#dollar"
+>クラス名に$を含むクラスの問題</A
+></DT
+><DT
+><A
+HREF="#dependency"
+>モジュール依存に関する注意点</A
+></DT
+><DT
+><A
+HREF="#moduleName"
+>Java パッケージ名と MixJuice モジュール名の問題</A
+></DT
+><DT
+><A
+HREF="#inconsistentFQNNotation"
+>曖昧な名前の解決方法</A
+></DT
+><DT
+><A
+HREF="#implementsLower"
+>サブモジュールでのインターフェイスの追加</A
+></DT
+><DT
+><A
+HREF="#dupClass"
+>クラスの二重定義</A
+></DT
+><DT
+><A
+HREF="#staticInitOrder"
+>実行時のjava.lang.ExceptionInInitializerError</A
+></DT
+><DT
+><A
+HREF="#errMsg"
+>典型的なエラーメッセージ</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="#MJRefactor"
+>MixJuiceでのリファクタリング</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#extractDump"
+>ダンプ機能の分離</A
+></DT
+><DT
+><A
+HREF="#AEN270"
+>モジュールの分離/統合</A
+></DT
+><DT
+><A
+HREF="#AEN290"
+>定数モジュール</A
+></DT
+><DT
+><A
+HREF="#AEN301"
+>大きなユーティリティクラス</A
+></DT
+><DT
+><A
+HREF="#makeItMVC"
+>モジュール機構によるMVCの実装サポート</A
+></DT
+><DT
+><A
+HREF="#AEN321"
+>仕様モジュールと実装モジュールの分離</A
+></DT
+><DT
+><A
+HREF="#refactorProcess"
+>リファクタリングの経過</A
+></DT
+></DL
+></DD
+></DL
+></DD
+><DT
+><A
+HREF="#howToBuild"
+>移植したプログラムの実行方法</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#expand"
+>ソースの展開</A
+></DT
+><DT
+><A
+HREF="#build"
+>ビルド方法</A
+></DT
+><DT
+><A
+HREF="#howToRun"
+>実行方法</A
+></DT
+><DT
+><A
+HREF="#restriction"
+>制限</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="#conclusion"
+>考察</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#AEN444"
+>再利用しやすい単位で分割できるか</A
+></DT
+><DT
+><A
+HREF="#AEN476"
+>保守しやすい単位で分割できるか</A
+></DT
+><DT
+><A
+HREF="#AEN474"
+>情報隠蔽しやすい単位で分割できるか</A
+></DT
+><DT
+><A
+HREF="#AEN482"
+>機能単位で分割できるか</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#AEN495"
+>アスペクトを明確に分けられない場合</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="#AEN512"
+>分割コンパイルに適切な単位で分割できるか</A
+></DT
+><DT
+><A
+HREF="#AEN523"
+>開発作業を分割したときに、その分割単位でモジュールにできるか</A
+></DT
+></DL
+></DD
+></DL
+></DIV
+><DIV
+CLASS="chapter"
+><HR><H2
+><A
+NAME="preface"
+></A
+>はじめに</H2
+><P
+>本ドキュメントでは、比較的大きな既存のJavaプログラム(コメントを含め約2万行、コメントを除くと約1万行)をMixJuiceに移植する作業で得られた知見を述べます。この作業および本ドキュメントの目的は、比較的大きなプログラム開発にMixJuiceを使用した場合に、MixJuiceが備える差分ベースモジュールという新しいモジュール機構が良好に機能するか、以下の観点で検証することです。
+
+<P
+></P
+>
+
+<UL
+><LI
+STYLE="list-style-type: disc"
+>&#13;再利用しやすい単位で分割できるか
+</LI
+><LI
+STYLE="list-style-type: disc"
+>&#13;保守しやすい単位で分割できるか
+</LI
+><LI
+STYLE="list-style-type: disc"
+>&#13;情報隠蔽しやすい単位で分割できるか
+</LI
+><LI
+STYLE="list-style-type: disc"
+>&#13;機能単位で分割できるか
+</LI
+><LI
+STYLE="list-style-type: disc"
+>&#13;分割コンパイルに適切な単位で分割できるか
+</LI
+><LI
+STYLE="list-style-type: disc"
+>&#13;開発作業を分割したときに、その分割単位でモジュールにできるか
+</LI
+></UL
+>
+
+ただし、移植作業を二つのphaseに分けて実施します。
+phase 1ではMixJuiceへの移植作業を中心とし、「MixJuiceらしさ」を活かすリファクタリングや差分ベースモジュールによる拡張は、主にphase 2で行います。
+したがって、上記の目的の多くは、主にphase 2で明らかになります。
+
+ </P
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="whyGrappa"
+></A
+>移植対象Javaプログラムの選定</H2
+><P
+>&#13;   MixJuiceへの移植対象Javaプログラムに求められる条件を以下に示します。
+
+   <P
+></P
+><UL
+><LI
+STYLE="list-style-type: disc"
+>ソースが公開されているJavaプログラムであること
+</LI
+><LI
+STYLE="list-style-type: disc"
+>ソースの改変が許可されており、それを公開できること
+</LI
+><LI
+STYLE="list-style-type: disc"
+>ソースプログラムが約1万行程度の規模であること
+</LI
+></UL
+>
+
+   以上の条件を満たすオープンソースプログラムとして、グラフ(数値を視覚化するグラフではなく、グラフ理論で扱うグラフ)作成Javaライブラリである<A
+HREF="http://www.research.att.com/~john/Grappa/"
+TARGET="_top"
+>Grappa</A
+>(<A
+HREF="http://www.research.att.com/sw/tools/graphviz/license/index.html"
+TARGET="_top"
+>ライセンス</A
+>)を選定しました。選定理由としては、
+   <P
+></P
+><UL
+><LI
+STYLE="list-style-type: disc"
+>コメントを除いたソースの規模が上記の条件に近いこと
+</LI
+><LI
+STYLE="list-style-type: disc"
+>ノードやエッジの形状追加やUI(ユーザーインターフェイス)の振る舞いの追加など、差分ベースモジュールの特徴を活かせると思われること
+</LI
+><LI
+STYLE="list-style-type: disc"
+>モジュールの追加による効果を視覚的に確認できること
+</LI
+><LI
+STYLE="list-style-type: disc"
+>移植したGrappaのモジュール継承関係の視覚化に、Grappa自身を使えそうであること
+</LI
+></UL
+><P>
+   などが挙げられます。
+  </P
+></DIV
+></DIV
+><DIV
+CLASS="chapter"
+><HR><H2
+><A
+NAME="porting"
+></A
+>移植作業</H2
+><P
+></P
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="gettingGrappa"
+></A
+>Grappaの入手</H2
+><P
+>&#13;   Grappaは、<A
+HREF="http://www.research.att.com/~john/Grappa/"
+TARGET="_top"
+>http://www.research.att.com/~john/Grappa/</A
+>から入手することができます。左記のURLにアクセスすると、Grappaは、GraphVizと同じライセンスで公開され、GraphVizのダウンロードページ(<A
+HREF="http://www.research.att.com/sw/tools/graphviz/download.html"
+TARGET="_top"
+>http://www.research.att.com/sw/tools/graphviz/download.html</A
+>)から入手できると記されています。GraphVizのダウンロードページにアクセスすると、太字で「Extras」と記述されているパラグラフに、Grappaのディストリビューションgrappa.tgzへのリンクが存在するので、これをダウンロード/展開します。
+  </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="grappaOverview"
+></A
+>Grappaの概要</H2
+><P
+>&#13;   Grappaは、<A
+HREF="http://www.research.att.com/~erg/graphviz/info/lang.html"
+TARGET="_top"
+>dot</A
+>という言語で記述された論理的なグラフを、2次元にプロットするためのJavaライブラリです。入力であるdotファイルには、ノードやそれを繋ぐエッジからなる論理的なグラフ構造を表す情報と、2次元にきれいにプロットするために必要なフォント、線の太さ、座標などの幾何的な情報が含まれます。Grappaは、dotファイルの記述にしたがって、グラフを描画します。dotファイルに座標などの指定が特に無い場合は、Grappaが自動的にレイアウトを行います。
+  </P
+><P
+>&#13;   Grappaの中心となるのは、<A
+HREF="#elementTree"
+>&#22259;1</A
+>に示すクラス階層です。NodeとEdgeクラスが集まってSubgraphを構成し、一番トップレベルの特殊なサブグラフがGraphとなります(クラス階層上は、SubgraphがGraphの親クラスになっています)。
+   <DIV
+CLASS="figure"
+><A
+NAME="elementTree"
+></A
+><P
+><IMG
+SRC="images/element-tree.png"></P
+><P
+><B
+>&#22259; 1. Grappaの構造</B
+></P
+></DIV
+>
+   Grappa内の比較的独立したコラボレーションまたはアスペクトは、次の通りです。
+
+
+<DIV
+CLASS="table"
+><A
+NAME="grappaAspects"
+></A
+><P
+><B
+>&#34920; 1. Grappaの主なアスペクト</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>No.</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>アスペクト</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>依存関係</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>1</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>グラフの論理構造に関するもの</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>2</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>グラフの幾何学的表現に関するもの</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>1に依存</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>3</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>dotファイルのパースとdotファイルのダンプに関するもの</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>2に依存</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>4</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>GUIに関するもの</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>2に依存</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+>
+  </P
+><P
+>&#13;   移植の際は、これらの分類にしたがって、モジュールへ分割可能と考えました。
+  </P
+><P
+>&#13;  Grappaのディストリビューションには、JDK1.1と1.2用のソースが含まれています。今回は、1.2用のソース(src/jdk1.2およびDEMO/jdk1.2ディレクトリの下に配置されています)のみを対象としました。1.1用のソースは削除しています。
+  </P
+>
+</DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="portingStrategy"
+></A
+>移植の方針</H2
+><P
+>&#13;   MixJuiceの以前の調査結果、および、Grappaの構造から、次のような方針で移植作業を行うこととしました。方針を決定するにあたっては、バグを混入しないようにすることにも重点を置きました。
+   <P
+></P
+><OL
+TYPE="1"
+><LI
+>MixJuiceへの移植に備えてJavaの段階でリファクタリング(phase 1)
+</LI
+><LI
+>動作確認(phase 1)
+</LI
+><LI
+>MixJuiceへ移植(phase 1)
+</LI
+><LI
+>動作確認(phase 1)
+</LI
+><LI
+><A
+NAME="ord1"
+></A
+>MixJuiceへ最適化するためのリファクタリング(phase 2)
+</LI
+><LI
+><A
+NAME="ord2"
+></A
+>動作確認(phase 2)
+</LI
+></OL
+>
+
+   phase 2では、<A
+HREF="#ord1"
+>5</A
+>と<A
+HREF="#ord2"
+>6</A
+>を反復的に実施します。
+  </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="refactorJava"
+></A
+>Javaの段階でのリファクタリング</H2
+><P
+>&#13;   以前の調査結果から、JavaのプログラムをMixJuiceへ移植するには、かなりのソースの変更が必要であることが分かっています。特に、staticメソッドや内部クラスを利用しているJavaのコードを移植する際は変更量が多いです。作業効率とバグ混入の回避のために、できるだけJavaの段階でMixJuice化に向けたリファクタリングを行いました。以下に、その内容を述べます。
+  </P
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="eliminateStatics"
+></A
+>staticフィールド/メソッドを別のクラスに移す</H3
+><P
+>&#13;   MixJuiceでは、staticメソッドをサポートしていません。そこで、staticフィールド/メソッドを、新たに作成した別クラスに移し、そのクラスのシングルトンインスタンスを元のクラスのstaticフィールドに設定しました。
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="eliminateInnerClass"
+></A
+>内部クラスを通常のクラスにする</H3
+><P
+>&#13;   Grappaでは、内部クラスがいくつか使用されていたので、通常のクラスに変更しました。
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="prepModDiv"
+></A
+>モジュール分けに備えた変更の試み</H3
+><P
+>&#13;   Grappaのリファクタリング進めていく中で、次のモジュールに分けることができそうと考えました。
+
+<P
+></P
+><UL
+><LI
+STYLE="list-style-type: disc"
+>論理的なグラフモデルを表すベースモジュール(att.grappa.base)
+</LI
+><LI
+STYLE="list-style-type: disc"
+>グラフを幾何学的にレイアウトするためのモジュール(att.grappa.patchwork)
+</LI
+><LI
+STYLE="list-style-type: disc"
+>幾何学的なグラフを描画するためのさまざまな属性(フォントや線の太さなど)を管理するモジュール(att.grappa.attribute)
+</LI
+><LI
+STYLE="list-style-type: disc"
+>様々なノードの形を描画するためのモジュール(att.grappa.grappanexus.impl)
+</LI
+><LI
+STYLE="list-style-type: disc"
+>GUIのメニューやイベントをハンドリングするモジュール(att.grappa.ui)
+</LI
+></UL
+>
+
+これに備えて、あらかじめ分割できそうな部分はMixJuice化する前のJavaの時点でクラス分割しようとしましたが、メソッドの中のコードは、複数のアスペクトにまたがっているので、分割はあまりできませんでした。容易に分割できたのは、定数を定義しているインターフェイス(GrappaConstants)です。
+   </P
+><P
+>&#13;   phase 2が終わってから振り返ると、この時点でクラスからインターフェイスを抽出し、インターフェイスと実装を分けておくと、MixJuice化の際に仕様モジュールと実装モジュールに分割しやすかったと考えられます。Javaの段階でのリファクタリングでは、仕様モジュールと実装モジュールの分離を広範囲に行うことは考えていませんでした。
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="splitInterfaces"
+></A
+>定数の分類</H3
+><P
+>&#13;    オリジナルのGrappaのインターフェイスGrappaConstantsは、様々な場所から参照される定数を集めたものでした。さらに、ほとんどのクラスが同インターフェイスを実装し、その定数を利用していました。そのため、どの定数がどの機能から必要とされるものか不明確でした。
+   </P
+><P
+>&#13;    そこで、まずJavaの段階で、同インターフェイスに含まれる定数をドメインごとに分割し、GCElementType, GCHighlightSettings, GCAttributes, GCShapesの4つのインターフェイスを作成しました。さらに、インターフェイスGrappaConstantsが、これら4つのインターフェイスを継承するように変更しました。これで、各定数がどのドメインに属すのか明確にすることができます。なお、どのドメインにも属さないGrappa共通の定数は、インターフェイスGrappaConstantsに残しました。
+   </P
+><P
+>&#13;    特定のドメインの定数しか参照しないクラスは、4つのインターフェイスのうちのいずれかを参照することになります。
+   </P
+><P
+>&#13;    なお、MixJuice化をする際は、GCElementType, GCHighlightSettings, GCAttributes, GCShapesがGrappaConstantsのサブモジュールになります。
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="powerOfIDE"
+></A
+>リファクタリングにおけるIDEの有用性</H3
+><P
+>&#13;   リファクタリングを行うには、元のプログラムの構造を理解する必要がありますが、eclipseの検索機能や型階層の表示機能を使うことで、構造の理解が容易になりました。
+   </P
+><P
+>また、実際のリファクタリングにも、eclipseを使用しました。インターフェイスの抽出やメソッドの抽出など便利な機能が用意されています。
+   </P
+><P
+>リファクタリングの際に重要なのは、影響範囲の特定とバグを混入させないことです。IDEを利用することで、影響箇所がコンパイルエラーとして即時に判明し、短いサイクルでリファクタリングを進めることができ、バグの混入を最小限にすることができました。特に今回のようにプログラムの規模が大きくなると、その効果は大きいです。実際、リファクタリングが終了した時点でデモプログラムを実行しましたが、リファクタリングによる問題は発生しませんでした。
+   </P
+><P
+>&#13;   Javaレベルでのリファクタリング後の<A
+HREF="images/javaGrappa.pdf"
+TARGET="_top"
+>クラス図</A
+>を示します。
+   </P
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="portingToMJ"
+></A
+>MixJuiceへの移植</H2
+><P
+>&#13;  ここでは、JavaのコードをMixJuiceへ移植する具体的な作業を記述します。ただし、クラスやメソッドにdefineをつけるなどの基本的な作業については言及しません。
+  </P
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="interfaceNimpl"
+></A
+>仕様モジュールと実装モジュール</H3
+><P
+>&#13;   まず、<A
+HREF="http://staff.aist.go.jp/y-ichisugi/ja/mj/doc/design.html#from-java"
+TARGET="_top"
+>Java 言語で書かれたアプリケーションを MJ に書き直す手順</A
+>に書いてあるように、ひとつのモジュールにすべてのクラスを入れようとしました。しかし、ソースの量が多いため、コンパイルが通るレベルにするのにかなり時間がかかり、しかもひとつの巨大なソースになると作業効率が落ちます(コンパイル時間、エラー個所の特定、カーソルの移動など)。そこで、複雑な実装のクラスについては、仕様モジュールと実装モジュールに分割することにしました。
+   </P
+><P
+>&#13;仕様モジュールでは、前述(<A
+HREF="#grappaAspects"
+>&#34920;1<I
+>Grappaの概要</I
+>&#38917;</A
+>や<A
+HREF="#prepModDiv"
+><I
+>モジュール分けに備えた変更の試み</I
+>&#38917;</A
+>)のようなある程度のモジュール分けを行いました。実装モジュールでは、必要な仕様モジュールをすべてextendsし、オリジナルのメソッドにできるだけ手を加えないように注意しました。これは、メソッドの中身に手をつけるとバグを混入しやすいためです。phase 1としては、メソッドにできるだけ手を加えずにMixJuice化し、動作確認後、phase 2でメソッドの中身に着手することにしました。これは、MixJuice化の最中は、動作確認ができないためです。
+   </P
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>複雑なクラスやモジュールの依存関係の整理には仕様モジュールを使う</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;   仕様モジュールは、複雑なクラスやモジュールの依存関係を解きほぐし、理解しやすくするのに役立ちます。インターフェイスは、実装と比較すると、相対的に単一のモジュールに属するものが多いですが、メソッド内の実装は、複数のモジュールにまたがるものが多くなります。そのため、実装を含んだままでは、モジュール分けが困難です。そこで、仕様モジュールと実装モジュールに分割して、仕様モジュールをさらに分割することにしました。そうすることにより、メソッドの実装に加える変更を最小限にでき、バグ混入を回避できます。
+    </P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="problemOnWindows"
+></A
+>Windowsでのコンパイルの問題</H3
+><P
+>&#13;モジュールに含まれるクラスが多くなると、mjcの途中、mjjavacに渡す引数がWindowsのコマンドラインの長さの限界を超えるために、コンパイルが不可能になりました。
+Windows版のJDKのjavacには、コマンドライン引数をファイルから読み込む機能があります。
+そこで、コンパイル対象のファイルを一時ファイルに書き込み、javacの引数に「@コマンドライン引数ファイル名」を渡すように、mjtool.jarを変更して回避しました。
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="longFlatCode"
+></A
+>フラットな長いブロックの問題</H3
+><P
+>&#13;<A
+HREF="#longFlatCodeOrg"
+>&#20363;1</A
+>のように、ひとつのブロックに極端に多くの文があると、mjcのプリプロセスの段階で、スタックオーバーフローが発生しました。eppで、ループではなく再帰で処理しているか、reduceが起きずに延々とshiftが続くためと考えられます。メソッドが400個あるクラスのコンパイルは正常にできたので、特定のスコープで要素数が多いと発現するようです。
+   </P
+><DIV
+CLASS="example"
+><A
+NAME="longFlatCodeOrg"
+></A
+><P
+><B
+>&#20363; 1. フラットな長いブロック</B
+></P
+>
+
+<PRE
+CLASS="programlisting"
+>&#13;{
+  hoge(0);
+  hoge(1);
+  hoge(2);
+// ...
+  hoge(100);
+}</PRE
+></DIV
+><P
+>&#13;<A
+HREF="#longFlatCodeFixed"
+>&#20363;2</A
+>のように名前空間が分断されても問題ない場所でブロックを区切ることで回避しました。
+   </P
+><DIV
+CLASS="example"
+><A
+NAME="longFlatCodeFixed"
+></A
+><P
+><B
+>&#20363; 2. フラットな長いブロックを分割</B
+></P
+><PRE
+CLASS="programlisting"
+>&#13;{
+  {
+  hoge(0);
+  hoge(1);
+// ...
+  hoge(50);
+  }
+  {
+  hoge(51);
+// ...
+  hoge(100);
+  }
+}</PRE
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="ignoresThrows"
+></A
+>originalメソッドでのthrows節が無効になる</H3
+><P
+>&#13;   メソッドをdefineで定義した際に、throws節で発生する例外を指定します。このメソッドを別のモジュールでオーバーライドした場合(<A
+HREF="#ignoredThrows"
+>&#20363;3</A
+>)、本来であれば、 original()の呼び出しでは、throws節で指定された例外が発生する可能性があるので、try/catch、またはオーバーライドする側でもthrows節が必要となります。
+
+
+<DIV
+CLASS="example"
+><A
+NAME="ignoredThrows"
+></A
+><P
+><B
+>&#20363; 3. throwsが無視される例</B
+></P
+><PRE
+CLASS="programlisting"
+>&#13;module m {
+  define class MyException extends Exception {
+    define MyException() {}
+  }
+  define class Base {
+    define void func() throws MyException { throw new MyException(); }
+  }
+  define class Derived extends Base {
+    void func() {
+      try {
+        original(); // MyExceptionが発生する可能性あり
+      }
+      catch (MyException e) {
+      }
+    }
+  }
+}</PRE
+></DIV
+>
+
+   しかし、実際にはoriginal()の呼び出しではthrowsに指定した例外は発生しないものとして扱われ、try/catchを記述していると次のようなコンパイルエラーが発生します。
+
+<PRE
+CLASS="programlisting"
+>&#13;m\_Delta_m_Derived.java:11: 例外 m.MyException は対応する try 文の本体ではスローされません。
+      super.func(); } catch (
+                      ^
+</PRE
+>
+そこで、オーバーライドする側で次のようにダミーのthrow文を記述することで、このエラーを回避しました。
+<PRE
+CLASS="programlisting"
+>&#13;      try {
+        original();
+        if (false) throw new MyException(); // ダミー
+      }
+      catch (MyException e) {
+      }
+</PRE
+>
+
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="implementingJavaInterface"
+></A
+>一部のJava interfaceをMixJuiceで実装できない時の注意点</H3
+><P
+>&#13;   一部のJavaのinterfaceはMixJuiceで実装できません(MixJuiceのホームページの「知られているバグと対処法」参照)ので、Java側でそのinterfaceを実装するクラスを作成しておき、そのクラスをMixJuiceでextendsする必要があります。しかし、Javaのinterfaceを実装したい元のクラスが既に親クラスを持っている場合、多重継承はできないため、親クラス側に遡ってextendsしなければなりません。
+   </P
+><P
+>&#13;   今回の移植では、Subgraphがjava.util.Comparatorを実装する必要があります。そこで、java.util.Comparatorを実装したComparatorWrapperというJavaクラスを用意しました。しかし、<A
+HREF="#elementTree"
+>&#22259;1<I
+>Grappaの概要</I
+>&#38917;</A
+>に示したように、SubgraphにはElementという親クラスがあるので、やむを得ずElementがComparatorWrapperをextendsするように変更しました。そのため、本来java.util.Comparatorを実装していないはずのNodeやEdgeなど、全てのElementの子孫がjava.util.Comparatorを実装することになり、移植前のJavaプログラムと等価性が失われました。
+   
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="nullPtr"
+></A
+>原因不明のNullPointerException</H3
+><P
+>&#13;   再現条件を特定できないNullPointerExceptionが発生することがあります。現在推測できている条件は、
+
+<P
+></P
+><UL
+><LI
+STYLE="list-style-type: disc"
+>多くのモジュールを imports しているモジュールで発生する
+</LI
+><LI
+STYLE="list-style-type: disc"
+>コンストラクタが原因になっている
+</LI
+><LI
+STYLE="list-style-type: disc"
+>モジュール名に強く関わっている
+</LI
+></UL
+>
+
+といった程度で、モジュールの名称を変更するか、問題となっていそうなクラスのコンストラクタをモジュールの継承階層の上位部で define すると解消することが多いです。これまでこの問題が発生したモジュール名は、panel.impl, parser, demo といった一般的な名称が多いので、なんらかの名前衝突が起きているのでは無いかと推測されます。GrappaPanel はコンストラクタを grappa-base.java に移動したり、parser というモジュール名を grappaparser モジュール名に変更することなどによって回避しました。
+   </P
+><P
+>&#13;   通常不必要な、子クラスから親クラスへの明示的なキャストを追加することで解消するNullPointerExceptionも存在しました。(demo.java 中の DemoFrame のコンストラクタ)
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="dollar"
+></A
+>クラス名に$を含むクラスの問題</H3
+><P
+>&#13;    クラス名に $ を含むクラスを、二つ以上のモジュールから参照すると、リンク時にエラーが発生します。
+   </P
+><PRE
+CLASS="programlisting"
+>&#13;module dollar1 {
+  define class doll$doll {
+    define doll$doll() {}
+  }
+  class SS {
+    doll$doll d = null;
+    void main(String[] args) {
+      d = new doll$doll();
+    }
+  }
+}
+module dollar2 extends dollar1 {
+  class SS {
+    void main(String[] args) {
+      original(args);
+      d = new doll$doll();
+    }
+  }
+}
+   </PRE
+><P
+>&#13;    エラーメッセージは以下のようなものになります。
+   </P
+><PRE
+CLASS="programlisting"
+>&#13;     java.lang.LinkageError: duplicate class definition: dollar1/_Dummy_dollar1_doll$doll
+   </PRE
+><P
+>&#13;    解決方法は、問題となっているのが MixJuice のクラスであれば $ を使うのをやめれば良いです。Java のクラスである場合(特に Java の内部クラスで実現されているクラスは $ をクラス名に含むことに注意してください)、Java の段階で$を含むクラスを継承した$を含まないクラスを作り、 MixJuice でこれを使わなければなりません(今のところ、それをさらに MixJuice で継承したクラスを使わないとうまくいきませんが、これは CLASSPATH の問題の可能性もあります)。
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="dependency"
+></A
+>モジュール依存に関する注意点</H3
+><P
+>&#13;    モジュール a を b が継承するようなモジュール継承ツリーがあったとして、a を変更した場合、b をコンパイルしなおさなければならない可能性は高いです。bをコンパイルしなおすだけでなく、eppout ディレクトリの中身を空にしなければいけない場合もあります。
+
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="moduleName"
+></A
+>Java パッケージ名と MixJuice モジュール名の問題</H3
+><P
+>&#13;    MixJuice 中で imports する Java クラスのパッケージ名と同じモジュール名のモジュールを作ることはできません。どちらかの名前を変更して対処すれば良いです。
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="inconsistentFQNNotation"
+></A
+>曖昧な名前の解決方法</H3
+><P
+>&#13;     曖昧な名前の解決には、FQN[moduleName::simpleName]の表記方法を用いることになっていますが、クラス/interface名に関してはmoduleName.simpleNameという表記でなければコンパイルが通らず、メンバ名のFQN表記と統一されていません。
+    </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="implementsLower"
+></A
+>サブモジュールでのインターフェイスの追加</H3
+><P
+>&#13;
+    <PRE
+CLASS="programlisting"
+>&#13;module M {
+  define class A {}
+  define interface I {}
+}
+
+module M1 extends M {
+  class A implements I {}
+}
+
+module M2 extends M {
+  class A implements I {}
+}
+
+module M3 extends M1, M2 {
+}
+</PRE
+>
+
+    上記のように、あるクラス(クラスA)に
+    同じスーパーインターフェイス(インターフェイスI)を追加した複数のモジュール(モジュールM1,M2)を多重継承したとき(モジュールM3)に、下記のような実行時エラーが発生します。
+<PRE
+CLASS="programlisting"
+>&#13;java.lang.ClassFormatError: Repetitive interface name
+</PRE
+>
+
+   </P
+><P
+>&#13;    そもそも、クラスの実装インターフェイスを、サブモジュール(M1,M2)で追加することがMixJuiceの文法上正しいのか、不明確でした。
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="dupClass"
+></A
+>クラスの二重定義</H3
+><P
+>&#13;
+    <PRE
+CLASS="programlisting"
+>&#13;module m {
+  define class Base {
+  }
+}
+module m1 extends m {
+  class Base {
+    define void f() {}
+  }
+  class Base {
+    define void g() {}
+  }
+}
+</PRE
+>
+
+    上記のように、一つのモジュールで、異なるメソッドを持つ複数の同名クラスを定義すると、次のようなコンパイルエラーが発生します。
+<PRE
+CLASS="programlisting"
+>&#13;Preprocessing phase.
+test9.java:7: m.Base:(id f)
+    define void f() {}
+    ^
+java.lang.Error: MJC: FATAL ERROR : m.Base:(id f)
+</PRE
+>
+
+   </P
+><P
+>&#13;    そもそも、同一のモジュールで同じクラスを複数に分けて記述する必要性はなく、また、MixJuiceの文法上許されない記述だと思われます。したがって適切なエラーメッセージが出るようになれば問題ありません。
+   </P
+><P
+>&#13;    しかし、次のようにメソッド名を同じにするとコンパイル/実行
+可能ですが、実行結果は"FOO"の表示のみとなり、最後のf()しか有効で
+ない模様です。エラーを出力すべきと思われます。
+<PRE
+CLASS="programlisting"
+>&#13;module m {
+  define class Base {
+     define Base() {}
+  }
+}
+module m1 extends m {
+  class Base {
+    define void f() {System.out.println("FOOx");}
+  }
+  class Base {
+    define void f() {System.out.println("FOO");}
+  }
+  class SS {
+    void main(String[] str) {
+      (new Base()).f();
+    }
+  }
+}
+
+</PRE
+>
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="staticInitOrder"
+></A
+>実行時のjava.lang.ExceptionInInitializerError</H3
+><P
+>&#13;正常にコンパイルできたプログラムを実行すると、java.lang.ExceptionInInitializerError
+が発生することがあります。これは、下記のように静的初期化の順序が重要なケースで発現します。
+この例では、Grappa.DICTの初期化の後、Grappa.selfを初期化しないと上記の例外が
+発生します。ただし、下記の例では、例外は発生しません。おそらくモジュールのリニアライズ
+の結果、初期化順序が逆転する場合に本現象が現れるものと考えられます。
+いろいろ試しましたが、問題が発現する単純な例を見つけることはできませんでした。
+<PRE
+CLASS="programlisting"
+>&#13;module att.grappa {
+  define class Grappa {
+    static final Grappa self = new Grappa();
+    define Grappa () {}
+  }
+}
+module att.grappa.base extends att.grappa {
+  class Grappa  {
+    static java.util.Map DICT = new java.util.HashMap();
+  }
+}
+module att.grappa.attribute extends att.grappa.base {
+  class Grappa  {
+    Grappa () {
+      original();
+      DICT.get("");
+    }
+  }
+}
+module m.all extends att.grappa.attribute {
+  class SS {
+    void main(String[] args) {
+      Grappa  x = Grappa.self;
+      System.out.println("ok");
+    }
+  }
+}
+</PRE
+>
+
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="errMsg"
+></A
+>典型的なエラーメッセージ</H3
+><P
+>&#13;   MixJuice への移植は類型的な作業が多いため、発生するエラーも類型的なものが多いです。ここでは、表示されるエラーメッセージのうち、特に頻発するものを示します。
+   </P
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>同一クラスに対して define が二つある場合</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><PRE
+CLASS="programlisting"
+>&#13;panel-impl.java:3: MJ: Ambiguous class name "GrappaPanel" is used at module panel.impl
+</PRE
+><P
+>&#13;     これは同一クラスに対して define が二つある場合に発生します。エラーメッセージが特にわかりにくいため、注意が必要です。
+    </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>同一メソッドに対して define が二つある場合</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;    <PRE
+CLASS="programlisting"
+>&#13;subgraph-impl.java:1790: MJ: Reference to prepPatchWork(java.lang.String, int) of att.grappa.Subgraph is ambiguous. :
+    </PRE
+>
+    </P
+><P
+>&#13;    <PRE
+CLASS="programlisting"
+>&#13;subgraph-impl.java:1801: findMethodInfo: More than one MethodInfo found.
+
+java.lang.Error: MJC: FATAL ERROR : findMethodInfo: More than one MethodInfo found.
+</PRE
+>
+    </P
+><P
+>&#13;     両者とも同一メソッドに対して define が二つある場合に発生します。
+     問題となるメソッド宣言とそのメソッド呼び出しの位置を比べて、宣言が先にプリプロセッサに発見された場合は前者が、呼び出しが先に発見された場合は後者のエラーメッセージが出ます。前者のメッセージは多少わかりにくいため、注意が必要です。equalsメソッドなどの親クラスで既に定義されているメソッドに対して define を付けてしまった場合に発生します。
+    </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>クラスに define が無い場合</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><PRE
+CLASS="programlisting"
+>&#13;panel-impl.java:3: MJ: No class definition of GrappaPanel found.  Probably, missing "define" for it, missing "extends" declaration or misspelling.
+</PRE
+><P
+>&#13;     これはクラスに define が無い場合に発生します。
+    </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>メソッドに define が無い場合</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><PRE
+CLASS="programlisting"
+>&#13;panel-impl.java:49: MJ: In att.grappa.GrappaPanel at module panel.impl : Definition-method does not have "define" . : addGrappaListener
+</PRE
+><P
+>&#13;     これはメソッドに define が無い場合に発生します。
+    </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>コンストラクタでfinalなフィールドに代入できない場合</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><PRE
+CLASS="programlisting"
+>&#13;subgraph/impl/_Delta_subgraph_impl_SubgraphEnumerator.java:2583: cannot assign a value to final variable subgraph_impl_self
+    ((subgraph.impl._Delta_subgraph_impl_SubgraphEnumerator)(Object)(this)).subgraph_impl_self =
+        (((subgraph.impl._Delta_subgraph_impl_SubgraphEnumerator)(Object)(this)).subgraph_impl_root = (self)); 
+    ^
+</PRE
+><P
+>&#13;     これに限らずエラーメッセージに final があればその final は取り除かなければなりません。
+    </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>static final な変数を、定数式が必要とされるコンテキストで、クラス名の修飾なしで参照した場合</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><PRE
+CLASS="programlisting"
+>&#13;panel/impl/_Delta_panel_impl_GrappaAdapter.java:1859: constant expression required
+        case ((att.grappa._Delta_att_grappa_GCElementType)(Object)(this)).att_grappa_SUBGRAPH :
+</PRE
+><P
+>&#13;     static final 変数をクラス名で修飾します。
+    </P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="MJRefactor"
+></A
+>MixJuiceでのリファクタリング</H2
+><P
+>&#13;   ここまでの作業で、GrappaのMixJuiceへの移植はとりあえず終了しました。次の段階として、
+   MixJuiceのプログラムとして、より自然で保守しやすい構造にリファクタリングしていきます。
+  </P
+><P
+>&#13;   以下に、リファクタリングの内容と、そこから得られた知見を述べます。
+  </P
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="extractDump"
+></A
+>ダンプ機能の分離</H3
+><P
+>&#13;    ダンプ機能は、グラフ構造をdotフォーマットでダンプする機能です。
+    この作業における、元のJavaコードの<A
+HREF="images/dump_java.pdf"
+TARGET="_top"
+>クラス図</A
+>と、
+    MixJuice化してリファクタリングしたコードの<A
+HREF="images/dump_MJ.pdf"
+TARGET="_top"
+>レイヤードクラス図</A
+>を示します。
+   </P
+><P
+>&#13;    モジュールatt.grappa.element.impl, att.grappa.node.impl, att.grappa.graph.impl, att.grappa.subgraph.impl, att.grappa.edge.implに分散していたdotフォーマット(Grappaでグラフ構造を記述するのに使用するフォーマット)の出力機能は、いくつかのクラスにまたがってはいるものの、同一アスペクトに属する機能であると考えられます。そこで、att.grappa.dumpというモジュールを作成し、そちらにdotフォーマット出力機能を移動しました。att.grappa.dumpは、att.grappa.element.impl, att.grappa.node.impl, att.grappa.graph.impl, att.grappa.subgraph.impl, att.grappa.edge.implを継承しました。
+   </P
+><P
+>&#13;    att.grappa.element.impl, att.grappa.node.impl, att.grappa.graph.impl, att.grappa.subgraph.impl, att.grappa.edge.implモジュールにおいて、このダンプ機能が占めるコードの量がかなり多く、それぞれのモジュールの可読性を悪くしていました。
+    ダンプ機能をatt.grappa.dumpモジュールにまとめることができたため、各モジュールの保守性が向上しました。また、att.grappa.dumpモジュールには、ダンプ機能しか含まれないため、クライアントが同機能を使わない場合は、同モジュールを継承しないという選択も可能となりました。
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="AEN270"
+></A
+>モジュールの分離/統合</H3
+><DIV
+CLASS="section"
+><H4
+CLASS="section"
+><A
+NAME="AEN272"
+></A
+>大きな機能群の分離</H4
+><P
+>&#13;    この作業における、元のJavaコードの<A
+HREF="images/nexus_java.pdf"
+TARGET="_top"
+>クラス図</A
+>と、
+    MixJuice化してリファクタリングしたコードの<A
+HREF="images/nexus_MJ.pdf"
+TARGET="_top"
+>レイヤードクラス図</A
+>を示します。
+   </P
+><P
+>&#13;    att.grappa.nexus.implモジュールには、Stringで保持されている属性をパースしてメンバに設定するupdateTextというメソッドがありました。このメソッドはObservableが変化した時に、クラスNexusの状態を最新にするために呼び出されます。この属性を表す文字列をパースする作業がかなり専門性の高い複雑なものだったため、他のコードと混在していると、att.grappa.nexus.implモジュールの可読性が低下します。
+   </P
+><P
+>&#13;    そこで、この属性文字列をパースする処理のみをatt.grappa.nexus.implモジュールから抽出して、att.grappa.nexus.implを継承する新なモジュールatt.grappa.nexus.impl.parserに分離しました。その結果、att.grappa.nexus.implモジュールの可読性が改善され、属性文字列をパースする部分の処理のトレースも容易になりました。
+   </P
+><P
+>&#13;    このように、既に仕様モジュールと実装モジュールが分離されていて、かつ適切なアスペクトに置かれているモジュールであっても、そのサイズが大きなものであったり、専門性の高い機能が多くのコードサイズを占めている場合は、さらに細かい単位に分割することによって保守性を高めることができる場合があります。
+    もちろん、この効果は全ての場合に期待できるわけではありません。例が極端すぎますが、例えば全てのメソッドをモジュールに分割することは害にしかなりません。
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H4
+CLASS="section"
+><A
+NAME="AEN280"
+></A
+>小さな機能群の統合</H4
+><P
+>&#13;    この作業における、元のJavaコードの
+    <A
+HREF="images/geom_java.pdf"
+TARGET="_top"
+>クラス図</A
+>と、
+    MixJuice化してリファクタリングしたコードの
+    <A
+HREF="images/geom_MJ.pdf"
+TARGET="_top"
+>レイヤードクラス図</A
+>を示します。
+   </P
+><P
+>&#13;    クラスGrappaBox,GrappaSize,GrappaPointは、それぞれが広範囲に渡る異なったモジュールに必要とされていたため、それぞれの実装がそれを必要とするモジュールの付近で個々に定義されていました。しかし、これらは全て幾何情報の基礎的なユーティリティクラスであり、使用されているモジュールと深い関係を持っているわけでは無いため、モジュール継承ツリーのかなり上位の場所にatt.grappa.geomモジュールを作成して、これらのクラスをまとめました。
+   </P
+><P
+>&#13;    このことによって、元々属していたモジュールの保守性も高まったうえ、今回の３つのクラスが幾何情報の基本的なクラス群であるということを、コメントレベルでは無く、言語レベルで宣言することができました。このように、前節とは逆に、複数の同種クラスを同じモジュールに置くことによって保守性が高まる場合もあります。
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H4
+CLASS="section"
+><A
+NAME="AEN287"
+></A
+>分割/統合のまとめ</H4
+><P
+>&#13;    以上のように、モジュールを分割/統合するか否かには一般的な原則は無く、ケースバイケースでトレードオフを考えることになりますが、この、ケースごとに適切な分割を選択できる、という点はMixJuiceの大きな利点の一つであると考えられます。実際、Javaの1クラス1ファイルという制限のあるオリジナルのGrappaとMixJuiceに移植したGrappaを比較すると、JavaのGrappaは、ファイル数48、最も行数の多いコードは2547行、少ないコードは34行であり、MixJuiceは、ファイル数22、大きいコードで2785行、小さいコードで311行と、MixJuiceの方が翻訳単位のサイズの分散が少なく、適切な分割が行えていることが見てとれます。
+   </P
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="AEN290"
+></A
+>定数モジュール</H3
+><P
+>&#13;    <A
+HREF="#splitInterfaces"
+><I
+>定数の分類</I
+>&#38917;</A
+>で述べたように、インターフェイスGrappaConstantsに含まれる定数を、Javaの段階で定数を複数のインターフェイスに分類しました。
+
+   <DIV
+CLASS="figure"
+><A
+NAME="const-java-tree"
+></A
+><P
+><IMG
+SRC="images/const-java-hier.png"></P
+><P
+><B
+>&#22259; 2. Javaでのリファクタリング結果</B
+></P
+></DIV
+>
+
+    MixJuiceでは、ある定数を参照できるかどうか、クラス(インターフェイス)とモジュールの組み合わせで制御できます。したがって、Javaではインターフェイスを複数用意していましたが、MixJuiceではインターフェイスGrappaConstantsに全ての定数を宣言します(ただし、モジュールによって定数を分類します)。
+    MixJuiceでのリファクタリングでは、att.grappa.constantsモジュールでGrappa共通の定数を、att.grappa.constants.highlightSettings, att.grappa.constants.attributes, att.grappa.constants.shapes, att.grappa.constants.elementTypesモジュールでそれぞれのドメインの定数をインターフェイスGrappaConstantsに宣言しました。
+   <DIV
+CLASS="figure"
+><A
+NAME="const-mj-tree"
+></A
+><P
+><IMG
+SRC="images/const-mj-hier.png"></P
+><P
+><B
+>&#22259; 3. MixJuiceでのリファクタリング結果</B
+></P
+></DIV
+>
+
+
+   </P
+><P
+>&#13;    この分割によって、どの定数がどの機能に使われているかが明確になり、ソースコードの保守性が高くなりました。また、モジュールで分割する方がオブジェクト指向の継承で実現していた段階よりも明確な記述であると考えられます。このように、MixJuiceのモジュール機構は、互いに依存しない、定数のみのクラスをモジュール分けする場合には非常に良く機能します(逆に他で述べるように複雑なケースでは表現が難しくなるケースが少なからず存在します)。
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="AEN301"
+></A
+>大きなユーティリティクラス</H3
+><P
+>&#13;    クラスGrappaSupportはstaticメソッドのみで構成されるクラスで、広い範囲で必要とされている機能や、特定のクラスに分類がしにくい機能(ドメインが近い二つのクラスに必要とされているなど)を提供するクラスでした。MixJuice化の早い段階で継承ツリーの上位層にatt.grappa.supportモジュールを作成し、このクラスを置きました。局所的にしか使われませんが、特定のクラスに分類しにくいがためにGrappaSupportに置かれていたようなメソッドは、それぞれもっと適切であろう下層のモジュールに移動させていきました。
+   </P
+><P
+>&#13;    結果として、GrappaSupportのメソッドは非常に多くのモジュールに分散し、メソッドの定義位置を特定しにくいクラスになってしまいました。プロジェクトの全容をあまり把握していない人間には、メソッドの定義場所を探すのが難しくなってしまいました。この問題はよくできたコードブラウザなどがあれば緩和されると考えられますが、完全に問題が解消されることは無いでしょうし、そういったツールの存在しない現状においては依然として大きな問題です。
+   </P
+><P
+>&#13;    この問題を解決する一つの方法として、異なるドメインに属するGrappaSupportクラスには別のシンボル名を与えることが考えられます。例えば、grappaparserモジュール内でしか使用しないGrappaSupportの機能は、クラスGrappaParserSupportを新たに定義して、こちらに移動すれば良いです。しかし、この解決法では必然的に細かいクラスの増加を招いてしまいますし、GrappaSupportは将来的に他のモジュールから使用されることも考慮している機能も多いため望ましい解決とはなりません。
+   </P
+><P
+>&#13;    このように、どこから利用しても構わないようなユーティリティクラスは、
+    複数のモジュールに分散させずに、クラスをdefineしたモジュールに全て詰め込んだ方が保守性が高いと考えられます。
+    GrappaSupportクラスの場合、全てatt.grappa.supportに戻してしまうのが最も適切と考えられます。全メソッドが、ほぼ全てのモジュールに公開されてしまいますが、ユーティリティ的なメソッドなので問題はありません。
+   </P
+><P
+>&#13;    実際の解決には上記の解決法や、個々の事例に応じた解決(例えば一部の機能を適当なクラスに移動するなど)を組み合わせて解決するべきです。今回のリファクタリングではこの解決はまだ実現されていませんが、大きなユーティリティクラスのモジュール分けが難しい問題であることは認識できました。
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="makeItMVC"
+></A
+>モジュール機構によるMVCの実装サポート</H3
+><P
+>&#13;    この作業における、元のJavaコードの<A
+HREF="images/UI_java.pdf"
+TARGET="_top"
+>クラス図</A
+>と、
+    MixJuice化してリファクタリングしたコードの<A
+HREF="images/UI_MJ.pdf"
+TARGET="_top"
+>レイヤードクラス図</A
+>を示します。
+   </P
+><P
+>&#13;    モジュールatt.grappa.panel.implのクラスGrappaPanelは、MVCを全て備えたかなり大きなクラスでした。このクラスはユーザーインターフェイスのコードの見通しを悪くしていたため、*Listenerのメソッドを実装している部分を分離し、モジュールatt.grappa.uiに移動しました。その結果、モジュールの意義が不明確になっていたatt.grappa.uiに、MVCのC(コントローラ)を担うという意義を与えることになり、モジュールatt.grappa.panel.implとモジュールatt.grappa.uiの継承関係も逆転しました。(CVStag: FIX_8 <A
+HREF="#refactorProcess"
+><I
+>リファクタリングの経過</I
+>&#38917;</A
+>参照)
+   </P
+><P
+>&#13;    この段階では、モジュールatt.grappa.panel.implで宣言されているGrappaPanelクラスは*Listenerのメソッドをオーバーライドしなければならないため、*Listenerインターフェイスを実装していました。しかし、モジュールatt.grappa.panel.implはMVCのモデルとビューを担うモジュールであり、*Listenerインターフェイスを含むJavaパッケージ(java.awt.event.*など)をimportするのは不自然でした。そこで、*Listenerインターフェイスを実装してコントローラの役割を持つクラスGrappaPanelControlを定義し、これをatt.grappa.uiに移動することによって、モジュールatt.grappa.panel.implがjava.awt.event.*などに依存しないようにしました。(CVStag: FIX_9 <A
+HREF="#refactorProcess"
+><I
+>リファクタリングの経過</I
+>&#38917;</A
+>参照)
+   </P
+><P
+>&#13;    この変更を単純化したものを以下に示します。viewモジュールがatt.grappa.panel.implに、controlモジュールがatt.grappa.uiにそれぞれ対応しています。
+   </P
+><PRE
+CLASS="programlisting"
+>&#13;// FIX_8 の前
+module view { 
+  define class View extends JFrame implements SomeListener { 
+    define View() { 
+     // initialize... 
+     addSomeListener(this);
+    } 
+
+    void handleSomeEvent(SomeEvent ev) { 
+     // handling... 
+    } 
+  } 
+} 
+   </PRE
+><PRE
+CLASS="programlisting"
+>&#13;// FIX_8 の後
+module view { 
+  define class View extends JFrame implements SomeListener { 
+    define View() { 
+     // initialize... 
+     addSomeListener(this); 
+    }
+  } 
+} 
+
+module control { 
+  class View { 
+    handleSomeEvent(SomeEvent ev) { 
+     // handling... 
+    } 
+  } 
+} 
+</PRE
+><PRE
+CLASS="programlisting"
+>&#13;// FIX_9 の後
+module view { 
+  define class View extends JFrame { 
+    define View() { 
+     // initialize... 
+    } 
+  }
+}
+
+module control { 
+  define Control implements SomeListener { 
+    View view; 
+    define Control(View view) { 
+     this.view = view; 
+    } 
+    handleSomeEvent(SomeEvent ev) { 
+      view.updateView(...); 
+    } 
+  } 
+
+  class View { 
+    Control control;
+
+    View() { 
+     original(); 
+     addSomeListener(control); 
+    }
+
+    define updateView(...) { 
+     // ... 
+    }
+  }
+}
+   </PRE
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="AEN321"
+></A
+>仕様モジュールと実装モジュールの分離</H3
+><P
+>&#13;    リファクタリングを進める中で、仕様モジュールと実装モジュールの分離は、常によい結果をもたらしました。
+   </P
+><P
+>&#13;    仕様モジュールと実装モジュールを分離する1つ目のメリットは、仕様モジュールが依存するモジュールを最小限にできることです。
+    仕様と実装が同じモジュールにあると、実装上(つまりメソッドの中身を記述する上で)必要なモジュールを拡張しなければなりません。
+    仕様と実装を別のモジュールに分けることで、仕様モジュールが依存するモジュールを、インターフェイス上現れる型を解決するのに必要なモジュールに限定することができます。
+    これにより、情報隠蔽を効果的に実現できます。
+   </P
+><P
+>&#13;    次の例では、モジュールmod1, mod2が仕様モジュールです。インターフェイス(仕様)レベルでは、mod1とmod2は独立です。しかし、実装レベル(モジュールmod12.impl)では、method1とmethod2は相互に依存しています。
+    
+<PRE
+CLASS="programlisting"
+>&#13;module mod0 {
+  define class Grappa {
+    define Grappa() {}
+    define boolean isX() { return false; }
+  }
+}
+module mod1 extends mod0 {
+  class Grappa {
+    define abstract void method1();
+  }
+}
+module mod2 extends mod0 {
+  class Grappa  {
+    define abstract void method2();
+  }
+}
+module mod extends mod1 {
+  class SS {
+    void main(String[] args) {
+       Grappa g = new Grappa();
+       g.method1();
+    }
+  }
+}
+module mod12.impl extends mod1, mod2 {
+  class Grappa  {
+    void method1() {
+       System.out.println("method1");
+       method2();
+    }
+    void method2() {
+       System.out.println("method2");
+       if (isX())
+          method1();
+    }
+  }
+}
+</PRE
+>
+   </P
+><P
+>&#13;    仕様モジュールと実装モジュールに分離しなかった場合、mod1のクライアント(モジュールmod)からmod2のインターフェイスが可視になってしまいます。
+
+   </P
+><P
+>&#13;    仕様モジュールと実装モジュールを分離する2つ目のメリットは、コンパイル時間の短縮です。仕様モジュールのインターフェイスを利用するクライアントモジュールのコンパイルの際、仕様モジュールだけ参照すればよいのでコンパイルが高速になります。
+    また、実装モジュールを変更した際、クライアントモジュールのコンパイルの再コンパイルは不要で、実装モジュールだけコンパイルすればよいです。これにより、プログラムのビルド時間が大幅に短縮されます。
+    
+   </P
+><P
+>&#13;    このようなメリットは、Javaのインターフェイスを用いても得ることができますが、その概念をモジュール単位に広げても、同様メリットが得られることが分かりました。    
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="refactorProcess"
+></A
+>リファクタリングの経過</H3
+><P
+>&#13;    リファクタリングの経過を後で分析できるように、リファクタリングの節目節目で、その時点のソースのバージョンにCVSのタグをつけるようにしました。以下、各CVSのタグごとにどのようなリファクタリングを行ったのかを示します。
+   </P
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>FIX_1(att-grappa-support.javaだけrevision 1.1 を使用) grappaparserモジュールの継承元の変更</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;	モジュールatt.grappa.graph.implにクラスGraphのコンストラクタが存在したので、モジュールatt.grappa.baseにabstractなコンストラクタを宣言することで、モジュールgrappaparserが、モジュールatt.grappa.graph.implに依存しないようにしました。
+	結果として、モジュールgrappaparserは、モジュールlexerおよびatt.grappa.attributeに依存するようになりました。
+	また、grappaparserモジュールのファイル名をparser.javaからgrappaparser.javaに変更しました。
+    </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>FIX_2 幾何学的クラスをatt.grappa.geomモジュールに抽出</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;	att.grappa.supportモジュールなどに存在した幾何学的クラスGrappaBoxやGrappaPointなどをatt.grappa.geomモジュールに抽出しました。
+    </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>FIX_3 att.grappa.graph.implモジュールの継承元をatt.grappa.element.implに変更</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;	att.grappa.subgraph.implモジュールを継承していたatt.grappa.graph.implモジュールをatt.grappa.element.implモジュールを継承するように変更しました。
+    </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>FIX_4 att.grappa.nexus.implモジュールの継承元をatt.grappa.element.implとatt.grappa.patchworkへ変更の試み</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;	本来、att.grappa.nexus.implモジュールが、att.grappa.edge.implモジュールを継承する必要がなさそうなため、att.grappa.edge.implモジュールを継承する代わりに、att.grappa.element.implモジュールを継承するように変更を試みましたが、att.grappa.nexus.implモジュールが、att.grappa.edge.implモジュールの実装(フィールドの直接参照)を参照していたため、変更を保留しました。
+    </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>FIX_5 assertだけの空メソッドの追放</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;以前、別の原因のコンパイルエラーを、define abstractによる抽象メソッドに対してのエラーと勘違いして、抽象メソッドをassert false;というダミー実装のメソッドにしてしまっていたのを、抽象メソッドに戻しました。
+
+ただし、<A
+HREF="#implementingJavaInterface"
+><I
+>一部のJava interfaceをMixJuiceで実装できない時の注意点</I
+>&#38917;</A
+>で述べたように、JavaではSubgraphクラスでjava.util.Comparatorインターフェイスを実装していたものを、MixJuiceの制限のため、MixJuice版ではSubgraphクラスではなくその親クラスであるElementクラスでjava.util.Comparatorインターフェイスを実装するように変更しました。そのため、Node.compare と Edge.compare メソッドの呼び出しが理論上可能になりましたが、本来、この呼び出しはバグであるため、これらのメソッドの中身はassert false;のままにしてあります。
+
+    </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>FIX_6 各要素の状態のダンプ部の分離(<A
+HREF="#extractDump"
+><I
+>ダンプ機能の分離</I
+>&#38917;</A
+>参照)</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;att.grappa.element.impl, att.grappa.node.impl, att.grappa.graph.impl, att.grappa.subgraph.impl, att.grappa.edge.implモジュールに分散していたダンプ系メソッドを att.grappa.dump モジュールに移動しました。
+
+    </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>FIX_7 nexus のパース部分離</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;nexus 内のパース処理を att.grappa.nexus.impl.parser に分離しました。
+
+実は、att.grappa.patchwork にはほとんど
+パース関係は含まれていませんでした。
+代わりに、ダンプ関係のメソッドが att.grappa.patchworkに多少残っています。
+
+    </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>FIX_8 ui - panel の MVC化 その1(<A
+HREF="#makeItMVC"
+><I
+>モジュール機構によるMVCの実装サポート</I
+>&#38917;</A
+>)</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;att.grappa.panel.impl が M と V、att.grappa.ui が C となるように変更しました。
+それに伴って今までは ui を panel が継承していましたが、
+逆転して att.grappa.panel.impl が att.grappa.ui を継承するようになりました。
+また、上位のモジュールである att.grappa.panel.impl も att.grappa.nexus.impl を継承するように変更しました。
+
+    </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>FIX_9 ui - panel の MVC化 その2(<A
+HREF="#makeItMVC"
+><I
+>モジュール機構によるMVCの実装サポート</I
+>&#38917;</A
+>)</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;その1の変更では、GrappaPanelクラスは元々 VC 両方を兼ねていたため、
+GrappaPanelクラスの宣言時に *Listenerインターフェイスを implements しなければならず、
+結果として event 周りのモジュールを att.grappa.panel.impl 側で
+import する必要がありました。
+
+そこで GrappaPanel の *Listenerインターフェイスを継承して
+コールバックを登録する役割を移動させた新しいクラス
+GrappaPanelControl を導入して、この問題を回避しました。
+
+    </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>FIX_10 不要コードの整理</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;不要コードの整理と、ビルドファイルの更新を行いました。
+    </P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="chapter"
+><HR><H2
+><A
+NAME="howToBuild"
+></A
+>移植したプログラムの実行方法</H2
+><P
+>ここでは、MixJuiceへ移植したGrappaのコンパイル方法を述べます。</P
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="expand"
+></A
+>ソースの展開</H2
+><P
+>&#13;  添付のmjGrappa.jarをjarコマンドで展開すると、mjGrappaというディレクトリ以下にソースが展開されます。このmjGrappaディレクトリを以下$MJGRAPPAと表します。
+<PRE
+CLASS="programlisting"
+>&#13;% jar xvf mjGrappa.jar
+% cd mjGrappa
+% MJGRAPPA=$PWD
+</PRE
+>
+  </P
+><P
+>&#13;  以下に、ファイル構成を示します。
+<DIV
+CLASS="table"
+><A
+NAME="fileContents"
+></A
+><P
+><B
+>&#34920; 1. ファイル構成</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>ディレクトリ</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>内容</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>src/jdk1.2</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>リファクタリング済みのJava版のGrappa</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>src/jdk1.2/java_cup</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>上記のうち、MixJuiceへ移植したものからも使うソース</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>DEMO/jdk1.2</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>Java版のデモプログラム</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>javawrap</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>直接MixJuiceから利用できないJavaのクラスや、インターフェイスを実装したクラス</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>demo.java</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>DEMO/jdk1.2ディレクトリ内のをMixJuiceへ移植したもの</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>上記以外の*.java</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>GrappaをMixJuiceへ移植したもの</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>build.xml</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>MixJuiceへ移植したGrappaをビルド&#38;実行するためのビルドファイル</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+>
+  </P
+><P
+>&#13;
+  MixJuiceへ移植後のGrappaの<A
+HREF="images/module-hier.pdf"
+TARGET="_top"
+>モジュール構造</A
+>を示します。
+
+  </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="build"
+></A
+>ビルド方法</H2
+><P
+>&#13;  自分の環境に合わせて、次のような内容ファイルを、$MJGRAPPAの下にant.propertiesという名前で作成します。
+<PRE
+CLASS="programlisting"
+>&#13;MJ_EXT=.cmd                     <A
+NAME="MJ_EXT"
+><B
+>(1)</B
+></A
+>
+JAVA_EXT=.exe                   <A
+NAME="JAVA_EXT"
+><B
+>(2)</B
+></A
+>
+JAVA_HOME=C:\opt\j2sdk1.4.2     <A
+NAME="JAVA_HOME"
+><B
+>(3)</B
+></A
+>
+MJ_HOME=C:\Program Files\mj     <A
+NAME="MJ_HOME"
+><B
+>(4)</B
+></A
+>
+</PRE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#MJ_EXT"
+><B
+>(1)</B
+></A
+></DT
+><DD
+>UNIXの場合は空文字列にします</DD
+><DT
+><A
+HREF="#JAVA_EXT"
+><B
+>(2)</B
+></A
+></DT
+><DD
+>UNIXの場合は空文字列にします</DD
+><DT
+><A
+HREF="#JAVA_HOME"
+><B
+>(3)</B
+></A
+></DT
+><DD
+>JDKがインストールされているディレクトリを指定します</DD
+><DT
+><A
+HREF="#MJ_HOME"
+><B
+>(4)</B
+></A
+></DT
+><DD
+>MJがインストールされているディレクトリを指定します</DD
+></DL
+></DIV
+>
+
+  </P
+><P
+>&#13;   antが実行できる環境を整え、次のように実行します。
+<PRE
+CLASS="programlisting"
+>&#13;% ant
+</PRE
+>
+  </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="howToRun"
+></A
+>実行方法</H2
+><P
+>&#13;   次のコマンドを実行します。
+<PRE
+CLASS="programlisting"
+>&#13;% ant run
+</PRE
+>
+  </P
+><P
+>&#13;   次のウィンドウが表示されたら正しく動作しています。
+   <DIV
+CLASS="figure"
+><A
+NAME="demo-win"
+></A
+><P
+><IMG
+SRC="images/demo-win.png"></P
+><P
+><B
+>&#22259; 1. デモの動作画面</B
+></P
+></DIV
+>
+  </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="restriction"
+></A
+>制限</H2
+><P
+>&#13;  オリジナルのGrappaはアンチエイリアスを有効にしていますが、MixJuiceへ移植した際に、アンチエイリアスを無効にしました。これは、アンチエイリアスを有効にするためには、java.awt.RenderingHints.VALUE_ANTIALIAS_ON等のjava.awt.RenderingHints.Key型の定数を使わなければなりませんが、そうすると<A
+HREF="#dollar"
+><I
+>クラス名に$を含むクラスの問題</I
+>&#38917;<I
+>移植作業</I
+>&#31456;</A
+>で説明した対処が必要となります。今回は大きな影響もないため、この対処を割愛し、問題の部分をコメントアウトしました。
+  </P
+><P
+>&#13;  現状、上記以外の問題は特に見受けられませんでした。
+  </P
+></DIV
+></DIV
+><DIV
+CLASS="chapter"
+><HR><H2
+><A
+NAME="conclusion"
+></A
+>考察</H2
+><P
+>ここでは、phase 2までの作業から得られた知見や考察を述べます。phase 1では、とりあえずMixJuiceに移植したという段階で、十分にMixJuiceらしさを活かしきれていませんでした。その後、phase 2では、よりMixJuiceの利点を活かすべくリファクタリングを行い、いくつかの知見を得ることができたので以下にまとめます。</P
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN444"
+></A
+>再利用しやすい単位で分割できるか</H2
+><P
+>&#13;  現状のMixJuiceでは、再利用しやすいモジュールの作成は困難で、どちらかというと、保守しやすい単位で分割できると言えます。MixJuiceが目指している再利用の形態は、mixinのような形態と考えられますが、mixinのように再利用するには2つの理由から困難であると考えられます。
+  </P
+><P
+>&#13;  一つ目は、MixJuiceのFAQにも書かれているように、特定のクラスにしか差分を適用できない点です。例えば、linked listのモジュールを書いても、それを、複数のクラスに適用することができません。できれば、Javaのインターフェイスを実装する感覚で、差分を様々なクラスへ適用できると再利用しやすくなります。
+  </P
+><P
+>&#13;  二つ目の理由は、あるモジュールを適用するか否かを、インスタンス生成ごとに指定できず、モジュールの適用がプログラム全般に影響してしまうことです(FAQの「既存のクラス階層と、拡張されたクラス階層の両方を１つのアプリケーションで使いたいです。」に該当?)。例えば、モジュールmにDomNodeというクラスが存在し、モジュールm2でDomNodeを拡張した場合、m2を適用したインスタンスとm2を適用しないインスタンスを、それぞれ同時に必要とする場合があります。
+  </P
+><P
+>&#13;  以上を踏まえると、現状のMixJuiceの差分ベースモジュールの機構は、モジュールを再利用して生産性を上げるというよりも、既存のプログラムの拡張を容易にしたり、複雑なクラス間のコラボレーションを単純ないくつかのコラボレーションに分割するのに向いています。まさに差分(≠再利用)ベースの開発に向いています。
+  </P
+><P
+>&#13;  以下に再利用の形態を分類します。なお、ここで言及したmixinについてはSelf(<A
+HREF="http://research.sun.com/research/self/"
+TARGET="_top"
+>http://research.sun.com/research/self/</A
+>)のmixin(<A
+HREF="http://www.cs.ucsb.edu/labs/oocsb/self/language.html"
+TARGET="_top"
+>The Self Programmer's Reference Manual</A
+>の3.2.3 Mixinsに記載)相当を想定しています。
+  </P
+><DIV
+CLASS="table"
+><A
+NAME="mjFeature"
+></A
+><P
+><B
+>&#34920; 1. 再利用の形態</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>仕組み</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>再利用の形態</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>再利用のしやすさ</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>クラス継承</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>親クラスのコードを子クラスで再利用</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>低</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>MixJuiceの差分ベースモジュール</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>親モジュールのコードを子モジュールで再利用</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>中</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>mixin</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>mixinを様々なクラスで再利用</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>高</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+>
+<DIV
+CLASS="section"
+><HR><H1
+CLASS="section"
+><A
+NAME="AEN476"
+></A
+>保守しやすい単位で分割できるか</H1
+><P
+>&#13;   バグ修正や機能拡張による変更のしやすさの観点で保守性をとらえてみます。
+  </P
+><P
+>&#13;   ソースレベルの変更を考えた場合、バグが原因であれば単純にそのバグを修正する必要があります。この場合、MixJuiceとJavaの間で大きな違いはありません。次のようなプログラムがあったとします。モジュールmod.implのJob.execute()メソッドの実装が間違っており、"no bug"と表示するのが正しかったとします。
+  </P
+><DIV
+CLASS="example"
+><A
+NAME="originalSource"
+></A
+><P
+><B
+>&#20363; 1. オリジナルソース</B
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;module mod {
+  define class Job {
+    define abstract Job();
+    define abstract void execute();
+  }
+}
+module mod.impl extends mod {
+  class Job {
+    Job(){}
+    define void enter() {}
+    define void leave() {}
+    void execute(){
+      enter();
+      System.out.println("bug");
+      leave();
+    }
+  }
+}
+module m.all extends mod {
+  class SS {
+    void main(String[] args) {
+      Job job = new Job();
+      job.execute();
+    }
+  }
+}
+</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>&#13;   このバグを修正する際、オリジナルソースの"bug"という文字列を"no bug"と修正するのが自然であり、オリジナルのソースの変更が可能な場合は、次のようなモジュールを追加することによってバグを修正するのは好ましくありません。
+  </P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;module mod.impl.fix extends mod.impl {
+  class Job {
+    void execute(){
+      enter();
+      System.out.println("no bug");
+      leave();
+    }
+  }
+}
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   オリジナルソースの変更が不可能な場合は、上記のモジュールmod.impl.fixを追加することでバグを修正できます。しかし、オリジナルソースが公開されているからこそ、モジュールmod.impl.fixの実装が正しいといえます。オリジナルソースが非公開だった場合、モジュールmod.impl.fixでメソッドを置き換えるのは危険です。そして、オリジナルソースが公開されていれば、多くの場合、オリジナルソースを変更可能でしょう。
+  </P
+><P
+>&#13;   しかし、修正理由がバグ修正ではなく、特定の顧客向けなどの拡張やカスタマイズの場合は、MixJuiceの差分ベースモジュールは非常に有効です。バグであれば、問題のコードを残す必要は無く、オリジナルのソースを変更するのが好ましいです。しかし、特定用途向けの拡張などの場合、オリジナルのコードを残しつつコードを変更しなければなりません。通常、ソースコードのブランチバージョンの作成や条件コンパイルなど利用して拡張するところを、MixJuiceでは、モジュールの追加という形で拡張できます。ブランチバージョンの維持や条件コンパイルの多用されたソースの保守性は低くなります。
+  </P
+><P
+>前述の<A
+HREF="#originalSource"
+>&#20363;1</A
+>を、"bug"と言う文字列ではなく、"extension"と表示するように拡張するには、モジュールmod.implを下記のように変更した上で、
+<TABLE
+BORDER="0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;module mod.impl extends mod {
+  class Job {
+    Job(){}
+    define void enter() {}
+    define void leave() {}
+    define void doIt() { // メソッドの抽出
+      System.out.println("bug");
+    }
+    void execute(){
+      enter();
+      doIt(); // 抽出したメソッドの呼び出し
+      leave();
+    }
+  }
+}
+</PRE
+></TD
+></TR
+></TABLE
+>
+   次のモジュールを追加します。
+<TABLE
+BORDER="0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;module mod.impl.ext extends mod.impl {
+  class Job {
+    void doIt(){
+      System.out.println("extension");
+    }
+  }
+}
+</PRE
+></TD
+></TR
+></TABLE
+>
+  </P
+><P
+>&#13;  オブジェクト指向でも、サブクラスを作成することにより、モジュールの追加に近い形で拡張することができます。しかし、MixJuiceによるモジュール追加では、次のようなアドバンテージがあります。
+<DIV
+CLASS="table"
+><A
+NAME="extAdv"
+></A
+><P
+><B
+>&#34920; 2. 拡張におけるMixJuiceのアドバンテージ</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>メリット</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>内容</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インスタンス生成</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>サブクラスを利用して拡張を行った場合、インスタンスを作成している部分を変更しなくてはなりません。予め拡張が予想される場合は、ファクトリメソッドなどを利用してインスタンス生成を局所化できます。そうでない場合、変更箇所が多くなってしまいます。MixJuiceのモジュールを利用すれば、インスタンス生成に影響することなく(コンストラクタの引数が変化しない場合)振る舞いを変更することができます。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>最派生クラス以外の拡張</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>派生クラスを持つクラスをサブクラスを用いて拡張するには、オリジナルのコードにかなりの変更が必要になります。しかし、MixJuiceのモジュールを利用すれば、最派生クラス以外の拡張も容易です。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>拡張された部分をまとめる</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>一つの拡張に複数のクラスの変更が必要なとき、MixJuiceでは、一つのモジュールに各クラスの変更点を記述することで、変更をグルーピングできます。そのため、各クラスの変更の関連を理解しやすく、保守が容易になります。</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+>
+  </P
+><P
+>&#13;   このように、MixJuiceではモジュールの追加によりメソッドを拡張できますが、あまりこれを多用すると、可読性が低下し、デバッグの際のトレースも難しくなります。Javaでは、次のように親子クラス間で一つの処理が断片化することがあります。この例では、子クラスがイベントを受け取ったときの動作は、子クラスのメソッドhandleと、親クラスのメソッドhandleを見なければなりません。
+<TABLE
+BORDER="0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;  // 親クラス
+  public void handle(Event e) {
+    // ...
+  }
+  // 子クラス
+  public void handle(Event e) {
+    super(e);
+    // ...
+  }
+</PRE
+></TD
+></TR
+></TABLE
+>
+   MixJuiceでは、このようなクラスの継承だけでなく、モジュールの継承によっても断片化が起きます。ある程度までは保守性の向上になりますが、限度を超えるとかえって保守が難しくなります。このように、Javaでは複数のソースブランチに分かれてしまうような拡張でも、MixJuiceの差分ベースモジュールを適切に利用すれば、保守しやすい単位で管理することも可能です。
+  </P
+><P
+>&#13;   なお、保守性を考える場合、ドキュメントも重要な要素となります。保守に必要な情報として、差分ベースモジュールが「どのような差分を提供するのか」と、いくつかの差分ベースモジュールを組み合わせた結果、結局「どのようなクラスとなるのか」という情報が必要となります。特に、後者の場合、プログラム同様ドキュメントのマージが必要となります。下記の例の場合、モジュールmod.extを適用するか否かで、fortuneメソッドの意味的なインターフェイスが変わります。保守を考えた場合、引数の解釈、発生する例外、結果などについてのドキュメント方法とドキュメント生成のシステムが必要となります。
+  </P
+><PRE
+CLASS="programlisting"
+>&#13;module mod {
+  define class Fortune {
+    define Fortune() {}
+    /**
+     * 運勢を返します。
+     * @return "happy" or "unhappy"
+     */
+    define String fortune(int seed) {
+       switch (Math.abs(seed % 5)) {
+         case 0:
+           return "happy";
+       }
+       return "unhappy";
+    }
+  }
+}
+module mod.ext extends mod {
+  class Fortune {
+    /**
+     * 運勢を返します。
+     * @return "heartbreak" or "lose money" or {@original}
+     */
+    String fortune(int seed) {
+       switch (Math.abs(seed % 5)) {
+         case 1:
+           return "heartbreak";
+         case 2:
+           return "lose money";
+       }
+       return original(seed);
+    }
+  }
+}
+module mod.main extends mod {
+  class SS {
+    void main(String[] str) {
+      Fortune f = new Fortune();
+      for (int i = -5; i &#60; 6; i++)
+        System.out.println(f.fortune(i));
+    }
+  }
+}
+</PRE
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN474"
+></A
+>情報隠蔽しやすい単位で分割できるか</H2
+><P
+>情報隠蔽の単位は基本的に適切だと考えられます。ただし、モジュールの継承が名前空間の継承にもなっているので、たくさんのモジュールを継承する末端のモジュールでは、名前の衝突が起きやすいです(Javaで例えると、java.awt.*とjava.util.*をインポートして、Listが衝突するのに相当)。FQNで衝突を回避できるので致命的な問題ではありませんが、数が多くなるとプログラムの保守性が低下してしまいます。MixJuiceでは、モジュールという比較的大きな単位で名前空間が継承されるため、大規模プログラムでは、名前の衝突は深刻な問題になる可能性があります。大規模なプロジェクトでMixJuiceを利用するには、平均以下の水準の開発者が利用して破綻しないような扱いやすさと、安全装置的な足かせも必要となります。
+  </P
+><P
+>&#13;   情報隠蔽の単位は適切ですが、その単位がモジュールであり、モジュールはアスペクトごとにインターフェイスを分割する単位でもあり、プログラムを拡張する単位でもあります。このように、モジュールが様々な役割を持っており、その役割ごとに適切なモジュールの分け方が微妙に異なります。
+   例えば、次のようなJavaプログラムを情報隠蔽を行いつつ、アスペクトごとにモジュール分割してみます。
+   </P
+><PRE
+CLASS="programlisting"
+>&#13;package test;
+
+public class Sample {
+	public static Sample createSample() {
+		return new SampleImpl();
+	}
+	protected Sample() {
+	}
+
+	/* アスペクトA */
+	public void methodA() {
+		methodAut();
+	}
+	private void methodAut() {
+	}
+
+	/* アスペクトB */
+	public void methodB() {
+	}
+}
+
+class SampleImpl extends Sample {
+	SampleImpl() {
+		super();
+	}
+}
+</PRE
+><P
+>&#13;   まず情報隠蔽を考慮すると、public、protected、privateの少なくとも3階層のモジュールが必要となります(ここではpackageスコープは省略します)。さらにアスペクトを考慮すると、仕様モジュールをAandB, A, Bの3つに分けることにします。すると次のように6つ(3+3で6というわけではありません。7つ以上になることもあります)のモジュールが必要となります。
+  </P
+><PRE
+CLASS="programlisting"
+>&#13;module m { // アスペクトA,B共通仕様モジュール
+  define class SampleFactory {
+    define SampleFactory() {}
+    define abstract Sample createSample();
+  }
+  define class Sample {
+  }
+}
+module mA extends m { // アスペクトA共通仕様モジュール
+  class Sample {
+    define abstract void methodA();
+  }
+}
+module mB extends m { // アスペクトB共通仕様モジュール
+  class Sample {
+    define abstract void methodB();
+  }
+}
+module m.protect extends mA, mB { // Sampleのサブクラス実装者用仕様モジュール
+  class Sample {
+    define abstract Sample();
+  }
+}
+module m.sub extends m.protect { // SampleImplの実装モジュール
+  define class SampleImpl extends Sample {
+    define SampleImpl() {
+      super();
+    }
+  }
+}
+module m.impl extends m.sub { // Sampleの実装モジュール
+  class SampleFactory {
+    Sample createSample() {
+      return new SampleImpl();
+    }
+  }
+  class Sample {
+    Sample() {
+    }
+    define void methodAut() {
+    }
+    void methodA() {
+      methodAut();
+    }
+    void methodB() {
+    }
+  }
+}
+</PRE
+><P
+>&#13;   このように様々な用途にモジュールを使用すると、モジュールが非常に細分化されてしまいます。細分化され過ぎると、プログラムが保守しづらいものとなります。モジュールを情報隠蔽の単位とすることも可能でありますが、情報隠蔽にはモジュール以外の方法(例えば従来どおりpublic等のアクセス指定子など)を利用した方が現実的です。そのほうが、モジュールをどう分割するか検討する際も、考慮しなければならないことが減り、検討しやすくなります。
+  </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN482"
+></A
+>機能単位で分割できるか</H2
+><P
+>&#13;   機能単位の分割は、MixJuiceが最も得意とするところであり、差分ベースモジュールの効果が発揮されます。Grappaの移植では、
+  </P
+><P
+></P
+><UL
+><LI
+STYLE="list-style-type: disc"
+>Elementクラス以下のグラフの各要素を表すクラスに対し、att.grappa.dumpモジュールでdot形式での出力機能を追加
+</LI
+><LI
+STYLE="list-style-type: disc"
+>グラフ表示の機能しか持たないGrappaPanelクラスに、att.grappa.uiモジュールでGUIによるユーザインターフェイス機能を追加
+</LI
+><LI
+STYLE="list-style-type: disc"
+>定数を集約したGrappaConstantsインターフェイスに、att.grappa.constants.highlightSettingsモジュールなどで定数を追加
+</LI
+></UL
+><P
+>&#13;   といった機能拡張を行いました。今回は、Javaで実装されたオリジナルのGrappaからの移植なので、拡張というよりも実際には分離を行ったわけですが、いずれにせよ、機能のまとまり単位での拡張が可能です。
+  </P
+><P
+>&#13;   また、拡張の単位が、クラス(やインターフェイス)ではなく、複数のクラス(やインターフェイス)の集まりであるモジュールであるため、拡張された機能の全貌を把握しやすいです。
+  </P
+><P
+>&#13;  Grappaには一つのメソッドの中に複数の機能(アスペクト)を使うような実装があります。これは、普通に見られる状況です。また、一つのメソッドのインターフェイスが複数のアスペクトに跨る場合も多くありました。下記に、このような場合についての考察をまとめます。
+  </P
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="AEN495"
+></A
+>アスペクトを明確に分けられない場合</H3
+><P
+>&#13;    以下の図のように、クラスZのメソッドAはアスペクトAに属し、メソッドCはアスペクトCに属し、メソッドBはアスペクトAとCの中間に位置するような場合、モジュール分けの判断が難しいところです。一般に、クラスはアスペクト単位で作るものではないので、実際のプログラムでは、このようなケースは非常に多いです。また、このようなアスペクトのオーバーラップがあちこちで起こると、3竦み、4竦み状態となり、どのようにモジュール分割を行うか悩まされます。
+   </P
+><DIV
+CLASS="figure"
+><A
+NAME="crossAspect"
+></A
+><P
+><IMG
+SRC="images/cross-aspect.png"></P
+><P
+><B
+>&#22259; 1. アスペクトを明確に分けられない場合</B
+></P
+></DIV
+><P
+>&#13;    メソッドBが、実装上、アスペクトAとCの両方に依存するのであれば、仕様モジュールと実装モジュールに分けることにより解決できます。しかし、メソッドBがインターフェイス上アスペクトAとCの中間に位置する場合、次のいずれかになります。
+   </P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><A
+NAME="xX1"
+></A
+><P
+>モジュールA(メソッドA)、モジュールAC(メソッドB)、モジュールC(メソッドC)の3つのモジュールに分ける</P
+></LI
+><LI
+><A
+NAME="xX2"
+></A
+><P
+>モジュールAC(メソッドA,メソッドB,メソッドC)の一つにする</P
+></LI
+><LI
+><P
+>モジュールA-(メソッドA)とモジュールC(メソッドB,メソッドC)の二つにする(その逆もある)</P
+></LI
+></OL
+><P
+>&#13;    フレームワークのなどの開発では、<A
+HREF="#xX1"
+>1</A
+>のような厳密なモジュール分けが好ましいと考えられます。しかし、多くのアプリケーション開発にとっては、厳密なモジュール分け(javaのパッケージ分けも然り)にそれほど重要な意味はなく、モジュール分けに時間を使うよりも<A
+HREF="#xX2"
+>2</A
+>のようにモジュールを分割しない方が現実的です。
+   </P
+><P
+>&#13;    今回の移植では、クラスSubgraphのメソッドcreateElementがどのモジュールに属すべきか曖昧なメソッドに該当します。下記のその理由を示します。
+<DIV
+CLASS="table"
+><A
+NAME="ambMod"
+></A
+><P
+><B
+>&#34920; 3. createElementメソッドが属すモジュールが曖昧な理由</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>モジュール</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>そのモジュールに属す理由</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>att.grappa.attribute</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>このメソッドは、Attribute型の引数を持っており、機械的に考えるとアトリビュート操作をまとめたこのモジュールに属します。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>att.grappa.base</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>このメソッドの処理内容(サブグラフに、グラフの要素を追加します)を考慮すると、属性を操作するものではなく、Subgraphクラスに固有の機能です。その点を重視すると、グラフ構造を表す中核的なメソッドを集めたこのモジュールに属します。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>att.grappa.ui</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>このメソッドは、UI関連のメソッドからしか呼び出されておらず、汎用のメソッドではなく、UIの実現だけに必要なメソッドと解釈することもできます。その場合、このモジュールに属します。</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+>
+   </P
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN512"
+></A
+>分割コンパイルに適切な単位で分割できるか</H2
+><P
+>&#13;  分割コンパイルは適切な単位で行えますが、ある程度高度なビルドシステムがないと、実際には分割コンパイルの恩恵を得られません。1ソースファイル1モジュールでプログラムを作成した場合を例としてとりあげます。親モジュールより後に子モジュールをコンパイルしなければならないという依存関係があるため、モジュール(ソースファイル)の継承関係を理解するビルドシステムでなければ、適切な順序でコンパイルすることができません。結果として、安全のために、全てのソースファイルを再コンパイルすることになります。一方、モジュール間の継承関係を理解するには、コンパイルしてみる必要があるため、一種のパラドックスになってしまいます。
+  </P
+><P
+>&#13;  この問題を解決するには、IDEを用意し、IDEが常にモジュール間の依存関係を把握し、最小限のコンパイルを行うようにする必要があります。その他には、Xwindowのコンパイルにおけるmakedependとmakeのように、ビルドの前に依存関係を把握するパスを設ける方法もあります。
+  </P
+><P
+>&#13;  なお、仕様モジュールと実装モジュールを分割することにより、再コンパイルの必要性を最小限にすることができます。
+  </P
+><P
+>&#13;   実行時にモジュールを選択できるメリットも見逃せません。例えば、次のような使い方があります。
+<P
+></P
+><UL
+><LI
+STYLE="list-style-type: disc"
+>単体テスト時には、テスト用のスタブ実装モジュールを使用し、結合テスト以降は正規の実装モジュールを使用する
+</LI
+><LI
+STYLE="list-style-type: disc"
+>動作速度重視の実装と、省メモリ重視の実装を、実行環境に合わせて選択する
+</LI
+></UL
+>
+  </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN523"
+></A
+>開発作業を分割したときに、その分割単位でモジュールにできるか</H2
+><P
+>&#13;   仕様モジュールと実装モジュールに分割する前提であれば、モジュール単位で開発作業を分担することが可能です。仕様モジュールと実装モジュールを分割しない場合、実装が変更になるたびに、派生サブモジュールの再コンパイルが必要となるので、分担(同時開発)は困難です。
+  </P
+><P
+>&#13;   通常、アプリケーション開発では、次のような直交する二つの軸で開発されます。
+  </P
+><DIV
+CLASS="figure"
+><A
+NAME="cross-dir"
+></A
+><P
+><IMG
+SRC="images/cross-dir.png"></P
+><P
+><B
+>&#22259; 2. MixJuiceでのリファクタリング結果</B
+></P
+></DIV
+><P
+>&#13;   アーキテクチャの実装をベースモジュールとし、アプリケーション機能ごとにサブモジュールを作成していくことで、アプリケーションの開発の分担を円滑に行うことができると考えられます(分担はアプリケーション機能単位に行います)。
+   例えば、データベースにアクセスするためのDataAccessObjectを作成する場合、次のように記述すると開発の分担が容易になります。
+
+  </P
+><PRE
+CLASS="programlisting"
+>&#13;module dao {
+  define class DAO {
+    define void open() {
+      //...
+    }
+    define java.sql.Connection getConnection() {
+      // ...
+      return null;
+    }
+    define void commit() {
+      //...
+    }
+    define void rollback() {
+      //...
+    }
+    define void close() {
+      //...
+    }
+  }
+}
+module dao.addUser extends dao {
+  class DAO {
+    define void addUser(java.util.Map userData) {
+      //...
+    }
+  }
+}
+module dao.buy extends dao {
+  class DAO {
+    define void buy(int userId, int productId, int amount) {
+      //...
+    }
+  }
+}
+</PRE
+><P
+>&#13;   この例では、モジュールdaoをアプリケーションのアーキテクチャとして先行して開発し、各アプリケーション機能の担当者が、必要な機能をサブモジュール(dao.addUserやdao.buy)として実装していきます。
+   このように、MixJuiceの差分ベースモジュールは、典型的な開発のスタイルに適合し自然な形でアプリケーション開発を行うことができます。
+  </P
+></DIV
+></DIV
+></DIV
+>
+
+<!-- footer -->
+<hr>
+<table width="100%"> <tr><td>
+<img src="aist-images/img002.gif" alt="mj-logo">
+</td><td>Copyright(C) National Institute of Advanced Industrial Science and Technology (AIST). All rights reserved. </td><td>
+<div class="last-update"> Last updated: $Date: 2003/12/26 04:20:07 $</div>
+<div class="header-link">
+[<a href="http://staff.aist.go.jp/y-ichisugi/ja/mj/">MJ Top page</a>]
+[<a href="http://staff.aist.go.jp/y-ichisugi/ja/mj/site-map.html">Site map</a>]
+<!-- end of footer -->
+
+</div>
+</td></table>
+</BODY
+></HTML
+>

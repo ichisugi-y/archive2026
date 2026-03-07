@@ -1,0 +1,891 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+	"http://www.w3.org/TR/REC-html401/loose.dtd">
+<html lang="ja">
+<head>
+<META http-equiv="Content-Type" content="text/html;charset=Shift_JIS">
+<META http-equiv="Content-Style-Type" content="text/css">
+<META http-equiv="Content-Script-Type" content="text/javascript">
+<META name="generator" content="SmartDoc 1.0">
+<title>MixJuiceインストールマニュアル(Windows用)</title>
+<style type="text/css">
+<!--
+/*
+    article.css
+
+    since   : Nov. 21, 1998
+    version : Jan. 29, 2002
+    author  : ASAMI, Tomoharu (asami@XMLSmartDoc.org)
+*/
+
+A:link {
+  color: green;
+}
+
+A:visited {
+  color: black;
+}
+
+A:hover{
+  color: gold;
+};
+
+body {
+  background: white;
+  font-family: times, serif;
+}
+
+h1 {
+}
+
+h1.title {
+  color: black;
+  background: gold;
+  text-align: center;
+  border-style: outset;
+  border-color: yellow;
+  padding: 10pt;
+  margin-left: 60pt;
+  margin-right: 60pt;
+}
+
+h1.part {
+  font-weight: bold;
+  color: black;
+  background: gold;
+  padding: 20pt;
+}
+
+h1.chapter {
+  color: tan;
+  background: black;
+  text-align: left;
+  padding: 5pt;
+}
+
+h2 {
+  color: bisque;
+  background: #666666;
+  padding: 3pt;
+}
+
+h3 {
+  color: black;
+  background: #aaaaaa;
+  padding: 2pt;
+  margin-right: 100pt;
+}
+
+h4 {
+  color: black;
+  background: #eeeeee;
+  padding: 1pt;
+  margin-right: 200pt;
+}
+
+dfn {
+  font-weight: bold;
+  font-style: normal;
+}
+
+code {
+  font-family: helvetica, sans-serif;
+  font-weight: bold;
+}
+
+li p {
+  text-indent: 0pt;
+}
+
+dt {
+  font-weight: bold;
+}
+
+th p {
+  text-indent: 0pt;
+}
+
+td p {
+  text-indent: 0pt;
+}
+
+div.table {
+  text-align: center;
+}
+
+table.data {
+  margin-top: 10pt;
+  margin-bottom: 10pt;
+  background-color: green;
+}
+
+table.data caption {
+  background-color: khaki;
+  font-weight: bold;
+}
+
+table.data th {
+  color: yellow;
+  background-color: lightseagreen;
+}
+
+table.data td {
+  background-color: antiquewhite;
+}
+
+table.data td.key {
+  background-color: salmon;
+  font-weight: bold;
+}
+
+
+table.menu {
+  margin-top: 10pt;
+  margin-bottom: 10pt;
+  text-align: center;
+}
+
+table.menu caption {
+  background-color: khaki;
+  font-weight: bold;
+}
+
+table.menu th {
+  color: yellow;
+  background-color: lightseagreen;
+}
+
+table.menu td {
+  color: Maroon;
+  background-color: antiquewhite;
+  font-weight: bold;
+  padding: 10pt;
+}
+
+table.menu td.key {
+  font-size: x-large;
+  color: RoyalBlue;
+  background-color: LightGreen;
+  font-weight: bold;
+  padding: 10pt;
+}
+
+table.menu td.key A:link {
+  color: RoyalBlue;
+}
+
+table.menu td.key A:visited {
+  color: RoyalBlue;
+}
+
+table.navigator {
+}
+
+table.navigator td {
+  text-align: center;
+  font-weight: bold;
+}
+
+table.languages {
+  margin-bottom: 0pt;
+  margin-top: 0pt;
+  font-size: x-small;
+}
+
+table.languages td.current {
+}
+
+table.languages td.other {
+  background-color: Orange;
+}
+
+p {
+  margin: 0pt;
+  text-indent: 1em;
+}
+
+p ja {
+  margin: 0pt;
+  text-indent: 1em;
+}
+
+p.first {
+  margin: 0pt;
+  text-indent: 0em;
+}
+
+p.first_ja {
+  margin: 0pt;
+  text-indent: 1em;
+}
+
+div.title {
+  text-align: center;
+}
+
+div.toc {
+  background-color: cornsilk;
+  padding: 10pt;
+  border-style: inset;
+  border-color: cornsilk;
+  margin-top: 10pt;
+  margin-bottom: 30pt;
+}
+
+div.titletoc {
+  background-color: cornsilk;
+  padding: 10pt;
+  border-style: inset;
+  border-color: cornsilk;
+  margin-top: 10pt;
+  margin-bottom: 30pt;
+}
+
+div.date {
+  text-align: center;
+}
+
+div.org {
+  text-align: center;
+}
+
+div.author {
+  text-align: center;
+  font-weight: bold;
+}
+
+div.email {
+  text-align: center;
+}
+
+div.hp {
+  text-align: center;
+}
+
+div.summary {
+  color: maroon;
+  background: darkkhaki;
+  border-style: inset;
+  border-color: khaki;
+  margin-top: 20pt;
+  margin-bottom: 20pt;
+  margin-left: 30pt;
+  margin-right: 30pt;
+  padding: 5pt;
+}
+
+div.comment {
+  color: red;
+  background: yellow;
+}
+
+span.comment {
+  color: red;
+  background: yellow;
+}
+
+div.navigator {
+  background: khaki;
+  border-top: 1pt solid black;
+  border-bottom: 1pt solid black;
+  text-align: center;
+  margin-top: 10pt;
+  margin-bottom: 10pt;
+}
+
+div.navigatortop {
+  background: khaki;
+  border-top: 1pt solid black;
+  border-bottom: 1pt solid black;
+  text-align: center;
+  margin-bottom: 10pt;
+}
+
+div.navigatorbottom {
+  background: khaki;
+  border-top: 1pt solid black;
+  border-bottom: 1pt solid black;
+  text-align: center;
+  margin-top: 10pt;
+}
+
+div.languages {
+  text-align: right;
+}
+
+div.footnote {
+  background: antiquewhite;
+}
+
+div.fyi {
+  color: maroon;
+  background: peachpuff;
+  padding: 5pt;
+  margin-top: 10pt;
+  margin-bottom: 10pt;
+}
+
+div.fyi div.title {
+  background: antiquewhite;
+  font-weight: bold;
+  padding: 5pt;
+  margin-top: 5pt;
+  margin-bottom: 5pt;
+}
+
+div.caption {
+  background: lavender;
+  font-weight: bold;
+  padding: 5pd;
+  width: 300pt;
+  margin-top: 10pt;
+}
+
+div.result {
+  background: ivory;
+  border-style: inset;
+  border-color: gold;
+  padding: 10pt;
+  margin-top: 10pt;
+  margin-bottom: 10pt;
+}
+
+span.caption {
+  background: lavender;
+  font-weight: bold;
+}
+
+pre.program {
+  background-color: gainsboro;
+  font-family: courier, monospace;
+  padding: 5pt;
+  margin-right: 30pt;
+}
+
+pre.program em {
+  color: red;
+  font-style: normal;
+}
+
+pre.program strong {
+  color: red;
+  background-color: yellow;
+  font-style: normal;
+}
+
+pre.program span.keyword {
+  color: Blue;
+  font-style: normal;
+}
+
+pre.program span.primitive {
+  color: Green;
+  font-style: normal;
+}
+
+pre.program span.comment {
+  color: Red;
+  background-color: gainsboro;
+  font-style: normal;
+}
+
+pre.program span.quote {
+  color: OrangeRed;
+  font-style: normal;
+}
+
+var {
+  color: green;
+  font-style: italic;
+}
+
+tt {
+  font-family: courier, monospace;
+}
+
+code {
+  font-family: helvetica, sans-serif;
+  font-weight: bold;
+}
+
+pre.console {
+  background-color: black;
+  color: white;
+  font-family: courier, monospace;
+  padding: 5pt;
+  margin-right: 30pt;
+}
+
+pre.console kbd {
+  font-family: courier, monospace;
+  color: yellow;
+}
+
+span.toggle {
+  font-weight: bold;
+}
+
+div.figure {
+  text-align: center;
+}
+
+img.figure {
+  margin: 10pt;
+}
+
+div.equation {
+  margin-top: 1em;
+  margin-right: 30pt;
+  margin-bottom: 1em;
+  padding-top: 1em;
+  padding-left: 4em;
+  padding-bottom: 1em;
+  background: powderblue;
+}
+
+div.equation table {
+}
+
+div.equation table td.padding {
+  width:2em
+}
+
+td.equationNumber {
+  width: 4em;
+  text-align: right;
+}
+-->
+</style>
+<script type="text/javascript">
+<!--
+/*
+ * HTML4JavaScript.js
+ *
+ * @since   Nov. 17, 1998
+ * @version Oct. 22, 2001
+ * @author  ASAMI, Tomoharu (asami@zeomtech.com)
+ */
+var backupColor=null;
+var backupBGColor=null;
+var backupFontStyle=null;
+var backupIDColor=null;
+var backupIDBGColor=null;
+var backupIDFontStyle=null;
+var backupIDBorderStyle=null;
+
+var backupOnKeyDown=null;
+
+function normal(element) {
+  if (document.all) {
+    if (backupColor != null) {
+      element.style.color=backupColor;
+      backupColor=null;
+    }
+    if (backupBGColor != null) {
+      element.style.background=backupBGColor;
+      backupBGColor=null;
+    }
+    if (backupFontStyle != null) {
+      element.style.fontStyle=backupFontStyle;
+      backupFontStyle=null;
+    }
+    var id = null;
+    if (element.href != null) {
+      id = element.href;
+      id = id.substring(id.indexOf("#") + 1);
+    }
+    if (id != null) {
+      var target = document.all.item(id, 0);
+      if (backupIDColor != null) {
+        target.style.color=backupIDColor;
+        backupIDColor=null;
+      }
+      if (backupIDBGColor != null) {
+        target.style.background=backupIDBGColor;
+        backupIDBGColor=null;
+      }
+      if (backupIDFontStyle != null) {
+        target.style.fontStyle=backupIDFontStyle;
+        backupIDFontStyle=null;
+      }
+      if (backupIDBorderStyle != null) {
+        target.style.borderStyle=backupIDBorderStyle;
+        backupIDBorderStyle=null;
+      }
+    }
+  }
+}
+
+function hilight(element) {
+  if (document.all) {
+    backupBGColor=element.style.background;
+    element.style.background="gold";
+  }
+}
+
+function hilightString(element, color) {
+  if (color == null) {
+    color="darkolivegreen";
+  }
+  if (document.all) {
+    backupColor=element.style.color;
+    backupFontStyle=element.style.fontStyle;
+    element.style.color=color;
+  }
+}
+
+function hilightSelflink(element, color) {
+  if (color == null) {
+    color="darkolivegreen";
+  }
+  if (document.all) {
+    backupColor=element.style.color;
+    backupBGColor=element.style.background;
+    backupFontStyle=element.style.fontStyle;
+    element.style.color=color;
+    var id = null;
+    if (element.href != null) {
+      id = element.href;
+      id = id.substring(id.indexOf("#") + 1);
+    }
+    if (id != null) {
+      var target = document.all.item(id, 0);
+      backupIDColor=target.style.color;
+//      backupIDBGColor=target.style.background;
+//      backupIDFontStyle=target.style.fontStyle;
+      backupIDBorderStyle=target.style.borderStyle;
+      target.style.color="red";
+      target.style.borderStyle="outset";
+    }
+  }
+}
+
+function hilightHyperlink(element, color) {
+  if (color == null) {
+    color="darkorange";
+  }
+  if (document.all) {
+    backupColor=element.style.color;
+    backupBGColor=element.style.background;
+    backupFontStyle=element.style.fontStyle;
+    element.style.color=color;
+  }
+}
+
+function hilightExternallink(element, color) {
+  if (color == null) {
+    color="purple";
+  }
+  if (document.all) {
+    backupColor=element.style.color;
+    backupBGColor=element.style.background;
+    backupFontStyle=element.style.fontStyle;
+    element.style.color=color;
+  }
+}
+
+function toggleChildren(node) {
+  if (document.all) {
+    for (i = 0;i < node.children.length;i++) {
+      var child = node.children[i];
+      if (child.className == "dynamic") {
+        if (child.style.display == "") {
+            child.style.display = "none";
+        } else {
+            child.style.display = "";
+        }
+      }
+    }
+  }
+}
+
+function toggleDynamic(node) {
+  if (document.all) {
+    if (node.tagName == "LI") {
+      toggleChildren(node);
+    }
+  }
+}
+
+function isMsie4orGreater() { 
+  var ua = window.navigator.userAgent; var msie = ua.indexOf ("MSIE");
+  if (msie > 0) {
+    return (parseInt (ua.substring (msie+5, ua.indexOf (".", msie))) >= 4)   
+      && (ua.indexOf ("MSIE 4.0b") <0);
+  } else {
+    return false;
+  }
+}
+
+function keyEventHandler() {
+  if (document.all) {
+    if (event.keyCode == 13) {
+      var child = document.all.item("_next_page_", 0);
+      if (child != null) {
+        location.href = child.href;
+      }
+    } else if (event.keyCode == 39) {
+      var child = document.all.item("_next_page_", 0);
+      if (child != null) {
+        location.href = child.href;
+      }
+    } else if (event.keyCode = 37) {
+      var child = document.all.item("_prev_page_", 0);
+      if (child != null) {
+        location.href = child.href;
+      }
+    } else {
+      backupOnKeyDown();
+    }
+  }
+}
+
+function setOHPHandler() {
+  backupOnKeyDown=document.onkeydown;
+  document.onkeydown=keyEventHandler;
+}
+// -->
+</script>
+</head>
+<body>
+<div style="text-align:right"><a href="http://www.XMLSmartDoc.org" target="_top"><span style="color:#4F5952;background:#EE8362;font-family:sans-serif;font-size:xx-small;text-decoration:none">Powered by </span><span style="color:#058258;background:#EE8362;font-family:fantasy, sans-serif;font-size:x-small;text-decoration:none">SmartDoc</span></a></div>
+<div class="languages">
+<table class="languages">
+<tr>
+<td class="other"><a href="install.html" onMouseOver="hilightHyperlink(this)" onMouseOut="normal(this)">ENGLISH</a></td><td class="current">JAPANESE</td></tr>
+</table>
+</div>
+
+<h1 class="title">MixJuiceインストールマニュアル(Windows用)</h1>
+
+<h2>目次</h2>
+
+<div class="toc">
+<ul>
+<li> <a href="#doc2_1097" onMouseOver="hilightSelflink(this)" onMouseOut="normal(this)">はじめに</a>
+<li> <a href="#doc2_1156" onMouseOver="hilightSelflink(this)" onMouseOut="normal(this)">動作環境</a>
+<li> <a href="#doc2_1241" onMouseOver="hilightSelflink(this)" onMouseOut="normal(this)">インストール</a>
+<li> <a href="#doc2_1291" onMouseOver="hilightSelflink(this)" onMouseOut="normal(this)">アンインストール</a>
+<li> <a href="#doc2_1460" onMouseOver="hilightSelflink(this)" onMouseOut="normal(this)">動作確認</a>
+<ul>
+<li> <a href="#doc2_1480" onMouseOver="hilightSelflink(this)" onMouseOut="normal(this)">環境設定</a>
+<li> <a href="#doc2_1519" onMouseOver="hilightSelflink(this)" onMouseOut="normal(this)">mjc の実行</a>
+<li> <a href="#doc2_1532" onMouseOver="hilightSelflink(this)" onMouseOut="normal(this)">mj の実行</a>
+<li> <a href="#doc2_1579" onMouseOver="hilightSelflink(this)" onMouseOut="normal(this)">mjb の実行</a>
+</ul>
+<li> <a href="#doc2_id:env_value" onMouseOver="hilightSelflink(this)" onMouseOut="normal(this)">環境変数</a>
+</ul>
+</div>
+
+<h2 id="doc2_1097">はじめに</h2>
+
+<p class="first_ja">本ドキュメントは、MixJuice のインストール方法、環境設定および簡単な動作確認方法について記述したドキュメントです。</p>
+<p>本ドキュメントは、<a href="http://www.netpassport.or.jp/~wtasami/" target="_top" onMouseOver="hilightExternallink(this)" onMouseOut="normal(this)">浅海智晴</a>氏作、<a href="http://www.asahi-net.or.jp/~dp8t-asm/java/tools/SmartDoc/index_ja.html" target="_top" onMouseOver="hilightExternallink(this)" onMouseOut="normal(this)">SmartDoc</a>を使用して作成されています。</p>
+
+<h2 id="doc2_1156">動作環境</h2>
+
+<p class="first_ja">本リリースでは以下の環境をサポートします。</p>
+
+<ul>
+<li> Windows XP
+<li> Windows 2000
+<li> Windows NT SP6a</ul>
+
+<p>Windows 95/98/98SE/Me はサポートしません。<br></br></p>
+<p>また、インストールを行うには、Windows Installer 2.0 があらかじめインストールされている必要があります。Windows 2000/NT SP6a 環境にて本リリースのインストールが行えない場合、つまり
+
+<ul>
+<li> インストーラファイル<code>mj.msi</code>が実行可能ファイルとして認識されていない
+<li> 実行可能であるが、実行時にエラーが表示されインストールが続行できない</ul>
+
+
+場合には、別途 Windows Installer 2.0 を<a href="http://www.microsoft.com/downloads/release.asp?ReleaseID=32832" target="_top" onMouseOver="hilightExternallink(this)" onMouseOut="normal(this)">こちら</a>からダウンロード、インストールしてください。<br></br></p>
+<p>加えて、MixJuice を使用するには、Java 環境が利用できる必要があります。</p>
+
+<h2 id="doc2_1241">インストール</h2>
+
+<p class="first_ja">MixJuice のインストールを行うには、<code>mj.msi</code> をダブルクリックします。すると、以下のようなインストーラ画面が表示されます。</p>
+
+<div class="figure">
+<img class="figure" src="image/install_welcome.png">
+</div>
+
+<p>ここで、&quot;Next&quot; をクリックすると、インストールフォルダ選択画面が表示されます。</p>
+
+<div class="figure">
+<img class="figure" src="image/install_folder.png">
+</div>
+
+<p>必要であれば、インストール先のフォルダを変更してください。インストールフォルダを決定したら、&quot;Next&quot; をクリックします。</p>
+
+<div class="figure">
+<img class="figure" src="image/install_path.png">
+</div>
+
+<p>ここでは、MixJuice の各種コマンドをコマンドプロンプト上から直接起動できるよう、MixJuice の <code>bin</code> ディレクトリをユーザー環境変数の PATH 環境変数に設定するかどうかを選択します。設定する場合は &quot;Yes&quot; を、設定しない場合は &quot;No&quot; を選択し、&quot;Next&quot; をクリックします。</p>
+
+<div class="figure">
+<img class="figure" src="image/install_confirm.png">
+</div>
+
+<p>インストールを行うための構成が終了しましたので、&quot;Next&quot; をクリックしてインストールを開始します。</p>
+
+<div class="figure">
+<img class="figure" src="image/installing.png">
+</div>
+
+<p>インストールが完了すると、以下の画面が表示されます。</p>
+
+<div class="figure">
+<img class="figure" src="image/install_complete.png">
+</div>
+
+
+<h2 id="doc2_1291">アンインストール</h2>
+
+<p class="first_ja">MixJuice のアンインストールを行うには、[コントロールパネル]→[プログラムの追加と削除]（Windows 2000/NT では [アプリケーションの追加と削除]） から MixJuice の削除を選択します。</p>
+<p>インストール時に PATH 環境変数への追加を行った場合も、ユーザ環境変数から適切に値の削除が行われます。</p>
+
+<h2 id="doc2_1460">動作確認</h2>
+
+<p class="first_ja">ここでは、MixJuice に含まれる Draw サンプルを用いて簡単な動作確認を行います。</p>
+<p>まず、MixJuice をインストールしたディレクトリ（以下、<code>%MJ_HOME%</code> と記述します）以下の <code>sample\Draw</code> ディレクトリを、ディレクトリごと適当な場所にコピーします。次に、コマンドプロンプトを開き、コピーしたディレクトリへ移動します。以後の作業はこのディレクトリ上で行うこととします。</p>
+<p>なお、本節では Java 環境として Sun JDK を利用することを想定します（以下、JDK のインストールディレクトリを <code>%JAVA_HOME%</code> と記述します）。</p>
+
+<h3 id="doc2_1480">環境設定</h3>
+
+
+<dl>
+<dt>
+PATHの設定
+<dd>
+JDKを利用できるよう、<code>%JAVA_HOME%\bin</code>を<code>PATH</code>環境変数に追加します。また、MixJuiceインストール時に<code>PATH</code>環境変数を設定していない場合には、<code>%MJ_HOME%\bin</code>も<code>PATH</code>環境変数に追加してください。
+<dt>
+CLASSPATHの設定
+<dd>
+JDK 1.1.8を利用している場合には、<code>%JAVA_HOME%\lib\classes.zip</code>を<code>CLASSPATH</code>環境変数に追加する必要があります。</dl>
+
+
+<h3 id="doc2_1519">mjc の実行</h3>
+
+<p class="first_ja"><code>mjc</code> を用いてサンプルをコンパイルするには、コマンドプロンプトから以下のように実行します。</p>
+
+<pre id="doc2_1526" class="console">
+&gt; <kbd class="kbd">mjc Draw.java</kbd>
+Preprocessing phase.
+Compiling phase.
+</pre>
+
+
+<h3 id="doc2_1532">mj の実行</h3>
+
+<p class="first_ja">コンパイルに成功したら、<code>mj</code> を用いてモジュールを実行します。<code>Draw.java</code> には、<code>draw</code>モジュール、およびそれを継承したいくつかのモジュールが定義されていますが（詳細な解説はここでは行いません）、それらのうち <code>box</code> および <code>dragPoint</code> モジュールを個々に実行してみます。</p>
+
+<pre id="doc2_1552" class="console">
+&gt; <kbd class="kbd">mj box</kbd>
+</pre>
+
+
+<div class="figure">
+<img class="figure" src="image/sample_box.png" alt="box モジュール実行結果">
+</div>
+
+
+<pre id="doc2_1559" class="console">
+&gt; <kbd class="kbd">mj dragPoint</kbd>
+</pre>
+
+
+<div class="figure">
+<img class="figure" src="image/sample_drag.png" alt="dragPoint モジュール実行結果">
+</div>
+
+<p>MixJuice では複数の差分モジュールを組み合わせて実行することができます。以下のように、<code>-s</code> オプションを使用して上述の 2 モジュールを組み合わせて実行すると、次のような結果となります。</p>
+
+<pre id="doc2_1572" class="console">
+&gt; <kbd class="kbd">mj -s box dragPoint</kbd>
+</pre>
+
+
+<div class="figure">
+<img id="doc2_id:sample_box_drag" class="figure" src="image/sample_box_drag.png" alt="box/dragPoint モジュールを組み合わせた実行結果">
+</div>
+
+
+<h3 id="doc2_1579">mjb の実行</h3>
+
+<p class="first_ja"><code>mjb</code> を用いることで、複数のモジュールを 1 つのモジュールにまとめることができます。ここでは、上述 <code>box</code> モジュールと <code>dragPoint</code> モジュールをまとめて <code>test</code> という新しいモジュールを作成します。</p>
+
+<pre id="doc2_1595" class="console">
+&gt; <kbd class="kbd">mjb test box dragPoint</kbd>
+</pre>
+
+<p>作成した <code>test</code> モジュールを実行すると、<a href="#doc2_id:sample_box_drag" onMouseOver="hilightSelflink(this)" onMouseOut="normal(this)">図[box/dragPoint モジュールを組み合わせた実行結果]</a>と同様な結果が得られます。</p>
+
+<pre id="doc2_1608" class="console">
+&gt; <kbd class="kbd">mj test</kbd>
+</pre>
+
+
+<h2 id="doc2_id:env_value">環境変数</h2>
+
+<p class="first_ja">MixJuice では、<code>mj/mjc</code> 等のプログラムを実行する際に使用する Java VM/Java コンパイラをユーザが設定できます。この設定を行うには、以下の環境変数に値を設定する必要があります。</p>
+
+<div class="table">
+<table id="doc2_1764" class="data" rules="groups">
+<colgroup span=3>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th align="center">環境変数名</th>
+<th align="center">意味</th>
+<th align="center">未設定時のデフォルト値</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MJJAVA</code></td>
+<td><code>mj</code>実行時に使用されるJava VM起動コマンド</td>
+<td><code>java</code></td>
+</tr>
+<tr>
+<td><code>MJJAVA_CP_OPT</code></td>
+<td><code>mj</code>実行時に使用されるJava VM起動コマンドのクラスパスオプション</td>
+<td><code>-classpath</code></td>
+</tr>
+<tr>
+<td><code>MJCJAVA</code></td>
+<td><code>mjc/mjb</code>実行時に使用されるJava VM起動コマンド</td>
+<td><code>java</code></td>
+</tr>
+<tr>
+<td><code>MJCJAVA_CP_OPT</code></td>
+<td><code>mjc/mjb</code>実行時に使用されるJava VM起動コマンドのクラスパスオプション</td>
+<td><code>-classpath</code></td>
+</tr>
+<tr>
+<td><code>MJJAVAC</code></td>
+<td><code>mjc/mjb</code>実行時に使用されるJavaコンパイラコマンド</td>
+<td><code>javac</code></td>
+</tr>
+<tr>
+<td><code>MJJAVAC_CP_OPT</code></td>
+<td><code>mjc/mjb</code>実行時に使用されるJavaコンパイラコマンドのクラスパスオプション</td>
+<td><code>-classpath</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<p>上記 <code>*_CP_OPT</code> 環境変数は、対になる環境変数に設定されたコマンドに合わせて適切に設定されている必要があります。例えば、Java コンパイラとして jikes を用いる場合には、以下のように設定します。</p>
+
+<pre id="doc2_1875" class="console">
+&gt; <kbd class="kbd">set MJJAVAC=jikes</kbd>
+&gt; set MJJAVAC_CP_OPT=-classpath
+</pre>
+
+<p>※上記設定例では、<code>mjc/mjb</code> 実行時に jikes が実行できるよう、適切に <code>PATH</code> 環境変数が設定されている必要があります。</p>
+</body>
+</html>

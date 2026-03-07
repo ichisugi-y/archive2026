@@ -1,0 +1,643 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="./style.css">
+<title> Sweeper Robot Simulation Demo </title>
+</head>
+
+<body>
+<div class="header-link">
+[<a href="index.html">MJ Top page</a>]
+[<a href="site-map.html">Site map</a>]
+</div>
+
+<h1>Sweeper Robot Simulation Demonstration</h1>
+
+<div class="header-link">
+[<a href="sweeper_demo_ja.html">Japanese page</a>]
+</div>
+
+<ul class="headers">
+<li><a href="#abstract">Abstract</a></li>
+<li><a href="#spec">Specification</a></li>
+<li><a href="#screen">Screen Shots</a></li>
+<li><a href="#quickstart">Quick Start</a></li>
+<li><a href="#source">Source Code</a></li>
+<li><a href="#action">Description of Behavior</a></li>
+<li><a href="#module_overview">Modules Overview</a></li>
+<li><a href="#module_detail">Modules Detail</a></li>
+<li><a href="#module_merit">Merits of Module Mechanism</a></li>
+<li><a href="#extension">Further Extensions</a></li>
+</ul><p>
+</p><p>
+</p><p>
+</p><h2><a name="abstract">Abstract</a></h2><p>
+This demonstration is a simple robot-contest-like simulation;
+the screen is a room in which a sweeper robot moves around and collects trashes.
+The mission is to make the robot clean the room with building the action logic of the robot with a controller software and invoking simple hardware APIs.
+</p><p>
+The sweeper robot has some sensors.
+The controller software handles the events from them, decides the robot's action and send command to its driving system.
+</p><p>
+In the demonstration, the sensors and the controller software are represented as the MixJuice Modules.  You can understand that different module combinations lead to different action of the robot.  Users may write the controller part as a module and link it at execution time to make robot act with their original action logic.
+</p><p>
+</p><h2><a name="spec">Specification</a></h2><p>
+</p><h3>sweeper robot</h3><p>
+In the demonstration, the sweeper robot has the following virtual hardware specification:
+</p><p>
+<ul>
+<li>a wheel on each side,</li>
+<li>each wheel can turn forward or backward and</li>
+<li>revolutions of each wheel is constant (i.e. it turns or not).</li>
+</ul>
+</p><p>
+From the viewpoint of controller software,  5 commands can be sent to the driving system of the sweeper robot:
+</p><p>
+<ul>
+<li>go forward (turn both wheel forward),</li>
+<li>go backward (turn both wheel backward),</li>
+<li>turn right (turn left wheel forward, right wheel backward),</li>
+<li>turn left (turn left wheel backward, right wheel forward) and</li>
+<li>stop (stop both wheels).</li>
+</ul>
+</p><p>
+Once a command is sent, the wheels keep their revolutions until the next command will be sent.  In other words, `turn right' command keeps the robot turning right on until `stop' or other command will be sent.
+</p><p>
+For simple implementation, the movement unit of robot matches with a block of the screen, and the revolution unit is 90 degrees (i.e. the robot does not move like a bishop)
+</p><p>
+The vacuum hole of the sweeper robot is on its bottom, the vacuum motor keeps working.  Thus, the robot can sweep all trashes below.
+</p><h3>sensor</h3><p>
+The sensors are virtual hardware mounted on the sweeper robot.  They sense the environment around of the sweeper robot and send events to controller software.  The objects to be sensed and the events to be sent are varied by the kind of sensors.
+</p><p>
+Since the sensors only send events corresponding their functions, it depends on the implementation of the controller software how the robot behaves to the events; for example, if a sensor tells an wall in front of the robot body, the robot may turn right, go backward, do nothing, etc..
+</p><p>
+The following 5 sensors are ready to use:
+</p><h4>direction sensor</h4><p>
+The sensor detects the direction of the robot.  By specification, the robot can direct to 4 directions, and the sensor, thus, sends 4 kinds of events.
+</p><h4>motor sensor</h4><p>
+The sensor detects the state of movement, which is switched by commands to the driving system of the robot mentioned above.  Therefore, there are 5 states same as driving system commands and there are corresponding events each.  They are `going forward', `going backward', `turning right', `turning left' and `stopping'.
+</p><h4>wall sensor</h4><p>
+The sensor detects an wall.  Walls in the left or right blocks of the robot or in the block in front of the robot can be checked.  Each block has 2 states, namely `wall found' and `no wall', and there are corresponding events each, 6 kinds of event in total might be sent.
+</p><h4>trash sensor</h4><p>
+The sensor detects a trash.  trashes in the left or right blocks of the robot or in the block in front of the robot can be checked.  Each block has 2 states, namely `trash found' and `no trash', and there are corresponding events each, 6 kinds of event in total might be sent.
+</p><h4>remote controller sensor</h4><p>
+To enable to control the robot manually, it can have a remote controller sensor.  The remote controller used in the demonstration is mapped to the keys on a keyboard.  There are 5 kinds of key events to be handled: up, down, left and right of cursor keys and space key events.
+</p><p>
+</p><h2><a name="screen">Screen Shots</a></h2><p>
+The following image is a screen shot of the demonstration.
+Click a screen to start the demonstration.
+</p><p>
+<div align="center">
+<image src="images/screen_en.png">
+</div>
+</p><h4>sweeper robot</h4><p>
+This is the sweeper robot.  The red part indicates the front of the robot.
+</p><h4>wall</h4><p>
+This is the wall.  The sweeper robot cannot go through the wall.  Trying to go forward ignoring the wall in front or to go backward ignoring the wall on the back results the wheelspin and the robot cannot move.
+</p><h4>floor</h4><p>
+This is the floor.  It represents already swept or no trash block.
+</p><h4>trash</h4><p>
+This is the trash.  Once the sweeper robot go onto the trash, it is swept, and the block turns to the `floor'.  The simulation ends when all trashes will be swept.
+</p><h4>elapsed time</h4><p>
+This is the time passed since the beginning of the simulation.  In a unit time, the robot can make a single move; one of `go forward', `go backward', `turn left', `turn right' or `stop'.
+</p><h4>trash blocks</h4><p>
+The number of trash blocks is shown.  It shows (number of trash block) / (number of initial trash blocks).
+</p><h4>sensor icons</h4><p>
+The sensors mounted on the sweeper robot are shown.  They vary with the combination of sensor modules selected at the initiation time of the demonstration.
+<ul>
+<li><image src="images/dir_s.png"></image> ... direction sensor</li>
+<li><image src="images/motor_s.png"></image> ... motor sensor</li>
+<li><image src="images/wall_s.png"></image> ... wall sensor</li>
+<li><image src="images/trash_s.png"></image> ... trash sensor</li>
+<li><image src="images/key_s.png"></image> ... remote controller sensor</li>
+</ul>
+</p><p>
+</p><h2><a name="quickstart">Quick Start</a></h2><p>
+By the combination of sensor and controller software modules the behavior of the demonstration can be changed.  Here are 9 applets of different combinations (By clicking link, an applet starts in other window).  Details of each module and combinations of modules will be later stated.
+<ol>
+<li><a href="demo/Sweeper_Base.html" target="_blank">framework only</a></li>
+<li><a href="demo/Sweeper_Hardware.html" target="_blank">framework and sweeper robot</a></li>
+<li><a href="demo/Sweeper_Manual1.html" target="_blank">remote controller sensor -- manual control 1</a> (<a href="#action_manual1">description of behavior</a>)</li>
+<li><a href="demo/Sweeper_Manual2.html" target="_blank">remote controller sensor -- manual control 2</a> (<a href="#action_manual2">description of behavior</a>)</li>
+<li><a href="demo/Sweeper_Random.html" target="_blank">motor sensor and random-driving automatic controller</a> (<a href="#action_random">description of behavior</a>)</li>
+<li><a href="demo/Sweeper_AvoidWall.html" target="_blank">motor sensor, wall sensor and wall avoiding automatic controller </a> (<a href="#action_avoid_wall">description of behavior</a>)</li>
+<li><a href="demo/Sweeper_SeekTrash.html" target="_blank">motor sensor, trash sensor and trash seeking automatic controller</a> (<a href="#action_seek_trash">description of behavior</a>)</li>
+<li><a href="demo/Sweeper_WallTrash.html" target="_blank">combination of wall avoiding and trash seeking automatic controller</a> (<a href="#action_wall_trash">description of behavior</a>)</li>
+<li><a href="demo/Sweeper_WallTrashRandom.html" target="_blank">combination of wall avoiding, trash seeking and random driving automatic controller</a> (<a href="#action_wall_trash_random">description of behavior</a>)</li>
+</ol>
+</p><p>
+</p><h2><a name="source">Source Code</a></h2><p>
+</p><h3>download</h3><p>
+To read the source code only, please download from the link below.
+</p><p>
+<ul>
+<li><a href="demo/AutoSweeperDemo.txt">AutoSweeperDemo.txt</a></li>
+</ul>
+</p><p>
+To get the archive of runnable source codes including image files, please download from the link below.
+</p><p>
+<ul>
+<li><a href="demo/AutoSweeperDemo.zip">AutoSweeperDemo.zip</a></li>
+</ul>
+</p><h3>compilation / execution environment</h3><p>
+To compile and run the demonstration from source code, the following environments are required.
+</p><p>
+<ul>
+<li>J2SE 1.3 or above (1.4 or above is recommended)</li>
+<li>MixJuice 1.1</li>
+</ul>
+</p><h3>how to compile / execute</h3><p>
+The followings are the steps to compile and execute the demonstration.
+Java and MixJuice execution environment is assumed to be installed.
+</p><p>
+<ol>
+<li>Unzip AutoSweeperDemo.zip in some directory.</li>
+<li>Move to the AutoSweeperDemo directory in the directory you unzipped, then compile using mjc command as follows:
+<pre>
+% mjc AutoSweeperDemo.java
+</pre></li>
+<li>Choose the combination of modules and run mj command.  For example, the `<a href="#action_manual1">remote controller sensor -- manual control 1</a>' combination can be specified as the following.
+<pre>
+% mj -s sensor.key control.manual
+</pre></li>
+</ol>
+</p><p>
+</p><h2><a name="action">Description of Behavior</a></h2><p>
+Before detailed description of the program, here gives comments on the behavior of the demonstration with some examples.
+</p><p>
+The sensor modules are named as sensor.* and controller software modules are named as control.*.  Please guess the combinations of sensors and/or controller softwares from the specified module of mj command in the following examples.
+</p><p>
+</p><h3><a name="action_manual1">manual control 1</a></h3><p>
+At first, we control the sweeper robot by combining remote controller sensor and manual controller software.
+</p><p>
+The controller software sends a command to the driving system directly triggered by the remote controller sensor event.  That is, keyboard operation controls the sweeper robot as follows:
+</p><p>
+<div align="center">
+<table border="1">
+<thead>
+<tr>
+<th align="center">event sent from remote controller sensor</th>
+<th align="center">command sent to the driving system</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>up cursor key pushed</td>
+<td>go forward</td>
+</tr>
+<tr>
+<td>down cursor key pushed</td>
+<td>go backward</td>
+</tr>
+<tr>
+<td>right cursor key pushed</td>
+<td>turn right</td>
+</tr>
+<tr>
+<td>left cursor key pushed</td>
+<td>turn left</td>
+</tr>
+<tr>
+<td>space key pushed</td>
+<td>stop</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p><p>
+To run this example, do as the following:
+<pre>
+% mj -s sensor.key control.manual
+</pre>
+</p><h3><a name="action_manual2">manual control 2</a></h3><p>
+One experiencing the `<a href="#action_manual1">manual 1</a>' may feel hard to operate.  The hardness is from the direct mapping between the events from remote controller sensor (key input) and the command to the driving system of the sweeper robot in the controller software control.manual; pushing up cursor key does not make the robot move upward on the screen, and it is not intuitive.  Then, the next controller software maps up, down, left and right cursor key input to up, down, left and right movement of the robot on the screen. 
+</p><p>
+To achieve to implement the behavior with the driving system commands of the sweeper robot, movement should be changed according to the direction.  For example, to make the robot move upward with up cursor key,  the mapping between the directions and the commands should be combined as follows:
+</p><p>
+<div align="center">
+<table border="1">
+<thead>
+<tr>
+<th align="center">direction of the robot</th>
+<th align="center">commands needed for upward movement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>upward</td>
+<td>go forward</td>
+</tr>
+<tr>
+<td>rightward</td>
+<td>turn left + go forward</td>
+</tr>
+<tr>
+<td>leftward</td>
+<td>turn right + go forward</td>
+</tr>
+<tr>
+<td>downward</td>
+<td>go backward</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p><p>
+The controller software control.manual2 introduced here implements to control the sweeper robot to move as stated above with the events from remote controller and direction sensors.  To run the example, do as following:
+<pre>
+% mj -s sensor.key -s sensor.direction control.manual2
+</pre>
+</p><h3><a name="action_random">random driving automatic controller</a></h3><p>
+Finishing the explanation of manual control with remote controller sensor leads to the automatic controller softwares.
+</p><p>
+Some controller softwares will be implemented later, but before starting, a prepared controller software to ease the implementations is explained.  The driving system commands of the sweeper robot to change the direction are `turn right' or `turn left', the movements ``move to right'' or ``move to left'' are the result of combination with `go forward'.  The prepared controller software implements that after the event `turning right' or `turning left' from a motor sensor was caught it sends `go forward' command.  The controller software module is named control.turnAndForward and all the following controller software modules extends it. By the module the implementations become easier; ``move to right'' or ``move to left'' can be achieved simply by sending command `turn right' or `turn left'.
+</p><p>
+For the first example, we implement a controller software module control.random, which randomly commands `turn right' and `turn left' according to a certain probability.  As stated above, since the module extends control.turnAndForward, to behave normally, it is necessary to combine it with motor sensor (sensor.motor).
+</p><p>
+It is obvious to one who executed the module, the efficiency is too low to clean up a whole room.
+<pre>
+% mj -s sensor.motor control.random
+</pre>
+</p><h3><a name="action_avoid_wall">wall avoiding automatic controller</a></h3><p>
+The next controller software avoids walls.  An wall sensor can detect walls in 3 blocks; front and each side of the robot.  The controller software module control.avoidWall to be implemented takes simple wall detection action as follows, supposing the robot go forward by default:
+</p><p>
+<div align="center">
+<table border="1">
+<thead>
+<tr>
+<th colspan="3" align="center">detection of wall sensor (o:detected, x:not detected, -:irrelevant)</th>
+<th rowspan="2" align="center">driving system command</th>
+</tr>
+<tr>
+<th align="center">front</th>
+<th align="center">right</th>
+<th align="center">left</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x</td>
+<td>-</td>
+<td>-</td>
+<td>(no command)</td>
+</tr>
+<tr>
+<td>o</td>
+<td>x</td>
+<td>-</td>
+<td>turn right</td>
+</tr>
+<tr>
+<td>o</td>
+<td>o</td>
+<td>-</td>
+<td>turn left</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p><p>
+To run the demonstration with the controller software, do as the following:
+<pre>
+% mj -s sensor.wall -s sensor.motor control.avoidWall
+</pre>
+</p><p>
+It is obvious to one who executed the module, the sweeper robot comes to the dead end soon.
+</p>
+<h3><a name="action_seek_trash">trash seeking automatic controller</a></h3><p>
+The next controller software seeks trashes with trash sensor.  A trash sensor can detect the trashes in 3 blocks like a wall sensor; front and each side of the robot.  The controller software module control.seekTrash to be implemented moves the robot simply by trash detection:
+</p><p>
+<div align="center">
+<table border="1">
+<thead>
+<tr>
+<th colspan="3" align="center">detection of trash sensor (o:detected, x:not detected, -:irrelevant)</th>
+<th rowspan="2" align="center">driving system command</th>
+</tr>
+<tr>
+<th align="center">front</th>
+<th align="center">right</th>
+<th align="center">left</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>o</td>
+<td>-</td>
+<td>-</td>
+<td>go forward</td>
+</tr>
+<tr>
+<td>x</td>
+<td>o</td>
+<td>-</td>
+<td>turn right</td>
+</tr>
+<tr>
+<td>x</td>
+<td>x</td>
+<td>o</td>
+<td>turn left</td>
+</tr>
+<tr>
+<td>x</td>
+<td>x</td>
+<td>x</td>
+<td>(no command)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p><p>
+To run the demonstration with the controller software, do as the following:
+<pre>
+% mj -s sensor.trash -s sensor.motor control.seekTrash
+</pre>
+</p><p>
+It is obvious again for one who runs the demonstration, the sweeper robot is stuck with an wall.
+</p><h3><a name="action_wall_trash">combination of wall avoiding and trash seeking automatic controller</a></h3><p>
+Each of the automatic controllers above comes to inappropriate state soon so that the robot cannot continue to work.  The next demonstration uses combination of 2 controller softwares; wall avoiding and trash seeking controller softwares.  The important point is that there is no need to implement new modules but merely need to combine already implemented modules.  The combination takes place on the time of execution:
+<pre>
+mj -s sensor.wall -s sensor.trash -s sensor.motor \
+   -s control.avoidWall control.seekTrash
+</pre>
+</p><p>
+The combination seems much better to clean up the room.  It is, however, difficult to finish cleaning up the room completely.  The success depends on the arrangement of walls and trashes,  the less the number of trash becomes, the higher the probability to come to the dead end like <a href="#action_avoid_wall">wall avoiding automatic controller</a> gets.
+</p><h3><a name="action_wall_trash_random">combination of wall avoiding, trash seeking and random driving automatic controller</a></h3><p>
+The next example uses random driving controller software module besides the above combination.
+<pre>
+mj -s sensor.wall -s sensor.trash -s sensor.motor \
+   -s control.avoidWall -s control.seekTrash control.random
+</pre>
+</p><p>
+It can clean up the room, though it takes a long time.
+</p><h3>combination with mismatch between sensors and controller software</h3><p>
+The examples above show the necessity to combine controller softwares with proper sensors, which send events that the controller software requires.
+</p><p>
+However, it is possible to run a demonstration with a mismatched combination between sensors and controller softwares, as the following examples show.
+<ol>
+<li>without sensors needed for controller softwares</li>
+<li>with redundant sensors for controller softwares</li>
+</ol>
+</p><p>
+For example of the first case, we remove the direction sensor from <a href="#action_manual2">manual 2</a>:
+<pre>
+% mj -s sensor.key control.manual2
+</pre>
+</p><p>
+As a result, the robot was very strangely responding to the input of cursor keys.  Actually, the lack of the direction sensor causes the controller software to misunderstand that the robot is always directing to one direction (to the right, in this case), and the events from the remote controller sensor determines the robot's behavior with the wrong information.
+</p><p>
+The next example is of the second case.  Now, we mount a needless wall sensor to <a href="#action_manual2">manual 2</a>:
+<pre>
+% mj -s sensor.key -s sensor.direction -s sensor.wall control.manual2
+</pre>
+</p><p>
+Although the sensor icon shows the existence of a wall sensor, since the controller software has no implementation to handle the events from the sensor, the sweeper robot behaves just like before.
+</p><p>
+Note that there is a way to automatically link the sensors used by the controller softwares and avoid explicit specification of sensor module.  In the demonstration, however, to show the mismatched examples as above we dare to avoid such an implementation.
+</p><h2><a name="module_overview">Modules Overview</a></h2><p>
+From now on, we will explain the implementation of the demonstration programs.
+</p><p>
+At first, we show an image of the whole MixJuice module components of the demonstration program.  Note that in the images below the modules are represented as the UML package for convenience.  Moreover, the relations `extends' or `uses' among modules are represented as the UML dependency relation and their distinction is shown by stereotype notations (for simplicity, a part of stereotype notations is omitted).
+</p><p>
+<div align="center">
+<image src="images/module_overview.png">
+</div>
+</p><p>
+The modules of the demonstration programs are classified into 3 major categories:
+</p><p>
+<ol>
+<li>modules representing simulation rules or (virtual) hardware (pale yellow modules),</li>
+<li>modules of interface between hardware and controller software (bright yellow modules), </li>
+<li>modules representing controller software (orange modules).</li>
+</ol>
+</p><p>
+The demonstration programs assume that controller softwares are implemented by users.  The controller softwares are, thus, needed to be disabled to touch directly the simulation rules and/or hardwares.  In other words, the third group of modules and user implementing controller softwares are prohibited to add difference or refer to the classes in the first group of modules.  The controller softwares must be implemented to add difference or refer only to the second group of modules.
+</p><p>
+There can be seen sometimes that relations of modules is not `extends' but `uses'.  The relation `uses' is used, by nature, not to make a restriction for vertical relation at the time of module linearization in order to use the modules having cycle relation.  The modules of the program, however, have no cycle relations.  It is used only to indicate that ``the module has no differences of classes in the target module and is purely using the classes of the target module.''
+</p><h2><a name="module_detail">Modules Detail</a></h2><p>
+This section denotes the details of each module implementation.
+</p><h3>base module</h3><p>
+The base module is the module for foundation of the demonstration programs.  The following is the base module class composition;  the pale yellow classes in the class diagram represents the classes defined in the module:
+</p><p>
+<div align="center">
+<image src="images/base_classes.png">
+</div>
+</p><p>
+</p><h4>BaseApplet</h4><p>
+BaseApplet is an applet class extends java.awt.applet.Applet.
+</p><h4>DrawCanvas</h4><p>
+DrawCanvas is a class to manage the drawing region of the simulation.  It extends java.awt.Canvas and implements update() and paint() to draw the simulation screen.  It is convenient for various classes to be able to refer the drawing region,  it is implemented as the (pseudo) Singleton class.
+</p><h4>Round</h4><p>
+Round is a class to control the simulation sequence.  It implements java.lang.Runnable to be run as a thread.  It manages start, end and elapsed time of the simulation.  In every unit time of the simulation, it calls the doAction() method, which only draws elapsed time and the trash blocks in the implementation.
+</p><h4>Room</h4><p>
+Room is a class to represent the `room' of the simulation.  It manages the layout of the room with walls and trashes.  In the implementation, the layout of the room is hard-coded in the class.  It instantiates Floor, Trash, Wall when it draws the room (the method draw()).
+</p><p>
+Note that the method main() of the class SS is implemented in the base module.  Thus, it can be run the base module only.  Since there is no sweeper robot defined in the base module, the simulation only offers the `field' with time passing without any robots.
+<pre>
+% mj base
+</pre>
+</p><h3>control module</h3><p>
+The control module is the module which defines the group of modules of interfaces between hardwares and controller softwares.
+</p><p>
+<div align="center">
+<image src="images/control_classes.png">
+</div>
+</p><p>
+</p><h4>Sweeper</h4><p>
+Sweeper is the interface of the sweeper robot hardware for the controller softwares.  The controller softwares command to the sweeper robot hardware by calling each method of Sweeper.
+</p><h4>Controller</h4><p>
+On the other hand, Controller is the interface of the controller softwares for simulation/hardwares.  init() is called at the start time of simulation, and control() is called every unit time of the simulation from simulation.  Both methods have empty implementation in the control module.  Implementers of controller software manage the sweeper robot by implementing the class Controller and calling each method of Sweeper.
+</p><p>
+Note that in the class Controller there is a method getSweeper() to obtain a reference of Sweeper for controller software implementer to use.  Moreover, the instantiation of the class Controller is done in the simulation internally, there is no need for the implementor to call the constructor.
+</p><h3>hardware module</h3><p>
+The hardware module is the module to implement the hardware of the sweeper robot.
+</p><p>
+<div align="center">
+<image src="images/hardware_classes.png">
+</div>
+</p><p>
+</p><h4>SweeperImpl</h4><p>
+SweeperImpl is the implementation class of the sweeper robot.  It implements the interface Sweeper of the control module.  Each method of the interface Sweeper is implemented as to instantiate each concrete class of ActionCommand, will be stated later, and keep it.
+</p><h4>Direction</h4><p>
+Direction is the class representing the direction of the sweeper robot.  The class is capable to represent the whole 360 degrees by 1 degree, but the demonstration uses only 4 instances by 90 degrees.
+</p><h4>ActionCommand</h4><p>
+ActionCommand is the interface representing the actions of the sweeper robot.  In case the robot do something in every unit time of the simulation, SweeperImpl call the exec() methods of each keeping ActionCommand.  ForwardCommand, BackCommand, RightCommand, LeftCommand and  StopCommand are the concrete classes implementing the interface; each represents the action, `go forward', `go backward', `turn right', `turn left' and `stop', of the sweeper robot and implements the method exec().
+</p><p>
+The following layered class diagram shows the relationship with the base module.
+</p><p>
+<div align="center">
+<image src="images/hardware_layered.png">
+</div>
+</p><p>
+</p><h4>Round</h4><p>
+The method calling to move the sweeper robot is added to the method doAction() called in every unit time of simulation.
+</p><h4>DrawCanvas</h4><p>
+DrawCanvas manages the instance of SweeperImpl added in the module, too.  The method draw() which draws the screen has a new routine to draw the sweeper robot.
+</p><h3>sensor module</h3><p>
+The sensor module is the super-module to implement each sensor module.
+</p><p>
+<div align="center">
+<image src="images/sensor_classes.png">
+</div>
+</p><p>
+</p><h4>Sensor</h4><p>
+Sensor is the super class of each sensor, which implements the abstract method sense() for sensor function.  To fulfill a function of the sensor, it is necessary to obtain references of Room, SweeperImpl and Controller, there are methods getRoom(), getSweeper() and getController() provided to be used for implementation of sensors.
+</p><h4>SensorSet</h4><p>
+SeneorSet is a container class for sensors; calling sense() results sense() of each sensors to be called.
+</p><p>
+The class provides a template method includeSensor().  Since the method will be called in the constructor of SeneorSet, the registration process of sensors can be described as the difference of the method in each sensor module.  By this means, the registration process depending on the sensors can be described in each sensor module and the code localization can be achieved.  To register a sensor, the method add() is used.
+</p><p>
+The following layered class diagram shows the relationship with the base module.
+</p><p>
+<div align="center">
+<image src="images/sensor_layered.png">
+</div>
+</p><p>
+</p><h4>Round</h4><p>
+The method calling for sensor detection is added to the method doAction() called in every unit time of simulation.
+</p><h4>DrawCanvas</h4><p>
+DrawCanvas additionally manages the instance of SensorSet added in the module.  The method draw() has a new routine to draw the sensor icons.
+</p><h3>sensor.* modules and event.* modules</h3><p>
+The group of modules sensor.* are the implementation modules of each sensor.  Each sensor class is defined/implemented by extending the class Sensor of the sensor module.
+</p><p>
+<div align="center">
+<image src="images/sensors_classes.png">
+</div>
+</p><p>
+In addition, the group of modules event.* are the modules defining event handler methods of sensors.  They extend the control module and add event handler methods corresponding events sent by each sensor to Controller class.  Note that the implementation of these methods in event,* modules are all empty.
+</p><p>
+<div align="center">
+<image src="images/event_layered.png">
+</div>
+</p><p>
+As stated in <a href="#module_overview">Modules overview</a>, sensor.* modules and event.* modules are paired.  In other words, in the implementation of each sensor class of sensor.* modules, by calling method of Controller class defined in paired event.* module, the events are transmitted to controller softwares.
+</p><h3>control.* modules</h3><p>
+The module group control.* are the reference implementations of controller softwares in the demonstration.  These modules extend the events of event.* modules to be handled in controller software. The class of controller software is Controller, which describes the logic of controller software by implementing each event handler method, init() method and control() method.
+</p><p>
+See the explanation of <a href="#action">Description of Behavior</a> for the implementation of each module.
+</p><h2><a name="module_merit">Merits of Module Mechanism</a></h2><p>
+There are some merits of module mechanism for implementing the demonstration.  This section provides the explanation of them, though a part of it is already mentioned in the sections above; how the module mechanism of MixJuice is used, or how it contributes to the simplification of implementation or aggregation of code.
+</p><h3>execution with combination of sensors and controller softwares</h3><p>
+As explained from the beginning, by employing module mechanism of MixJuice, the demonstration can choose combinations as follows at execution time.
+</p><p>
+<ul>
+<li>combination of multiple sensor modules</li>
+<li>combination of sensor modules and controller software modules</li>
+<li>combination of multiple controller software modules</li>
+</ul>
+</p><p>
+It is ``combination of multiple controller software modules'' that should be considered here.  At the example of <a href="#action_wall_trash">combination of wall avoiding and trash seeking automatic controller</a>, ``wall avoiding controller software'' module control.avoidWall and ``trash seeking controller software'' module control.seekTrash are combined to be executed.  Actual execution seems that they control the sweeper robot cooperatively as we wished.  However, strictly speaking, in some cases there are conflicts between controllers.  The following is an example:
+</p><p>
+<div align="center">
+<image src="images/wall_trash_conflict.png">
+</div>
+</p><p>
+In case the sweeper robot comes forward to the block shown in the illustration above, control.avoidWall based on the event from the wall sensor and control.seekTrash based on the event from the trash sensor decide to command to turn opposite directions each.  These commands are sent from each module's Controller#control().
+<pre>
+module control.avoidWall
+extends event.wall, control.turnAndForward
+{
+    class Controller {
+        void control() {
+            original();
+            ...
+                getSweeper().turnRight(); // This is the command.
+            ...
+        }
+    }
+}
+
+module control.seekTrash
+extends event.trash, control.turnAndForward
+{
+    class Controller {
+        void control() {
+            original();
+            ...
+                getSweeper().turnLeft(); // This is the command.
+            ...
+        }
+    }
+}
+</pre>
+</p><p>
+Then, to which the sweeper robot actually moves?  The answer is upward, i.e. the command from control.seekTrash is effective.  The reason is as follows:
+</p><p>
+<ol>
+<li>The hardware is implemented as in case there are multiple method calls to Sweeper in control(), the last method call is effective.</li>
+<li>by module linearize mechanism of MixJuice, control.seekTrash is sub-module on the linearize list.</li>
+</ol>
+</p><p>
+The first reason may be the specification of the sample, and is not problematic.  On the other hand, the second reason can be problematic, since MixJuice prohibits to write a code expecting the behavior, and if a user who uses the combination of modules wishes ``in these situation, control.seekTrash should have priority''.  In the first place, the behavior of the controller software sending different commands to Sweeper simultaneously is contradicting itself.  To restrict the controller to send always a single command in such cases, it should be constructed from scratch as a single controller software to handle events from both wall sensor and trash sensor, and it should not be constructed as a combination of multiple controllers handling each event.
+</p><p>
+But if the ambiguity that ``if there is a conflict of commands, only one of the command should be effective'' is allowed by a user, it is admissible to combine multiple controller softwares as example above.  Though there is a dependency on processing system, without new code, it is possible to combine method implementations to some degree.  It is one of the merit of MixJuice.
+</p><h3>implementation of Round and DrawCanvas</h3><p>
+The hardware module and the sensor module add differences to the implementation of Round and DrawCanvas defined in the base module.  The difference of implementation added is about the class defined in the module, where the addition takes place; i.e. the localization of implementation is accomplished.
+</p><h3>registration process of sensors</h3><p>
+The registration process of sensors depending on the sensors can be localize to the module where the sensor is implemented.  For a concrete example, here shows the remote controller sensor module sensor.key.
+<pre>
+module sensor.key
+extends sensor
+uses event.key
+{
+    define class KeySensor extends Sensor implements KeyListener {
+        define KeySensor() { ... }
+        void sense() {}
+        void keyPressed(KeyEvent e) { ... }
+        void keyReleased(KeyEvent e) {}
+        void keyTyped(KeyEvent e) {}
+    }
+    class SensorSet {
+        void includeSensors() {
+            original();
+            KeySensor s = new KeySensor();
+            add(s);
+            DrawCanvas.instance.addKeyListener(s); // This is needed only for remote controller sensor.
+        }
+    }
+}
+</pre>
+</p><p>
+Since the remote controller sensor class KeySensor need to catch key events, it implements java.awt.event.KeyListener.  It, thus, need to be registered to AWT component as key listener, but the process is specific to the remote controller sensor and no other sensors need it.  By using the module mechanism, special processes like this can be described in the necessary module itself, and the localization of code is achieved.
+</p><h3>implementation of motor sensor</h3><p>
+The use of module mechanism makes the implementation of the motor sensor very concise and localized.
+</p><p>
+<div align="center">
+<image src="images/motor_sensor_layered.png">
+</div>
+</p><p>
+The hardware module has definitions of the interface ActionCommand, which represents the sweeper robot's movement, and each concrete classes.  Using the mechanism, in the sensor.motor module, the method notify() to notify these classes and the interface an event is added.  The addition makes the implementation of the method MotorSensor#sense() completed only by calling the added notify() method via SweeperImpl; it is very concise.  In addition, the all implementation related to the motor sensor is aggregated in the sensor.motor module.
+</p><h2><a name="extension">Further Extension</a></h2>
+Here shows a guideline to extend the sample.  Let's challenge as an exercise to write a code of MixJuice.
+</p><h3>additional controller software</h3><p>
+The demonstration expects the user implements additional controller softwares.  To clean up the room more certainly, new controller softwares can be implemented.  For example:
+</p><h4>controller software using `fill' algorithm</h4><p>
+This kind of controllers may be implemented with motor sensor, direction sensor and wall sensor.  It is sure that the room will be cleaned up but every time the sweeper robot goes back to the stacking point and the robot may move around too redundantly.
+</p><h4>controller software mapping the room and seeking un-running areas</h4><p>
+The robot with this kind of controllers may clean up the room more optimally.  The difficulty of implementation is rather high because the optimal path seeking algorithm, or an algorithm deciding blocks surrounded by walls are impossible to go, etc. are difficult to implement.
+</p><h3>change of hardwares and/or simulation rules</h3><p>
+The provided implementation is limited to minimal functions, it does not seem a good game.  If the followings, for example, are changed, it seems to be better game to play.
+</p><p>
+<ul>
+<li>wall/trash sensors detecting from more blocks</li>
+<li>variable speeds of the robot</li>
+<li>various density of trash (a trash block which cannot be completely swept by running on it once)</li>
+<li>more rooms, choice of a room</li>
+</ul>
+</p>
+
+<hr>
+<table width="100%">
+<tr><td>
+<img src="images/img002.gif" alt="mj-logo">
+</td><td>
+<div class="header-link">
+[<a href="index.html">MJ Top page</a>]
+[<a href="site-map.html">Site map</a>]
+</div>
+</td>
+</table>
+</body>
+</html>

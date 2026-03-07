@@ -1,0 +1,1956 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<title>MixJuice によるデザインパターン改善カタログ</title>
+<link href="design-pattern.css" rel="stylesheet" type="text/css"/>
+<style type="text/css">
+<!--
+.style2 {font-size: small}
+-->
+</style>
+</head
+><body>
+<h1 id="Design_Pattern_improvement_catalog_for_MixJuice">MixJuice によるデザインパターン改善カタログ</h1 
+><p>Last updated: 2005-05-11</p
+>
+<p>このデザインパターン改善カタログは、デザインパターンを使用する際に生じるさまざまな問題点が、<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MixJuice</a 
+> 言語によっていかに解決されるかをカタログ化してまとめたものである。このカタログは AspectJ 、 CLOS 、 Ruby などの open class の機能を持つ言語でも利用可能である。（詳しくは<a href="#For_other_programming_languages">「他のプログラミング言語への応用」</a 
+>の節を参照のこと）</p
+>
+
+
+<p>表１は、それぞれのデザインパターンの問題点と、
+それを解決するために使用する MixJuice のプログラミング技法をまとめたものである。
+この中で特に <a href="#Adapter">Adapter</a 
+> 、 <a href="#Decorator">Decorator</a 
+> 、 <a href="#Visitor">Visitor</a 
+> を読むことをお勧めする。
+<br>
+</p>
+<table border="1"><caption>
+  表１ MixJuice によるデザインパターンの改善
+</caption 
+><tr><th rowspan="2"><span class="style2">デザインパターン</span></th
+>
+<th rowspan="2"><a href="#An_improvement_of_the_solution_or_another_solution" class="style2">種別</a
+></th
+>
+<th colspan="5"><a href="#Categories_of_resolved_problems" class="style2">解決される問題</a
+></th
+>
+<td rowspan="2"><a href="#programming-technique" class="style2">使用する技法</a
+></td
+>
+</tr
+><tr><th><a href="#Introduction_problem" class="style2">導入</a
+></th
+>
+<th><a href="#Extensibility_problem" class="style2">拡張</a
+></th
+>
+<th><a href="#Information_hiding_problem" class="style2">情報隠蔽</a
+></th
+>
+<th><a href="#Type_safety_problem" class="style2">型安全</a
+></th
+>
+<th><a href="#Complexity_problem" class="style2">複雑</a
+></th
+>
+</tr
+><tr><td rowspan="2"><a href="#Abstract_Factory" class="style2">AbstractFactory</a
+></td
+>
+<td><span class="style2">改善</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">p.98</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><a href="#Abstract_method_addition" class="style2">アブストラクトメソッド追加</a
+></td
+>
+</tr
+><tr><td><span class="style2">別解</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">p.98</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">N</span></td
+>
+<td><span class="style2">N</span></td
+>
+<td><a href="#Implementation_selection" class="style2">実装モジュール選択</a
+></td
+>
+</tr
+><tr><td rowspan="2"><a href="#Builder" class="style2">Builder</a
+></td
+>
+<td><span class="style2">改善</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">p.108</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><a href="#Method_addition" class="style2">メソッド追加</a
+></td
+>
+</tr
+><tr><td><span class="style2">別解</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">N</span></td
+>
+<td><a href="#Implementation_selection" class="style2">実装モジュール選択</a
+></td
+>
+</tr
+><tr><td><a href="#Factory_Method" class="style2">FactoryMethod</a
+></td
+>
+<td><span class="style2">別解</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">N</span></td
+>
+<td><span class="style2">p.121</span></td
+>
+<td><a href="#Implementation_selection" class="style2">実装モジュール選択</a
+></td
+>
+</tr
+><tr><td><a href="#Prototype" class="style2">Prototype</a
+></td
+>
+<td><span class="style2">改善</span></td
+>
+<td><span class="style2">p.131</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><a href="#Abstract_method_addition" class="style2">アブストラクトメソッド追加</a
+></td
+>
+</tr
+><tr><td><a href="#Singleton" class="style2">Singleton</a
+></td
+>
+<td><span class="style2">別解</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">p.138</span></td
+>
+<td><a href="#Method_extension" class="style2">メソッド拡張</a
+></td
+>
+</tr
+><tr><td><a href="#Adapter" class="style2">Adapter</a
+></td
+>
+<td><span class="style2">別解</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">p.153</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">p.152</span></td
+>
+<td><a href="#Super-interface_addition" class="style2">スーパーインターフェース追加</a
+></td
+>
+</tr
+><tr><td rowspan="2"><a href="#Bridge" class="style2">Bridge</a
+></td
+>
+<td><span class="style2">改善</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">N</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><a href="#Abstract_method_addition" class="style2">アブストラクトメソッド追加</a
+></td
+>
+</tr
+><tr><td><span class="style2">別解</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">N</span></td
+>
+<td><span class="style2">N</span></td
+>
+<td><a href="#Implementation_selection" class="style2">実装モジュール選択</a
+></td
+>
+</tr
+><tr><td><a href="#Composite" class="style2">Composite</a
+></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+</tr
+><tr><td rowspan="2"><a href="#Decorator" class="style2">Decorator</a
+></td
+>
+<td><span class="style2">改善</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">p.191</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"><a href="#Method_addition">メソッド追加</a
+>, <a href="#Abstract_method_addition">アブストラクトメソッド追加</a 
+></span></td
+>
+</tr
+><tr><td><span class="style2">別解</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">p.191</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">p.190</span></td
+>
+<td><a href="#Class_extension" class="style2">クラス拡張</a
+></td
+>
+</tr
+><tr><td><a href="#Facade" class="style2">Facade</a
+></td
+>
+<td><span class="style2">改善</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">p.201</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><a href="#Namespace_separation" class="style2">名前空間分離</a
+></td
+>
+</tr
+><tr><td><a href="#Flyweight" class="style2">Flyweight</a
+></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+</tr
+><tr><td><a href="#Proxy" class="style2">Proxy</a
+></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+</tr
+><tr><td><a href="#Chain_of_Responsibility" class="style2">ChainOfResponsibility</a
+></td
+>
+<td><span class="style2">改善</span></td
+>
+<td><span class="style2">N</span></td
+>
+<td><span class="style2">p.241</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"><a href="#Method_addition">メソッド追加</a
+>, <a href="#Abstract_method_addition">アブストラクトメソッド追加</a 
+></span></td
+>
+</tr
+><tr><td><a href="#Command" class="style2">Command</a
+></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+</tr
+><tr><td><a href="#Interpreter" class="style2">Interpreter</a
+></td
+>
+<td><span class="style2">改善</span></td
+>
+<td><span class="style2">N</span></td
+>
+<td><span class="style2">p.265</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><a href="#Abstract_method_addition" class="style2">アブストラクトメソッド追加</a
+></td
+>
+</tr
+><tr><td><a href="#Iterator" class="style2">Iterator</a
+></td
+>
+<td><span class="style2">改善</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">p.280</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><a href="#Namespace_separation" class="style2">名前空間分離</a
+></td
+>
+</tr
+><tr><td><a href="#Mediator" class="style2">Mediator</a
+></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+</tr
+><tr><td><a href="#Memento" class="style2">Memento</a
+></td
+>
+<td><span class="style2">改善</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">p.307</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><a href="#Namespace_separation" class="style2">名前空間分離</a
+></td
+>
+</tr
+><tr><td><a href="#Observer" class="style2">Observer</a
+></td
+>
+<td><span class="style2">改善</span></td
+>
+<td><span class="style2">N</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><a href="#Class_extension" class="style2">クラス拡張</a
+></td
+>
+</tr
+><tr><td><a href="#State" class="style2">State</a
+></td
+>
+<td><span class="style2">改善</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">N</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><a href="#Abstract_method_addition" class="style2">アブストラクトメソッド追加</a
+></td
+>
+</tr
+><tr><td><a href="#Strategy" class="style2">Strategy</a
+></td
+>
+<td><span class="style2">別解</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">N</span></td
+>
+<td><a href="#Implementation_selection" class="style2">実装モジュール選択</a
+></td
+>
+</tr
+><tr><td><a href="#Template_Method" class="style2">TemplateMethod</a
+></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+</tr
+><tr><td rowspan="3"><a href="#Visitor" class="style2">Visitor</a
+></td
+>
+<td><span class="style2">改善１</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">p.359</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><a href="#Separation_of_specifications_and_implementations" class="style2">仕様モジュールと実装モジュールの分離</a
+></td
+>
+</tr
+><tr><td><span class="style2">改善２</span></td
+>
+<td><span class="style2">N</span></td
+>
+<td><span class="style2">p.358</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><a href="#Abstract_method_addition" class="style2">アブストラクトメソッド追加</a
+></td
+>
+</tr
+><tr><td><span class="style2">別解</span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2"></span></td
+>
+<td><span class="style2">N</span></td
+>
+<td><a href="#Abstract_method_addition" class="style2">アブストラクトメソッド追加</a
+></td
+>
+</tr
+></table
+>
+<p>注：表中のページ番号は「オブジェクト指向における再利用のためのデザインパターン（ Erich Gamma 、 Richard Helm 、 Ralph Johnson 、 John Vlissides 、ソフトバンク パブリッシング）」（以下 『GoF 本』と呼ぶ）の中でその問題が指摘されているページを示す。 "N" は GoF 本内でその問題が指摘されていないことを示す。</p>
+<p>
+以下の節では、本カタログ内で使われている用語等について説明する。
+</p>
+<h2 id="An_improvement_of_the_solution_or_another_solution">
+「改善」と「別解」について</h2
+><p>「改善」は GoF パターンの改善であることを意味する。 MixJuice は、 GoF パターンをクラス構造を変化させることなく改善することができる。改善によって、 GoF パターンのメリットを全て引き継いだ上に、いくつかの問題点を解決することができる。</p 
+><p>「別解」は対応する GoF パターンと異なったクラス構造を持つ解であることを意味する。オリジナルの GoF パターンと比較して、一般にメリットとデメリットがある。</p 
+><h2 id="Categories_of_resolved_problems">解決される問題のカテゴリ</h2
+><p>
+解決される問題は、以下の５つのカテゴリに分類される。
+</p
+><h3 id="Introduction_problem">導入可能性の問題</h3
+><p>オリジナルの GoF パターンにおいて、導入の際に既存のソースコードの編集が必要になるという問題。</p 
+><h3 id="Extensibility_problem">拡張性の問題</h3
+><p>オリジナルの GoF パターンは、ソースコードを編集しなければある種の拡張をサポートできないという問題。</p 
+><h3 id="Information_hiding_problem">情報隠蔽の問題</h3
+><p>オリジナルの GoF パターンにおいて、一部の名前を public にせざるを得ないという問題。（ Java のパッケージまたはネストしたクラスの機構によって解決できる場合もある。）</p 
+><h3 id="Type_safety_problem">型安全性の問題</h3
+><p>オリジナルの GoF パターンにおいて、サブクラスのメソッドを呼び出すためにダウンキャストが必要になる場合があるという問題。</p 
+><h3 id="Complexity_problem">複雑さの問題</h3
+><p>オリジナルの GoF パターンのクラス構造が複雑で、間違いを起こしやすいという問題。</p 
+><h2 id="Layered_class_diagram">レイヤードクラス図</h2
+><p>カタログ内のそれぞれの解は「レイヤードクラス図」と MixJuice の擬似コードを用いて説明している。</p 
+><p>レイヤードクラス図は MixJuice の差分ベースモジュールによってどのようにプログラムが拡張されるかを表現するための記法である。</p 
+><p>詳しくは <a href="http://staff.aist.go.jp/y-ichisugi/mj/papers/lclass-diag-20021030.pdf">レイヤードクラス図の提案</a
+>を参照されたい。</p
+><h2 id="About_quotations_from_the_GoF_book">GoF 本からの引用について</h2 
+><p>このカタログは GoF 本からの引用を含んでいる。
+それぞれのデザインパターンの「目的」の説明は GoF 本からそのまま引用した。
+それぞれのデザインパターンのクラス図は、 UML の最近の表記に従って書き直して引用した。</p 
+><h2 id="For_other_programming_languages">他のプログラミング言語への応用</h2
+><p>このカタログ内の解の多くは AspectJ や CLOS 、 Ruby といった他の AOP(アスペクト指向プログラミング)言語 や open class 機構を持つ言語に応用できる。</p 
+><p>MixJuice のプログラミング技法はそのような言語のプログラミング技法と対応している。表２は MixJuice 、 AspectJ 、 CLOS 、 Ruby の技法の対応を示している。</p 
+><table border="1"><caption>表２ 言語と技法</caption
+><tr><td>技法</td
+><td><a href="http://aspectj.org">AspectJ</a
+></td
+><td><a href="http://www-2.cs.cmu.edu/afs/cs.cmu.edu/project/ai-repository/ai/html/cltl/cltl2.html">CLOS</a
+></td
+><td><a href="http://www.ruby-lang.org">Ruby</a
+></td
+></tr
+><tr><td><a href="#Method_extension">メソッド拡張</a
+></td
+><td>around advice</td 
+><td></td
+><td>alias/def</td
+></tr
+><tr><td><a href="#Super-interface_addition">スーパーインターフェース追加</a
+></td
+><td>declare parents</td 
+><td>defmethod</td
+><td>include</td
+></tr
+><tr><td><a href="#Field_addition">フィールド追加</a
+></td
+><td>introduction</td
+><td></td
+><td>assignment</td
+></tr
+><tr><td><a href="#Method_addition">メソッド追加</a
+></td
+><td>introduction</td
+><td>defmethod</td
+><td>dynamic method definition</td
+></tr
+><tr><td><a href="#Abstract_method_addition">アブストラクトメソッド追加</a
+></td
+><td>introduction</td
+><td colspan="2">useless because dynamic typing</td
+></tr
+><tr><td><a href="#Namespace_separation">名前空間分離</a
+></td
+><td>aspect</td
+><td>package</td
+></tr
+><tr><td><a href="#Separation_of_specifications_and_implementations">仕様モジュールと実装モジュールの分離</a
+></td
+><td></td
+><td></td
+><td></td
+></tr
+><tr><td><a href="#Implementation_selection">実装モジュール選択</a
+></td
+><td>aspect selection</td 
+><td></td
+><td>require selection</td
+></tr
+></table
+><p>いくつかの他の言語やシステムのドキュメントにはその言語がどのようにしてデザインパターンを不要にしているかどうかを説明している。以下のページを参考にされたい。</p
+><ul><li><a href="http://aspectj.org">AspectJ</a
+></li
+><li><a href="http://www.alphaworks.ibm.com/tech/hyperj">Hyper/J</a
+></li
+><li><a href="http://www.ccs.neu.edu/research/demeter/DemeterJava/">DemeterJ</a
+></li
+><li><a href="http://www.multijava.org/">MultiJava</a
+></li
+></ul
+><h2 id="Links">関連リンク</h2
+><h3 id="MixJuice_home_page"><a href="http://staff.aist.go.jp/y-ichisugi/ja/mj/">プログラミング言語 MixJuice のホームページ</a 
+></h3
+>
+<p>MixJuice についての詳細は、このページを参照されたい。</p>
+<h3 id="Aspect-Oriented_Design_Pattern_Implementations"><a href="http://www.cs.ubc.ca/~jan/AODPs/">Aspect-Oriented Design Pattern Implementations</a 
+></h3
+><p> AspectJ を使ってデザインパターンを実装し分析している。彼らのプログラミングスタイルは我々のものとは大きく異なる。彼らは AspectJ の open class (introduction) の機能をあまり使っていない。</p
+><h1 id="Abstract_Factory">Abstract Factory</h1 
+><h2 id="Intent">パターンの目的</h2
+><blockquote cite="urn:isbn:4-797-31112-6"><p>互いに関連したり依存し合うオブジェクト群を、その具象クラスを明確にせずに生成するためのインターフェースを提供する。</p
+></blockquote
+><h2 id="Class_diagram_of_the_original_GoF_pattern">GoF パターンのクラス図</h2 
+><p><img src="./fig-GoF/PNG/abstractfactory.png" alt="structure-GoF:abstractfactory"
+/></p
+><h2 id="Improvement_in_MixJuice1">MixJuice 版 Abstract Factory (改善)</h2 
+><h3 id="Solved_Problem_s">解決される GoF パターンの問題点</h3 
+><dl><dt>拡張性の問題</dt
+><dd>新しい種類の Product を追加するために、新しい生成メソッドを AbstractFactory と ConcreteFactory に追加しなければならない。(この問題は GoF 本の p.98, 10-15行目で指摘されている。)</dd
+></dl
+><h3 id="Used_programming_technique_s">使用するプログラミング技法</h3
+><p>AbstractFactory に対するアブストラクトメソッド追加を用いる。</p 
+><h3 id="Consequences">結果</h3
+><ul><li>(+) 既存のソースコードを修正せずに新たな種類のProductの生成に対応することが可能になる。</li 
+><li>(-) 新たな種類の Product と新たな ConcreteFactory を同時に追加するためには、補完モジュールが必要になる。</li 
+></ul
+><h3 id="Structure_and_pseudo_code">構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/abstractfactory_sample1.png" alt="structure:abstractfactory_sample1"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> original {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">class</font></b> AbstractFactory {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> AbstractProductA createProductA();
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> AbstractProductB createProductB();
+  }
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteFactory1 <b><font color="#A020F0">extends</font></b> AbstractFactory {
+    AbstractProductA createProductA(){...}
+    AbstractProductB createProductB(){...}
+  }
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteFactory2 <b><font color="#A020F0">extends</font></b> AbstractFactory {
+    AbstractProductA createProductA(){...}
+    AbstractProductB createProductB(){...}
+  }
+
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">class</font></b> AbstractProductA {...}
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ProductA1 <b><font color="#A020F0">extends</font></b> AbstractProductA {...}
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ProductA2 <b><font color="#A020F0">extends</font></b> AbstractProductA {...}
+
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">class</font></b> AbstractProductB {...}
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ProductB1 <b><font color="#A020F0">extends</font></b> AbstractProductB {...}
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ProductB2 <b><font color="#A020F0">extends</font></b> AbstractProductB {...}
+
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> Client {
+    AbstractFactory factory;
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> m1(){
+      AbstractProductA a = factory.createProductA();
+      AbstractProductB b = factory.createProductB();
+    }
+  }
+}
+<b><font color="#A020F0">module</font></b> extension <b><font color="#A020F0">extends</font></b> original {
+  <b><font color="#A020F0">class</font></b> AbstractFactory {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> AbstractProductC createProductC();
+  }
+  <b><font color="#A020F0">class</font></b> ConcreteFactory1 {
+    AbstractProductC createProductC(){...}
+  }
+  <b><font color="#A020F0">class</font></b> ConcreteFactory2 {
+    AbstractProductC createProductC(){...}
+  }
+
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">class</font></b> AbstractProductC {...}
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ProductC1 <b><font color="#A020F0">extends</font></b> AbstractProductC {...}
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ProductC2 <b><font color="#A020F0">extends</font></b> AbstractProductC {...}
+
+  <b><font color="#A020F0">class</font></b> Client {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> m2(){
+      AbstractProductC c = factory.createProductC();
+    }
+  }
+}</pre>
+<h2 id="Another_solution_in_MixJuice">MixJuice 版 Abstract Factory (別解)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>拡張性の問題</dt
+><dd>新しい種類の Product を追加するために、新しい生成メソッドを AbstractFactory と ConcreteFactory に追加しなければならない。（この問題は GoF 本の p.98, 10-15行目で指摘されている。）</dd
+><dt>型安全性の問題</dt
+><dd>オリジナルの GoF パターンでは Product の特定のメソッドを呼び出すために AbstractProduct から Product へのダウンキャストを必要とする。（この問題は GoF 本で指摘されていない。）</dd
+><dt>複雑さの問題</dt
+><dd>GoF パターンのオリジナルのクラス構造は複雑である。（この問題は GoF 本で指摘されていない。）</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>Product クラスに対して実装モジュール選択を用いる。</p
+><h3>結果</h3
+><ul><li>(+) ソースコードを編集することなく新しい種類のProductを追加できる。</li
+><li>(+) ダウンキャストが不要となる。</li
+><li>(+) クラス構造がわかりやすくなる。</li
+><li>(-) この対策はプログラムが１種類のConcreteFactory のみしか必要としない場合のみに適用できる。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/abstractfactory_sample2.png" alt="structure:abstractfactory_sample2"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> products {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ProductA {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> ProductA();
+    ...
+  }
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ProductB {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> ProductB();
+    ...
+  }
+}
+
+<b><font color="#A020F0">module</font></b> products.implementation1 <b><font color="#A020F0">extends</font></b> products {
+  <b><font color="#A020F0">class</font></b> ProductA {
+    ProductA() {...}
+    ...
+  }
+  <b><font color="#A020F0">class</font></b> ProductB {
+    ProductB() {...}
+    ...
+  }
+}
+
+<b><font color="#A020F0">module</font></b> products.implementation2 <b><font color="#A020F0">extends</font></b> products {
+  <b><font color="#A020F0">class</font></b> ProductA {
+    ProductA() {...}
+    ...
+  }
+  <b><font color="#A020F0">class</font></b> ProductB {
+    ProductB() {...}
+    ...
+  }
+}
+
+<b><font color="#A020F0">module</font></b> client <b><font color="#A020F0">extends</font></b> products {
+  ... <b><font color="#A020F0">new</font></b> ProductA() ...
+  ... <b><font color="#A020F0">new</font></b> ProductB() ...
+}</pre>
+<h1 id="Builder">Builder</h1
+><h2>パターンの目的</h2
+><blockquote cite="urn:isbn:4-797-31112-6"><p>複合オブジェクトについて、その作成過程を表現形式に依存しないものにすることにより、同じ作成過程で異なる表現形式のオブジェクトを生成できるようにする。</p
+></blockquote
+><h2>GoF パターンのクラス図</h2
+><p><img src="./fig-GoF/PNG/builder.png" alt="structure-GoF:builder"
+/></p
+><h2>MixJuice 版 Builder (改善)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>拡張性の問題</dt
+><dd>ソースコードを編集することなく Builder と ConcreteBuilder に新しいメソッドを加えることができない。（この問題は GoF 本の p.108, 35行目 - p.109, 1-3行目で指摘されている。）</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>ConcreteBuilder クラスに対するメソッド追加を用いる。</p
+><h3>結果</h3
+><ul><li>(+) ソースコードを編集することなく Builder と ConcreteBuilder クラスに対して新しいメソッドを追加することができる。</li
+><li>(-) 新しいメソッドと ConcreteBuilder を同時に追加するためには、補完モジュールが必要になる。しかしながら、メソッドのデフォルトの処理が Builder に実装されうる場合、例えばデフォルトの処理が何もしない場合は、補完モジュールは必要にならない。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/builder_sample1.png" alt="structure:builder_sample1"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> original {
+ <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">class</font></b> Builder {
+   <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> buildPartA(){}
+   <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> buildPartB(){}
+ }
+ <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteBuilder <b><font color="#A020F0">extends</font></b> Builder {
+   <b><font color="#A020F0">void</font></b> buildPartA(){...}
+   <b><font color="#A020F0">void</font></b> buildPartB(){...}
+ }
+ <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> Director {
+   Builder builder;
+   <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> construct(){
+     builder.buildPartA();
+     builder.buildPartB();
+   }
+ }
+}
+<b><font color="#A020F0">module</font></b> extension <b><font color="#A020F0">extends</font></b> original {
+ <b><font color="#A020F0">class</font></b> Builder {
+   <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> buildPartC(){}
+ }
+ <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteBuilder2 <b><font color="#A020F0">extends</font></b> Builder {
+   <b><font color="#A020F0">void</font></b> buildPartA(){...}
+   <b><font color="#A020F0">void</font></b> buildPartB(){...}
+   <b><font color="#A020F0">void</font></b> buildPartC(){...}
+ }
+ <b><font color="#A020F0">class</font></b> Director {
+   <b><font color="#A020F0">void</font></b> construct(){
+     original();
+     builder.buildPartC();
+   }
+ }
+}</pre>
+<h2>MixJuice 版 Builder (別解)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>複雑さの問題</dt
+><dd>GoF パターンのオリジナルのクラス構造は複雑である。</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>Builder に対して実装モジュール選択を用いる。</p
+><h3>結果</h3
+><ul><li>(+) クラス構造が単純になる</li
+><li>(-) この対策はプログラムが１種類の Builder のみしか必要としない場合のみに適用できる。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/builder_sample2.png" alt="structure:builder_sample2"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> builder {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> Builder {
+    <i><font color="#B22222">// このクラスは Director の関数を持っている。
+</font></i>    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> construct() { ... }
+
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> buildPartA() {}
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> buildPartB() {}
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> buildPartC() {}
+  }
+}
+
+<b><font color="#A020F0">module</font></b> builder.implementation1 <b><font color="#A020F0">extends</font></b> builder {
+  <b><font color="#A020F0">class</font></b> Builder {
+    <b><font color="#A020F0">void</font></b> buildPartA() { ... }
+    <b><font color="#A020F0">void</font></b> buildPartB() { ... }
+    <b><font color="#A020F0">void</font></b> buildPartC() { ... }
+  }
+}
+
+<b><font color="#A020F0">module</font></b> builder.implementation2 <b><font color="#A020F0">extends</font></b> builder {
+  <b><font color="#A020F0">class</font></b> Builder {
+    <b><font color="#A020F0">void</font></b> buildPartA() { ... }
+    <b><font color="#A020F0">void</font></b> buildPartB() { ... }
+    <b><font color="#A020F0">void</font></b> buildPartC() { ... }
+  }
+}</pre>
+<h1 id="Factory_Method">Factory Method</h1
+><h2>パターンの目的</h2
+><blockquote cite="urn:isbn:4-797-31112-6"><p>オブジェクトを生成するときのインターフェースだけを規定して、実際にどのクラスをインスタンス化するかはサブクラスが決めるようにする。 Factory Method パターンは、インスタンス化をサブクラスに任せる。</p
+></blockquote
+><h2>GoF パターンのクラス図</h2
+><p><img src="./fig-GoF/PNG/factorymethod.png" alt="structure-GoF:factorymethod"
+/></p
+><h2>MixJuice 版 Factory Method (別解)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>型安全性の問題</dt
+><dd>オリジナルの GoF パターンでは ConcreteProduct の特定のメソッドを呼び出すために Product から ConcreteProduct へのダウンキャストを必要とする。（この問題は GoF 本で指摘されていない。）</dd
+><dt>複雑さの問題</dt
+><dd>オリジナルの GoF パターンのクラス構造は複雑である。（この問題は GoF 本の p.121, 17-19行目で指摘されている。）</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>Product と Creator に対して実装モジュール選択を用いる。</p
+><h3>結果</h3
+><ul><li>(+) ダウンキャストが不要になる。</li
+><li>(+) クラス構造が単純になる。</li
+><li>(-) この対策はプログラムがそれぞれ１種類の Product と Creator のみしか必要としない場合のみに適用できる。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/factorymethod_sample1.png" alt="structure:factorymethod_sample1"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> m {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> Product {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> Product();
+  }
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> Creator {
+    <b><font color="#A020F0">define</font></b> Product product;
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> anOperation() { ... product = <b><font color="#A020F0">new</font></b> Product(); ... }
+  }
+}
+
+<b><font color="#A020F0">module</font></b> m.implementation <b><font color="#A020F0">extends</font></b> m {
+  <b><font color="#A020F0">class</font></b> Product {
+    Product() {...}
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> concreteMethod() {...}
+  }
+  <b><font color="#A020F0">class</font></b> Creator {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> anotherOperation() {
+      ...
+      product.concreteMethod(); <i><font color="#B22222">// キャストは必要ない。
+</font></i>      ...
+    }
+  }
+}</pre>
+<h1 id="Prototype">Prototype</h1
+><h2>パターンの目的</h2
+><blockquote cite="urn:isbn:4-797-31112-6"><p>生成すべきオブジェクトの種類を原型となるインスタンスを使って明確にし、それをコピーすることで新たなオブジェクトの生成を行う。</p
+></blockquote
+><h2>GoF パターンのクラス図</h2
+><p><img src="./fig-GoF/PNG/prototype.png" alt="structure-GoF:prototype"
+/></p
+><h2>MixJuice 版 Prototype (改善)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>導入可能性の問題</dt
+><dd>オリジナルの GoF パターンはソースコードを編集しなければ導入することができない。（この問題は GoF 本の p.131, 1-5行目で指摘されている。）</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>既存のクラスに対して &quot;copy()&quot; アブストラクトメソッド追加を用いる。</p
+><h3>結果</h3
+><ul><li>(+) Prototype パターンが既存のクラスに導入できるようになる。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/prototype_sample1.png" alt="structure:prototype_sample1"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> original {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">class</font></b> AbstractProduct {...}
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteProduct1 <b><font color="#A020F0">extends</font></b> AbstractProduct {...}
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteProduct2 <b><font color="#A020F0">extends</font></b> AbstractProduct {...}
+}
+
+<b><font color="#A020F0">module</font></b> extension <b><font color="#A020F0">extends</font></b> original {
+  <b><font color="#A020F0">class</font></b> AbstractProduct {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> AbstractProduct copy();
+  }
+
+  <b><font color="#A020F0">class</font></b> ConcreteProduct1 {
+    AbstractProduct copy() {...}
+  }
+
+  <b><font color="#A020F0">class</font></b> ConcreteProduct2 {
+    AbstractProduct copy() {...}
+  }
+}</pre>
+<h1 id="Singleton">Singleton</h1
+><h2>パターンの目的</h2
+><blockquote cite="urn:isbn:4-797-31112-6"><p>あるクラスに対してインスタンスが一つしか存在しないことを保証し、それに対してグローバルにアクセスするための方法を提供する。</p
+></blockquote
+><h2>GoF パターンのクラス図</h2
+><p><img src="./fig-GoF/PNG/singleton.png" alt="structure-GoF:singleton"
+/></p
+><h2>MixJuice 版 Singleton (別解)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>複雑さの問題</dt
+><dd>オリジナルの GoF パターンは複雑で問題を起こしやすい。（この問題は GoF 本で指摘されていないが、スタティックメソッドの問題点は p.138, 24-29行目に示されていて、これはこの問題点が無ければスタティックメソッドが望ましいことを暗示している。）</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>スタティックメソッドに対するメソッド拡張が可能ならば、拡張性の制約を解決できる。（ただし MixJuice の現在のバージョン 1.0 ではスタティックメソッドの拡張をサポートしていないので注意。）</p
+><h3>結果</h3
+><ul><li>(+) ソースコードはシンプルで直接的になる。</li
+><li>(-) GoF 本 p.138, 20-23行目で示されるように、一つ以上のインスタンスを許すデザインに変更することが困難になる。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/singleton_sample1.png" alt="structure:singleton_sample1"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> original {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> C {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">static</font></b> <b><font color="#A020F0">void</font></b> operation() {...}
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">static</font></b> <b><font color="#A020F0">int</font></b> data;
+  }
+}
+
+<b><font color="#A020F0">module</font></b> extension <b><font color="#A020F0">extends</font></b> original {
+  <b><font color="#A020F0">class</font></b> C {
+    <b><font color="#A020F0">static</font></b> <b><font color="#A020F0">void</font></b> operation() { ... original() ...}
+  }
+}</pre>
+<h1 id="Adapter">Adapter</h1
+><h2>パターンの目的</h2
+><blockquote cite="urn:isbn:4-797-31112-6"><p>あるクラスのインターフェースを、クライアントが求める他のインターフェースへ変換する。 Adapter パターンは、インターフェースに互換性のないクラス同士を組み合わせることができるようにする。</p
+></blockquote
+><h2>GoF パターンのクラス図</h2
+><h3 id="Class_adapter">Class adapter</h3
+><p><img src="./fig-GoF/PNG/adapter1.png" alt="structure-GoF:adapter1"
+/></p
+><h3 id="Object_adapter">Object adapter</h3
+><p><img src="./fig-GoF/PNG/adapter2.png" alt="structure-GoF:adapter2"
+/></p
+><h2>MixJuice 版 Adapter (別解)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>拡張性の問題</dt
+><dd>Adapter の潜在的な問題は、すべてのクライアントに対して透過性がないことである。適合されたオブジェクトは、もはや Adaptee クラスのインタフェースには従っていない。そのため、本来の Adaptee オブジェクトと同じように使用することはできなくなる。(この問題は GoF 本の p.153, 行目26-31 で指摘されている。)</dd
+><dt>複雑さの問題</dt
+><dd>クラス Adapter を用いてクラスやその全てのサブクラスを適合するために、それぞれのクラスは対応するクラスアダプタを必要とする。(この問題は GoF 本の p.152, 11-13行目で指摘されている。)</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>Adapter クラスへのスーパーインターフェース追加を用いる。</p
+><h3>結果</h3
+><p>以下はこの対策におけるクラス Adapter やオブジェクト Adapter との間のトレードオフである。（GoF 本の p.152, 8行目以降のクラス Adapter とオブジェクト Adapter も参照されたい。）</p
+><ul><li>(+) この対策によって Adaptee そのものと Adaptee の全てのサブクラスを適合させることができる。</li
+><li>(+) この対策によっていくつかの Adaptee の挙動をオーバーライドするために新しい Adaptee のサブクラスを定義することができる。</li
+><li>(+) この対策はクラス Adapter やオブジェクト Adapter よりもシンプルである。新しいクラスや間接的なポインタを導入しなくて良い。</li
+><li>(-) ターゲットがインターフェースでなくクラスである場合、オブジェクト Adapter にのみ適用できる。なぜならクラスの多重継承は MixJuice にサポートされていないからである。</li
+><li>(-) クラスの多重継承は MixJuice にサポートされていないため、 GoF 本の p.153, 26行目で述べられている、両方向 Adapter は適用できない。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/adapter_sample1.png" alt="structure:adapter_sample1"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> library {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> Adaptee {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> specificRequest() {...}
+  }
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> SubAdaptee <b><font color="#A020F0">extends</font></b> Adaptee {...}
+}
+<b><font color="#A020F0">module</font></b> application <b><font color="#A020F0">extends</font></b> library {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">interface</font></b> Target {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> request();
+  }
+  <b><font color="#A020F0">class</font></b> Adaptee <b><font color="#A020F0">implements</font></b> Target {
+    <b><font color="#A020F0">void</font></b> request() { specificRequest(); }
+  }
+}</pre>
+<h1 id="Bridge">Bridge</h1
+><h2>パターンの目的</h2
+><blockquote cite="urn:isbn:4-797-31112-6"><p>抽出されたクラスと実装を分離して、それらを独立に変更できるようにする。</p
+></blockquote
+><h2>GoF パターンのクラス図</h2
+><p><img src="./fig-GoF/PNG/bridge.png" alt="structure-GoF:bridge"
+/></p
+><h2>MixJuice 版 Bridge (改善)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>拡張性の問題</dt
+><dd>ソースコードを編集することなく Abstraction と Implementor に新しいオペレーションを加えることができない。（この問題は GoF 本で指摘されていない。）</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>Abstraction と Implementor に対してアブストラクトメソッド追加を用いる。</p
+><h3>結果</h3
+><ul><li>(+) ソースコードを編集することなく Abstraction と Implementor に新しいオペレーションを追加することができる。</li
+><li>(-) 新しいオペレーションと新しい ConcreteImplementor を同時に追加するためには、補完モジュールが必要になる。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/bridge_sample1.png" alt="structure:bridge_sample1"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> original {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">class</font></b> Abstraction {
+    Implementor imp;
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> operation() { imp.operationImp(); }
+  }
+
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> RefinedAbstraction <b><font color="#A020F0">extends</font></b> Abstraction {
+    ...
+  }
+
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">class</font></b> Implementor {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> operationImp();
+  }
+
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteImplementorA <b><font color="#A020F0">extends</font></b> Implementor {
+    <b><font color="#A020F0">void</font></b> operationImp() { ... }
+  }
+
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteImplementorB <b><font color="#A020F0">extends</font></b> Implementor {
+    <b><font color="#A020F0">void</font></b> operationImp() { ... }
+  }
+}
+
+<b><font color="#A020F0">module</font></b> extension <b><font color="#A020F0">extends</font></b> original {
+  <b><font color="#A020F0">class</font></b> Abstraction {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> operation2() { imp.operationImp2(); }
+  }
+
+  <b><font color="#A020F0">class</font></b> Implementor {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> operationImp2();
+  }
+
+  <b><font color="#A020F0">class</font></b> ConcreteImplementorA {
+    <b><font color="#A020F0">void</font></b> operationImp2() { ... }
+  }
+
+  <b><font color="#A020F0">class</font></b> ConcreteImplementorB {
+    <b><font color="#A020F0">void</font></b> operationImp2() { ... }
+  }
+}</pre>
+<h2>MixJuice 版 Bridge (別解)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>型安全性の問題</dt
+><dd>ConcreteImplementor の特定のメソッドを呼び出すために、オリジナルの GoF パターンは Implementor から ConcreteImplementor へのダウンキャストを必要とする。（この問題は GoF 本では指摘されていない。）</dd
+><dt>複雑さの問題</dt
+><dd>オリジナルの GoF パターンのクラス構造は複雑である。（この問題は GoF 本では指摘されていない。）</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>Abstraction に対して実装モジュール選択を用いる。</p
+><h3>結果</h3
+><p>(+) ダウンキャストは不要になる。この対策はプログラムが１種類の Abstraction のみしか必要としない場合のみに適用できる。</p
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/bridge_sample2.png" alt="structure:bridge_sample2"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> original {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> Abstraction {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> operation() {
+      ... implementationOperation1(); ...
+    }
+
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> implementationOperation1();
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> implementationOperation2();
+  }
+
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> RefinedAbstractionA <b><font color="#A020F0">extends</font></b> Abstraction {...}
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> RefinedAbstractionB <b><font color="#A020F0">extends</font></b> Abstraction {...}
+}
+
+<b><font color="#A020F0">module</font></b> implementation1 <b><font color="#A020F0">extends</font></b> original {
+  <b><font color="#A020F0">class</font></b> Abstraction {
+    <b><font color="#A020F0">void</font></b> implementationOperation1() {...}
+    <b><font color="#A020F0">void</font></b> implementationOperation2() {...}
+  }
+}
+
+<b><font color="#A020F0">module</font></b> implementation2 <b><font color="#A020F0">extends</font></b> original {
+  <b><font color="#A020F0">class</font></b> Abstraction {
+    <b><font color="#A020F0">void</font></b> implementationOperation1() {...}
+    <b><font color="#A020F0">void</font></b> implementationOperation2() {...}
+  }
+}</pre>
+<h1 id="Composite">Composite</h1
+><p>重要な改善は発見できなかった。</p
+><h1 id="Decorator">Decorator</h1
+><h2>パターンの目的</h2
+><blockquote cite="urn:isbn:4-797-31112-6"><p>オブジェクトに責任を動的に追加する。 Decorator パターンは、サブクラス化よりも柔軟なオペレーション拡張方法を提供する。</p
+></blockquote
+><h2>GoF パターンのクラス図</h2
+><p><img src="./fig-GoF/PNG/decorator.png" alt="structure-GoF:decorator"
+/></p
+><h2>MixJuice 版 Decorator (改善)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>拡張性の問題</dt
+><dd>ソースコードを編集せずに Component と Decorator に新しいメソッドを追加することができない。（この問題は GoF 本の p.191, 7-9行目で指摘されている。）</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>Component や Decorator へのメソッドまたはアブストラクトメソッド追加を用いる。</p
+><h3>結果</h3
+><ul><li>(+) ソースコードを編集することなく新しいメソッドを Component と Decorator に加えることができる。</li
+><li>(-) 新しいメソッドと ConcreteDecorator を同時に追加するためには、補完モジュールが必要になる。しかしながら、メソッドのデフォルトの処理が Decorator に実装されうる場合、例えばただ次の Decorator に処理を渡すだけであれば、補完モジュールは必要にならない。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/decorator_sample1.png" alt="structure:decorator_sample1"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> original {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">class</font></b> Component {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> operation();
+  }
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteComponent <b><font color="#A020F0">extends</font></b> Component {
+    <b><font color="#A020F0">void</font></b> operation(){...}
+  }
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">class</font></b> Decorator <b><font color="#A020F0">extends</font></b> Component {
+    Component component;
+    <b><font color="#A020F0">void</font></b> operation(){ component.operation(); }
+  }
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteDecorator <b><font color="#A020F0">extends</font></b> Decorator {
+    <b><font color="#A020F0">void</font></b> operation(){...}
+  }
+}
+<b><font color="#A020F0">module</font></b> extension <b><font color="#A020F0">extends</font></b> original {
+  <b><font color="#A020F0">class</font></b> Component {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> newOperation();
+  }
+  <b><font color="#A020F0">class</font></b> ConcreteComponent {
+    <b><font color="#A020F0">void</font></b> newOperation(){...}
+  }
+  <b><font color="#A020F0">class</font></b> Decorator {
+    <b><font color="#A020F0">void</font></b> newOperation(){ component.newOperation(); }
+  }
+}</pre>
+<h2>MixJuice 版 Decorator (別解)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>拡張性の問題</dt
+><dd>ソースコードを編集せずに Component と Decorator に新しいメソッドを追加することができない。（この問題は GoF 本の p.191, 7-9行目で指摘されている。）</dd
+><dt>複雑さの問題</dt
+><dd>Decorator とそれが修飾しているコンポーネントが同一ではない。（この問題は GoF 本の p.190, 30-33行目で指摘されている。）<br>多くの小さなオブジェクトが必要になる。（この問題は GoF 本の p.190, 34行目 - p.191, 1-4行目で指摘されている。）</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>Component に対してクラス拡張を用いる。</p
+><h3>結果</h3
+><ul><li>(+) オブジェクトの同一性が保証される。</li
+><li>(+) クラス構造が単純になる。</li
+><li>(+) ソースコードを編集せずに Component に新しいメソッドを追加することができる。</li
+><li>(-) 動的に Component の振る舞いを変更することができなくなる。</li
+><li>(-) この対策はプログラムが１種類の Component のみしか必要としない場合のみに適用できる。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/decorator_sample2.png" alt="structure:decorator_sample2"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> original {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> Component {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> operation();
+  }
+}
+<b><font color="#A020F0">module</font></b> extension1 <b><font color="#A020F0">extends</font></b> original {
+  <b><font color="#A020F0">class</font></b> Component {
+    <b><font color="#A020F0">void</font></b> operation(){...}
+  }
+}
+<b><font color="#A020F0">module</font></b> extension2 <b><font color="#A020F0">extends</font></b> original {
+  <b><font color="#A020F0">class</font></b> Component {
+    <b><font color="#A020F0">void</font></b> operation(){...}
+  }
+}</pre>
+<h1 id="Facade">Facade</h1
+><h2>パターンの目的</h2
+><blockquote cite="urn:isbn:4-797-31112-6"><p>サブシステム内に存在する複数のインターフェースに１つの統一インターフェースを与える。 Facade パターンはサブシステムの利用を容易にするための高レベルインターフェースを定義する。</p
+></blockquote
+><h2>GoF パターンのクラス図</h2
+><p><img src="./fig-GoF/PNG/facade.png" alt="structure-GoF:facade"
+/></p
+><h2>MixJuice 版 Facade (改善)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>情報隠蔽の問題</dt
+><dd>サブシステム内にあるクラスをクライアントに対して非公開にすることは「古い」オブジェクト指向言語ではサポートされていない。（この問題は GoF 本の p.201, 4-8行目で指摘されている。）</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>名前空間分離を用いる</p
+><h3>結果</h3
+><ul><li>(+) サブシステム内のクラスがクライアントに対して非公開になる。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/facade_sample1.png" alt="structure:facade_sample1"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> subsystem {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> C1 { ...  }
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> C2 { ...  }
+  ...
+}
+
+<b><font color="#A020F0">module</font></b> facade {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> Facade {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> easy_operation();
+  }
+}
+
+<b><font color="#A020F0">module</font></b> facade.implementation <b><font color="#A020F0">extends</font></b> facade, subsystem {
+  <b><font color="#A020F0">class</font></b> Facade {
+    <b><font color="#A020F0">void</font></b> easy_operation() { ... }
+  }
+}</pre>
+<h1 id="Flyweight">Flyweight</h1
+><p>重要な改善は発見できなかった。</p
+><h1 id="Proxy">Proxy</h1
+><p>重要な改善は発見できなかった。</p
+><h1 id="Chain_of_Responsibility">Chain of Responsibility</h1
+><h2>パターンの目的</h2
+><blockquote cite="urn:isbn:4-797-31112-6"><p>１つ以上のオブジェクトに要求を処理する機会を与えることにより、要求を送信するオブジェクトと受信するオブジェクトの結合を避ける。受信する複数のオブジェクトをチェーン状につなぎ、あるオブジェクトがその要求を処理するまで、そのチェーンに沿って要求を渡していく。</p
+></blockquote
+><h2>GoF パターンのクラス図</h2
+><p><img src="./fig-GoF/PNG/chain.png" alt="structure-GoF:chain"
+/></p
+><h2>MixJuice 版 Chain of Responsibility (改善)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>導入可能性の問題</dt
+><dd>ソースコードを編集せずに既存のクラスに Chain of Responsibility パターンを導入することはできない。（この問題は GoF 本では指摘されていない。）</dd
+><dt>拡張性の問題</dt
+><dd>ソースコードを編集せずに Handler に新しいオペレーションを追加することはできない。（この問題は GoF 本の p.241, 22-25行目で指摘されている。）</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>Handler クラスと ConcreteHandler クラスにメソッド追加を用いる。</p
+><h3>結果</h3
+><ul><li>(+) Chain of Responsibility を既存のクラスに導入できる。</li
+><li>(+) ソースコードを編集することなく新しいオペレーションを Handler に追加することができる。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/chain_sample1.png" alt="structure:chain_sample1"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> original {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">class</font></b> Handler {
+    Handler successor;
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> handleRequestA(){ successor.handleRequestA(); }
+  }
+
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteHandler1 <b><font color="#A020F0">extends</font></b> Handler {
+    <b><font color="#A020F0">void</font></b> handleRequestA() {...}
+  }
+
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteHandler2 <b><font color="#A020F0">extends</font></b> Handler {
+    <b><font color="#A020F0">void</font></b> handleRequestA() {...}
+  }
+}
+
+<b><font color="#A020F0">module</font></b> extension <b><font color="#A020F0">extends</font></b> original {
+  <b><font color="#A020F0">class</font></b> Handler {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> handleRequestB(){ successor.handleRequestB(); }
+  }
+
+  <b><font color="#A020F0">class</font></b> ConcreteHandler1 {
+    <b><font color="#A020F0">void</font></b> handleRequestB() {...}
+  }
+
+  <b><font color="#A020F0">class</font></b> ConcreteHandler2 {
+    <b><font color="#A020F0">void</font></b> handleRequestB() {...}
+  }
+}</pre>
+<h1 id="Command">Command</h1
+><p>重要な改善は発見できなかった。</p
+><h1 id="Interpreter">Interpreter</h1
+><h2>パターンの目的</h2
+><blockquote cite="urn:isbn:4-797-31112-6"><p>言語に対して、文法表現と、それを使用して文を解釈するインタープリタを一緒に定義する。</p
+></blockquote
+><h2>GoF パターンのクラス図</h2
+><p><img src="./fig-GoF/PNG/interpreter.png" alt="structure-GoF:interpreter"
+/></p
+><h2>MixJuice 版 Interpreter (改善)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>導入可能性の問題</dt
+><dd>ソースコードを編集せずに既存の木構造に Interpreter パターンを導入することができない。（この問題は GoF 本では指摘されていない。）</dd
+><dt>拡張性の問題</dt
+><dd>ソースコードを編集せずに表現を解釈する新しい方法を追加することができない。（この問題は GoF 本の p.265, 11-15行目で指摘されている。）</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>AbstractExpression に対してアブストラクトメソッド追加を用いる。</p
+><h3>結果</h3
+><ul><li>(+) 既存の木構造に対して Interpreter パターンを導入できる。</li
+><li>(+) ソースコードを編集せずに表現を解釈する新しい方法を追加することができる。</li
+><li>(-) 解釈の方法と新しい ConcreteExpression を同時に追加するためには、補完モジュールが必要になる。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/interpreter_sample1.png" alt="structure:interpreter_sample1"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> original {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> Client {
+    AbstractExpression exp;
+    Context context;
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> m(){
+      exp.interpret(context);
+    }
+  }
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> Context {...}
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">class</font></b> AbstractExpression {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> interpret(Context context);
+  }
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ExpressionA <b><font color="#A020F0">extends</font></b> AbstractExpression {
+    <b><font color="#A020F0">void</font></b> interpret(Context context){...}
+  }
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ExpressionB <b><font color="#A020F0">extends</font></b> AbstractExpression {
+    <b><font color="#A020F0">void</font></b> interpret(Context context){...}
+  }
+}
+<b><font color="#A020F0">module</font></b> extension <b><font color="#A020F0">extends</font></b> original {
+  <b><font color="#A020F0">class</font></b> AbstractExpression {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> newOperation();
+  }
+  <b><font color="#A020F0">class</font></b> ExpressionA {
+    <b><font color="#A020F0">void</font></b> newOperation(){...}
+  }
+  <b><font color="#A020F0">class</font></b> ExpressionB {
+    <b><font color="#A020F0">void</font></b> newOperation(){...}
+  }
+}</pre>
+<h1 id="Iterator">Iterator</h1
+><h2>パターンの目的</h2
+><blockquote cite="urn:isbn:4-797-31112-6"><p>集約オブジェクトが基にある内部表現を公開せずに、その要素に順にアクセスする方法を提供する。</p
+></blockquote
+><h2>GoF パターンのクラス図</h2
+><p><img src="./fig-GoF/PNG/iterator.png" alt="structure-GoF:iterator"
+/></p
+><h2>MixJuice 版 Iterator (改善)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>情報隠蔽の問題</dt
+><dd>Aggregate の内部状態は Iterator からはアクセスできるべきだが、クライアントに対しては隠蔽されているべきである。（この問題は GoF 本の p.280, 24-29行目で指摘されている。）この問題は Java のパッケージ/ネストしたクラスの機構によって解決できることに注意。</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>ConcreteAggregate と ConcreteIterator に対して名前空間分離を用いる。</p
+><h3>結果</h3
+><ul><li>(+) Aggregate の内部状態はクライアントに対して隠蔽される。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/iterator_sample1.png" alt="structure:iterator_sample1"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> aggregate {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> Aggregate {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> Iterator createIterator();
+  }
+
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> Iterator {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> first();
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> next();
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">boolean</font></b> isDone();
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> Object currentItem();
+  }
+
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteAggregate <b><font color="#A020F0">extends</font></b> Aggregate {
+  }
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteIterator <b><font color="#A020F0">extends</font></b> Iterator {
+  }
+}
+
+<b><font color="#A020F0">module</font></b> aggregate.implementation <b><font color="#A020F0">extends</font></b> aggregate {
+  <b><font color="#A020F0">class</font></b> ConcreteAggregate {
+    Iterator createIterator() {...}
+  }
+  <b><font color="#A020F0">class</font></b> ConcreteIterator {
+    <i><font color="#B22222">// ConcreteAggregate に直接アクセスできる。
+</font></i>    <b><font color="#A020F0">void</font></b> first() {...}
+    <b><font color="#A020F0">void</font></b> next() {...}
+    <b><font color="#A020F0">boolean</font></b> isDone() {...}
+    Object currentItem() {...}
+  }
+}</pre>
+<h1 id="Mediator">Mediator</h1
+><p>重要な改善は発見できなかった。</p
+><h1 id="Memento">Memento</h1
+><h2>パターンの目的</h2
+><blockquote cite="urn:isbn:4-797-31112-6"><p>カプセル化を破壊せずに、オブジェクトの内部状態を捉えて外面化しておき、オブジェクトを後にこの状態に戻すことができるようにする。</p
+></blockquote
+><h2>GoF パターンのクラス図</h2
+><p><img src="./fig-GoF/PNG/memento.png" alt="structure-GoF:memento"
+/></p
+><h2 id="Improvement_in_MixJuice2">MixJuice 版 Memento (改善)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>情報隠蔽の問題</dt
+><dd>Memento の内部状態は Originator からはアクセスできるべきだが、クライアントに対しては隠蔽されているべきである。（この問題は GoF 本の p.307, 8-10行目で指摘されている。）この問題は Java のパッケージ/ネストしたクラスの機構によって解決できることに注意。</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>Memento に対して名前空間分離を用いる。</p
+><h3>結果</h3
+><ul><li>(+) Memento の内部状態はクライアントに対して隠蔽される。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/memento_sample1.png" alt="structure:memento_sample1"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> m {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> Originator {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> setMemento(Memento m);
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> Memento createMemento();
+  }
+
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> Memento {}
+}
+
+<b><font color="#A020F0">module</font></b> m.implementation <b><font color="#A020F0">extends</font></b> m {
+  <b><font color="#A020F0">class</font></b> Originator {
+    <b><font color="#A020F0">int</font></b> state;
+    <b><font color="#A020F0">void</font></b> setMemento(Memento m) {...}
+    Memento createMemento() {...}
+  }
+
+  <b><font color="#A020F0">class</font></b> Memento {
+    <b><font color="#A020F0">int</font></b> state;
+  }
+}</pre>
+<h1 id="Observer">Observer</h1
+><h2>パターンの目的</h2
+><blockquote cite="urn:isbn:4-797-31112-6"><p>あるオブジェクトの状態が変更されたときに、それに依存するすべてのオブジェクトに自動的にそのことが知らされ、また、それらが更新されるように、オブジェクト間に一対多の依存関係を定義する。</p
+></blockquote
+><h2>GoF パターンのクラス図</h2
+><p><img src="./fig-GoF/PNG/observer.png" alt="structure-GoF:observer"
+/></p
+><h2>MixJuice 版 Observer (改善)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>導入可能性の問題</dt
+><dd>ソースコードを編集せずに既存のプログラムに Observer パターンを導入することはできない。（この問題は GoF 本では指摘されていない。）</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>Subject に対してクラス拡張を用いる。</p
+><h3>結果</h3
+><ul><li>(+) 既存のクラスに Observer パターンを導入できるようになる。</li
+><li>(-) 副作用を伴う新しい種類のオペレーションと新しい種類の Observer を同時に追加するためには、補完モジュールが必要になる。この場合、補完モジュールが存在しないことは MixJuice のリンカーによってチェックされないことに気をつけること。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/observer_sample1.png" alt="structure:observer_sample1"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> original {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> Subject {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> sideEffectOperation() {...}
+  }
+}
+
+<b><font color="#A020F0">module</font></b> extension <b><font color="#A020F0">extends</font></b> original {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">class</font></b> Observer {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> update();
+  }
+
+  <b><font color="#A020F0">class</font></b> Subject {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> attach(Observer o) {...}
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> detach(Observer o) {...}
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> changed() {...}
+
+    <b><font color="#A020F0">void</font></b> sideEffectOperation() {
+      original();
+      changed();
+    }
+  }
+}</pre>
+<h1 id="State">State</h1
+><h2>パターンの目的</h2
+><blockquote cite="urn:isbn:4-797-31112-6"><p>オブジェクトの内部状態が変化したときに、オブジェクトが振る舞いを変えるようにする。クラス内では、振る舞いの変化を記述せず、状態を表すオブジェクトを導入することでこれを実現する。</p
+></blockquote
+><h2>GoF パターンのクラス図</h2
+><p><img src="./fig-GoF/PNG/state.png" alt="structure-GoF:state"
+/></p
+><h2>MixJuice 版 State (改善)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>拡張性の問題</dt
+><dd>ソースコードを編集せずに State に新しいオペレーションを追加することはできない。（この問題は GoF 本では指摘されていない。）</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>State に対するアブストラクトメソッド追加を用いる。</p
+><h3>結果</h3
+><ul><li>(+) ソースコードを編集せずに State に新しいオペレーションを追加することができる。</li
+><li>(-) 新しいオペレーションと新しい ConcreteState を同時に追加するためには、補完モジュールが必要になる。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/state_sample1.png" alt="structure:state_sample1"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> original {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> Context {
+    State state;
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> request(){
+      state.handle();
+    }
+  }
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">class</font></b> State {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> handle();
+  }
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteStateA <b><font color="#A020F0">extends</font></b> State {
+    <b><font color="#A020F0">void</font></b> handle(){...}
+  }
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteStateB <b><font color="#A020F0">extends</font></b> State {
+    <b><font color="#A020F0">void</font></b> handle(){...}
+  }
+}
+<b><font color="#A020F0">module</font></b> extension <b><font color="#A020F0">extends</font></b> original {
+  <b><font color="#A020F0">class</font></b> State {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> newOperation();
+  }
+  <b><font color="#A020F0">class</font></b> ConcreteStateA {
+    <b><font color="#A020F0">void</font></b> newOperation(){...}
+  }
+  <b><font color="#A020F0">class</font></b> ConcreteStateB {
+    <b><font color="#A020F0">void</font></b> newOperation(){...}
+  }
+}</pre>
+<h1 id="Strategy">Strategy</h1
+><h2>パターンの目的</h2
+><blockquote cite="urn:isbn:4-797-31112-6"><p>アルゴリズムの集合を定義し、各アルゴリズムをカプセル化して、それらを交換可能にする。 Strategy パターンを利用することで、アルゴリズムを、それを利用するクライアントからは独立に変更することができるようになる。</p
+></blockquote
+><h2>GoF パターンのクラス図</h2
+><p><img src="./fig-GoF/PNG/strategy.png" alt="structure-GoF:strategy"
+/></p
+><h2>MixJuice 版 Strategy (別解)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>複雑さの問題</dt
+><dd>オリジナルの GoF パターンのクラス構造は複雑である。（この問題は GoF 本では指摘されていない。）</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>Context に対して実装モジュール選択を用いる。</p
+><h3>結果</h3
+><ul><li>(+) クラス構造が単純になる。</li
+><li>(-) この対策はプログラムがひとつの Algorithm メソッドの実装のみしか必要としない場合のみに適用できる。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/strategy_sample1.png" alt="structure:strategy_sample1"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> m {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> C {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> contextInterface() {
+      ... algorithmInterface() ...
+    }
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> algorithmInterface();
+  }
+}
+<b><font color="#A020F0">module</font></b> m.strategyA <b><font color="#A020F0">extends</font></b> m {
+  <b><font color="#A020F0">class</font></b> C { <b><font color="#A020F0">void</font></b> algorithmInterface() {...} }
+}
+<b><font color="#A020F0">module</font></b> m.strategyB <b><font color="#A020F0">extends</font></b> m {
+  <b><font color="#A020F0">class</font></b> C { <b><font color="#A020F0">void</font></b> algorithmInterface() {...} }
+}</pre>
+<h1 id="Template_Method">Template Method</h1
+><p>重要な改善は発見できなかった。</p
+><h1 id="Visitor">Visitor</h1
+><h2>パターンの目的</h2
+><blockquote cite="urn:isbn:4-797-31112-6"><p>あるオブジェクト構造上の要素で実行されるオペレーションを表現する。 Visitor パターンにより、オペレーションを加えるオブジェクトのクラスに変更を加えずに、新しいオペレーションを定義することができるようになる。</p
+></blockquote
+><h2>GoF パターンのクラス図</h2
+><p><img src="./fig-GoF/PNG/visitor.png" alt="structure-GoF:visitor"
+/></p
+><h2 id="Improvement_in_MixJuice3">MixJuice 版 Visitor (改善１)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>情報隠蔽の問題</dt
+><dd>オブジェクトの構造を表すフィールドを、公開属性にしなければならないことがある。（この問題は GoF 本の p.359, 5-8行目で指摘されている。）</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>ConcreteElement クラスに対して設計モジュールと実装モジュールの分割を用いる。（この改善は以下で述べられる別解に対しても適用できる。）</p
+><h3>結果</h3
+><ul><li>(+) ConcreteElement の内部状態はクライアントに対して隠蔽される。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/visitor_sample1.png" alt="structure:visitor_sample1"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> element {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">class</font></b> Element {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> accept(Visitor visitor);
+  }
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteElementA <b><font color="#A020F0">extends</font></b> Element {
+    <b><font color="#A020F0">void</font></b> accept(Visitor v){ v.visitConcreteElementA(<b><font color="#A020F0">this</font></b>); }
+  }
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteElementB <b><font color="#A020F0">extends</font></b> Element {
+    <b><font color="#A020F0">void</font></b> accept(Visitor v){ v.visitConcreteElementB(<b><font color="#A020F0">this</font></b>); }
+  }
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">class</font></b> Visitor {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> visitConcreteElementA(ConcreteElementA a);
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> visitConcreteElementB(ConcreteElementB a);
+  }
+}
+<b><font color="#A020F0">module</font></b> element.implementation <b><font color="#A020F0">extends</font></b> element {
+  <b><font color="#A020F0">class</font></b> ConcreteElementA {
+    <b><font color="#A020F0">int</font></b> state;
+  }
+  <b><font color="#A020F0">class</font></b> ConcreteElementB {
+    <b><font color="#A020F0">int</font></b> state;
+  }
+}
+<b><font color="#A020F0">module</font></b> visitor <b><font color="#A020F0">extends</font></b> element {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteVisitor <b><font color="#A020F0">extends</font></b> Visitor {}
+}
+<b><font color="#A020F0">module</font></b> visitor.implementation
+  <b><font color="#A020F0">extends</font></b> visitor, element.implementation {
+  <b><font color="#A020F0">class</font></b> ConcreteVisitor {
+    <b><font color="#A020F0">void</font></b> visitConcreteElementA(ConcreteElementA a){
+      ... <b><font color="#A020F0">int</font></b> x = a.state; ...
+    }
+    <b><font color="#A020F0">void</font></b> visitConcreteElementB(ConcreteElementB b){
+      ... <b><font color="#A020F0">int</font></b> x = b.state; ...
+    }
+  }
+}</pre>
+<h2 id="Improvement_in_MixJuice4">MixJuice 版 Visitor (改善２)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>導入可能性の問題</dt
+><dd>オブジェクト構造のソースコードを編集せずに既存のオブジェクト構造に Visitor パターンを導入することができない。（この問題は GoF 本では指摘されていない。）</dd
+><dt>拡張性の問題</dt
+><dd>Visitor クラスや ConcreteVisitor クラスのソースコードを編集せずに新しい ConcreteElement クラスを導入することができない。（この問題は GoF 本の p.358, 7-12行目で指摘されている。）</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>Element クラスと ConcreteElement クラスに対するアブストラクトメソッド追加を用いることによって導入可能性の問題を解決できる。 Visitor や ConcreteVisitor に対してアブストラクトメソッド追加を用いると拡張性の問題を解決できる。</p
+><h3>結果</h3
+><ul><li>(+) ソースコードを編集せずに既存のオブジェクト構造に Visitor パターンを導入することができる。</li
+><li>(+) ソースコードを編集せずに新しい ConcreteElement を追加できる。</li
+><li>(-) 新しい ConcreteElement と ConcreteVisitor を同時に追加するためには、補完モジュールが必要になる。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/visitor_sample2.png" alt="structure:visitor_sample2"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> element {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">class</font></b> Element {...}
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteElementA <b><font color="#A020F0">extends</font></b> Element {...}
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteElementB <b><font color="#A020F0">extends</font></b> Element {...}
+}
+
+<b><font color="#A020F0">module</font></b> visitor <b><font color="#A020F0">extends</font></b> element {
+  <b><font color="#A020F0">class</font></b> Element { <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> accept(Visitor v); }
+  <b><font color="#A020F0">class</font></b> ConcreteElementA { <b><font color="#A020F0">void</font></b> accept(Visitor v) { v.visit(<b><font color="#A020F0">this</font></b>); } }
+  <b><font color="#A020F0">class</font></b> ConcreteElementB { <b><font color="#A020F0">void</font></b> accept(Visitor v) { v.visit(<b><font color="#A020F0">this</font></b>); } }
+
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> Visitor {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> visit(ConcreteElementA elt);
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> visit(ConcreteElementB elt);
+  }
+
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteVisitor1 <b><font color="#A020F0">extends</font></b> Visitor {
+    <b><font color="#A020F0">void</font></b> visit(ConcreteElementA elt) {...}
+    <b><font color="#A020F0">void</font></b> visit(ConcreteElementB elt) {...}
+  }
+
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteVisitor1a <b><font color="#A020F0">extends</font></b> ConcreteVisitor1 {
+    <b><font color="#A020F0">void</font></b> visit(ConcreteElementA elt) {...}
+    <b><font color="#A020F0">void</font></b> visit(ConcreteElementB elt) {...}
+  }
+}
+
+<b><font color="#A020F0">module</font></b> new_concrete_element <b><font color="#A020F0">extends</font></b> visitor {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteElementC <b><font color="#A020F0">extends</font></b> Element {
+    ...
+    <b><font color="#A020F0">void</font></b> accept(Visitor v) { v.visit(<b><font color="#A020F0">this</font></b>); }
+  }
+
+  <b><font color="#A020F0">class</font></b> Visitor {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> visit(ConcreteElementC elt);
+  }
+
+  <b><font color="#A020F0">class</font></b> ConcreteVisitor1 {
+    <b><font color="#A020F0">void</font></b> visit(ConcreteElementC elt) {...}
+  }
+
+  <b><font color="#A020F0">class</font></b> ConcreteVisitor1a {
+    <b><font color="#A020F0">void</font></b> visit(ConcreteElementC elt) {...}
+  }
+}</pre>
+<h2 id="Another_solution_in_MixJuice:">MixJuice 版 Visitor (別解)</h2
+><h3>解決される GoF パターンの問題点</h3
+><dl><dt>複雑さの問題</dt
+><dd>Visitor パターンのクラス構造は複雑で間違いを起こしやすい。（この問題は GoF 本では指摘されていない。）</dd
+></dl
+><h3>使用するプログラミング技法</h3
+><p>既存のオブジェクト構造に対してアブストラクトメソッド追加を用いる。</p
+><h3>結果</h3
+><ul><li>(+) クラス構造が簡潔になる。</li
+><li>(+) ソースコードを編集せずに新しい種類のオペレーションを追加することができる。</li
+><li>(+) ソースコードを編集せずに新しい ConcreteElement クラスを追加することができる。</li
+><li>(-) 新しいオペレーションは既存のオペレーションの実装を継承することができない。しかしながら GoF の Visitor パターンはそれができる。</li
+><li>(-) 新しいオペレーションと新しい ConcreteElement を同時に追加するためには、補完モジュールが必要になる。</li
+></ul
+><h3>構造と擬似コード</h3
+><p><img src="./fig-structure/PNG/visitor_sample3.png" alt="structure:visitor_sample3"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> element {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">class</font></b> Element {...}
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteElementA <b><font color="#A020F0">extends</font></b> Element {...}
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> ConcreteElementB <b><font color="#A020F0">extends</font></b> Element {...}
+}
+
+<b><font color="#A020F0">module</font></b> traverser <b><font color="#A020F0">extends</font></b> element {
+  <b><font color="#A020F0">class</font></b> Element { <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> traverse(); }
+  <b><font color="#A020F0">class</font></b> ConcreteElementA { <b><font color="#A020F0">void</font></b> traverse() {...} }
+  <b><font color="#A020F0">class</font></b> ConcreteElementB { <b><font color="#A020F0">void</font></b> traverse() {...} }
+}</pre>
+<h1 id="programming-technique">MixJuice プログラミングの技法</h1
+><p>デザインパターンの改善策において使用される、 MixJuice のプログラミング技法には次のようなものがある。</p
+><h2 id="Method_extension">メソッド拡張</h2
+><p>既存のメソッドの処理をオーバライドによって拡張することができる。</p
+><p><img src="./8_7/PNG/c01.png" alt="structure-08-07:c01"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> original {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> C {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> m(){...}
+  }
+}
+<b><font color="#A020F0">module</font></b> extension <b><font color="#A020F0">extends</font></b> original {
+  <b><font color="#A020F0">class</font></b> C {
+    <b><font color="#A020F0">void</font></b> m(){ original(); ...}
+  }
+}</pre>
+<h2 id="Super-interface_addition">スーパーインターフェース追加</h2
+><p>既存のクラスに新しいスーパーインターフェースを追加することができる。言い換えると、既存のクラスを新しいインターフェースのサブタイプにすることができる。</p
+><p><img src="./8_7/PNG/c02.png" alt="structure-08-07:c02"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> original {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> C {...}
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">interface</font></b> I {...}
+}
+<b><font color="#A020F0">module</font></b> extension <b><font color="#A020F0">extends</font></b> original {
+  <b><font color="#A020F0">class</font></b> C <b><font color="#A020F0">implements</font></b> I {...}
+}</pre>
+<h2 id="Field_addition">フィールド追加</h2
+><p>既存のクラスに新しいフィールドを追加することができる。</p
+><p><img src="./8_7/PNG/c03.png" alt="structure-08-07:c03"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> original {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> C {...}
+}
+<b><font color="#A020F0">module</font></b> extension <b><font color="#A020F0">extends</font></b> original {
+  <b><font color="#A020F0">class</font></b> C {
+    <b><font color="#A020F0">int</font></b> newField;
+  }
+}</pre>
+<h2 id="Method_addition">メソッド追加</h2
+><p>既存のクラスに新しいメソッドを追加することができる。</p
+><p><img src="./8_7/PNG/c04.png" alt="structure-08-07:c04"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> original {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> C {...}
+}
+<b><font color="#A020F0">module</font></b> extension <b><font color="#A020F0">extends</font></b> original {
+  <b><font color="#A020F0">class</font></b> C {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> newMethod(){...}
+  }
+}</pre>
+<h2 id="Class_extension">クラス拡張</h2
+><p>
+スーパーインターフェース追加、メソッド追加、フィールド追加の組み合わせ。</p
+><h2 id="Abstract_method_addition">アブストラクトメソッド追加</h2
+><p>既存のアブストラクトクラスに対して新しいアブストラクトメソッドを追加できる。全ての具象サブクラスに対してそのメソッドに対応する実装を追加しなければ、実行可能なプログラムにならない。</p
+><p><img src="./8_7/PNG/c05.png" alt="structure-08-07:c05"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> original {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">class</font></b> S {...}
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> A <b><font color="#A020F0">extends</font></b> S {...}
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> B <b><font color="#A020F0">extends</font></b> S {...}
+}
+<b><font color="#A020F0">module</font></b> extension <b><font color="#A020F0">extends</font></b> original {
+  <b><font color="#A020F0">class</font></b> S {
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> newMethod();
+  }
+  <b><font color="#A020F0">class</font></b> A {
+    <b><font color="#A020F0">void</font></b> newMethod(){...}
+  }
+  <b><font color="#A020F0">class</font></b> B {
+    <b><font color="#A020F0">void</font></b> newMethod(){...}
+  }
+}</pre>
+<h2 id="Namespace_separation">名前空間分離</h2
+><p>クラスの境界と独立な情報隠蔽の境界を作ることができる。名前を定義する側は、提供する名前の集合を任意にグループ化できる。定義された名前を利用する側は、グループ化された名前の集合を任意に選んで利用できる。</p
+><p><img src="./8_7/PNG/c06.png" alt="structure-08-07:c06"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> namesA {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> A1 {...}
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> A2 {...}
+  ...
+}
+<b><font color="#A020F0">module</font></b> namesB {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> B1 {...}
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> B2 {...}
+  ...
+}
+<b><font color="#A020F0">module</font></b> clientOfA <b><font color="#A020F0">extends</font></b> namesA { ... }
+<b><font color="#A020F0">module</font></b> clientOfB <b><font color="#A020F0">extends</font></b> namesB { ... }
+<b><font color="#A020F0">module</font></b> clientOfBothAandB  <b><font color="#A020F0">extends</font></b> namesA, namesB { ... }</pre>
+<h2 id="Separation_of_specifications_and_implementations">仕様モジュールと実装モジュールの分離</h2
+><p>クラスを二つのモジュールに分割する。片方を<em>仕様モジュール</em>と呼び、<em>仮想コンストラクタ</em>や<em>仮想メソッド</em>による外部インターフェースのみを定義する。一方を<em>実装モジュール</em>と呼び、クラスの内部実装を定義する。</p
+><pre>
+<b><font color="#A020F0">module</font></b> c {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> C {
+    <i><font color="#B22222">// 公開メソッド
+</font></i>    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> m1();
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> m2();
+  }
+}
+<b><font color="#A020F0">module</font></b> c.implementation <b><font color="#A020F0">extends</font></b> c {
+  <b><font color="#A020F0">class</font></b> C {
+    <i><font color="#B22222">// 公開メソッド
+</font></i>    <b><font color="#A020F0">void</font></b> m1(){...}
+    <b><font color="#A020F0">void</font></b> m2(){...}
+    <i><font color="#B22222">// protected fields and methods
+</font></i>    <b><font color="#A020F0">int</font></b> f1;
+    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">void</font></b> m3(){...}
+  }
+}</pre>
+<h2 id="Implementation_selection">実装モジュール選択</h2
+><p>リンク時にユーザが複数の異なる実装モジュールから一つの実装モジュールを選択することができる。（ユーザはモジュールのコンフリクトを避けるためにクラスの実装モジュールを慎重にただ一つだけ選ばなければならない。現在の MixJuice リンカーの実装では一つのクラスに対して一つより多い実装モジュールが選択されたとしても、エラーにならない。）</p
+><p><img src="./8_7/PNG/c08.png" alt="structure-08-07:c08"
+/></p
+><pre>
+<b><font color="#A020F0">module</font></b> m {
+  <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">class</font></b> C {  <i><font color="#B22222">// 注意: C はアブストラクトクラスではない。
+</font></i>    <b><font color="#A020F0">define</font></b> <b><font color="#A020F0">abstract</font></b> <b><font color="#A020F0">void</font></b> m();
+  }
+}
+<b><font color="#A020F0">module</font></b> m.implementationA <b><font color="#A020F0">extends</font></b> m {
+  <b><font color="#A020F0">class</font></b> C {
+    <b><font color="#A020F0">void</font></b> m(){...}
+  }
+}
+<b><font color="#A020F0">module</font></b> m.implementationB <b><font color="#A020F0">extends</font></b> m {
+  <b><font color="#A020F0">class</font></b> C {
+    <b><font color="#A020F0">void</font></b> m(){...}
+  }
+}</pre>
+<hr
+/><address>Akira TANAKA &lt;akr@m17n.org&gt;, Yuuji ICHISUGI &lt;y-ichisugi@aist.go.jp&gt;</address
+><p>
+<a href="#Design_Pattern_improvement_catalog_for_MixJuice">Top</a>
+<a href="http://staff.aist.go.jp/y-ichisugi/ja/mj/">MixJuice Top</a
+></p
+></body
+>
+</html
+>

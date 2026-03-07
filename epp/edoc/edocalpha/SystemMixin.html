@@ -1,0 +1,350 @@
+<html>
+<head>
+<title>SystemMixin Plug-in User's Manual</title>
+</head>
+<body bgcolor="#FFFFFF">
+<a href="index.html"> Index </a>
+<hr>
+<img src="gif/epp-logo-small.gif" align=right><br>
+<h1>SystemMixin Plug-in User's Manual</h1>
+<hr>
+
+<pre>
+<h4>The Purpose of the SystemMixin Plug-in </h4>
+The SystemMixin plug-in adds features for building highly extendable
+systems such as EPP to the Java language.
+With the SystemMixin plug-in, you can breakup programs into small components
+called "system mixins" which can be written separately.
+System mixins describe only the differences from the original system
+and are somewhat similar to patch files for unix systems.
+
+EPP will load plug-ins designated by the #epp directive prior to
+preprocessing. These plug-ins are comprised of one or multiple system mixins.
+The EPP program will be extended by adding the "difference" defined by the
+plug-in to the original EPP program.
+
+
+<h4>A Simple Example</h4>
+In convetional object oriented languages, a method including a nested
+"if" statement would look like this.
+
+--------------------------------------------------
+class Foo {
+  void m(String d){
+    if (d.equals("B")){
+      doB();
+    } else if (d.equals("A")){
+      doA();
+    } else {
+      doDefault();
+    }
+}
+--------------------------------------------------
+
+What do we do in order to add an operation for example
+such as "else if (d.equals("C") { doC() }" to this method ?
+If you do not want to edit the orginal source code,
+the only way is to inherit the class.
+If you use inheritance, you could write like the following.
+
+--------------------------------------------------
+class Bar extends Foo {
+  void m(String d){
+    if (d.equals("C")){
+      doC();
+    } else {
+      super.m(d);
+    }
+}
+--------------------------------------------------
+
+However, the original Foo class remains unchanged and you
+will have to define a new subclass called Bar.
+If you have used the name Foo in other places of your program
+such as in "class X extends Foo {...}" or "new Foo()",
+you will need to rewrite them to "class X exteneds Bar {...}" or
+"new Bar()".
+
+As such, in most object oriented languages, you cannot extend
+the behavior of a method without changing its "method and
+the name of the class to which it belongs".
+
+Furthermore, it is impossible to remove certain parts like
+"else if (d.equals("A") { doA(); }" from the original source code.
+
+Features of system mixins solve this limitation.
+
+The above program can be divided into three system mixins
+and described as follows.
+
+--------------------------------------------------
+SystemMixin Skeleton {
+  class Foo {
+    define void m(String d){
+      doDefault();
+    }
+  }
+}
+SystemMixin A {
+  class Foo {
+    void m(String d){
+      if (d.equals("A")) { doA(); } else { original(d); }
+    }
+  }
+}
+SystemMixin B {
+  class Foo {
+    void m(String d){
+      if (d.equals("B")) { doB(); } else { original(d); }
+    }
+  }
+}
+--------------------------------------------------
+
+Thus, methods that were required to be written as single
+monolithic methods now can be divided and described as
+multiple "method fragments".
+And by adding new system mixins, you can extend the behavior
+of methods without having to change class names and method
+names.
+(Thus, if Foo has any subclasses, a change to method "m"
+would automatically apply to all those subclasses.)
+
+You can also remove certain system mixins just prior to
+launching your program.
+
+
+<h4>Syntax Overview</h4>
+The SystemMixin plug-in implements a completely new object
+oriented language on top of the Java langauge.
+The name of this language is "Ld-2" (Description Language version 2).
+For the purpose of implementation, classes defined using system mixins
+are not complatible with Java classes.
+
+The syntax of this object oriented language, Ld-2 is different
+from Java in the following areas.
+
+instantiation		newObj ClassName(args ...)
+method invocation		obj!methodName(args ...)
+invoking local methods		methodName(args ...) 
+accessing local instance variables	self!varName Åi"self!" is mandatoryÅj
+self			self
+invoking original methods	original(args ...)
+
+Instances of classes defined with system mixins are handled as
+Obj type data in Java.
+
+For example, to instantiate class Foo and call its
+method "m", you write as shown below.
+
+    Obj foo = objNew Foo();
+    foo!m(d);
+ 
+
+<h4>DefineModifier and MethodRole</h4>
+<UL>
+<LI> When combining many system mixins created by different authors,
+unexpected conflicts may occur with method names.
+Furthermore, you may forget to specify certain system mixins that
+are required for the already specified system mixins to
+behave properly.
+
+ Such cases can be indentified an warned somewhat automatically by
+declaring "DefineModifier" and "MethodRole".
+For the exact syntax of these declarations, refer the to the
+"Syntax" chapter.
+
+<LI>DefineModifier
+ You can add the keyword "define" to classes and method fragments
+defined in SystemMixin.
+
+ When merging system mixins, all classes and method fragments must
+be arranged in the following order.
+
+	"A fragment with the keyword 'define' must come first,
+	then all other fragments without 'define' must follow"
+
+ If a fragment with 'define' appears with the same name multiple times,
+or if the first fragment does not have the 'define' keyword, an error occurs.
+
+ For example, the three system mixins introduced in the "A Simple Example"
+chapter describe method "m" of class Foo as a combination of the following
+three method fragments.
+
+	m of class Foo of SystemMixin Skeleton (with define)
+	m of class Foo of SystemMixin A
+	m of class Foo of SystemMixin B
+
+ This fulfills the condition presented previously.
+
+
+<LI>MethodRole
+ The declaration of MethodRole will be ignored in the current implementation.
+
+ MethodRoles are meant to be specfied in the following cases.
+
+	abstract	Methods that implement only the interface and not the implentation
+	default		Methods that can be redefined
+	implement	Normal methods
+	extend		Methods that extend other methods using differences
+	redefine	Methods that redefine other methods by overwriting.
+
+</UL>
+
+<h4>BeforeLoadingPlugIn</h4>
+ Use BeforeLoadingPlugIn statements to write code to be execcuted when
+loading plug-ins.
+
+ For example, if a certain plug-in requires another plug-in ("Symbol plug-in"
+in this example), you include the following statement after the package
+declaration and the import declaration (grammatically, where you should
+specify the TypeDeclaration).
+
+	BeforeLoadingPlugIn{
+		requirePlugIn("jp.go.etl.epp.Symbol.PlugIn");
+	}
+
+ requirePlugIn loads the specified plug-in if it is not loaded yet, and adds
+it to the setup list.
+
+ epp/sample/PComp/PlugIn.java shows another example.
+It examines the contents of the setup list and removes any mixins that
+define the grammar of comparison operations of the original Java language.
+
+
+<h4>Difference Between Ld-2 and Java, and Special Notes</h4>
+<UL>
+<LI>All instances are of type Obj.
+
+<LI>You cannot overload a method.
+
+<LI>If you define a class, you must define a constructor within
+its SystemMixin.
+
+<LI>The return type of a constructor must be "void".
+A constructor is the same as any method, except that it is called
+automatically on instantiation.
+
+<LI>Instance variables are already initialized with "default values"
+that are defined in Java, before they are initialized in the constructor.
+Thus, no compilation errors occur even if you forget initializing them
+explicitly.
+
+<LI>There are no "supers".
+
+<LI>In Java, you would write "super.b()" in a method in order to call
+method "b" of its super class. However, you cannot do this in Ld-2.
+</UL>
+
+
+<h4>Error Message Reference</h4>
+ Source code translated using the SystemMixin plug-in may produce error
+messages when compiled with javac, that are somewhat uncomprehensible.
+ However, you may be able to guess the cause by reading the following.
+
+
+How to decode error messages generated with Javac
+-----------------------------------------
+"Superclass M_foo of class CompilationUnit_Epp_initEmitTable not found."
+ or
+"Incompatible type for constructor. Can't convert SSS_CCC_foo to java.lang.Object."
+	You wrote an Ld method "foo" in your source code, 
+	but the the compiler cound not find the declaration of the method.
+	Please check the following.
+	1. Do not forget specifying the "define" modifier.
+	2. Translate the Java file that contains the method declaration
+	   with "define" before compiling Java files that extend the method.
+	3. Check the spelling of the method name.
+
+
+"Class M_foo not found in type declaration."
+	You wrote an Ld method invocation "foo()" or "obj!foo()",
+	but the compiler cound not find the method declaration.
+	So, this message can be interpreted as "Method foo not found."
+	Please check the spelling of the method name.
+
+
+"Method redefined with different return type: ..."
+	Please check the return type of the Ld method
+	written in the indicated line.
+
+
+"No method found matching call(Obj,Object[],int)"
+	You wrote method invocation foo(), obj!foo() or original()
+	but method foo requires additional arguments.
+	Please check the method definition.
+
+
+Other error messages should be easy to understand as normal javac errors.
+
+
+
+<h4>Syntax</h4>
+ The following is the syntax of the syntax extend by the SystemMixin plug-in.
+The notation used is the same as the one used in JLS1.0.
+(Unless otherwise mentioned, symbols beginning with uppercase characters
+ are non-terminals and those beginning with lowercase characters are
+ "keywords".  Also, those marked with "_opt" are optional.)
+
+
+Syntax
+------
+
+CompilationUnit
+	&ltoriginal alternatives&gt
+	SystemMixinDefinition
+
+SystemMixinDefinition
+	SystemMixin { LdClassDeclarations }
+	# Note: The "SystemMixin" in this rule
+	#	is not a non-terminal. It is a token.
+
+LdClassDeclarations
+	DefineModifier_opt class Identifier { LdClassBodyDeclarations }
+
+LdClassBodyDeclarations
+	LdClassBodyDeclarations LdClassBodyDeclaration
+
+LdClassBodyDeclaration
+	FieldDeclaration
+	LdMethodDeclaration
+
+LdMethodDeclaration
+	DefineModifier_opt MethodRole_opt Type MethodDeclarator Throws_opt
+
+DefineModifier
+	define
+
+MethodRole
+	abstract
+	default
+	implement
+	extend
+	redefine
+
+Primary
+	&ltoriginal alternatives&gt
+	LdInstanceCreation
+	LdFieldAccess
+	LdMethodInvocation
+	OriginalMethodInvocation
+
+LdInstanceCreation
+	newObj Identifier ( ArgumentList_opt )
+
+LdFieldAccess
+	Primary ! Identifier
+
+LdMethodInvocation
+	Primary ! Identifier ( ArgumentList_opt )
+
+OriginalMethodInvocation
+	 original ( ArgumentList_opt )
+
+</pre>
+
+<hr>
+<a href="index.html"> Index </a>
+<img src="gif/epp-logo-small.gif" align=right><br>
+</body>
+</html>

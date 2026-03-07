@@ -1,0 +1,12 @@
+#epp "UserOp"
+
+class TestUserOp {
+  public static void main(String argv[]){
+    System.out.println("foo" (==) "foo");
+    System.out.println(! ("foo" (!=) "foo"));
+    
+    // Make sure that the extended lexical analyzer works well.
+    System.out.println((!false));
+    System.out.println((-1+2) == 1);
+  }
+}

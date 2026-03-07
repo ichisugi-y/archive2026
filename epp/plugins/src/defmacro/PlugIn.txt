@@ -1,0 +1,109 @@
+/*
+ *
+ * Copyright (C) 1997, 1998 Yuuji ICHISUGI
+ *
+ * Permission to use, copy, modify and redistribution this software in
+ * whole and in part, for evaluation or research purposes and without fee
+ * is hereby granted provided this copyright notice.
+ * See CopyrightAndLicensing.txt for licensing condition.
+ */
+
+
+/*
+
+Syntax
+------
+TypeDeclaration
+	<original grammar rules>
+	defmacro Identifier (IdList_opt) ( Expression )
+	defmacro Identifier (IdList_opt) Block
+
+IdList
+	Identifier
+	Identifier , IdList
+*/
+
+
+#epp "Symbol"
+#epp "SystemMixin"
+#epp "AutoSplitFiles"
+
+
+package defmacro;
+import epp.*;
+
+SystemMixin defmacro {
+  class Epp {
+
+    extend Tree typeDeclarationTop() {
+      if (lookahead() == :defmacro) {
+	matchAny();
+	Tree exp1 = expression();
+	// exp1 = (invoke1 (id name) (argumentList ...))
+	
+	if (! (exp1.tag() == :invoke1
+	       && exp1.args()[0].tag() == :id)){
+	  throw error("defmacro USER: Syntax error in the first exp.");
+	}
+	Symbol name = exp1.args()[0].idName();
+
+	Tree[] pptrees = exp1.args()[1].args();
+	Symbol[] pp = new Symbol[pptrees.length];
+	for (int i = 0; i < pptrees.length; i++){
+	  if (pptrees[i].tag() != :id){
+	    throw error("defmacro USER: Syntax error in parameters.");
+	  }
+	  pp[i] = pptrees[i].idName();
+	}
+	
+	Tree exp2;
+	if (lookahead() == :"("){
+	  matchAny();
+	  exp2 = expression();
+	  match(:")");
+	} else if (lookahead() == :"{"){
+	  exp2 = block();
+	} else {
+	  throw error("defmacro USER: Syntax error in the second exp.");
+	}
+	
+	defineInvokeStyleMacro(name, new DefmacroMacro(pp, exp2));
+	
+	return new Tree(:emptyTypeDeclaration);
+      } else {
+	return original();
+      }
+    }
+  }
+}
+
+class DefmacroMacro extends InvokeStyleMacro {
+  Symbol[] pp;
+  Tree body;
+
+  DefmacroMacro(Symbol[] pp, Tree body){
+    this.pp = pp;
+    this.body = body;
+  }
+
+  public Tree call(Tree tree, Tree[] args){
+    checkInvocationArgsLength(tree, pp.length);
+    return replaceParams(pp, args, body);
+  }
+
+  Tree replaceParams(Symbol[] pp, Tree[] ap, Tree tree){
+    if (tree.tag() == :id){
+      for (int i = 0; i < pp.length; i++){
+	if (pp[i] == tree.idName()) return ap[i];
+      }
+      return tree;
+    } else {
+      Tree[] args = tree.args();
+      Tree[] newArgs = new Tree[args.length];
+      for (int i = 0; i < args.length; i++){
+	newArgs[i] = replaceParams(pp, ap, args[i]);
+      }
+      return tree.modifyArgs(newArgs);
+    }
+  }
+}

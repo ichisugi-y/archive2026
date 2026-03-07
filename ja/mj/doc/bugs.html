@@ -1,0 +1,225 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<link rel="stylesheet" type="text/css" href="./style.css">
+<title> 知られているバグ </title>
+</head> <body>
+<div class="header-link">
+[<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
+[<a href="index.html">Document index</a>]
+</div>
+<h1> 知られているバグ</h1>
+<ul class="headers">
+<li><a href="#error-messages">エラーメッセージについて</a>
+<li><a href="#known-bugs">知られているバグと対処法</a>
+</p></ul><p>
+</p><p>
+</p><p>
+</p><h2><a name="error-messages">エラーメッセージについて</a></h2><p>
+</p><p>
+mjc が出すエラーには３種類あります。
+<ul>
+<li>EPP が出すエラーメッセージ<br>
+Java 言語として間違っている場合に出るエラーメッセージです。
+<li>mjc plug-in が出すエラーメッセージ<br>
+MJ 言語として間違っている場合に出るエラーメッセージです。
+エラーメッセージの先頭には、たいてい "<tt>MJ:</tt>" が付きます。
+（付かない場合もあります。）
+<li>javac が出すエラーメッセージ<br>
+Java 言語として間違っている場合に出るエラーメッセージです。<br>
+（本来はすべてのエラーを preprocessing phase でチェックすべきですが、
+現在の実装では一部のエラーは compiling phase でチェックしてます。）
+</ul>
+</p><p>
+EPP か mjc plug-in が FATAL ERROR を出したら、
+それは無条件に mjc のバグです。
+</p><p>
+わかりにくいエラーメッセージもバグです。
+</p><p>
+原因不明のエラーが出る時は、 mjc に -E-nocatch というオプションを
+付けると、原因が特定できるエラーメッセージが出る場合があります。
+試してみてください。
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="known-bugs">知られているバグと対処法</a></h2><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h3>field の初期値に field の値を使うとエラーになる。</h3><p>
+例：
+<pre>
+module m {
+ define class C {
+  int x = 0;
+  int y = x;  // error
+ }
+}
+</pre>
+</p><p>
+対処法：<br>
+FQN を使う。
+<pre>
+module m {
+ define class C {
+  int x = 0;
+  int y = FQN[m::x];
+ }
+}
+</pre>
+</p><p>
+</p><h3> anonymous class の中では、 outer class の field/method にアクセスできない。</h3><p>
+</p><p>
+対処法：<br>
+</p><p>
+次のように this の値を outer という final なローカル変数に代入しておき、
+outer.foo か outer.foo() と書くことによって field/method にアクセスする。
+</p><p>
+<pre>
+      final Draw outer = this;               // outer という final 変数を宣言
+      b.addActionListener(new ActionListener(){
+        public void actionPerformed(ActionEvent e){
+          Graphics g = outer.getGraphics();  // outer class の method 呼び出し
+          ...;
+        }});
+</pre>
+</p><p>
+</p><p>
+</p><h3> "MJC: FATAL ERROR : findMethodInfo: ..." と出る。</h3><p>
+</p><p>
+Java のライブラリで定義されているメソッドと同じ signature の
+メソッドを define すると、 FATAL ERROR がでる。
+</p><p>
+例：
+<pre>
+module m1 {
+  define class A {
+    define boolean equals(Object x) { return false; }
+  }
+}
+</pre>
+</p><p>
+エラーメッセージ：
+<pre>
+</p><p>
+Preprocessing phase.
+Test16.java:9: findMethodInfo: More than one MethodInfo found.
+  java::equals
+  m1::equals
+</p><p>
+    define boolean equals(Object x) { return false; }
+    ^
+java.lang.Error: MJC: FATAL ERROR : findMethodInfo: More than one MethodInfo found.
+  java::equals
+  m1::equals
+</pre>
+</p><p>
+</p><p>
+対処法：<br>
+Java のライブラリで定義されているメソッドを override する場合は
+ define は不要なので、取る。
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h3>anonymous class のコンストラクタの引数に MJ class を指定するとエラーになる。</h3><p>
+</p><p>
+</p><p>
+対処法：<br>
+コンストラクタの引数として必要とされる Java class の型に、
+明示的にキャストする。
+</p><p>
+</p><p>
+</p><h3> MJ interface にメソッドを追加すると、リンク時エラーになる。</h3><p>
+</p><p>
+対処法：<br>
+なし。 interface への差分の追加はあきらめる。
+</p><p>
+</p><p>
+</p><h3>protected なメソッドを他のクラスから呼び出してもコンパイルエラーにならない。</h3><p>
+</p><p>
+例えば protected Object clone() を、他のクラスから呼び出しても、
+コンパイラを通ってしまい、実行時に ClassCastException が発生する。
+</p><p>
+対処法：<br>
+clone の場合は、次のように  public で override する。
+<pre>
+define class C {
+  Object clone() throws CloneNotSupportedException {
+    return original();
+  }
+}
+</pre>
+</p><p>
+</p><p>
+</p><h3> "MJ: Type dependency loop is detected" というエラーメッセージが出る。</h3><p>
+</p><p>
+あるクラスの宣言部にエラーがある時、
+そのエラーのあるクラスを参照すると、 "MJ: Type dependency loop is detected"
+というエラーメッセージが出てしまう。
+</p><p>
+対処法：<br>
+クラス宣言部のエラーを修正すれば出なくなる。
+</p><p>
+</p><p>
+</p><h3>ある種の Java interface を MJ class が implement するとコンパイルエラーになる。</h3><p>
+</p><p>
+例：
+<pre>
+b.java:2: MJ: In b.B at module b : Definition-method overrides another method. : equals
+  define class B implements java.security.Principal {
+  ^
+1 errors
+</pre>
+</p><p>
+対処法:<br>
+あらかじめ Java 言語側で、問題となる interface を implments する
+クラスを作っておき、そのクラスを MJ 側で extends する。
+</p><p>
+</p><h3>定数(static final field) を単純名で参照すると Compiling phase でエラーになる。</h3><p>
+</p><p>
+対処法:<br>
+単純名ではなく、  ClassName.CONSTANT という構文で定数を参照する。
+</p><p>
+</p><p>
+</p><h3>C.class という構文を使うと FATAL ERROR になる。</h3><p>
+</p><p>
+対処法:<br>
+Class.forName("C") で代用する。
+</p>
+
+<h3>interface を含む多重継承で "Definition-method overrides another method" というエラーが出る。</h3>
+<p>例：</p>
+<pre>
+module m {
+  define interface I1 {
+    define public void m1();
+  }
+  define interface I2 extends I1 {}
+  define class C1 implements I1 {}
+  define class C2 extends C1 implements I2 {}
+}
+</pre>
+<p>
+対処法：<br>
+I1 と I2 を１つのインターフェースに統合してしまう。
+あるいは、 I1 と I2 を継承関係のない独立したインターフェースにする。
+
+</p>
+
+
+<hr>
+<table width="100%"> <tr><td>
+<img src="images/img002.gif" alt="mj-logo">
+</td><td>
+<div class="last-update"> Last updated: 
+ Dec 11, 2006
+</div>
+<div class="header-link">
+[<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
+[<a href="index.html">Document index</a>]
+</div>
+</td></table>
+</body></html>

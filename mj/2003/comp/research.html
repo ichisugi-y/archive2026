@@ -1,0 +1,4718 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML
+><HEAD
+><TITLE
+>eclipseコンパイラ調査報告書</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"></HEAD
+><BODY
+CLASS="book"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="BOOK"
+><A
+NAME="AEN1"
+></A
+><DIV
+CLASS="TITLEPAGE"
+><H1
+CLASS="title"
+><A
+NAME="AEN2"
+></A
+>eclipseコンパイラ調査報告書<IMG
+SRC="images/jdt-tune.png"
+ALIGN="right"></H1
+><H3
+CLASS="author"
+><A
+NAME="AEN7"
+></A
+>株式会社デュオシステムズ</H3
+><SPAN
+CLASS="releaseinfo"
+>$Revision: 1.47 $<BR></SPAN
+><HR></DIV
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>&#30446;&#27425;</B
+></DT
+><DT
+><A
+HREF="#compilerOfEclipse"
+>eclipseのコンパイラ</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#AEN12"
+>eclipseのコンパイラの概要</A
+></DT
+><DT
+><A
+HREF="#AEN20"
+>JDTのAST</A
+></DT
+><DT
+><A
+HREF="#browsingEffectively"
+>JDTを効率的に読む</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="#compileFromGrammar"
+>文法定義ファイルからのコンパイル方法</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#installingJikesPG"
+>jikesPGの入手とインストール</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#AEN97"
+>jikesPGについて</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="#AEN108"
+>eclipse 2.1のソースの入手と展開</A
+></DT
+><DT
+><A
+HREF="#eclipseFullBuild"
+>eclipse 2.1のフルビルド</A
+></DT
+><DT
+><A
+HREF="#genParser"
+>パーサーの生成</A
+></DT
+><DT
+><A
+HREF="#involveOutputs"
+>eclipseソースへの盛り込み</A
+></DT
+><DT
+><A
+HREF="#AEN219"
+>eclipseの再ビルド</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="#extendingJavaSyntax"
+>Java構文拡張</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#strategy"
+>方針</A
+></DT
+><DT
+><A
+HREF="#optimisticTry"
+>Optimistic Try文の追加</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#optSyntax"
+>文法の変更</A
+></DT
+><DT
+><A
+HREF="#modScanner"
+>スキャナーの変更</A
+></DT
+><DT
+><A
+HREF="#optTokenPos"
+>トークンの開始位置の記憶</A
+></DT
+><DT
+><A
+HREF="#optConsume"
+>構文木の生成</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="#mapInit"
+>Map初期化子の追加</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#mapSyntax"
+>文法の変更</A
+></DT
+><DT
+><A
+HREF="#modScannerMap"
+>スキャナーの変更</A
+></DT
+><DT
+><A
+HREF="#modParserMap"
+>パーサーの変更</A
+></DT
+><DT
+><A
+HREF="#mapChangeCode"
+>ASTの追加</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="#knowHow"
+>コード変更のノウハウ</A
+></DT
+><DT
+><A
+HREF="#AEN562"
+>Java構文拡張を組み込んだeclipseを動かす</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#buildExtension"
+>Java構文拡張を組み込んだeclipseのビルド方法</A
+></DT
+><DT
+><A
+HREF="#AEN611"
+>動作確認</A
+></DT
+><DT
+><A
+HREF="#AEN625"
+>既知の問題</A
+></DT
+></DL
+></DD
+></DL
+></DD
+><DT
+><A
+HREF="#AEN640"
+>今回の構文拡張方法の限界</A
+></DT
+><DT
+><A
+HREF="#AEN668"
+>pxmlをJDTに組み込める実装可能性</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#AEN671"
+>pxmlの文法がLALR(1)でない</A
+></DT
+><DT
+><A
+HREF="#AEN674"
+>pxmlとJDTがスキャナーに求める要件の違い</A
+></DT
+><DT
+><A
+HREF="#AEN706"
+>JDTで文法はプラガブルでない</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="#AEN709"
+>本ドキュメントの生成方法</A
+></DT
+><DT
+><A
+HREF="#AEN714"
+>JDTファイルリスティング</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="chapter"
+><HR><H1
+><A
+NAME="compilerOfEclipse"
+></A
+>eclipseのコンパイラ</H1
+><P
+>&#13;ここでは、eclipseのコンパイラを変更する際に、念頭に置くべき事柄を述べる。
+</P
+><DIV
+CLASS="sect1"
+><HR><H2
+CLASS="sect1"
+><A
+NAME="AEN12"
+></A
+>eclipseのコンパイラの概要</H2
+><P
+>&#13;eclipseでのJavaの開発支援は、org.eclipse.jdt.coreプラグインが行っており、Javaのコンパイラもこのプラグインの中に含まれる。
+JDTのコンパイラは<A
+HREF="http://oss.software.ibm.com/developerworks/projects/jikes/"
+TARGET="_top"
+>Jikes</A
+>で使用されているパーサージェネレータJikesPGで生成されている。文法定義は、plugins/org.eclipse.jdt.core/grammarディレクトリに収められており、J2SE1.4用の文法定義ファイルは、java_1_4.gである。
+文法定義ファイルからJDTをビルドする方法は、<A
+HREF="#compileFromGrammar"
+><I
+>文法定義ファイルからのコンパイル方法</I
+>&#31456;</A
+>を参照。
+</P
+><P
+>&#13;後述のjikesPGがLALR(1)の文法を扱うため、eclipseのコンパイラはLALR(1)の文法を扱う。
+</P
+><P
+>&#13;JDTのコンパイラのコードには、ほとんどコメントが付いていない(APIとして公開されている一部を除く)。また、publicなフィールドも多い(アクセッサが用意されていないことが多い)。したがって、例えば「インスタンスがどういう値に設定されていれば正常な状態か」など、多くの事柄をソースから推測するしかない。
+「正しく動くはず」のコードを記述するのは困難なので、「多分これで動くのではないか」と言うコードを書いてテストすることになった。eclipseのコミュニティと密に連携しなければ、
+安心してコードやテストコードを書いたり、eclipseのバージョンアップに対応するのは困難と思われる。
+</P
+><P
+>&#13;  JDTのコードを見ると、軽快な動作を実現するための努力が多く見られる(中には無意味と思われる努力も)。javaの文法定義を見ても、パーサーの状態遷移表が大きくならないようになっている。JDTでは編集中に何度もパーサーを呼び出すので、高速なパーサーは必要不可欠である。
+ </P
+></DIV
+><DIV
+CLASS="sect1"
+><HR><H2
+CLASS="sect1"
+><A
+NAME="AEN20"
+></A
+>JDTのAST</H2
+><P
+>&#13;通常、コンパイラはAST(抽象構文木)を使用してコンパイル処理を実現する。
+JDTもASTを利用するが、JDTでは、次のような4種類ものASTが存在する。コンパイルに必要なのは、org.eclipse.jdt.internal.compiler.astパッケージにあるASTである。
+</P
+><DIV
+CLASS="table"
+><A
+NAME="AEN23"
+></A
+><P
+><B
+>&#34920; 1. JDTのAST</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>ASTの種類</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>用途</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.core.IJavaElementを親とするクラス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>PackageExplorerに表示する単位。クラス、フィールド、メソッド(、インポート文も?)。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.core.jdom</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>Java ドキュメント・オブジェクト・モデル (DOM) をサポートしており、Java 
+            コンパイル単位の構造を確認しながら移動することができる。粒度はorg.eclipse.jdt.core.IJavaElementとほぼ同じ。 
+    </TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.core.dom</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>コンパイル単位の構造をステートメント・レベルまで検査するために使用する抽象構文ツリー</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.compiler.ast</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>コンパイルするための抽象構文ツリー。粒度はorg.eclipse.jdt.core.domとほぼ同じ。</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="sect1"
+><HR><H2
+CLASS="sect1"
+><A
+NAME="browsingEffectively"
+></A
+>JDTを効率的に読む</H2
+><P
+>&#13;JDTのソースを読むとき、大量のソースを縦横無尽に行き来する必要がある。ソースのブラウズにeclipse自身を使うと
+非常に便利である。次のようなことが、単一のファイル単位ではなく、ワークスペースレベルでできる。
+<P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>選択した識別子の定義個所にジャンプ</P
+></LI
+><LI
+><P
+>選択した識別子の参照個所を検索</P
+></LI
+><LI
+><P
+>選択したクラスまたはインターフェイスの階層構造を表示</P
+></LI
+><LI
+><P
+>選択した変数を変更している個所を検索</P
+></LI
+><LI
+><P
+>選択した変数を参照している個所を検索</P
+></LI
+></OL
+>
+</P
+><P
+>&#13;eclipseを構成するプラグインをeclipseで参照するには、次のようにする。
+</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>eclipseのソースを展開する。展開先(pluginsディレクトリを含むディレクトリ)を${ECLIPSESRC}とする。</P
+></LI
+><LI
+><P
+>eclipseを起動し、
+ <B
+CLASS="guimenu"
+>File</B
+>-&gt;<B
+CLASS="guimenuitem"
+>New</B
+>-&gt;<B
+CLASS="guimenuitem"
+>Project</B
+>で、Simple Projectを選択。Plug-in Project等を選ばない。
+ </P
+></LI
+><LI
+><P
+><A
+HREF="#newProjDialog"
+>&#22259;1</A
+>のダイアログで、Use defaultのチェックをはずし、${ECLIPSESRC}/plugins/&#60;プラグイン名&#62;
+ をDirectoryに指定し、Project nameに&#60;プラグイン名&#62;を指定する。</P
+></LI
+><LI
+><P
+>取り込んだプラグインが依存する他のプラグインがないとエラーが出るので、適宜足りないプラグインを取り込む。JDTのソースを読むのに最低限必要なのは、次のプラグイン。
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;org.apache.ant
+org.apache.xerces
+org.eclipse.ant.core
+org.eclipse.ant.optional.junit
+org.eclipse.core.boot
+org.eclipse.core.resources
+org.eclipse.core.runtime
+org.eclipse.jdt
+org.eclipse.jdt.core
+</PRE
+></TD
+></TR
+></TABLE
+>
+</P
+></LI
+><LI
+><P
+>作成したプロジェクトを、JavaパースペクティブやPDEパースペクティブで開く。</P
+></LI
+></OL
+><DIV
+CLASS="figure"
+><A
+NAME="newProjDialog"
+></A
+><P
+><IMG
+SRC="images/newProj.png"></P
+><P
+><B
+>&#22259; 1. eclipseプラグインをeclipseプロジェクトとして取り込む</B
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="chapter"
+><HR><H1
+><A
+NAME="compileFromGrammar"
+></A
+>文法定義ファイルからのコンパイル方法</H1
+><P
+>&#13;JDTのコンパイラを変更するには、まずJDTのビルド方法を知る必要がある。
+ここでは、JDTのコンパイラを変更した際の、eclipseの再構築方法を述べる。
+</P
+><P
+>&#13;文法定義ファイルからのパーサーを生成しJDTをコンパイルする方法は、<A
+HREF="http://dev.eclipse.org/viewcvs/index.cgi/~checkout~/jdt-core-home/howto/generate%20parser/generateParser.html"
+TARGET="_top"
+>eclipseのサイト</A
+>に示されている(ただし、一部記述されていない作業もある)。
+</P
+><P
+>&#13;文法定義ファイルを変更しJDTをビルドするまでの大まかな流れを、<A
+HREF="#syntaxChangeFlow"
+>&#22259;1</A
+>に示す。実際には、<A
+HREF="#syntaxChangeFlow"
+>&#22259;1</A
+>に示した作業以外にも、jikesPGのインストールなどが必要である。
+</P
+><DIV
+CLASS="figure"
+><A
+NAME="syntaxChangeFlow"
+></A
+><P
+><IMG
+SRC="images/buildFlow.png"></P
+><P
+><B
+>&#22259; 1. 文法変更の流れ</B
+></P
+></DIV
+><P
+>&#13;以下に、Red Hat Linux 8.0(x86)上でのコンパイル手順を詳細に示す。
+</P
+><DIV
+CLASS="sect1"
+><HR><H2
+CLASS="sect1"
+><A
+NAME="installingJikesPG"
+></A
+>jikesPGの入手とインストール</H2
+><P
+>&#13;    まず、パーサー生成に必要なjikesPGをインストールする。<A
+HREF="http://www-124.ibm.com/developerworks/projects/jikes/"
+TARGET="_top"
+>jikes</A
+>のホームページから、jikesPGの1.3(jikespg-1.3.tar.gz)をダウンロードする。ダウンロードしたファイルへのパスが、/path/to/jikespg-1.3.tar.gzで、/opt/jikespgにインストールする場合、次のようにする。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;# mkdir /opt
+# cd /opt
+# tar zxvf /path/to/jikespg-1.3.tar.gz
+# cd jikespg/src
+# make clean all
+# mkdir ../bin
+# cp jikespg ../bin
+# make clean
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>以後の作業では、/opt/jikespg/binにパスが通してあるものとする。</P
+><DIV
+CLASS="sect2"
+><HR><H3
+CLASS="sect2"
+><A
+NAME="AEN97"
+></A
+>jikesPGについて</H3
+><P
+>&#13;jikesPGは、Java言語で記述されたパーサーを生成するパーサージェネレータである。jikesPG自身は、C言語で記述されており、非常に高速に動作する。
+</P
+><P
+>&#13;jikesPGは、主にjikes(IBMのjavaコンパイラ)を作るために使用されているようで、Java向けの汎用パーサージェネレータとしてはあまり認知されていないようだ。
+その為か、jikesPGに関する情報は、非常に限られており、文法定義ファイルの記述方法のドキュメントすら見つけられなかった。
+jikesPGに付属のexampleやjava_1_4.gの技術を見て、使用方法を推測した。
+また、エラー処理などがいい加減で、長いパス名などをパラメータに渡すと、バッファオーバーランで誤動作する。今回は、gcc バージョン 3.2 20020903 (Red Hat Linux 8.0 3.2-7)でコンパイルしたものを使用した。jikesPGの移植性はかなり低いらしく、使用しているコンパイラや実行環境によっては、ユニークに割り当てられるべき整数が重複することがある。
+</P
+><DIV
+CLASS="simplesect"
+><HR><H4
+CLASS="simplesect"
+><A
+NAME="AEN101"
+></A
+>WindowsでjikesPGを使用できるか?</H4
+><P
+>&#13;WindowsでjikesPGをコンパイルするには、<A
+HREF="http://www.borland.co.jp/cppbuilder/freecompiler/"
+TARGET="_top"
+>Free Borland C++ Compiler</A
+>
+と<A
+HREF="http://unxutils.sourceforge.net/"
+TARGET="_top"
+>GNU utilities for Win32</A
+>をインストールし、jikespg/src/Makefileを修正し
+makeを実行する。Makefileの主な変更点は、オブジェクトファイルの拡張子を.objにするのと、リンクのコマンドを
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>$(CC) -ejikespg.exe ....</PRE
+></TD
+></TR
+></TABLE
+>
+と変更することである。
+</P
+><P
+>&#13;ただし、出来上がったjikespgでパーサーを作成したところ、トークンにユニークに割り当てられるべき整数が重複していた。そのため、Parser.javaをコンパイル中にcaseラベルが重複している旨のエラーが出て、使い物にならなかった。bcc32でコンパイル時に、警告がいくつか出るのでそれを修正すれば使えるかもしれない。cygwin&#38;gccでコンパイルすれば
+問題ないかもしれないが、未確認。Linux for x86でも、gccのバージョンによってはbcc32と同じ現象が見られるようだ。
+</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="sect1"
+><HR><H2
+CLASS="sect1"
+><A
+NAME="AEN108"
+></A
+>eclipse 2.1のソースの入手と展開</H2
+><P
+>&#13;   <A
+HREF="http://www.eclipse.org/"
+TARGET="_top"
+>eclipse</A
+>のホームページから、eclipse 2.1のソース(eclipse-sourceBuild-srcIncluded-2.1.zip)をダウンロードする。ダウンロードしたファイルへのパスが、/path/to/eclipse-sourceBuild-srcIncluded-2.1.zipで、/opt/eclipse-2.1(以下、/opt/eclipse-2.1を${eclipse}と表記)に展開する場合、次のようにする。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;# eclipse=/opt/eclipse-2.1
+# mkdir -p ${eclipse}
+# cd ${eclipse}
+# unzip /path/to/eclipse-sourceBuild-srcIncluded-2.1.zip
+</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="sect1"
+><HR><H2
+CLASS="sect1"
+><A
+NAME="eclipseFullBuild"
+></A
+>eclipse 2.1のフルビルド</H2
+><P
+>&#13;   後述するが、JDTのパーサーを変更してビルドするには、JDT自身のjarファイル(${eclipse}/plugins/org.eclipse.jdt.core/jdtcore.jar)が必要になる。
+   したがって、まずeclipse全体をビルドし、jdtcore.jarを作成する。
+   eclipseをビルドするには、ant(&#62;=1.4)、JDK(&#62;=1.4.1)が利用可能な状態で、次のようにする。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;# cd ${eclipse}
+# build -os &#60;osType&#62; -ws &#60;windowSystemType&#62;
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   &#60;osType&#62;や&#60;windowSystemType&#62;に指定する値は、<A
+HREF="#buildOptions"
+>&#34920;1</A
+>を参照。
+   </P
+><DIV
+CLASS="table"
+><A
+NAME="buildOptions"
+></A
+><P
+><B
+>&#34920; 1. プラットフォームの選択オプション</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>osType</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>windowSystemType</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>win32</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>win32</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>linux</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>motif</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>linux</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>gtk</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>solaris</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>motif</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>aix</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>motif</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>hpux</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>motif</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>qnx</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>photon</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="sect1"
+><HR><H2
+CLASS="sect1"
+><A
+NAME="genParser"
+></A
+>パーサーの生成</H2
+><P
+>&#13;   ここまでで、eclipseのコンパイラをJavaの文法定義ファイルからビルドする準備が整った。
+   以降、Javaの文法定義ファイルからJDTをビルドしなおす方法を述べる。まず、次のように、Javaの文法定義ファイルから、jikesPGを使用してパーサーを生成する。Javaの文法定義ファイルは、${eclipse}/plugins/org.eclipse.jdt.core/grammar/java_1_4.gである。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;# cd ${eclipse}/plugins/org.eclipse.jdt.core/grammar
+# jikespg java_1_4.g
+  …
+This grammar is LALR(1).
+  …
+# ls
+JavaAction.java  java_1_4.l  javadcl.java  javahdr.java  javasym.java
+java_1_4.g       java_1_5.g  javadef.java  javaprs.java
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>すると、<A
+HREF="#filesGenerated"
+>&#34920;2</A
+>に示すファイル群が生成される。生成されたファイルは、そのままJDTのパーサーとして使えるわけではなく、後述のように切り貼りや修正を加えてJDTに組み込んでいく必要がある。</P
+><DIV
+CLASS="table"
+><A
+NAME="filesGenerated"
+></A
+><P
+><B
+>&#34920; 2. 生成されるファイル群</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>ファイル名</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>説明</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JavaAction.java</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>構文を認識した際(reduce時)に実行するアクションが出力される。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>java_1_4.l</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>パーサーを生成した際のログ情報。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>javahdr.java</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>通常、空のファイルとなっている。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>javadcl.java</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>トークン名を表す文字列定数や状態遷移表などが出力される。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>javasym.java</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>各トークンを表す定数が出力される。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>javadef.java</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>状態遷移表に関する基本的な情報が入っている。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>javaprs.java</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>eclipseでは必要ないファイル。${eclipse}/plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/Parser.javaに、ほぼ同等の機能のものが存在する。</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="sect1"
+><HR><H2
+CLASS="sect1"
+><A
+NAME="involveOutputs"
+></A
+>eclipseソースへの盛り込み</H2
+><P
+>&#13; 次に、生成されたこれらのファイルをeclipseのソースに盛り込む。盛り込み方法を<A
+HREF="#import"
+>&#34920;3</A
+>に示す。
+</P
+><DIV
+CLASS="table"
+><A
+NAME="import"
+></A
+><P
+><B
+>&#34920; 3. JDTへの盛り込み方法</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>jikesPGによって生成されたファイル</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>盛り込み先のeclipseのソースファイル</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>修正の仕方</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JavaAction.java</TD
+><TD
+ROWSPAN="3"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>${eclipse}/plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/Parser.java</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JavaAction.javaの中身で、Parser.javaのメソッドconsumeRule(int)を置き換える。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>javadcl.java</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>javadcl.javaの文字列"$eof"を定数UNEXPECTED_EOFに、文字列"$error"を文字列"Invalid Character"に書き換える。その後、javadcl.javaのrhsとname定数フィールドで、Parser.javaのrhsとnameを置き換える。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>java_1_4.g</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>java_1_4.gの中身で、Parser.javaのgrammar()メソッド内のコメントを置き換える。</TD
+></TR
+><TR
+><TD
+ROWSPAN="2"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>javasym.java</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>${eclipse}/plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/TerminalTokens.java</TD
+><TD
+ROWSPAN="2"
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>javasym.java中の文字列"TokenName$eof"を"TokenNameEOF"に、文字列"TokenName$error"を"TokenNameERROR"に書き換えてから、ITerminalSymbols.javaとTerminalTokens.javaに盛り込む。その際、次の定数を消さないように注意する。
+     TokenNameWHITESPACE,TokenNameCOMMENT_LINE,TokenNameCOMMENT_BLOCK,TokenNameCOMMENT_JAVADOC</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>${eclipse}/plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/compiler/ITerminalSymbols.java</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>javadef.java</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>${eclipse}/plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/ParserBasicInformation.java</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>javadef.javaのフィールド定義で、ParserBasicInformation.java内のフィールド定義を置き換える。</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>&#13; 上記に加えて、javadcl.javaから<A
+HREF="http://dev.eclipse.org/viewcvs/index.cgi/~checkout~/jdt-core-home/howto/generate%20parser/UpdateParserFiles.java"
+TARGET="_top"
+>UpdateParserFiles.java</A
+>を使用してリソースファイルを作成しなければならない。このとき使用するjdtcore.jarは、最初にフルビルドしたときものを使用する。
+ </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;# cd ${eclipse}/plugins/org.eclipse.jdt.core
+# wget 'http://dev.eclipse.org/viewcvs/index.cgi/~checkout~/jdt-core-home/howto/generate%20parser/UpdateParserFiles.java'
+# javac -classpath jdtcore.jar UpdateParserFiles.java
+# base=$PWD
+# cd compiler/org/eclipse/jdt/internal/compiler/parser
+# java -cp ${base}/jdtcore.jar:${base} UpdateParserFiles ${base}/grammar/javadcl.java
+</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="sect1"
+><HR><H2
+CLASS="sect1"
+><A
+NAME="AEN219"
+></A
+>eclipseの再ビルド</H2
+><P
+>&#13;ここまでの作業で、JDTのコンパイラのソースの更新が完了した。後は、eclipseを再ビルドすることで、新しいコンパイラを組み込んだeclipseが出来上がる。org.eclipse.jdt.coreプラグインだけを再コンパイルすることもできるが、org.eclipse.jdt.coreに依存した他のプラグイン(例:org.eclipse.jdt.uiなど)も存在するので、eclipse全体をフルビルドした方がよい。
+</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;# cd ${eclipse}
+# build -os &#60;osType&#62; -ws &#60;windowSystemType&#62;
+</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="chapter"
+><HR><H1
+><A
+NAME="extendingJavaSyntax"
+></A
+>Java構文拡張</H1
+><P
+>&#13; JDTのパーサーのビルド方法が理解できたところで、次は具体的にJavaの構文を拡張してみる。
+ </P
+><DIV
+CLASS="sect1"
+><HR><H2
+CLASS="sect1"
+><A
+NAME="strategy"
+></A
+>方針</H2
+><P
+>&#13;Javaの構文拡張をJDTのコンパイラに組み込む際、次の点に留意して方針を決めた。
+<P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>eclipseおよびJDTの構造に合わせて、素直に拡張する。</P
+></LI
+><LI
+><P
+>コーディング量を極力抑える。</P
+></LI
+></OL
+>
+</P
+><P
+>&#13;その結果、次のような方針でJavaの構文を拡張することにした。
+</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>新たな拡張構文を、JikesPGの文法定義ファイルに追加する。</P
+></LI
+><LI
+><P
+>必要であればAST(org.eclipse.jdt.internal.compiler.ast.*)に新たなノードを加える。
+  そうでなければ、既存のASTを組み合わせる。</P
+></LI
+></OL
+><P
+>&#13;具体的には、Optimistic Try文(tryブロック内で発生した例外を無視するtry文)と、
+java.util.Mapインスタンスの初期化子を追加する。
+</P
+></DIV
+><DIV
+CLASS="sect1"
+><HR><H2
+CLASS="sect1"
+><A
+NAME="optimisticTry"
+></A
+>Optimistic Try文の追加</H2
+><P
+>&#13;構文拡張の具体例として、Optimistic(楽観的) Try文を追加する。これは、APIインターフェイス上は例外が発生し得るが、
+実際には例外が発生し得ない場合のコーディングを楽にするシンタックスシュガーである。
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;ByteArrayOutputStream os = new ByteArrayOutputStream();
+try __optimistic__ {
+	os.close();
+}
+</PRE
+></TD
+></TR
+></TABLE
+>
+これは、下記のコードと等価であり、実際に下記のコードの構文木と同じ構文木に変換する。
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;ByteArrayOutputStream os = new ByteArrayOutputStream();
+try  {
+	os.close();
+} catch (Throwable th) {
+}
+</PRE
+></TD
+></TR
+></TABLE
+>
+__optimistic__により付加されるcatch節は、最後のcatch節(finally節よりは前)として追加される。また、__optimistic__を付加したtry文は、catch節もfinally節も省略してよい。
+</P
+><P
+>&#13;実際の変更作業の流れは次のようになる。
+</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>文法定義ファイルの変更(<A
+HREF="#optSyntax"
+><I
+>文法の変更</I
+>&#38917;</A
+>)</P
+></LI
+><LI
+><P
+>スキャナーの変更(<A
+HREF="#modScanner"
+><I
+>スキャナーの変更</I
+>&#38917;</A
+>)</P
+></LI
+><LI
+><P
+>パーサーの変更(<A
+HREF="#optTokenPos"
+><I
+>トークンの開始位置の記憶</I
+>&#38917;</A
+>、<A
+HREF="#optConsume"
+><I
+>構文木の生成</I
+>&#38917;</A
+>)</P
+></LI
+></OL
+><DIV
+CLASS="sect2"
+><HR><H3
+CLASS="sect2"
+><A
+NAME="optSyntax"
+></A
+>文法の変更</H3
+><P
+>&#13;   まず、新しく導入した__optimistic__キーワードに相当するトークンを文法定義ファイルに加える。トークンは、文法定義ファイルの$Terminalsというセクションに記述するので、次のように「__optimistic__」と言う単語を追加する。
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;$Terminals
+	__optimistic__
+</PRE
+></TD
+></TR
+></TABLE
+>
+   </P
+><P
+>&#13;   既存の文法定義ファイルのコードでは、try文は次のように記述されている。
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;TryStatement ::= 'try'    Block Catches
+/.$putCase consumeStatementTry(false); $break ./
+TryStatement ::= 'try'    Block Catchesopt Finally
+/.$putCase consumeStatementTry(true); $break ./
+</PRE
+></TD
+></TR
+></TABLE
+>
+これは、このような構文を認識した際、org.eclipse.jdt.internal.compiler.parser.Parser.consumeStatementTry(boolean withFinally)メソッドを呼ぶ
+という記述である。
+そこで、次の文法定義を追加する。
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;-- Extended Grammar {
+TryStatement ::= 'try'    '__optimistic__' Block Catchesopt
+/.$putCase consumeStatementOptimisticTry(false); $break ./
+TryStatement ::= 'try'    '__optimistic__' Block Catchesopt Finally
+/.$putCase consumeStatementOptimisticTry(true); $break ./
+-- Extended Grammar }
+</PRE
+></TD
+></TR
+></TABLE
+>
+"--"から行末まではコメントである。この追加により、Optimistic Try拡張構文を認識した場合、org.eclipse.jdt.internal.compiler.parser.Parser.consumeOptimisticStatementTry(boolean withFinally)メソッドが呼び出される。
+   </P
+></DIV
+><DIV
+CLASS="sect2"
+><HR><H3
+CLASS="sect2"
+><A
+NAME="modScanner"
+></A
+>スキャナーの変更</H3
+><P
+>&#13;   今回、__optimistic__というキーワードを追加するので、字句解析メソッドを修正し、パーサーに新しく追加したトークンを返すようにする。
+   具体的には、org.eclipse.jdt.internal.compiler.parser.Scanner.scanIdentifierOrKeyword()メソッドに次のコードを追加する。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;		case '_' : //__optimistic__
+			switch (length) {
+				case 14 :
+					if ((data[++index] == '_')
+						&#38;&#38; (data[++index] == 'o')
+						&#38;&#38; (data[++index] == 'p')
+						&#38;&#38; (data[++index] == 't')
+						&#38;&#38; (data[++index] == 'i')
+						&#38;&#38; (data[++index] == 'm')
+						&#38;&#38; (data[++index] == 'i')
+						&#38;&#38; (data[++index] == 's')
+						&#38;&#38; (data[++index] == 't')
+						&#38;&#38; (data[++index] == 'i')
+						&#38;&#38; (data[++index] == 'c')
+						&#38;&#38; (data[++index] == '_')
+						&#38;&#38; (data[++index] == '_'))
+						return TokenName__optimistic__;
+					else
+						return TokenNameIdentifier;
+
+				default :
+					return TokenNameIdentifier;
+			}
+
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   もう一箇所、org.eclipse.jdt.internal.compiler.parser.Scanner.toStringAction(int act)メソッドに次のコードを追加する。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;		case TokenName__optimistic__ :
+			return "__optimistic__"; //$NON-NLS-1$
+</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="sect2"
+><HR><H3
+CLASS="sect2"
+><A
+NAME="optTokenPos"
+></A
+>トークンの開始位置の記憶</H3
+><P
+>&#13;   JDTではシンタックスエラーの指摘やデバッグ情報の出力などのために、主要な構文要素の開始位置と終了位置を覚えている。
+   新しく追加した__optimistic__トークンの位置も記憶できるように、パース時に__optimistic__トークンの開始位置を記憶するようにorg.eclipse.jdt.internal.compiler.parser.Parser.consumeToken(int)メソッドを修正する。具体的には、下記のように__optimistic__用のcaseラベルを追加する。
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;		case TokenNameassert :
+		case TokenNameimport :
+		case TokenNamepackage :
+		case TokenNamethrow :
+		case TokenNamenew :
+		case TokenNamedo :
+		case TokenNameif :
+		case TokenNamefor :
+		case TokenNameswitch :
+		case TokenNametry :
+		case TokenNamewhile :
+		case TokenNamebreak :
+		case TokenNamecontinue :
+		case TokenNamereturn :
+		case TokenNamecase :
+		case TokenName__optimistic__ :                          <A
+NAME="labelAdded"
+><B
+>(1)</B
+></A
+>
+			pushOnIntStack(scanner.startPosition);
+			break;
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#labelAdded"
+><B
+>(1)</B
+></A
+></DT
+><DD
+>__optimistic__トークン用のラベル追加</DD
+></DL
+></DIV
+>
+
+   </P
+></DIV
+><DIV
+CLASS="sect2"
+><HR><H3
+CLASS="sect2"
+><A
+NAME="optConsume"
+></A
+>構文木の生成</H3
+><P
+>&#13;   前述の文法定義の追加により、consumeOptimisticStatementTry(boolean withFinally)メソッドが呼ばれるようになったが、このメソッドは
+   今回新たに追加するものであり、既存のメソッドではない。このメソッドを、org.eclipse.jdt.internal.compiler.parser.Parserクラスに直接追加する。
+   org.eclipse.jdt.internal.compiler.parser.Parserのサブクラスを作成し、それに追加しないのは、JDT内でorg.eclipse.jdt.internal.compiler.parser.Parserを
+   継承しているクラスが他にもあるためだ。
+   Parserクラスは、インスタンス変数としてAST(org.eclipse.jdt.internal.compiler.ast.*)のスタック(astStack)をメインテナンスしている。構文を認識したら、このASTスタックを操作してreduce操作を行うようにする。他にも、expressionStackやintStack(ソース上の位置や、modifierの指定状態などを表す)、identifierStackもある。先ほどの主要なトークンの開始位置もintStack上に一時的に保存それる。実際にconsumeOptimisticStatementTry(boolean withFinally)メソッドを実装すると次のようになる。
+</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;protected void consumeStatementOptimisticTry(boolean withFinally) {
+	//TryStatement ::= 'try' '__optimistic__' Block Catchesopt
+	//TryStatement ::= 'try' '__optimistic__' Block Catchesopt Finally
+
+	consumeStatementTry(withFinally);                        <A
+NAME="callConsumeStatementTry"
+><B
+>(1)</B
+></A
+>
+
+	// create OptimisticTryStatement node from TryStatement on ast stack
+	// and pushOnAstStack
+	TryStatement tryStmt = (TryStatement)astStack[astPtr];   <A
+NAME="getTryStatement"
+><B
+>(2)</B
+></A
+>
+
+	final int optimisticLen = "__optimistic__".length();
+
+	// swap try and __optimistic__ start positions
+	int optimisticStart = tryStmt.sourceStart;
+	long optimisticRange = (((long)optimisticStart) &#60;&#60; 32) | (optimisticStart + optimisticLen);
+	tryStmt.sourceStart = intStack[intPtr--];                <A
+NAME="adjustPost"
+><B
+>(3)</B
+></A
+>
+
+	if (tryStmt.catchBlocks == null) {
+		tryStmt.catchBlocks = new Block[0];
+	}
+	// add a catch block to ignore a throwable.
+	{                                                        <A
+NAME="dummy"
+><B
+>(4)</B
+></A
+>
+		Block[] catchBlocks = tryStmt.catchBlocks;
+		tryStmt.catchBlocks = new Block[catchBlocks.length + 1];
+		System.arraycopy(catchBlocks, 0, tryStmt.catchBlocks, 0, catchBlocks.length);
+		tryStmt.catchBlocks[catchBlocks.length] = Block.EmptyWith(optimisticStart,
+			optimisticStart + optimisticLen); // start, end
+	}
+	if (tryStmt.catchArguments == null) {
+		tryStmt.catchArguments = new Argument[0];
+	}
+	// add a catch argument to ignore a throwable.
+	{                                                        <A
+NAME="dummy2"
+><B
+>(4)</B
+></A
+>
+		Argument[] catchArguments = tryStmt.catchArguments;
+		tryStmt.catchArguments = new Argument[catchArguments.length + 1];
+		System.arraycopy(catchArguments, 0, tryStmt.catchArguments, 0, catchArguments.length);
+		char[][] throwableType = {
+			"java".toCharArray(),
+			"lang".toCharArray(),
+			"Throwable".toCharArray()
+		};
+		long[] pos = { optimisticRange, optimisticRange, optimisticRange }; // (start&#60;&#60;32 | end), ...
+			
+		Argument arg = 
+			new Argument(
+				"th".toCharArray(), 
+				optimisticRange,  // name pos
+				new QualifiedTypeReference(throwableType, pos), 
+				AccDefault); // modifiers
+		arg.declarationSourceStart = optimisticStart; //pos
+		arg.declarationSourceEnd = optimisticStart + optimisticLen;
+		tryStmt.catchArguments[catchArguments.length] = arg;
+	}
+}
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#callConsumeStatementTry"
+><B
+>(1)</B
+></A
+></DT
+><DD
+>まず、consumeStatementTry(boolean withFinally)を呼び出す。consumeStatementTry()は、__optimistic__トークンをtryトークンと勘違いしながらも、
+tryブロックやcatch節finally節を正しく処理する。この時点で、intStackにtryトークンの開始位置が残っている。</DD
+><DT
+><A
+HREF="#getTryStatement"
+><B
+>(2)</B
+></A
+></DT
+><DD
+>次にASTスタックから、consumeStatementTry()がリデュースした結果のTryStatementオブジェクトを取り出す。</DD
+><DT
+><A
+HREF="#adjustPost"
+><B
+>(3)</B
+></A
+></DT
+><DD
+>このTryStatementの開始位置は、__optimistic__トークンの開始位置からとなっており不適切なので修正する。このときintStackからtryトークンの開始位置をポップする。</DD
+><DT
+><A
+HREF="#addCatch"
+><B
+>(4)</B
+></A
+></DT
+><DD
+>あとは、例外を無視するためのcatch節をTryStatementに加える。このとき、catch節を構成する各要素のソース上の位置として、__optimistic__トークンの
+位置を使用した。</DD
+></DL
+></DIV
+><P
+>&#13;Optimistic Tryの追加では、ASTを生成する時点でTryStatementノードに細工するすることにしたので、新たなASTノードの追加は行わなかった。
+</P
+></DIV
+></DIV
+><DIV
+CLASS="sect1"
+><HR><H2
+CLASS="sect1"
+><A
+NAME="mapInit"
+></A
+>Map初期化子の追加</H2
+><P
+>&#13;  もう一つの構文拡張の具体例として、Map初期化子を追加する。これは、Perlで連想配列を初期化するイメージで、Mapインスタンスを初期化する構文を提供するものである。
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;Map colors = %{
+	"red" =&#62; new Integer(0xff0000),
+	"green" =&#62; new Integer(0x00ff00),
+	"blue" =&#62; new Integer(0x0000ff)
+};
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;  上記のように記述すると、下記のコードと同じ動作をする。
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;Map colors = new HashMap();
+colors.put("red", new Integer(0xff0000));
+colors.put("green", new Integer(0x00ff00));
+colors.put("blue", new Integer(0x0000ff));
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;  =&#62;の両辺は、リファレンス型でなければならない。
+  </P
+><P
+>&#13;  %{は、%と{の組み合わせではなく、単一のトークンとした。%と{の組み合わせにした場合、パーサー生成時にconflictが発生したためである。既存のJavaの文法定義で、
+  キャストが次のように定義されている。
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;-- Expression is here only in order to make the grammar LL1
+CastExpression ::= PushLPAREN Expression PushRPAREN InsideCastExpressionLL1 UnaryExpressionNotPlusMinus
+/.$putCase consumeCastExpressionLL1(); $break ./
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;  そのため、次のコードの%が、剰余演算子なのか、Map初期化子を導くものなのか、(意味解析前の)構文解析時に判定できないためと思われる。
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;(1) % { "k"=&#62;"v" } // 意味的には正しくない。構文解析上、キャスト式か算術式か曖昧。
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;実際の変更作業の流れは次のようになる。
+</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>文法定義ファイルの変更(<A
+HREF="#mapSyntax"
+><I
+>文法の変更</I
+>&#38917;</A
+>)</P
+></LI
+><LI
+><P
+>スキャナーの変更(<A
+HREF="#modScannerMap"
+><I
+>スキャナーの変更</I
+>&#38917;</A
+>)</P
+></LI
+><LI
+><P
+>パーサーの変更(<A
+HREF="#modParserMap"
+><I
+>パーサーの変更</I
+>&#38917;</A
+>)</P
+></LI
+><LI
+><P
+>ASTの追加(<A
+HREF="#mapChangeCode"
+><I
+>ASTの追加</I
+>&#38917;</A
+>)</P
+></LI
+></OL
+><DIV
+CLASS="sect2"
+><HR><H3
+CLASS="sect2"
+><A
+NAME="mapSyntax"
+></A
+>文法の変更</H3
+><P
+>&#13;   まず、下記のようにトークンを2つ追加する。文法定義ファイルでは、通常、トークンはEQUAL_GREATERのようなシンボルで表す。しかし、可読性を挙げるために、'=&#62;'のようなリテラル風の表記をするためのエイリアスを定義できる。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;$Terminals
+	EQUAL_GREATER
+	MAP_START
+…
+$Alias
+        '=&#62;'   ::= EQUAL_GREATER
+        '%{'   ::= MAP_START
+…
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   既存のArrayInitializerを参考にし、次のように、構文を追加した。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;-- Extended Grammar {
+Primary -&#62; MapInitializer
+MapInitializer ::= '%{' ,opt '}'
+/.$putCase consumeEmptyMapInitializer(); $break ./
+MapInitializer ::= '%{' MapEntries '}'
+/.$putCase consumeMapInitializer(); $break ./
+MapInitializer ::= '%{' MapEntries , '}'
+/.$putCase consumeMapInitializer(); $break ./
+
+MapEntries ::= MapEntry
+MapEntries ::= MapEntries ',' MapEntry
+/.$putCase consumeMapEntries(); $break ./
+MapEntry ::= Expression '=&#62;' Expression
+/.$putCase consumeMapEntry(); $break ./
+-- Extended Grammar }
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   上記の変更を行ったあと、jikesPGでパーサーを生成する。生成された、
+   javadcl.javaの中の<FONT
+COLOR="RED"
+><FONT
+COLOR="RED"
+>public final static</FONT
+><SPAN
+CLASS="type"
+>String[]</SPAN
+><TT
+CLASS="varname"
+>name</TT
+></FONT
+>
+   の中の"MAP_START"と"EQUAL_GREATER"を、それぞれ、"%{"と"=&#62;"に変更し、Parser.javaに反映させる。
+   これを行わないと、エラーメッセージなどで、%{などの代わりにMAP_STARTとシンボル名が表示されてしまう。
+   </P
+></DIV
+><DIV
+CLASS="sect2"
+><HR><H3
+CLASS="sect2"
+><A
+NAME="modScannerMap"
+></A
+>スキャナーの変更</H3
+><P
+>&#13;   今回、%{、 =&#62;というキーワードを追加するので、字句解析メソッドを修正し、パーサーに新しく追加したトークンを返すようにする。
+   具体的には、org.eclipse.jdt.internal.compiler.parser.Scanner.getNextToken()メソッドに次のようにコードを変更する。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;				case '%' :
+					if (getNextChar('='))
+						return TokenNameREMAINDER_EQUAL;
+					else if (getNextChar('{'))
+						return TokenNameMAP_START;
+					return TokenNameREMAINDER;
+
+                                …
+
+   				case '=' :
+					if (getNextChar('='))
+						return TokenNameEQUAL_EQUAL;
+					else if (getNextChar('&#62;'))
+						return TokenNameEQUAL_GREATER;
+					return TokenNameEQUAL;
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   もう一箇所、org.eclipse.jdt.internal.compiler.parser.Scanner.toStringAction(int act)メソッドに次のコードを追加する。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;		case TokenNameEQUAL_GREATER :
+			return "=&#62;"; //$NON-NLS-1$
+ 		case TokenNameMAP_START :
+ 			return "%{"; //$NON-NLS-1$
+</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="sect2"
+><HR><H3
+CLASS="sect2"
+><A
+NAME="modParserMap"
+></A
+>パーサーの変更</H3
+><P
+>&#13;   新たに追加した構文要素に対応するconsumeXxx()メソッドを、次のように<TT
+CLASS="classname"
+>org.eclipse.jdt.internal.compiler.parser.Parser</TT
+>クラスに追加する。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;protected void consumeEmptyMapInitializer() {
+	mapInitializer(0);                                       <A
+NAME="dummyD1"
+><B
+>(1)</B
+></A
+>
+}
+
+protected void consumeMapInitializer() {
+	mapInitializer(expressionLengthStack[expressionLengthPtr--]);<A
+NAME="dummyD2"
+><B
+>(1)</B
+></A
+>
+}
+
+/**
+ * 
+ * @param length length is the size of the Map Initializer
+ * expressionPtr points on the last elt of the mapInitializer, 
+ * in other words, it has not been decremented yet.
+ */
+public final void mapInitializer(int length) {
+	MapInitializer mi = new MapInitializer();
+	if (length != 0) {                                       <A
+NAME="setMapEntries"
+><B
+>(2)</B
+></A
+>
+		expressionPtr -= length;
+		System.arraycopy(expressionStack, expressionPtr + 1,
+			mi.expressions = new Expression[length],
+			0, length);
+		for (int i = 0; i &#60; length; i++) {
+			((MapEntryExpression)mi.expressions[i]).mapInit = mi;
+		}
+	}
+	pushOnExpressionStack(mi);                               <A
+NAME="pushMapInit"
+><B
+>(3)</B
+></A
+>
+	//positionning                                           <A
+NAME="setMapInitPos"
+><B
+>(4)</B
+></A
+>
+	mi.sourceEnd = endStatementPosition;
+	int searchPosition = length == 0 ? endPosition + 1 : mi.expressions[0].sourceStart;
+	try {
+		//does not work with comments(that contain '%{') nor '%{' describes as a unicode....		
+		while (! (scanner.source[--searchPosition] == '%' &#38;&#38;
+			scanner.source[searchPosition + 1] == '{')) {
+		}
+	} catch (IndexOutOfBoundsException ex) {
+		//should never occur (except for strange cases like whose describe above)
+		searchPosition = (length == 0 ? endPosition : mi.expressions[0].sourceStart) - 1;
+	}
+	mi.sourceStart = searchPosition;
+}
+
+protected void consumeMapEntries() {
+	concatExpressionLists();                                 <A
+NAME="concatMapEntries"
+><B
+>(5)</B
+></A
+>
+}
+
+protected void consumeMapEntry() {
+	expressionPtr -= 1;                                      <A
+NAME="createMapEntries"
+><B
+>(6)</B
+></A
+>
+	expressionLengthPtr -= 1;
+	expressionStack[expressionPtr] =
+		new MapEntryExpression(
+			expressionStack[expressionPtr],
+			expressionStack[expressionPtr + 1]);
+}
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#callMapInit"
+><B
+>(1)</B
+></A
+></DT
+><DD
+><TT
+CLASS="varname"
+>expressionStack</TT
+>上のMapEntryExpressionの数を引数に、mapInitializer()を呼び出し、MapInitializerExpressionをスタックに積む。</DD
+><DT
+><A
+HREF="#setMapEntries"
+><B
+>(2)</B
+></A
+></DT
+><DD
+><TT
+CLASS="varname"
+>expressionStack</TT
+>上のMapEntryExpressionを取り出し、<TT
+CLASS="classname"
+>MapInitializer</TT
+>のインスタンスに設定する。</DD
+><DT
+><A
+HREF="#pushMapInit"
+><B
+>(3)</B
+></A
+></DT
+><DD
+>出来上がった<TT
+CLASS="classname"
+>MapInitializer</TT
+>を<TT
+CLASS="varname"
+>expressionStack</TT
+>に積む。</DD
+><DT
+><A
+HREF="#setMapInitPos"
+><B
+>(4)</B
+></A
+></DT
+><DD
+>MapInitializer構文の範囲を設定する。構文の開始点を探すのに、単純に%{というパターンを探しているため、コメント中の%{やユニコードシーケンスで書かれた%{を正しく扱えない。これと同じ制約が既存のarrayInitializer()メソッドにもあるため、今回は厳密な開始位置検索にしなかった。厳密に開始位置を求めるには、__optimistic__トークンを追加したときと同じように、%{トークンの開始位置をconsumeToken()で<TT
+CLASS="varname"
+>intStack</TT
+>に保存する方式がよい。</DD
+><DT
+><A
+HREF="#concatMapEntries"
+><B
+>(5)</B
+></A
+></DT
+><DD
+><TT
+CLASS="varname"
+>expressionStack</TT
+>上に積まれた式を結合する。詳細は、<A
+HREF="#knowHow"
+><I
+>コード変更のノウハウ</I
+>&#38917;</A
+>を参照。</DD
+><DT
+><A
+HREF="#createMapEntries"
+><B
+>(6)</B
+></A
+></DT
+><DD
+><TT
+CLASS="varname"
+>expressionStack</TT
+>から式を2つ取り出して、<TT
+CLASS="classname"
+>MapEntryExpression</TT
+>を作り<TT
+CLASS="varname"
+>expressionStack</TT
+>に積む。</DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="sect2"
+><HR><H3
+CLASS="sect2"
+><A
+NAME="mapChangeCode"
+></A
+>ASTの追加</H3
+><P
+>&#13;   今回は、新たなASTノードとして、MapEntryExpressionとMapInitializerを追加する。両者とも、Expressionのサブクラスとした(<A
+HREF="#mapRelatedAstNodes"
+>&#34920;1</A
+>参照)。ASTの型の階層構造を、<A
+HREF="#astClassTree"
+>&#22259;1</A
+>に示す。
+   Statementが提供するメソッドは、通常、resolve→analyseCode→generateCodeの順で実行される。
+   </P
+><DIV
+CLASS="figure"
+><A
+NAME="astClassTree"
+></A
+><P
+><IMG
+SRC="images/astClassTree.png"></P
+><P
+><B
+>&#22259; 1. コンパイルに使用するASTの種類</B
+></P
+></DIV
+><DIV
+CLASS="table"
+><A
+NAME="mapRelatedAstNodes"
+></A
+><P
+><B
+>&#34920; 1. 関連するASTノード</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>ASTの種類</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>用途</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.compiler.ast.Statement</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;    <P
+></P
+><DIV
+CLASS="variablelist"
+><P
+><B
+><TT
+CLASS="classname"
+>Statement</TT
+>が提供するメソッド</B
+></P
+><DL
+><DT
+>void resolve(org.eclipse.jdt.internal.compiler.lookup.BlockScope scope)</DT
+><DD
+><P
+>引数の<TT
+CLASS="varname"
+>scope</TT
+>を用いて、名前解決を行う。</P
+></DD
+><DT
+>org.eclipse.jdt.internal.compiler.flow.FlowInfo analyseCode(org.eclipse.jdt.internal.compiler.lookup.BlockScope scope, org.eclipse.jdt.internal.compiler.flow.FlowContext flowContext, org.eclipse.jdt.internal.compiler.flow.FlowInfo flowInfo)</DT
+><DD
+><P
+>意味解析を行う。</P
+></DD
+><DT
+>void generateCode(org.eclipse.jdt.internal.compiler.lookup.BlockScope scope, rg.eclipse.jdt.internal.compiler.codegen.CodeStream codeStream)</DT
+><DD
+><P
+>コード生成を行う。</P
+></DD
+></DL
+></DIV
+>
+    </TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.compiler.ast.Expression</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;    <P
+></P
+><DIV
+CLASS="variablelist"
+><P
+><B
+><TT
+CLASS="classname"
+>Expression</TT
+>が提供するメソッド</B
+></P
+><DL
+><DT
+>org.eclipse.jdt.internal.compiler.lookup.TypeBinding resolveType(org.eclipse.jdt.internal.compiler.lookup.BlockScope scope)</DT
+><DD
+><P
+>名前解決を行う。<TT
+CLASS="classname"
+>Statement</TT
+>クラスの<TT
+CLASS="methodname"
+>resolve</TT
+>と違うのは、式の型を返す点である。</P
+></DD
+></DL
+></DIV
+>
+    </TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.compiler.ast.MapEntryExpression</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>構文「key =&#62; value」を表すノード。Map.put(key,value)の呼び出しに相当するコードを生成する。このノード全体としての型は、voidとした。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.compiler.ast.MapInitializer</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>構文「%{ MapEntriesopt }」 を表すノード。new java.util.HashMap()に相当するコードを生成する。このノード全体としての型は、java.util.Mapとした。
+    </TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="sect3"
+><HR><H4
+CLASS="sect3"
+><A
+NAME="AEN437"
+></A
+>MapEntryExpression</H4
+><P
+>&#13;   まず、<TT
+CLASS="classname"
+>MapEntryExpression</TT
+>の<TT
+CLASS="methodname"
+>resolveType</TT
+>の実装を示す。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;	public TypeBinding resolveType(BlockScope scope) {
+		constant = NotAConstant;                                <A
+NAME="mapEntryConst"
+><B
+>(1)</B
+></A
+>
+		TypeBinding keyType =                                   <A
+NAME="dummyA1"
+><B
+>(2)</B
+></A
+>
+			key.resolveTypeExpecting(scope, scope.getJavaLangObject());
+		TypeBinding valueType =                                 <A
+NAME="dummyA2"
+><B
+>(2)</B
+></A
+>
+			value.resolveTypeExpecting(scope, scope.getJavaLangObject());
+
+		if (putMsg == null) {                                   <A
+NAME="mapEntryPutMsg"
+><B
+>(3)</B
+></A
+>
+			putMsg = new MessageSend();
+			putMsg.selector = new char[] { 'p', 'u', 't' };
+			putMsg.receiver = mapInit.mapObj;
+			putMsg.arguments = new Expression[] { key, value };
+			putMsg.resolveType(scope);
+		}
+		return VoidBinding;
+	}
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#mapEntryConst"
+><B
+>(1)</B
+></A
+></DT
+><DD
+>このconstantフィールドは、Expressoinクラスで定義されており、定数の場合はその定数値を表すorg.eclipse.jdt.internal.compiler.impl.Constantオブジェクトを設定する。定数でない場合は、org.eclipse.jdt.internal.compiler.impl.Constant.NotAConstantを設定する。MapEntryExpressionの型は、常にvoidで定数とも考えられるが、定数扱いになって、=&#62;の両辺の式が評価されないと困るので、NotAConstantを設定した。</DD
+><DT
+><A
+HREF="#keyValue"
+><B
+>(2)</B
+></A
+></DT
+><DD
+>=&#62;の両辺のkeyとvalueを型解決する。</DD
+><DT
+><A
+HREF="#mapEntryPutMsg"
+><B
+>(3)</B
+></A
+></DT
+><DD
+>Map.put(key, value)メソッドを呼び出すために、MessageSendノードを作成し、名前解決しておく。putMsgはMapEntryExpressionで内部的に使っているだけで、ASTのトラバースの対象などにはならない。</DD
+></DL
+></DIV
+><P
+>&#13;   次に、MapEntryExpressionのanalyseCodeの実装を示す。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;	public FlowInfo analyseCode(
+		BlockScope currentScope,
+		FlowContext flowContext,
+		FlowInfo flowInfo) {
+		flowInfo = key.analyseCode(currentScope, flowContext, flowInfo)<A
+NAME="dummyB1"
+><B
+>(1)</B
+></A
+>
+				.unconditionalInits();
+		flowInfo = value.analyseCode(currentScope, flowContext, flowInfo)<A
+NAME="dummyB2"
+><B
+>(1)</B
+></A
+>
+				.unconditionalInits();
+		return flowInfo;
+	}
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#keyValueAnalyse"
+><B
+>(1)</B
+></A
+></DT
+><DD
+>このメソッドでは、単純に子ノードのanalyseCodeメソッドを呼び出し、その戻り値に対して、unconditionalInitsメソッドを呼び出している。このノードのように、無条件に自分以下のすべての子ノードが評価される場合は、このように簡単である。しかし、?:演算子や ||や&#38;&#38;等のように、ある項の評価結果によって別の項が評価されるかどうかが決まる場合は、もっと複雑である。また、実行未到達文の検出なども、このメソッドで行う。</DD
+></DL
+></DIV
+><P
+>&#13;   最後に、MapEntryExpressionのgenerateCodeの実装を示す。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;	public void generateCode(
+		BlockScope currentScope,
+		CodeStream codeStream,
+		boolean valueRequired) {
+		// objref on the operand stack
+
+		int pc = codeStream.position;                           <A
+NAME="savePC"
+><B
+>(1)</B
+></A
+>
+
+		// save objref                                          <A
+NAME="saveObjref"
+><B
+>(2)</B
+></A
+>
+		codeStream.dup();
+		// generate arguments
+		if (putMsg.arguments != null) {                         <A
+NAME="pushArgs"
+><B
+>(3)</B
+></A
+>
+			for (int i = 0; i &#60; putMsg.arguments.length; i++) {
+				putMsg.arguments[i].generateCode(currentScope, codeStream, true);
+			}
+		}
+		// actual message invocation                            <A
+NAME="invokeMethod"
+><B
+>(4)</B
+></A
+>
+		if (putMsg.codegenBinding.declaringClass.isInterface()) {
+			codeStream.invokeinterface(putMsg.codegenBinding);
+		} else {
+			codeStream.invokevirtual(putMsg.codegenBinding);
+		}
+		// operation on the returned value                      <A
+NAME="returnValue"
+><B
+>(5)</B
+></A
+>
+		if (valueRequired) {
+			// implicit conversion if necessary
+			codeStream.generateImplicitConversion(putMsg.implicitConversion);
+		} else {
+			// pop return value if any
+			switch (putMsg.binding.returnType.id) {
+				case T_long :
+				case T_double :
+					codeStream.pop2();
+					break;
+				case T_void :
+					break;
+				default :
+					codeStream.pop();
+			}
+		}
+		codeStream.recordPositionsFrom(pc,                      <A
+NAME="recordPC"
+><B
+>(6)</B
+></A
+>
+			(int) (putMsg.nameSourcePosition &#62;&#62;&#62; 32));
+	}
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#savePC"
+><B
+>(1)</B
+></A
+></DT
+><DD
+>まず、現在のPCの位置を保存する。</DD
+><DT
+><A
+HREF="#saveObjref"
+><B
+>(2)</B
+></A
+></DT
+><DD
+>親ノードであるMapInitializerが、<TT
+CLASS="classname"
+>HashMap</TT
+>を作成しそのオブジェクトリファレンスをオペランドスタックに積んだ状態で、MapEntryExpressionが呼ばれる。MapEntryExpressionは複数回呼ばれることがあるので、スタック上のオブジェクトリファレンスが失われないように複製をプッシュしておく。</DD
+><DT
+><A
+HREF="#pushArgs"
+><B
+>(3)</B
+></A
+></DT
+><DD
+>引数を評価するコードを生成する。評価結果はオペランドスタック上に残る。</DD
+><DT
+><A
+HREF="#invokeMethod"
+><B
+>(4)</B
+></A
+></DT
+><DD
+>Map.put()メソッドを呼ぶ。</DD
+><DT
+><A
+HREF="#returnValue"
+><B
+>(5)</B
+></A
+></DT
+><DD
+>引数valueRequiredは、式の値が必要かどうかを表している。必要な場合は、必要であれば型変換し、オペランドスタックに値をのこしたままにする。不要な場合は、オペランドスタックから値をポップする。</DD
+><DT
+><A
+HREF="#recordPC"
+><B
+>(6)</B
+></A
+></DT
+><DD
+>生成したバイトコードと、ソースの対応位置を記録する。これは、デバッガなどが使用する情報になる。</DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="sect3"
+><HR><H4
+CLASS="sect3"
+><A
+NAME="AEN491"
+></A
+>MapInitializer</H4
+><P
+>&#13;   MapInitializerのresolveTypeの実装を示す。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;	public TypeBinding resolveType(BlockScope scope) {
+		constant = NotAConstant;
+		if (alloc == null) {                                    <A
+NAME="createAlloc"
+><B
+>(1)</B
+></A
+>
+			alloc = new AllocationExpression();
+			final char[][] mapClass = {
+				{ 'j', 'a', 'v', 'a' },
+				{ 'u', 't', 'i', 'l' },
+				{ 'H', 'a', 's', 'h', 'M', 'a', 'p' }
+			};
+			final long sourceRange = (((long) sourceStart) &#60;&#60; 32) | sourceEnd;
+			final long[] poss = { sourceRange, sourceRange, sourceRange };
+			alloc.type = new QualifiedTypeReference(mapClass, poss);
+			alloc.sourceStart = sourceStart;
+			alloc.sourceEnd = sourceEnd;
+			alloc.arguments = null;
+			alloc.resolveType(scope);
+			mapObj = alloc;
+		}
+
+		if (expressions != null) {                              <A
+NAME="callPuts"
+><B
+>(2)</B
+></A
+>
+			for (int i = 0; i &#60; expressions.length; i++) {
+				expressions[i].resolveType(scope);
+			}
+		}
+
+		if (resolvedBinding == null) {                          <A
+NAME="createBinding"
+><B
+>(3)</B
+></A
+>
+			final char[][] mapClass = {
+				{ 'j', 'a', 'v', 'a' },
+				{ 'u', 't', 'i', 'l' },
+				{ 'M', 'a', 'p' }
+			};
+			resolvedBinding = scope.getType(mapClass);
+		}
+
+		return resolvedBinding;
+	}
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#createAlloc"
+><B
+>(1)</B
+></A
+></DT
+><DD
+>HashMapインスタンスを生成するために、AllocationExpressionを借用している。これは、MapInitializerの内部でのみ使用するものなので、ASTのトラバースの対象とはならない。</DD
+><DT
+><A
+HREF="#callPuts"
+><B
+>(2)</B
+></A
+></DT
+><DD
+>子ノード(MapEntryExpression)の名前解決を行う。</DD
+><DT
+><A
+HREF="#createBinding"
+><B
+>(3)</B
+></A
+></DT
+><DD
+>MapInitializerの型としては、java.util.Mapを返す。</DD
+></DL
+></DIV
+><P
+>&#13;   <TT
+CLASS="classname"
+>MapInitializer</TT
+>の<TT
+CLASS="methodname"
+>analyseCode</TT
+>は、無条件に子ノードを評価するだけなので、<TT
+CLASS="classname"
+>MapEntryExpression</TT
+>同様、次のような単純な実装となる。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;	public FlowInfo analyseCode(
+		BlockScope currentScope,
+		FlowContext flowContext,
+		FlowInfo flowInfo) {
+		if (alloc != null) {
+			flowInfo = alloc.analyseCode(currentScope, flowContext, flowInfo)
+					.unconditionalInits();
+		}
+		if (expressions != null) {
+			for (int i = 0; i &#60; expressions.length; i++) {
+				flowInfo = expressions[i].analyseCode(currentScope, flowContext, flowInfo)
+						.unconditionalInits();
+			}
+		}
+		return flowInfo;
+	}
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   最後に、<TT
+CLASS="classname"
+>MapInitializer</TT
+>の<TT
+CLASS="methodname"
+>generateCode</TT
+>の実装を示す。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;	public void generateCode(
+		BlockScope currentScope,
+		CodeStream codeStream,
+		boolean valueRequired) {
+		alloc.generateCode(currentScope, codeStream, true);     <A
+NAME="createMap"
+><B
+>(1)</B
+></A
+>
+		// objref on operand stack
+		if (expressions != null) {                              <A
+NAME="callMapEntries"
+><B
+>(2)</B
+></A
+>
+			for (int i = 0; i &#60; expressions.length; i++) {
+				expressions[i].generateCode(currentScope, codeStream, false);
+			}
+		}
+		if (!valueRequired) {                                   <A
+NAME="returnValue2"
+><B
+>(3)</B
+></A
+>
+			codeStream.pop();
+		}
+	}
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#createMap"
+><B
+>(1)</B
+></A
+></DT
+><DD
+><TT
+CLASS="classname"
+>HashMap</TT
+>インスタンスを生成するコード生成を、alloc(AllocationExpression)に委譲している。オペランドスタックに生成されたMapのオブジェクトリファレンスが積まれる。</DD
+><DT
+><A
+HREF="#callMapEntries"
+><B
+>(2)</B
+></A
+></DT
+><DD
+>子の<TT
+CLASS="classname"
+>MapEntryExpression</TT
+>を呼び出し、Mapの要素をputしていく。この間、Mapのオブジェクトリファレンスは常にオペランドスタック上にある。</DD
+><DT
+><A
+HREF="#returnValue2"
+><B
+>(3)</B
+></A
+></DT
+><DD
+>MapInitializerの式の値が不要であれば、オペランドスタック上のMapのオブジェクトリファレンスをポップする。</DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="sect3"
+><HR><H4
+CLASS="sect3"
+><A
+NAME="AEN530"
+></A
+>ビジターの変更</H4
+><P
+>&#13;   ASTをトラバースするビジターインターフェイス(org.eclipse.jdt.internal.compiler.IAbstractSyntaxTreeVisitor)に、上記の追加した二つのノードをvisitするメソッドを追加する。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;	// Extention
+	void endVisit(MapEntryExpression mapEntryExpression, BlockScope scope);
+	boolean visit(MapEntryExpression mapEntryExpression, BlockScope scope);
+	void endVisit(MapInitializer mapInitializer, BlockScope scope);
+	boolean visit(MapInitializer mapInitializer, BlockScope scope);
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   上記のインターフェイスを実装したアダプター(org.eclipse.jdt.internal.compiler.AbstractSyntaxTreeVisitorAdapter)にも、メソッドを追加する。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;	// Extention
+	public void endVisit(MapEntryExpression mapEntryExpression, BlockScope scope) {
+	}
+	public boolean visit(MapEntryExpression mapEntryExpression, BlockScope scope) {
+		return true;
+	}
+	public void endVisit(MapInitializer mapInitializer, BlockScope scope) {
+	}
+	public boolean visit(MapInitializer mapInitializer, BlockScope scope) {
+		return true;
+	}
+</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="sect1"
+><HR><H2
+CLASS="sect1"
+><A
+NAME="knowHow"
+></A
+>コード変更のノウハウ</H2
+><P
+>&#13;   以下に、JDTのコンパイラを変更する際のノウハウをいくつか示す。
+   </P
+><DIV
+CLASS="table"
+><A
+NAME="AEN539"
+></A
+><P
+><B
+>&#34920; 2. コード変更のノウハウ</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>表題</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>詳細</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.compiler.lookup.TypeBindingの作り方</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.compiler.lookup.BlockScope.getType()やgetJavaLangObject()など、getXxxメソッドを使う。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>パーサーのスタック管理</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>前述のように<TT
+CLASS="classname"
+>org.eclipse.jdt.internal.compiler.parser.Parser</TT
+>ではいくつかのスタックを管理している。これらのスタックは、単純なスタックではなく論理的にはスタック(またはリスト)のスタックである。これを、一つのスタックと、そのスタック上に積まれた要素数のスタックとして実装している。
+<P
+><DIV
+CLASS="figure"
+><A
+NAME="stackModel"
+></A
+><P
+><IMG
+SRC="images/stackModel.png"></P
+><P
+><B
+>&#22259; 2. コンパイルに使用するASTの種類</B
+></P
+></DIV
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>eclipseのソースを読むにはeclipseを使う</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+><A
+HREF="#browsingEffectively"
+><I
+>JDTを効率的に読む</I
+>&#38917;<I
+>eclipseのコンパイラ</I
+>&#31456;</A
+>を参照。</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="sect1"
+><HR><H2
+CLASS="sect1"
+><A
+NAME="AEN562"
+></A
+>Java構文拡張を組み込んだeclipseを動かす</H2
+><P
+>&#13;  前述の二つの構文拡張をeclipseに盛り込んでビルド&#38;起動し、動作を確認する方法を以下に述べる。
+  </P
+><DIV
+CLASS="sect2"
+><HR><H3
+CLASS="sect2"
+><A
+NAME="buildExtension"
+></A
+>Java構文拡張を組み込んだeclipseのビルド方法</H3
+><P
+>&#13;  前述のJava構文拡張を行うためのorg.eclipse.jdt.coreプラグインに対する差分ファイル(jdt-patch.zip)からeclipseをビルドする方法を述べる。
+  </P
+><P
+>&#13;  まず、<A
+HREF="#compileFromGrammar"
+><I
+>文法定義ファイルからのコンパイル方法</I
+>&#31456;</A
+>で述べたように、eclipse2.1のソースをフルビルドする。その後、次のようにして差分ファイルでJDTのソースを上書きする。
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;# cd ${eclipse}/plugins
+# unzip /path/to/jdt-patch.zip
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>次に、新しい文法定義ファイルからjikesPGを使用してパーサーを生成し、結果をJDTのソースに盛り込む。下記のAntのプロパティを各自の環境に合わせて設定した後、次のコマンドを実行する。これにより、<A
+HREF="#genParser"
+><I
+>パーサーの生成</I
+>&#38917;<I
+>文法定義ファイルからのコンパイル方法</I
+>&#31456;</A
+>、<A
+HREF="#involveOutputs"
+><I
+>eclipseソースへの盛り込み</I
+>&#38917;<I
+>文法定義ファイルからのコンパイル方法</I
+>&#31456;</A
+>で述べた手順が自動的に実行される。</P
+><DIV
+CLASS="table"
+><A
+NAME="AEN574"
+></A
+><P
+><B
+>&#34920; 3. パーサー生成に設定が必要なAntプロパティ</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>プロパティ名</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>設定すべき値</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>jdtcore.jar</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>事前のフルビルドで出来上がったjdtcore.jarファイルへのパス。<A
+HREF="#eclipseFullBuild"
+><I
+>eclipse 2.1のフルビルド</I
+>&#38917;<I
+>文法定義ファイルからのコンパイル方法</I
+>&#31456;</A
+>参照。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>jikespg.home</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>jikesPGをインストールしたディレクトリへのパス。<A
+HREF="#installingJikesPG"
+><I
+>jikesPGの入手とインストール</I
+>&#38917;<I
+>文法定義ファイルからのコンパイル方法</I
+>&#31456;</A
+>参照。 
+    </TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>jikespg</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>jikespgコマンドへのパス。省略した場合は、${jikespg.home}/bin/jikespgが使用される。</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;# cd ${eclipse}/plugins/org.eclipse.jdt.core
+# ant -f build-grammar.xml clean                          <A
+NAME="cleanDerivedFiles"
+><B
+>(1)</B
+></A
+>
+# ant -f build-grammar.xml                                <A
+NAME="createDerivedFiles"
+><B
+>(2)</B
+></A
+>
+# ant clean                                               <A
+NAME="dummyC1"
+><B
+>(3)</B
+></A
+>
+# ant                                                     <A
+NAME="dummyC2"
+><B
+>(3)</B
+></A
+>
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#cleanDerivedFiles"
+><B
+>(1)</B
+></A
+></DT
+><DD
+>Parser.javaやITerminalSymbols.javaなど、jikesPGで生成されたファイルから派生するファイルを削除する。</DD
+><DT
+><A
+HREF="#createDerivedFiles"
+><B
+>(2)</B
+></A
+></DT
+><DD
+>jikesPGを実行し、生成されたファイルからParser.javaやITerminalSymbols.javaなどを生成する。</DD
+><DT
+><A
+HREF="#rebuildJDT"
+><B
+>(3)</B
+></A
+></DT
+><DD
+>org.eclipse.jdt.coreプラグインを再ビルドするオプショナルな作業。この作業はデバッグ中などに行う。org.eclipse.jdt.coreプラグインに依存した他のプラグインも存在するので、最終的には、eclipse全体を再ビルドする必要がある。</DD
+></DL
+></DIV
+><P
+>最後に、<A
+HREF="#compileFromGrammar"
+><I
+>文法定義ファイルからのコンパイル方法</I
+>&#31456;</A
+>で述べたようにeclipse全体を再ビルドする。</P
+></DIV
+><DIV
+CLASS="sect2"
+><HR><H3
+CLASS="sect2"
+><A
+NAME="AEN611"
+></A
+>動作確認</H3
+><P
+>&#13;   以下に動作確認用のコードを示す。J2SE1.4で追加されたassert文を使用しているので、eclipseを次のように設定して、1.4の機能を有効にする。
+   <B
+CLASS="guimenu"
+>Window</B
+>-&gt;<B
+CLASS="guimenuitem"
+>Preferences</B
+>でPreferencesダイアログを開き、左側の設定項目のツリー表示から、
+   <B
+CLASS="guimenu"
+>Java</B
+>-&gt;<B
+CLASS="guimenuitem"
+>Compiler</B
+>を選ぶ。その後、右側のタブの中からCompliance and Classfilesタブを選び、Compiler compliance levelを1.4にし、Use default compliance settingsにチェックをつける。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Test {
+	static void testOptimistic() {
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		try __optimistic__ {
+			os.close();
+			throw new Exception("error");
+		}
+		os = new ByteArrayOutputStream();
+		try __optimistic__ {
+			os.close();
+			throw new Exception("error");
+		} finally {
+			System.out.println("fin1 ok");
+			assert true;
+		}
+		try __optimistic__ {
+			os.close();
+			throw new IOException("error");
+		} catch (IOException e) {
+			System.out.println("IOE ok");
+		} finally {
+			System.out.println("fin2 ok");
+			assert true;
+		}
+		try __optimistic__ {
+			os.close();
+			throw new Exception("error");
+		} catch (IOException e) {
+			assert false;
+			throw new RuntimeException("error");
+		} finally {
+			System.out.println("fin3 ok");
+			assert true;
+		}
+	}
+	static void testMapInit() {
+		Map a = %{
+			"key" =&#62; "value",
+			"key2" =&#62; new Integer(100*40),
+			"abc" =&#62; null
+		};
+		assert a.size() == 3;
+		System.out.println(a.get("key2"));
+		assert a.get("abc") == null;
+		assert new Integer(4000).equals(a.get("key2"));
+		assert "xx".equals(%{"key" =&#62; "xx"}.get("key"));
+		System.out.println(%{ "key2" =&#62; "vv"}.get("key2"));
+		HashMap hm = (HashMap)%{ "a" =&#62; "a" + "key" + "value" };
+		a = %{ null =&#62; null, };
+		assert a.get(null) == null;
+		a = %{ null =&#62; "1", };
+		assert "1".equals(a.get(null));
+		a = %{, };
+		assert a.size() == 0;
+		a = %{};
+		assert a.size() == 0;
+	}
+	public static void main(String[] args) {
+		testOptimistic();
+		testMapInit();
+		System.out.println("Everything is ok.");
+	}
+}
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   上記のコードをコンパイル&#38;実行し、下記の出力が得られれば正しく動作している。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;fin1 ok
+IOE ok
+fin2 ok
+fin3 ok
+4000
+vv
+Everything is ok.
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;   また、ソースとeclipseにより生成された.classファイルを、次のようにJDK付属のデバッガ(jdb)を使用してステップ実行すると、デバッグ情報(バイトコードに対応する行番号)も正しく設定されていることが確認できる。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;# jdb -classpath . -sourcepath .
+jdb の初期化中です...
+&#62; stop in Test.main(java.lang.String[])
+ブレークポイント Test.main(java.lang.String[]) を保留しています。
+クラスがロードされた後に設定されます。
+&#62; run Test
+ Test を実行します
+uncaught java.lang.Throwable を設定しました
+保留した uncaught java.lang.Throwable を設定しました
+&#62;
+VM が起動しました: 保留した ブレークポイント Test.main(java.lang.String[]) を設定しました
+
+ブレークポイントのヒット: "スレッド=main", Test.main(), line=64 bci=0
+64              testOptimistic();
+
+main[1] step
+&#62;
+ステップ完了: "スレッド=main", Test.testOptimistic(), line=8 bci=0
+8               ByteArrayOutputStream os = new ByteArrayOutputStream();
+…
+</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="sect2"
+><HR><H3
+CLASS="sect2"
+><A
+NAME="AEN625"
+></A
+>既知の問題</H3
+><P
+>&#13;   JDTでは、Javaの文法はorg.eclipse.jdt.internal.compiler.parserパッケージに集約されているわけではない。例えば、org.eclipse.jdt.core.dom.ASTConverter.convert(org.eclipse.jdt.internal.compiler.ast.TryStatement statement)では、次のような状況にある。
+   </P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>このメソッドは、コンパイル用のorg.eclipse.jdt.internal.compiler.astパッケージのASTから、検査/エラー指摘用のorg.eclipse.jdt.core.domパッケージのASTに変換する。</P
+></LI
+><LI
+><P
+>コンパイル用のAST(org.eclipse.jdt.internal.compiler.ast.*)ではトークンや非終端記号の位置を部分的に持っているが、検査/エラー指摘用のAST(org.eclipse.jdt.core.dom.*)ではより多くの位置情報が必要である。例えば、catch節の開始位置は、コンパイル用のASTにはないが、検査/エラー指摘用のASTには必要になる。</P
+></LI
+><LI
+><P
+>不足分の位置情報を取得するために、org.eclipse.jdt.core.dom.ASTConverter.convert()メソッドはorg.eclipse.jdt.core.dom.ASTConverter.retrieveStartingCatchPosition(int start, int end)メソッドを呼び出す。</P
+></LI
+><LI
+><P
+>org.eclipse.jdt.core.dom.ASTConverter.retrieveStartingCatchPosition(int start, int end)メソッドは、文法定義とは無関係に、指定された範囲内にcatchトークンがあるか探す。(その際に使うスキャナーはコンパイル用のものを流用している)</P
+></LI
+></OL
+><P
+>&#13;   このように、リファクタリングツール、エラー指摘/修正、コーディングアシスト、デバッガなどの機能には、文法に依存したコードが散在すると思われる。これらのコードも精査&#38;修正しないと、最悪eclipseがフリーズする。実際、ブレークポイントを設定したり、次のコードのエラー個所を修正させようと何度か試みるとフリーズする。
+   </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		int x = 1000000000L;  // キャストが必要
+		try __optimistic__ {
+			os.close();
+			throw new Exception("error");
+		}
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;     その他に、Map初期化子の構文中に、ユニコードシーケンスで書かれた%{やコメント中の%{があった場合、Map初期化子の開始位置を正しく判定できないという問題もある。
+   </P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="chapter"
+><HR><H1
+><A
+NAME="AEN640"
+></A
+>今回の構文拡張方法の限界</H1
+><P
+>&#13; 今回の構文拡張では、<A
+HREF="#strategy"
+><I
+>方針</I
+>&#38917;<I
+>Java構文拡張</I
+>&#31456;</A
+>で述べたように、JDTの構造に素直に従って拡張した。
+ そのため、JDTの構造に由来するいくつかの限界が存在する。
+ </P
+><DIV
+CLASS="table"
+><A
+NAME="AEN644"
+></A
+><P
+><B
+>&#34920; 1. 構文拡張の限界</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>限界/制限</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>理由</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>LALR(1)の文法でなくてはならない。</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>パーサージェネレータjikesPGがLALR(1)しかサポートしていない。仮にLALR(1)で
+    表現できる文法でも、既存の文法定義を大きく変更しなければならない場合は、JDTの修正量が多く実現が難しい。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JDTに手を加えなければならない。</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JDTには、文法に関するエクステンションポイントが用意されていないので、
+    JDTのコードを直接変更する必要がある。
+    </TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>文法は動的に変更できない</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JDTのコンパイラを実行時に再構築/再ロードする仕組みが用意されていないので、
+    プラグインなどにより、実行時に文法を変えることはできない。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>コンパイラのみの変更では安定動作しない</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>文法に依存したコードが、デバッガやリファクタリングツールなどにも存在するため、それらもあわせて変更しないと、一貫性が損なわれ誤動作することがある。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>テストが困難(推測)</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+><A
+HREF="http://dev.eclipse.org/viewcvs/index.cgi/?cvsroot=Eclipse_Project"
+TARGET="_top"
+>eclipseのCVSリポジトリ</A
+>にテストコードがあるので、それを利用することができる。しかし、文法変更の影響範囲がわからないため、とりあえずテストコードを実行して、テストに失敗した所を調べるという手順になると思われる。テストコードの変更個所もまた分散していると思われる。</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="chapter"
+><HR><H1
+><A
+NAME="AEN668"
+></A
+>pxmlをJDTに組み込める実装可能性</H1
+><P
+>&#13;  今回、新しい構文をJDTに組み込んでみた結果、pxmlを組み込む際の障害がいくつか明らかになった。
+  しかしながら、結論を先に述べると、多少pxmのl文法を変更することでpxmlをJDTに組み込むことは(開発工数を度外視すれば)十分可能と思われる。
+  以下、その障害と回避方法等の検討結果を述べる。
+ </P
+><DIV
+CLASS="sect1"
+><HR><H2
+CLASS="sect1"
+><A
+NAME="AEN671"
+></A
+>pxmlの文法がLALR(1)でない</H2
+><P
+>jikesPGはLALR(1)の文法しかサポートしていない。JDTのJavaの既存の文法と合わせた場合、pxmlの文法がLALR(1)でないので、pxmlの文法をLALR(1)に変更しなければならない。
+  </P
+></DIV
+><DIV
+CLASS="sect1"
+><HR><H2
+CLASS="sect1"
+><A
+NAME="AEN674"
+></A
+>pxmlとJDTがスキャナーに求める要件の違い</H2
+><P
+>pxmlの文法では、<SPAN
+CLASS="token"
+>Tag</SPAN
+>は<SPAN
+CLASS="token"
+>Identifier</SPAN
+>から構成されるが、JDTで使用されているパーサーは
+  キーワード("if"や"class"など)は<SPAN
+CLASS="token"
+>Identifier</SPAN
+>ではなく、個別ににシンボルを割り当てられたトークンである。
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;# pxmlの文法
+<SPAN
+CLASS="token"
+>Tag</SPAN
+>: <SPAN
+CLASS="token"
+>Identifier</SPAN
+>
+	<SPAN
+CLASS="token"
+>Identifier</SPAN
+> : <SPAN
+CLASS="token"
+>Identifier</SPAN
+>
+</PRE
+></TD
+></TR
+></TABLE
+>
+  この点でpxmlのEPPによる実装と大きく異なる。
+  JDTでは下記のコードは、パース時点でif文と確定するが、EPPではメソッド呼び出しかif文か
+  パース時点では曖昧である。
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;if(true);
+</PRE
+></TD
+></TR
+></TABLE
+>
+  XMLでJava(pxml)のキーワードをタグや属性名に使用する場合、JDTのパーサーではタグとして
+  認識されない。また、XMLでは"xml-valid.tag"もタグ名や属性名になりうる。
+  </P
+><P
+>&#13;  この問題を回避するにはいくつかの方法がある。
+  </P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+><SPAN
+CLASS="token"
+>Tag</SPAN
+>の構成要素にキーワードも含める。ただしこの方法では"xml-valid.tag"というタグ名には対応できない。"-"や"."が演算子扱いになってしまい、"-"や"."の前後にスペースがあった場合、エラーにできない。
+  </P
+></LI
+><LI
+><P
+><SPAN
+CLASS="token"
+>Tag</SPAN
+>の定義を次のように変更して、<SPAN
+CLASS="token"
+>StringLiteral</SPAN
+>も書けるようにする。キーワードや"-"や"."を含む場合は<SPAN
+CLASS="token"
+>StringLiteral</SPAN
+>として記述する。
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;<SPAN
+CLASS="token"
+>Tag</SPAN
+>: <SPAN
+CLASS="token"
+>TagElement</SPAN
+>
+	<SPAN
+CLASS="token"
+>TagElement</SPAN
+> : <SPAN
+CLASS="token"
+>TagElement</SPAN
+>
+<SPAN
+CLASS="token"
+>TagElement</SPAN
+>: <SPAN
+CLASS="token"
+>Identifier</SPAN
+>
+	<SPAN
+CLASS="token"
+>StringLiteral</SPAN
+>
+</PRE
+></TD
+></TR
+></TABLE
+>
+  ただし、<SPAN
+CLASS="token"
+>Atom</SPAN
+>か<SPAN
+CLASS="token"
+>Tag</SPAN
+>か曖昧になるケースがある。したがって、
+  pxmlの文法を変更して曖昧性を取り除く必要がある。
+  </P
+></LI
+></OL
+></DIV
+><DIV
+CLASS="sect1"
+><HR><H2
+CLASS="sect1"
+><A
+NAME="AEN706"
+></A
+>JDTで文法はプラガブルでない</H2
+><P
+>JDTでは、文法はプラガブルな可変なものになっていない。文法に依存したコードが分散している。そのため、文法の変更に伴って変更すべきところが多く、JDTのバージョンアップに対応して、毎回手を加えなければならない。開発工数や保守コストの点でマイナス要素となる。
+  </P
+></DIV
+></DIV
+><DIV
+CLASS="appendix"
+><HR><H1
+><A
+NAME="AEN709"
+></A
+>本ドキュメントの生成方法</H1
+><P
+>&#13; 本ドキュメントは、<A
+HREF="http://www.oasis-open.org/docbook/xml/"
+TARGET="_top"
+>DocBook XML 4.2</A
+>で記述されており、HTML、Plain Text、PDF等の形式への変換が可能である。 変換には、<A
+HREF="http://sourceforge.net/project/showfiles.php?group_id=21935"
+TARGET="_top"
+>XSLTを利用したツール(docbook-xsl)</A
+>や、Linuxのディストリビューションに含まれるDSSSLを利用したツール(Open Jade, docbook2htmlなど)を利用することができる。
+ </P
+></DIV
+><DIV
+CLASS="appendix"
+><HR><H1
+><A
+NAME="AEN714"
+></A
+>JDTファイルリスティング</H1
+><P
+>&#13;
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;plugins/org.eclipse.jdt.core
+plugins/org.eclipse.jdt.core/build.xml
+plugins/org.eclipse.jdt.core/compiler
+plugins/org.eclipse.jdt.core/compiler/org
+plugins/org.eclipse.jdt.core/compiler/org/eclipse
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/parser4.rsc
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/SourceConstructorDeclaration.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/NLSLine.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/parser2.rsc
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/RecoveredElement.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/RecoveredInitializer.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/SourceTypeConverter.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/parser5.rsc
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/TerminalTokens.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/parser3.rsc
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/RecoveredType.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/RecoveredField.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/SourceMethodDeclaration.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/RecoveredUnit.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/parser1.rsc
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/RecoveredBlock.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/Parser.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/RecoveredMethod.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/RecoveredImport.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/RecoveredStatement.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/Scanner.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/ParserBasicInformation.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/RecoveredLocalVariable.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/parser/SourceFieldDeclaration.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/codegen
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/codegen/ExceptionLabel.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/codegen/IntegerCache.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/codegen/MethodNameAndTypeCache.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/codegen/CaseLabel.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/codegen/ResetStateForCodeGenerationVisitor.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/codegen/FloatCache.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/codegen/CodeStream.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/codegen/Opcodes.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/codegen/FieldNameAndTypeCache.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/codegen/Label.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/codegen/CharArrayCache.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/codegen/ConstantPool.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/codegen/AttributeNamesConstants.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/codegen/LongCache.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/codegen/DoubleCache.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/codegen/QualifiedNamesConstants.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/codegen/ObjectCache.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/impl
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/impl/DoubleConstant.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/impl/ShortConstant.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/impl/ByteConstant.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/impl/BooleanConstant.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/impl/CompilerOptions.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/impl/CharConstant.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/impl/LongConstant.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/impl/Constant.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/impl/ITypeRequestor.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/impl/StringConstant.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/impl/ReferenceContext.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/impl/IntConstant.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/impl/FloatConstant.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/ImportReference.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/Break.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/QualifiedNameReference.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/ArrayAllocationExpression.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/AllocationExpression.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/PostfixExpression.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/MagicLiteral.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/SuperReference.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/Block.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/QualifiedAllocationExpression.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/BranchStatement.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/EqualExpression.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/BinaryExpression.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/WhileStatement.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/TypeReference.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/ConditionalExpression.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/Case.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/MessageSend.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/Argument.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/SynchronizedStatement.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/Reference.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/OperatorExpression.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/CompoundAssignment.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/QualifiedSuperReference.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/AnonymousLocalTypeDeclaration.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/OR_OR_Expression.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/StringLiteral.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/Statement.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/NameReference.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/LocalTypeDeclaration.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/LocalDeclaration.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/AbstractVariableDeclaration.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/QualifiedThisReference.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/Clinit.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/TryStatement.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/FloatLiteral.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/TypeDeclaration.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/AssertStatement.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/ClassLiteralAccess.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/PrefixExpression.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/Continue.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/Expression.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/MemberTypeDeclaration.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/CharLiteral.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/OperatorIds.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/DefaultCase.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/TrueLiteral.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/IfStatement.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/DoubleLiteral.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/InstanceOfExpression.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/LabeledStatement.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/ForStatement.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/FalseLiteral.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/Initializer.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/ThisReference.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/LongLiteral.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/ReturnStatement.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/SingleTypeReference.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/DoStatement.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/CastExpression.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/ThrowStatement.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/UnaryExpression.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/InnerTypeDeclaration.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/NumberLiteral.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/MethodDeclaration.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/FieldReference.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/FieldDeclaration.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/AstNode.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/ArrayReference.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/ConstructorDeclaration.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/EmptyStatement.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/QualifiedTypeReference.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/IntLiteral.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/SwitchStatement.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/ArrayInitializer.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/AND_AND_Expression.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/IntLiteralMinValue.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/SingleNameReference.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/ExplicitConstructorCall.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/AbstractMethodDeclaration.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/NullLiteral.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/Assignment.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/ArrayTypeReference.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/CompilationUnitDeclaration.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/ExtendedStringLiteral.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/Literal.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/ArrayQualifiedTypeReference.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ast/LongLiteralMinValue.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ICompilerRequestor.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/classfmt
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/classfmt/InnerClassInfo.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/classfmt/ClassFormatException.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/classfmt/ClassFileReader.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/classfmt/ClassFileStruct.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/classfmt/ClassFileConstants.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/classfmt/MethodInfo.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/classfmt/FieldInfo.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/LookupEnvironment.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/TypeConstants.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/CompilationUnitScope.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/LocalTypeBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/Binding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/BlockScope.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/LocalVariableBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/TypeIds.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/BaseTypeBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/ProblemPackageBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/MemberTypeBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/InnerEmulationDependency.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/ProblemReferenceBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/BinaryTypeBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/FieldBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/TypeBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/TagBits.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/SyntheticAccessMethodBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/CompilerModifiers.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/VariableBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/ReferenceBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/BaseTypes.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/ArrayBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/SyntheticFieldBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/InvocationSite.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/Scope.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/ProblemMethodBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/MethodVerifier.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/PackageBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/ImportBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/BindingIds.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/SourceTypeBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/ProblemReasons.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/NestedTypeBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/MethodBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/UnresolvedReferenceBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/ProblemFieldBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/ClassScope.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/SyntheticArgumentBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/ProblemBinding.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/lookup/MethodScope.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/util
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/util/Util.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/util/HashtableOfObject.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/util/messages.properties
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/util/SimpleNameVector.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/util/HashtableOfLong.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/util/ObjectVector.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/util/CompoundNameVector.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/util/HashtableOfType.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/util/HashtableOfPackage.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/util/HashtableOfInt.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/env
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/env/ISourceType.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/env/INameEnvironment.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/env/ISourceField.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/env/IBinaryType.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/env/ISourceMethod.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/env/IGenericType.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/env/IBinaryNestedType.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/env/IBinaryField.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/env/IBinaryMethod.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/env/IGenericMethod.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/env/IDependent.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/env/IGenericField.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/env/ICompilationUnit.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/env/IConstants.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/env/NameEnvironmentAnswer.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/problem
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/problem/ProblemReporter.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/problem/AbortType.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/problem/AbortMethod.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/problem/messages.properties
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/problem/ProblemHandler.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/problem/DefaultProblem.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/problem/AbortCompilation.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/problem/ShouldNotImplement.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/problem/ProblemSeverities.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/problem/AbortCompilationUnit.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/problem/DefaultProblemFactory.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/IProblemFactory.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/DefaultErrorHandlingPolicies.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/flow
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/flow/InsideSubRoutineFlowContext.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/flow/FlowContext.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/flow/ConditionalFlowInfo.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/flow/FlowInfo.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/flow/LoopingFlowContext.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/flow/SwitchFlowContext.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/flow/FinallyFlowContext.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/flow/ExceptionHandlingFlowContext.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/flow/LabelFlowContext.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/flow/InitializationFlowContext.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/flow/UnconditionalFlowInfo.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/SourceElementRequestorAdapter.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/IDebugRequestor.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/IErrorHandlingPolicy.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ISourceElementRequestor.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/IAbstractSyntaxTreeVisitor.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/Compiler.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ConfigurableOption.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/DocumentElementParser.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/SourceElementParser.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/IDocumentElementRequestor.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/ClassFile.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/CompilationResult.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/internal/compiler/AbstractSyntaxTreeVisitorAdapter.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/core
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/core/compiler
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/core/compiler/package.html
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/core/compiler/CharOperation.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/core/compiler/InvalidInputException.java
+plugins/org.eclipse.jdt.core/compiler/org/eclipse/jdt/core/compiler/IProblem.java
+plugins/org.eclipse.jdt.core/search
+plugins/org.eclipse.jdt.core/search/org
+plugins/org.eclipse.jdt.core/search/org/eclipse
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/OrPathCombiner.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/SuperInterfaceReferencePattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/OrPattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/MultipleSearchPattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/OrNameCombiner.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/TypeDeclarationPattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/MatchLocatorParser.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/SearchPattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/MatchSet.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/DeclarationOfReferencedMethodsPattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/TypeReferencePattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/MethodReferencePattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/FieldDeclarationPattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/DeclarationOfReferencedTypesPattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/MatchingOpenable.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/JavaSearchNameEnvironment2.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/PotentialMatch.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/SuperTypeNamesCollector.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/FieldReferencePattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/MatchingOpenableSet.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/PotentialMatchSet.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/MatchLocator2.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/MatchLocator.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/SuperTypeReferencePattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/AndPattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/MethodPattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/PackageDeclarationPattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/ClasspathSourceDirectory.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/DeclarationOfAccessedFieldsPattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/ConstructorDeclarationPattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/JavaSearchNameEnvironment.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/MethodDeclarationPattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/MatchingNodeSet.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/QualifiedTypeDeclarationPattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/ConstructorReferencePattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/matching/PackageReferencePattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/IIndexSearchRequestor.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/indexing
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/indexing/IndexAllProject.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/indexing/AddJarFileToIndex.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/indexing/AbstractIndexer.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/indexing/IndexManager.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/indexing/AddCompilationUnitToIndex.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/indexing/AddFolderToIndex.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/indexing/IndexBinaryFolder.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/indexing/RemoveFromIndex.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/indexing/ReadWriteMonitor.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/indexing/SaveIndex.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/indexing/SourceIndexerRequestor.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/indexing/IIndexConstants.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/indexing/IndexRequest.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/indexing/BinaryIndexer.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/indexing/AddClassFileToIndex.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/indexing/RemoveFolderFromIndex.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/indexing/AddFileToIndex.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/indexing/SourceIndexer.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/IndexSelector.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/SubTypeSearchJob.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/processing
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/processing/JobManager.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/processing/IJob.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/IInfoConstants.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/PathCollector.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/IndexSearchAdapter.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/messages.properties
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/Util.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/HierarchyScope.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/PatternSearchJob.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/JavaWorkspaceScope.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/JavaSearchScope.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/search/AbstractSearchScope.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/IndexOutput.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/IIndexConstants.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/BlocksIndexOutput.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/Field.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/FileDocument.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/Index.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/BlocksIndexInput.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/IndexInput.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/Block.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/WordEntryHashedArray.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/SimpleIndexBlock.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/IndexSummary.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/JarFileDocument.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/IndexedFile.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/PropertyDocument.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/MergeFactory.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/WordEntry.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/JarFileEntryDocument.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/IndexerOutput.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/IndexedFileHashedArray.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/GammaCompressedIndexBlock.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/LRUCache.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/InMemoryIndex.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/SafeRandomAccessFile.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/CodeByteStream.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/SimpleIndexInput.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/FileListBlock.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/Util.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/ILRUCacheable.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/ICacheEnumeration.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/IndexBlock.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/IFileDocument.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/EntryResult.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/impl/Int.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/IDocument.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/IEntryResult.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/IQueryResult.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/DocumentFactory.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/IIndexer.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/IIndex.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/internal/core/index/IIndexerOutput.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/core
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/core/search
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/core/search/ISearchPattern.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/core/search/IJavaSearchResultCollector.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/core/search/package.html
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/core/search/ITypeNameRequestor.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/core/search/SearchEngine.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/core/search/IJavaSearchConstants.java
+plugins/org.eclipse.jdt.core/search/org/eclipse/jdt/core/search/IJavaSearchScope.java
+plugins/org.eclipse.jdt.core/dom
+plugins/org.eclipse.jdt.core/dom/org
+plugins/org.eclipse.jdt.core/dom/org/eclipse
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/BreakStatement.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/VariableBinding.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/CompilationUnitResolver.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ConditionalExpression.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/IMethodBinding.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/TypeLiteral.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/SynchronizedStatement.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/MethodDeclaration.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/SuperConstructorInvocation.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/NullLiteral.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/AnonymousClassDeclaration.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/CompilationUnit.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/SimpleType.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/BindingResolver.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ContinueStatement.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ArrayType.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/VariableDeclarationExpression.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ExpressionStatement.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ClassInstanceCreation.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/MethodInvocation.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/CharacterLiteral.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ArrayCreation.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/SuperMethodInvocation.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ThisExpression.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/package.html
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ArrayAccess.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/Assignment.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/NaiveASTFlattener.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/CastExpression.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ThrowStatement.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/SwitchCase.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/EmptyStatement.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/NumberLiteral.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/PostfixExpression.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/VariableDeclarationFragment.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/TypeDeclaration.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/PrefixExpression.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/IPackageBinding.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/Type.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ASTVisitor.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ParenthesizedExpression.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/Message.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/Statement.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/PrimitiveType.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/DefaultBindingResolver.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/VariableDeclarationStatement.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/PackageDeclaration.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/AssertStatement.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/LabeledStatement.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/SimpleName.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/Block.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/BodyDeclaration.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/InfixExpression.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ASTConverter.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/IVariableBinding.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/IBinding.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/IfStatement.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ASTNode.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/SuperFieldAccess.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ReturnStatement.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/AST.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/TypeBinding.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/Javadoc.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/FieldDeclaration.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/SingleVariableDeclaration.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/DoStatement.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/QualifiedName.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ArrayInitializer.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/TryStatement.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ImportDeclaration.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/MethodBinding.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/TypeDeclarationStatement.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ASTSyntaxErrorPropagator.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/Initializer.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/WhileStatement.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/Modifier.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ASTMatcher.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/BooleanLiteral.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/PackageBinding.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/SwitchStatement.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/Expression.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/FieldAccess.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ConstructorInvocation.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/StringLiteral.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/VariableDeclaration.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ForStatement.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/CatchClause.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/Name.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/InstanceofExpression.java
+plugins/org.eclipse.jdt.core/dom/org/eclipse/jdt/core/dom/ITypeBinding.java
+plugins/org.eclipse.jdt.core/model
+plugins/org.eclipse.jdt.core/model/org
+plugins/org.eclipse.jdt.core/model/org/eclipse
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/IFieldInfo.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/IClassFileAttribute.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/IClassFileDisassembler.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/ILineNumberAttribute.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/IConstantPool.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/package.html
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/ClassFormatException.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/ISourceAttribute.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/OpcodeStringValues.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/IExceptionTableEntry.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/IBytecodeVisitor.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/IInnerClassesAttribute.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/IModifierConstants.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/ICodeAttribute.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/IConstantPoolEntry.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/CompilationUnitSorter.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/IClassFileReader.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/IConstantValueAttribute.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/ClassFileBytesDisassembler.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/ILocalVariableAttribute.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/ByteCodeVisitorAdapter.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/ILocalVariableTableEntry.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/IMethodInfo.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/IAttributeNamesConstants.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/IConstantPoolConstant.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/IInnerClassesAttributeEntry.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/IExceptionAttribute.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/util/IOpcodeMnemonics.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/jdom
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/jdom/IDOMMethod.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/jdom/IDOMImport.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/jdom/IDOMNode.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/jdom/package.html
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/jdom/IDOMField.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/jdom/IDOMMember.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/jdom/IDOMPackage.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/jdom/IDOMFactory.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/jdom/IDOMCompilationUnit.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/jdom/DOMFactory.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/jdom/DOMException.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/jdom/IDOMType.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/jdom/IDOMInitializer.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IImportDeclaration.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IClasspathEntry.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IWorkingCopy.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/ISourceReference.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IJavaElementDelta.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IOpenable.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IPackageFragmentRoot.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/ICodeCompletionRequestor.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/JavaCore.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/CorrectionEngine.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/compiler
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/compiler/IScanner.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/compiler/ITerminalSymbols.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/ElementChangedEvent.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/NamingConventions.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IJavaModel.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IJavaElement.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IClasspathContainer.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IElementChangedListener.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IType.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/ClasspathVariableInitializer.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IJavaProject.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/ICodeAssist.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IMethod.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/Flags.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IPackageFragment.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IJavaModelMarker.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/CompletionRequestorAdapter.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/ClasspathContainerInitializer.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/eval
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/eval/IEvaluationContext.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/eval/package.html
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/eval/IGlobalVariable.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/eval/ICodeSnippetRequestor.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IProblemRequestor.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/ICorrectionRequestor.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/ToolFactory.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IBuffer.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IPackageDeclaration.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IMember.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IImportContainer.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IClassFile.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/ICompilationUnit.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/ITypeHierarchyChangedListener.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IParent.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IInitializer.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/ITypeHierarchy.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/ICodeFormatter.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IBufferChangedListener.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IRegion.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/JavaConventions.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/ISourceManipulation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/ICompletionRequestor.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IJavaModelStatus.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/package.html
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/ISourceRange.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IJavaModelStatusConstants.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IField.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/IBufferFactory.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/Signature.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/JavaModelException.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/core/BufferChangedEvent.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/ClassFile.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CreatePackageFragmentOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/InternalNamingConventions.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CompilationUnitElementInfo.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/CharArrayOps.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/IDumpable.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/ExceptionAttribute.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/LRUCache.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/AnonymousFileSource.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/ReferenceInfoAdapter.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/ToStringSorter.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/Disassembler.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/SourceFileAttribute.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/ClassFileReader.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/ClassFileAttribute.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/LocalVariableTableEntry.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/ILRUCacheable.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/Util.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/ClassFileStruct.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/ConstantPoolEntry.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/LineNumberAttribute.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/InnerClassesAttributeEntry.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/PublicScanner.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/FieldInfo.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/ICacheEnumeration.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/ExceptionTableEntry.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/PerThreadObject.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/messages.properties
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/CharArrayBuffer.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/SimpleLookupTable.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/Dumper.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/ConstantPool.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/DefaultBytecodeVisitor.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/ConstantValueAttribute.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/LocalVariableAttribute.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/MethodInfo.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/InnerClassesAttribute.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/util/CodeAttribute.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CreateTypeMemberOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/WorkingCopyElementInfo.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/NameLookup.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/hierarchy
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/hierarchy/RegionBasedHierarchyBuilder.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/hierarchy/HierarchyType.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/hierarchy/HierarchyBinaryType.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/hierarchy/RegionBasedTypeHierarchy.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/hierarchy/HierarchyBuilder.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/hierarchy/TypeHierarchy.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/hierarchy/IHierarchyRequestor.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/hierarchy/IndexBasedHierarchyBuilder.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/hierarchy/HierarchyResolver.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/Region.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CopyResourceElementsOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/MoveResourceElementsOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/BufferManager.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CreateElementInCUOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/ModelUpdater.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder/NameEnvironment.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder/ClasspathDirectory.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder/IncrementalImageBuilder.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder/ClasspathMultiDirectory.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder/ImageBuilderInternalException.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder/JavaBuilder.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder/AdditionalTypeCollection.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder/BatchImageBuilder.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder/AbstractImageBuilder.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder/State.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder/BuildNotifier.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder/ProblemFactory.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder/ClasspathLocation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder/AbortIncrementalBuildException.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder/MissingClassFileException.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder/ClasspathJar.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder/SourceFile.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder/ReferenceCollection.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder/WorkQueue.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/builder/MissingSourceFileException.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/JavaElement.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/OverflowingLRUCache.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CreateFieldOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CreateTypeOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/BinaryField.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/BinaryMember.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/JarPackageFragmentRootInfo.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/eval
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/eval/EvaluationContextWrapper.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/eval/RequestorWrapper.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/eval/GlobalVariableWrapper.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/JavaProject.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/jdom
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/jdom/DOMCompilationUnit.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/jdom/DOMMethod.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/jdom/DOMBuilder.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/jdom/DOMImport.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/jdom/ILineStartFinder.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/jdom/DOMMember.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/jdom/DOMType.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/jdom/SiblingEnumeration.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/jdom/DOMNode.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/jdom/SimpleDOMBuilder.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/jdom/DOMField.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/jdom/DOMPackage.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/jdom/AbstractDOMBuilder.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/jdom/CompilationUnit.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/jdom/DOMInitializer.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/SourceTypeElementInfo.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/MoveElementsOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/JarPackageFragmentRoot.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/JavaElementInfo.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/OpenableElementInfo.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/PackageFragment.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/SourceMethodElementInfo.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/JavaModelOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/SingleTypeRequestor.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/SearchableEnvironmentRequestor.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CompilationUnitVisitor.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/HandleFactory.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CreateInitializerOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/IJavaElementRequestor.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/SortElementsOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CreateWorkingCopyOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/JavaModelCache.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/MemberElementInfo.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/SearchableEnvironment.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/TypeConverter.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/TypeVector.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/SortElementBuilder.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CreatePackageDeclarationOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/ClassFileWorkingCopy.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/JavaModel.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CopyElementsOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/SourceMapper.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CopyPackageFragmentRootOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CreateCompilationUnitOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/Openable.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/INamingRequestor.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/ImportContainer.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/DeleteElementsOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/Util.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/SourceFieldElementInfo.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/Initializer.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/DestroyWorkingCopyOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/BatchOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CompilationUnitProblemFinder.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CompilationUnit.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/JavaElementRequestor.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/DeletePackageFragmentRootOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/RenameResourceElementsOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/SourceType.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/Buffer.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/MovePackageFragmentRootOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/DeltaProcessor.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/PackageFragmentInfo.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/JarEntryFile.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/SourceRefElement.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/LRUCacheEnumerator.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/MultiOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/Member.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/PackageFragmentRootInfo.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/RenameElementsOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/FailedReconciliationException.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/JavaModelStatus.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/BufferCache.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/JarPackageFragment.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/Assert.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/SourceRange.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/SortJavaElement.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CompletionRequestorWrapper.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CommitWorkingCopyOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/ReconcileWorkingCopyOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/BasicCompilationUnit.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/ClasspathEntry.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CreateImportOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CompilationUnitStructureRequestor.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CreateTypeHierarchyOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/messages.properties
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/ClassFileInfo.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/CreateMethodOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/JavaElementDeltaBuilder.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/IPathRequestor.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/JavaElementDelta.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/PackageFragmentRoot.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/BinaryType.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/SelectionRequestor.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/JavaModelInfo.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/DeleteResourceElementsOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/ImportDeclaration.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/BinaryMethod.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/ElementCache.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/JavaProjectElementInfo.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/SourceMethod.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/PackageDeclaration.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/JavaModelManager.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/SetClasspathOperation.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/WorkingCopy.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/SourceField.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/JarPackageFragmentInfo.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/SourceRefElementInfo.java
+plugins/org.eclipse.jdt.core/model/org/eclipse/jdt/internal/core/InitializerElementInfo.java
+plugins/org.eclipse.jdt.core/codeassist
+plugins/org.eclipse.jdt.core/codeassist/org
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/select
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/select/SelectionOnArgumentName.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/select/SelectionOnLocalName.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/select/SelectionOnSuperReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/select/SelectionOnExplicitConstructorCall.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/select/SelectionOnPackageReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/select/SelectionOnSingleTypeReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/select/SelectionOnSingleNameReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/select/SelectionParser.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/select/SelectionOnFieldType.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/select/SelectionOnQualifiedSuperReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/select/SelectionOnQualifiedTypeReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/select/SelectionOnMessageSend.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/select/SelectionOnFieldReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/select/SelectionOnQualifiedNameReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/select/SelectionOnQualifiedAllocationExpression.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/select/SelectionNodeFound.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/select/SelectionScanner.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/select/SelectionOnImportReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnQualifiedAllocationExpression.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/InvalidCursorLocation.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnFieldName.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnLocalName.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionParser.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnKeyword1.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnQualifiedInterfaceReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnKeyword2.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnKeyword3.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnQualifiedExceptionReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnSingleTypeReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnQualifiedClassReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnMessageSend.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnExplicitConstructorCall.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnInterfaceReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnPackageReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnSingleNameReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnMethodReturnType.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnMemberAccess.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionNodeDetector.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionNodeFound.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnMethodName.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionScanner.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnExceptionReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnFieldType.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnClassLiteralAccess.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnQualifiedTypeReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnKeyword.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnImportReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnClassReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnArgumentName.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/complete/CompletionOnQualifiedNameReference.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/impl
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/impl/AssistParser.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/impl/Keywords.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/impl/Engine.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/impl/AssistOptions.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/CompletionEngine.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/ISearchRequestor.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/ISearchableNameEnvironment.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/RelevanceConstants.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/ISelectionRequestor.java
+plugins/org.eclipse.jdt.core/codeassist/org/eclipse/jdt/internal/codeassist/SelectionEngine.java
+plugins/org.eclipse.jdt.core/scripts
+plugins/org.eclipse.jdt.core/scripts/export-batch-jdtcom.xml
+plugins/org.eclipse.jdt.core/scripts/buildExtraJars.xml
+plugins/org.eclipse.jdt.core/scripts/exportplugin.xml
+plugins/org.eclipse.jdt.core/about.html
+plugins/org.eclipse.jdt.core/grammar
+plugins/org.eclipse.jdt.core/grammar/java_1_4.g
+plugins/org.eclipse.jdt.core/grammar/java_1_5.g
+plugins/org.eclipse.jdt.core/eval
+plugins/org.eclipse.jdt.core/eval/org
+plugins/org.eclipse.jdt.core/eval/org/eclipse
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/CodeSnippetParser.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/CodeSnippetMessageSend.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/CodeSnippetQualifiedNameReference.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/IRequestor.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/CodeSnippetClassFile.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/CodeSnippetSkeleton.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/CodeSnippetCodeStream.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/CodeSnippetScope.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/VariablesInfo.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/CodeSnippetFieldReference.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/EvaluationContext.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/GlobalVariable.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/CodeSnippetSingleNameReference.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/CodeSnippetThisReference.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/VariablesEvaluator.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/CodeSnippetCompiler.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/CodeSnippetConstantPool.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/CodeSnippetEnvironment.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/CodeSnippetSuperReference.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/EvaluationResult.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/CodeSnippetToCuMapper.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/CodeSnippetEvaluator.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/CodeSnippetTypeDeclaration.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/CodeSnippetAllocationExpression.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/InstallException.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/EvaluationConstants.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/CodeSnippetReturnStatement.java
+plugins/org.eclipse.jdt.core/eval/org/eclipse/jdt/internal/eval/Evaluator.java
+plugins/org.eclipse.jdt.core/antadapter
+plugins/org.eclipse.jdt.core/antadapter/org
+plugins/org.eclipse.jdt.core/antadapter/org/eclipse
+plugins/org.eclipse.jdt.core/antadapter/org/eclipse/jdt
+plugins/org.eclipse.jdt.core/antadapter/org/eclipse/jdt/core
+plugins/org.eclipse.jdt.core/antadapter/org/eclipse/jdt/core/JDTCompilerAdapter.java
+plugins/org.eclipse.jdt.core/build.properties
+plugins/org.eclipse.jdt.core/batch
+plugins/org.eclipse.jdt.core/batch/org
+plugins/org.eclipse.jdt.core/batch/org/eclipse
+plugins/org.eclipse.jdt.core/batch/org/eclipse/jdt
+plugins/org.eclipse.jdt.core/batch/org/eclipse/jdt/internal
+plugins/org.eclipse.jdt.core/batch/org/eclipse/jdt/internal/compiler
+plugins/org.eclipse.jdt.core/batch/org/eclipse/jdt/internal/compiler/batch
+plugins/org.eclipse.jdt.core/batch/org/eclipse/jdt/internal/compiler/batch/CompilationUnit.java
+plugins/org.eclipse.jdt.core/batch/org/eclipse/jdt/internal/compiler/batch/messages.properties
+plugins/org.eclipse.jdt.core/batch/org/eclipse/jdt/internal/compiler/batch/Main.java
+plugins/org.eclipse.jdt.core/batch/org/eclipse/jdt/internal/compiler/batch/FileSystem.java
+plugins/org.eclipse.jdt.core/batch/org/eclipse/jdt/internal/compiler/batch/FileFinder.java
+plugins/org.eclipse.jdt.core/batch/org/eclipse/jdt/internal/compiler/batch/ClasspathDirectory.java
+plugins/org.eclipse.jdt.core/batch/org/eclipse/jdt/internal/compiler/batch/ClasspathJar.java
+plugins/org.eclipse.jdt.core/plugin.xml
+plugins/org.eclipse.jdt.core/schema
+plugins/org.eclipse.jdt.core/schema/classpathVariableInitializer.exsd
+plugins/org.eclipse.jdt.core/schema/classpathContainerInitializer.exsd
+plugins/org.eclipse.jdt.core/schema/codeFormatter.exsd
+plugins/org.eclipse.jdt.core/formatter
+plugins/org.eclipse.jdt.core/formatter/org
+plugins/org.eclipse.jdt.core/formatter/org/eclipse
+plugins/org.eclipse.jdt.core/formatter/org/eclipse/jdt
+plugins/org.eclipse.jdt.core/formatter/org/eclipse/jdt/internal
+plugins/org.eclipse.jdt.core/formatter/org/eclipse/jdt/internal/formatter
+plugins/org.eclipse.jdt.core/formatter/org/eclipse/jdt/internal/formatter/options.properties
+plugins/org.eclipse.jdt.core/formatter/org/eclipse/jdt/internal/formatter/impl
+plugins/org.eclipse.jdt.core/formatter/org/eclipse/jdt/internal/formatter/impl/FormatterOptions.java
+plugins/org.eclipse.jdt.core/formatter/org/eclipse/jdt/internal/formatter/impl/SplitLine.java
+plugins/org.eclipse.jdt.core/formatter/org/eclipse/jdt/internal/formatter/CodeFormatter.java
+plugins/org.eclipse.jdt.core/notes
+plugins/org.eclipse.jdt.core/notes/R20_buildnotes_jdt-core.html
+plugins/org.eclipse.jdt.core/plugin.jars
+plugins/org.eclipse.jdt.core/.classpath
+plugins/org.eclipse.jdt.core/plugin.properties
+plugins/org.eclipse.jdt.core/.project
+plugins/org.eclipse.jdt.core/.options
+plugins/org.eclipse.jdt.core/buildnotes_jdt-core.html
+</PRE
+></TD
+></TR
+></TABLE
+>
+
+</P
+></DIV
+></DIV
+></BODY
+></HTML
+>

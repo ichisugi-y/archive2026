@@ -1,0 +1,404 @@
+<html>
+<head>
+<title>Standard/Extended Java Abstract Syntax Tree Format</title>
+</head>
+<body bgcolor="#FFFFFF">
+<a href="index.html"> Index </a>
+<hr>
+<img src="gif/epp-logo-small.gif" align=right><br>
+<h1>Standard/Extended Java Abstract Syntax Tree Format</h1>
+<hr>
+ 
+
+<h2>What is the "Standard Java Abstract Syntax Tree" (standard Java AST)
+and the "Extended Java Abstract Syntax Tree" (extended Java AST) ?</h2>
+
+ Since the Tree class that expresses the abstract syntax tree is
+very versatile, it can even express meaningless things like the
+following.
+<pre>
+ (foo (literalTree xyz "123") (bar (id X) (baz) (id "a b c")))
+</pre>
+ However, the actual abstract syntax tree generated as a result of
+parsing Java source code is very limited.
+
+<p>
+ For example, the number of subtrees for a tree with a tag named ":class"
+is always six.  Furthemore, the type of a subtree is fixed in certain areas,
+such as the tag of the number zero subtree being ":modifiers" and the third
+being ":extends".
+
+<p>
+ This type of abstract syntax tree format that the EPP parser can
+generated is called the "standard Java abstract syntax tree".
+
+<p>
+ Programs that process the abstract syntax tree of the Java language
+may assume that the abstract syntax tree complies to the format of
+the "standard Java abstract syntax tree".
+(Without such assumption, in order to process a class,
+you would first need to check if the number of subtree is six,
+the tag of the number zero subtree is ":modifiers", and so on,
+which would be a very troublesome.
+
+
+<p>
+ Plug-ins can extend the syntax of the Java language and add new types
+of nodes to the abstract syntax tree.
+However, an over-extended abstract syntax tree format may cause
+problems when used with other plug-ins.
+That is, the composability reduces.
+
+<p>
+ Thus, the "extended Java abstract syntax tree", a recommended framework
+for the extension of the abstract syntax tree comes into play.
+
+<p>
+ Plug-ins that define new nodes by extending the abstract syntax tree should
+stay within the framework of the "extended Java abstract syntax tree".
+In turn, plug-ins that process the abstract syntax tree may assume
+that the abstract syntax tree complies to the "extended Java abstract
+syntax tree" format when processing.
+
+
+<p>
+ All plug-ins must translate the "extended Java abstract syntax tree" into
+the "standard Java abstract tree" before entering the code-emitting pass.
+The code-emitting pass only assures to translate the "standard Java abstract
+syntax tree" format tree into character strings.
+If you pass a tree that does not comply to the format, the code-emitting
+pass will generate a fatal error or would output code that does not
+comply to the Java language specification.
+
+<p>
+ Note, however, that strings translated from the "standard Java abstract syntax
+tree" may not necessarily be a correct Java program.
+Javac may produce syntax erros or type errors, or even if no errors occur,
+may interpret not as expected.
+For example, while the expression (id "a b c") complies to the "standard java
+abstract syntax tree", and the code-emitting pass will translate it into
+a character string, a syntax error will occur if you compile the result
+with javac.
+
+<p>
+ Also note that the framework of the "extended Java abstract syntax tree"
+is not absolute.  For example, there may be times when you would want to
+use a special abstract syntax tree format even at the expense of
+composability.
+This is because, the language that can be expressed within the framework
+of the "extended Java abstract syntax tree" is very limited.
+The plug-in implementor may determine the trade-off between the limitation
+and the composability.
+(However, the implementor must explicitly document that the composability
+is low.)
+Also, since proof of concept will be of greater matter than composability
+when prototyping plug-ins, deviation from the "extended Java abstract syntax
+tree" format should be allowed for easier implementation.
+
+
+<hr>
+<h2>Standard/Extended Java Abstract Syntax Tree Format</h2>
+
+<UL>
+<LI>Symbols beginning with uppercase characters are non-terminals.
+<LI>Non-terminals with an asterisk (*) mean zero or more iterations.
+<LI>An &lte&gt alternative means an empty string.
+<LI>Each alternative of each non-terminal is generally written on a single
+line. However, if it does not fit on one line, it may span multiple lines.
+Please determine by matching parenthesis.
+<LI>"Non-terminals" that appear in this chapter have no relation with
+"non-terminals" refered to in the Java grammar chapter.
+<LI>Alternatives with &ltextended alternatives&gt are non-terminals that
+plug-ins may extend.
+Plug-ins may add alternatives as long as the tags are unique.
+</UL>
+<pre>
+----
+
+CompilationUnit:
+	(compilationUnit
+		(packageDeclaration PackageName)
+        	(imports ImportDeclaration*)
+                (typeDeclarations TypeDeclaration*))
+
+
+PackageName:
+	Name
+	&lte&gt
+
+
+ImportDeclaration:
+	(importSingle Name)
+	(importOnDemand Name)
+	&ltextended alternatives&gt
+
+TypeDeclaration:
+	Class
+	(emptyTypeDeclaration)
+	&ltextended alternatives&gt
+
+
+Class:
+	(class  (modifiers Modifier*)
+		ClassKeyword
+		Identifier
+		(extends Name*)
+		(implements Name*)
+		(classBody ClassBodyDeclaration*))
+
+
+ClassKeyword:
+	(id class)
+	(id interface)
+
+
+ClassBodyDeclaration:
+	(emptyClassBodyDeclaration)
+	VariableDeclaration
+	Class
+	(staticInitializer Block)
+	(instanceInitializer Block)
+	(constructor
+		(modifiers Modifier*)
+		(name (id void))
+		Identifier
+		(formalParameters FormalParameter*)
+		(throws Name*)
+		MethodBody)
+	(method 
+		(modifiers Modifier*)
+		Type
+		Identifier
+		(formalParameters FormalParameter*)
+		(throws Name*)
+		MethodBody)
+	&ltextended alternatives&gt
+
+
+FormalParameter:
+	(pdecl (modifiers Modifier*) Type VariableDeclaratorId)
+
+
+MethodBody:
+	(emptyStatement)
+	Block
+	&ltextended alternatives&gt
+
+
+Block:
+	(block Statement*)
+
+
+Statement:
+	VariableDeclaration
+	Block
+	Class
+	(emptyStatement)
+	(expressionStatement Expression)
+	(labeled Identifier Statement)
+	(switch Expression Block)
+	(case Expression)
+	(default)
+	(do Block Expression)
+	(break)
+	(breakWithLabel Identifier)
+	(continue)
+	(continueWithLabel Identifier)
+	(return)
+	(returnWithExp Expression)
+	(synchronized Expression Block)
+	(throw Expression)
+	(try Block (catch FormalParameter Block)*)
+	(try Block (catch FormalParameter Block)* (finally Block))
+	(if Expression Statement Statement)
+	(while Expression Statement)
+	(for VariableDeclaration ForArg ForArg Statement)
+	(for ForArg ForArg ForArg Statement)
+	&ltextended alternatives&gt
+
+
+VariableDeclaration:
+	(decl	(modifiers Modifier*)
+		Type
+		(vardecls VariableDeclarator*))
+
+
+VariableDeclarator:
+	VariableDeclaratorId
+	(varInit VariableDeclaratorId VariableInitializer)
+
+
+VariableDeclaratorId:
+	Identifier
+	(arrayVar VariableDeclaratorId)
+	&ltextended alternatives&gt
+
+
+VariableInitializer:
+	Expression
+	(arrayInitializer Expression*)
+	&ltextended alternatives&gt
+
+
+ForArg:
+	(forArg Expression*)
+
+
+Expression:
+	Identifier
+	(literalTree LiteralTag String)
+	InstanceCreation
+	(newEnclosingInstance Expression InstanceCreation)
+	(classLiteral Type)
+	(this)
+	(invokeThisConstructor ArgumentList)
+	(invokeSuperConstructor ArgumentList)
+	(fieldLong Name Identifier)
+	(fieldExp Expression Identifier)
+	(fieldStatic Name Identifier)
+	(fieldSuper Identifier ArgumentList)
+	(invoke1 Identifier ArgumentList)
+	(invokeLong Name Identifier ArgumentList)
+	(invokeExp Expression Identifier ArgumentList)
+	(invokeStatic Name Identifier ArgumentList)
+	(invokeSuper Identifier ArgumentList)
+	(cast Type Expression)
+	(paren Expression)
+	(anonymousClass Name ArgumentList (classBody ClassBodyDeclaration*))
+	(newArray NewArrayArg)
+	(anonymousArray Type (arrayInitializer Expression*))
+	(array Expression Expression)
+	(postInc Expression)
+	(postDec Expression)
+	(~ Expression)
+	(! Expression)
+	(preInc Expression)
+	(preDec Expression)
+	(unaryPlus Expression)
+	(unaryMinus Expression)
+	(instanceof Expression Type)
+	(* Expression Expression)
+	(/ Expression Expression)
+	(% Expression Expression)
+	(+ Expression Expression)
+	(- Expression Expression)
+	(&lt&lt Expression Expression)
+	(&gt&gt Expression Expression)
+	(&gt&gt&gt Expression Expression)
+	(&lt Expression Expression)
+	(&gt Expression Expression)
+	(&lt= Expression Expression)
+	(&gt= Expression Expression)
+	(== Expression Expression)
+	(!= Expression Expression)
+	(& Expression Expression)
+	(^ Expression Expression)
+	(| Expression Expression)
+	(&& Expression Expression)
+	(|| Expression Expression)
+	(conditionalExpression Expression Expression Expression)
+	(= Expression Expression)
+	(*= Expression Expression)
+	(/= Expression Expression)
+	(%= Expression Expression)
+	(+= Expression Expression)
+	(-= Expression Expression)
+	(&lt&lt= Expression Expression)
+	(&gt&gt= Expression Expression)
+	(&gt&gt&gt= Expression Expression)
+	(&= Expression Expression)
+	(^= Expression Expression)
+	(|= Expression Expression)
+	&ltextended alternatives&gt
+
+
+LiteralTag:
+	long
+	char
+	float
+	double
+	string
+	&ltextended alternatives&gt
+
+
+InstanceCreation:
+	(new Type ArgumentList)
+
+
+ArgumentList:
+	(argumentList Expression*)
+
+
+NewArrayArg:
+	Type
+	(dimExpr NewArrayArg Expression)
+	&ltextended alternatives&gt
+
+
+Type:
+	Name
+	(arrayOf Type)
+	(innerClassExp Expression Identifier)          // Since epp1.1.0beta7
+	(innerClassStatic Type Identifier)             // Since epp1.1.0beta7
+	&ltextended alternatives&gt
+
+
+Modifier:
+	Identifier
+	&ltextended alternatives&gt
+
+
+Name:
+	(name Identifier Identifier*)
+
+
+Identifier:
+	(id Symbol)
+	(id String)
+
+
+Symbol: Java language identifier
+
+
+String: Java lanaguage string literal
+
+</pre>
+
+<hr>
+<h2>NOTE</h2>
+ I plan to provide a library function that automatically checks if
+an abstract syntax tree complies to the "standard/extended Java
+abstract symbol tree" format.
+Furthermore, when in debug-mode of the plug-in, the format checking
+library function will be called automatically, and if it finds any
+deviation, it will identify the plug-in and method name that caused
+the deviation.
+
+
+<hr>
+<h2>Referenece: Generic Format of the Abstrat Syntax Tree</h2>
+ The abstract syntax tree that can be expressed with the Tree class
+can be defined as follows.
+The "standard/extended Java abstract syntax tree" format is a subset
+of this definition.
+
+<pre>
+Tree :
+	LiteralTree
+	Identifier
+	(Symbol Tree*)
+
+LiteralTree :
+	(literalTree Symbol String)
+
+Identifier :
+	(id Symbol)
+	(id String)
+
+</pre>
+
+<hr>
+<a href="index.html"> Index </a>
+<img src="gif/epp-logo-small.gif" align=right><br>
+</body>
+</html>

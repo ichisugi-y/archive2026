@@ -1,0 +1,113 @@
+<html>
+<head>
+<title>BackQuote Plug-in Users Manual</title>
+</head>
+<body bgcolor="#FFFFFF">
+<a href="index.html"> Index </a>
+<hr>
+<img src="gif/epp-logo-small.gif" align=right><br>
+<h1>BackQuote Plug-in Users Manual</h1>
+<hr>
+
+
+
+The backquote macro feature of lisp is provided as a plug-in.
+Using this feature, you can embed the source code of the
+abstract syntax tree in a much readable form.
+
+For example, the following code
+<pre>
+	Tree t = `(+ (id x) (id y));
+</pre>
+is the same as the following code.
+<pre>
+	Tree t = new Tree(:+, new Identifier(:x), new Identifier(:y));
+</pre>
+
+
+You may cut and paste the output of tree.print() after the
+backqoute ("`") to embed it into the source code.
+(Cut and paste is preferred to prevent typing errors.)
+
+<p>
+As with the lisp backquote macro, you can also use commas (",") and
+comma at marks (",@").
+Commas embed the evaluated result of the value of a Java expression
+following the comma into the tree.
+Comma at marks assume the evaluated result of the value of a Java expression
+following the Comma at mark as an array and embeds it into the tree.
+
+For example, the following
+<pre>
+	Tree t = `(+ (id x) ,val);
+</pre>
+is the same as the following code.
+<pre>
+	Tree t = new Tree(:+, new Identifier(:x), val);
+</pre>
+ And the following, 
+<pre>
+	Tree[] sa = { s2, s3, s4,};
+	Tree t = `(block ,s0 ,s1 ,@sa ,s5 ,s6);
+</pre>
+is the same as the following.
+<pre>
+	Tree t = new Tree(:block, s0, s1, s2, s3, s4, s5, s6);
+</pre>
+<p>
+The type of the expression that follows the comma must be "Tree", while
+the type of the expression that follows the comma at mark must be
+"Tree[]" or "TreeVec".
+
+<p>
+Regarding the grammar, there is one important point you must be careful of.
+If the expression following the comma or comma at mark is not a variable
+name and is a complex expression, you must surround the expression with
+parenthesis.  For example, while the following is correct,
+<pre>
+	`(= ,var ,val)
+</pre>
+the following
+<pre>
+	`(= ,getVar() ,getVal())
+</pre>
+will not be parsed as expected. This expression must be written as follows.
+<pre>
+	`(= ,(getVar()) ,(getVal()))
+</pre>
+
+<p>
+Also note that the current version does not accept expression such as the
+following.
+<pre>
+	`(,tag ,arg1 ,arg2)
+	`(id ,name)
+	`(literalTree ,literalTag ,literalContents)
+</pre>
+You must use the following Java expression instead.
+<pre>
+	new Tree(tag, arg1, arg2)
+	new Identifier(name)
+	new LiteralTree(literalTag, literalContents)
+</pre>
+
+
+<hr>
+<h2>Code Embedding Using Java Syntax</h2>
+
+I plan to provide plug-ins that can be used to write even more readable
+code than S-expression code embedding. For example, the following code
+<pre>
+	Tree t = `(+ (* (id x) (id y)) (literalTree int "1"));
+</pre>
+will be able to be written like the following.
+<pre>
+	Tree t = CODE:E{ x * y + 1 };
+</pre>
+
+
+<hr>
+<a href="index.html"> Index </a>
+<img src="gif/epp-logo-small.gif" align=right><br>
+</body>
+</html>

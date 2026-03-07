@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=shift_jis">
+<title>エンドユーザ向けのスクリプト言語：チャミー</title>
+<style type="text/css">
+<!--
+.style1 {
+	font-size: xx-large;
+	font-weight: bold;
+	color: #0000FF;
+}
+-->
+</style>
+</head>
+
+<body>
+<img src="kira3.gif" name="Logo" width="296" height="126" border="0">
+<div align=right>
+<IMG SRC="/cgi-bin/counter.cgi?df=y-ichisugi/chummy-counter.dat&st=100" ALT="">
+</div>
+
+<h1 class="style1">エンドユーザ向けのスクリプト言語：チャミー</h1>
+<h2>概要</h2>
+<p>
+我々はエンドユーザ向けのスクリプト言語 チャミー を設計・実装中である。
+初心者にとって習得しやすいプログラミング言語はいかにあるべきかを考察しながら、
+シンタックス、制御構造、組み込みデータ型、標準ライブラリ、開発環境（エディタ、デバッガ）の
+設計を行っている。
+チャミー言語は関数型言語の利点を積極的に取り込んだ手続き型言語である。
+チャミーのIDE(統合開発環境)は、
+日本語化された構造エディタ、実行トレースの可視化表示などの機能を持ち、
+プログラミングに不慣れなエンドユーザによるプログラム開発を支援する。
+チャミーはファイル処理等の現実世界のデータ処理に用いることができ、
+それを支援する仮想フォルダ、実行時エラーリカバリと呼ぶ機構を持っている。 
+</p>
+
+<h2>チャミーの特徴</h2>
+<p>
+チャミー言語は以下の特徴を持っている。
+<ul>
+<li><a href="200503ppl/paper.html#sec4.1">コマンド列によるデータフロー表現</a>
+<li><a href="200503ppl/paper.html#sec4.2">call by name</a>
+<li><a href="200503ppl/paper.html#sec4.4">IDEと相性のよい静的型システム</a>
+<li><a href="200503ppl/paper.html#sec5.1">immutable な組み込みデータ型</a>
+<li><a href="200503ppl/paper.html#sec5.2">表を処理するための制御構造</a>
+<li><a href="200503ppl/paper.html#sec5.3">仮想フォルダによる安全なファイル処理</a>
+</ul>
+
+
+<p>
+（なお、現在のところ、ユーザによるコマンド定義および
+パッケージの機構は、持っていない。）
+
+<p>
+チャミーIDEは現在以下の機能を備えている。
+<ul>
+<li><a href="200503ppl/paper.html#sec6.1">日本語化された構造エディタ</a>
+<li><a href="200503ppl/paper.html#sec6.3">入力支援（コマンド挿入制約、引数制約、デフォルト値入力）</a>
+<li><a href="200503ppl/paper.html#sec6.4">トレース画面</a>
+<li><a href="200503ppl/paper.html#sec6.5">実行時エラーリカバリ</a>
+<li><a href="200503ppl/paper.html#sec6.6">表示オプション</a>
+</ul>
+
+<h2>ダウンロード</h2>
+<a href="download/index.html">デモ版のダウンロード</a>  <span style="color:red">[New !]</span>
+
+<h2>関連資料</h2>
+<ul>
+<li>一杉裕志：「ファイル処理プログラムの開発を支援する仮想ディレクトリ機構」（未発表）<br>
+ <a href="virtualDirectory.pdf">[pdf]</a> <span style="color:red">[New !]</span> </li>
+  
+<li>一杉裕志、古川浩史：「エンドユーザ向けのスクリプト言語：チャミー」<br>
+    第7回プログラミングおよびプログラミング言語ワークショップ(<a href="http://www.graco.c.u-tokyo.ac.jp/ppl2005/">PPL2005</a>) <br>
+    発表論文
+    <a href="200503ppl/paper.html">[html]</a>  <a href="200503ppl/ichisugi20050214.pdf">[pdf]</a>  <span style="color:red">[New !]</span> <br>
+    発表スライド<a href="200503ppl/20050310.pdf">[pdf]</a> (PPL2005 発表賞受賞) <span style="color:red">[New !]</span>  </li>
+<li>一杉裕志、古川浩史：
+  「GUI とプログラミング言語の利点を兼ね備えたスクリプト言語」<br> 
+  日本ソフトウェア科学会第21回大会ポスター・デモセッション (2004-09-16) <br>
+  発表スライド<a href="../guript/20040916JSSST.pdf">[pdf]</a> (注： 資料中の guript はチャミーの旧称です。)
+</li>
+</ul>
+<hr>
+<p><a href="../j-index.html">Yuuji ICHISUGI </a></p>
+</body>
+</html>

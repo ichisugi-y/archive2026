@@ -1,0 +1,269 @@
+<HTML>
+<HEAD>
+<TITLE>EPP: An Extensible Pre-Processor Kit</TITLE>
+<meta charset="UTF-8">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<a href="index.html">[ English ]</a><br>
+<h1>
+<img src="logo.GIF" ALT="logo">
+拡張可能 Java プリプロセッサ EPP</h1>
+
+<h3 align="right">
+産業技術総合研究所 一杉裕志
+</h3>
+
+
+<hr>
+<span style="color:#FF0000;font-weight:bold">
+<p>
+EPP の開発は終了しました。
+</p>
+</span>
+
+<hr>
+
+ EPP は、以下のようなシステムの実装をサポートするフレームワークです。
+<ul>
+<li> Java 言語の文法や意味を拡張するプリプロセッサ
+<li> Java プログラムのソースコード解析ツール
+<li> Java プログラムのソースコード変換ツール
+</ul>
+ EPP は Java 言語の構文解析と型チェックをサポートしています。
+EPP を用いることで、
+Java 言語のセマンティックスに依存した複雑な処理も比較的簡単に
+行なうことができます。
+<p>
+ EPP 自体も、「EPP によって機能拡張された Java 言語」で書かれており、
+ソースコード処理を容易にする言語拡張がなされています。
+
+
+<hr>
+<h3>ドキュメント</h3>
+<ul>
+<li>EPP 1.1.0 beta 3 plug-in プログラマ向けドキュメント
+<a href="../doc/newjdoc/index.html">[ html ]</a>
+ <a href="eppjdoc110beta3.zip">[ eppjdoc110beta3.zip ]</a> <br>
+<li>EPP 1.1.2 の <a href="jdoc/README-j-112.txt"> README-j</a><br>
+<li><a href="plug-in-doc.html">EPP 1.0 plug-in の説明</a><br>
+<li><a href="epp20020606-e.pdf">研究発表スライド（英語）</a><br>
+</ul>
+
+<hr>
+<h3>EPP 最新版のダウンロード</h3>
+<a href="epp115.zip"> epp115.zip </a><br>
+（注： 日本語ドキュメントはすべて JIS コードです。）
+
+
+<hr>
+<h3> What's new ?</h3>
+<p>
+2002-12-11 (EPP 1.1.5)<br>
+シェルスクリプトを少し変更。<br>
+T.this, T.super.f, T.super.m(), exp.super() という式の型チェックをサポート。
+
+<p>
+2002-04-23 (EPP 1.1.4)<br>
+J2SE 1.4 でクラスファイルのバージョンが変わったのに対応。
+（JavaClass3.3.2 に <a href="JavaClass/jdk14.patch">patch</a> 。）
+
+<p>
+2001-12-20 (EPP 1.1.3)<br>
+" byte b = 'c'; " が型チェックパスを通るように修正。
+
+<p>
+2001-12-19 (EPP 1.1.2)<br>
+ Collection plug-in に NullOr&lt;T&gt; と ifNull 構文を追加。
+
+<p>
+2001-07-31 (EPP 1.1.1)<br>
+JDK14assert plug-in を追加。
+この plug-in を使えば、 EPP は JDK1.4 で導入された assert 文を
+通すようになります。<br>
+シェルスクリプトが cygwin1.3.2 で動くようにしました。
+これより古いバージョンの cygwin は今後サポートされません。<br>
+出力のエンコードのバグを修正。
+
+<p>
+2001-05-14 (EPP 1.1.0)<br>
+EPP 1.1.0 を non-beta version にしました。<br>
+シェルスクリプトを少し変更。<br>
+
+<p>
+2001-04-11 (EPP 1.1.0 beta 15)<br>
+Collection plug-in を追加。<br>
+
+<p>
+2000-09-03 (EPP 1.1.0 beta 14)<br>
+使用している JavaClass API を 3.3.2 にバージョンアップ。<br>
+
+<p>
+2000-06-09 (EPP 1.1.0 beta 13)<br>
+小さいバグを修正。<br>
+
+<p>
+2000-02-29 (EPP 1.1.0 beta 12)<br>
+小さいバグを修正。<br>
+
+<p>
+1999-11-20 (EPP 1.1.0 beta 11)<br>
+-encoding, -target-classpath オプションを追加。<br>
+JDK1.2 を使う場合、 rt.jar を CLASSPATH に
+明示的に入れなくてもよいようにした。<br>
+
+<p>
+1999-11-05 (EPP 1.1.0 beta 10)<br>
+型チェックパスでのエラーリカバリを実装。<br>
+MultipleInheritance plug-in,  AssociationArray plug-in のバグを修正。
+Generic plug-in は未修正。<br>
+開発用シェルスクリプトが Windows Cygwin b20.1 上でも動作するようになりました。
+
+<p>
+1999-08-01 (EPP 1.1.0 beta 9)<br>
+小さいバグを修正。
+
+<p>
+1999-07-04 (EPP 1.1.0 beta 8)<br>
+Linux JDK1.2 pre-release-v2 でも動くようになりました。
+
+<p>
+1999-07-01 (EPP 1.1.0 beta 7)<br>
+<ul>
+
+<li><a href="../doc/newjdoc/Bugs.html">
+型チェックの主なバグを修正。</a>
+interface, inner class の型チェックも完全にサポート。
+EPP 自身と jdk1.1.7B のライブラリのソースが型チェックできるようになりました。
+<br>
+<li>このバージョンから、 class file の解析に Markus Dahm 氏の
+<a href="http://www.inf.fu-berlin.de/~dahm/JavaClass/index.html">
+JavaClass API </a>を使用。
+<li>このバージョンからは、 SDK for Java (jview) などでは、
+ classes.zip を明示的に CLASSPATH に入れる必要があります。
+（型チェック時にライブラリの class file を探せるようにするため。）<br>
+<li>FileSig.java の API が一部変更。 API ドキュメントは未対応。
+AssociationArray,Generic,MultipleInheritance plug-in も未対応なので
+動きません。<br>
+<li>EPP の boostrap 用シェルスクリプトを作成。(epp/src/README を参照。)<br>
+<li>デバッグ用オプション -class-info, -file-signature を追加。<br>
+<li> このバージョンは jdk1.2 では動きません。(beta8 で動くようになりました。)
+</ul>
+
+<p>
+1999-06-01 (EPP 1.1.0 beta 6)<br>
+beta 5 のバグ修正版。<br>
+
+<p>
+1999-04-03 (EPP 1.1.0 beta 5)<br>
+ParseParen, ParseComment plug-in の追加。
+-tree-with-string, -tree-with-property オプションの追加。
+Tree の開始位置・終了位置情報の実装。<br>
+
+<p>
+1999-03-02<br>
+<a href="edoc/index.html">English documents(preliminary version)</a>公開。
+
+<p>
+1999-01-20 (EPP 1.1.0 beta 4)<br>
+Generic plug-in
+（<a href="http://www.cis.unisa.edu.au/~pizza/gj/">GJ</a>の
+サブセット）と、 
+TransStringEqual plug-in （プログラムの一括変換の例）を追加。<br>
+
+<p>
+1998-12-06 (EPP 1.1.0 beta 3.1)<br>
+文字列からの抽象構文木を読み込むメソッド Tree.readTree を追加。<br>
+backquote より簡単に展開関数を書けるようにするクラス StringNode を追加。
+使用例は、 epp/sample/SWAP2/PlugIn.java を見て下さい。<br>
+
+<p>
+1998-11-14 <br>
+<a href="../doc/newjdoc/index.html">
+EPP 1.1.0 beta 3 plug-in プログラマ向けドキュメント</a>が
+できました。<br>
+zip でかためたものは、こちら
+<a href="eppjdoc110beta3.zip">eppjdoc110beta3.zip</a> 。<br>
+
+<p>
+1998-11-04 (EPP 1.1.0 beta 3)<br>
+ EPP の型チェック機能を用いた、
+ MultipleInheritance, OperatorOverloading, typedef, AssociationArray などの
+plug-in を追加。<br>
+ EPP plug-in プログラマ向け mailing-list、
+epp-plug-in-j を開設！
+<a href="../doc/newjdoc/epp-plug-in-j.html">
+ 参加者を募集します。</a><br>
+<p>
+1998-10-01 (EPP 1.1.0 beta 2)<br>
+ -global option 追加。<br>
+<p>
+1998-09-01 <br>
+EPP plug-in プログラマ向けドキュメントを書きました。
+<p>
+1998-08-01 (EPP 1.1.0 beta 1)<br>
+EPP 本体と全 plug-in のパッケージ名を変更。<br>
+インストール方法の変更。 <br>
+RenamePackage, SharpPlus plug-in の追加。<br>
+型チェックの一部実装。<br>
+<p>
+1998-06-01 (EPP 1.0.1)<br>
+エラーリカバリの実装。<br>
+ -v, -comment-colon, -D オプションの追加。<br>
+ <a href="plugins/TestCommentColon.txt">
+-comment-colon オプションのテストプログラムはこちら。</a><br>
+ "ifdef" plug-in の更新。 <br>
+テストプログラムは、
+ <a href="plugins/src/test/Testifdef.txt">
+epp/plugins/src/test/Testifdef.txt</a><br>
+<p>
+1998-05-02 (EPP 1.0.0)<br>
+EPP が non-beta バージョンになりました。<br>
+JDK1.1 のシンタックスがすべてサポートされました。
+<p>
+
+1998-04-01<br>
+"ifdef" plug-in を epplib.jar に追加しました。<br>
+<p>
+
+1998-03-01<br>
+ Java 版 epp 配布開始。
+<p>
+
+
+
+<hr>
+<h3>JavaClass API</h3>
+ EPP は "JavaClass API" というパッケージを内部で用いています。
+ JavaClass は Markus Dahm 氏が開発した LGPL のクラスライブラリです。
+JavaClass のソースとドキュメントは、以下の URL から取得できます。<br>
+<p>
+	<a href="http://www.inf.fu-berlin.de/~dahm/JavaClass/index.html">
+	http://www.inf.fu-berlin.de/~dahm/JavaClass/index.html</a><br>
+または<br>
+	<a href="http://staff.aist.go.jp/y-ichisugi/epp/JavaClass/JavaClass3.3.2.tar.gz">
+	http://staff.aist.go.jp/y-ichisugi/epp/JavaClass/JavaClass3.3.2.tar.gz</a><br>
+
+<p>
+ JavaClass3.3.2 を J2SE 1.4 以降のクラスファイルに使った時、
+警告メッセージを出ないようにするパッチ：<br>
+	<a href="http://staff.aist.go.jp/y-ichisugi/epp/JavaClass/jdk14.patch">
+	http://staff.aist.go.jp/y-ichisugi/epp/JavaClass/JavaClass/jdk14.patch</a><br>
+
+
+<hr>
+<p>
+
+ 本ソフトウエアは、一杉裕志が旧電子技術総合研究所（現在は産総研）での職務として
+作成したものです。
+（職務作成プログラム等管理番号 1998-ETL-E9301-01 。）
+<br>
+ 本ソフトウエアは、無保証です。研究目的あるいは評価目的に限り、
+無償で利用できます。
+<p>
+
+<hr>
+<a href="../index.html">
+	To the Home Page of Yuuji Ichisugi</a>.<br>
+</body>
+</html>

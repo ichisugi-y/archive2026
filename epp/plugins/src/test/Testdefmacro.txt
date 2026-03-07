@@ -1,0 +1,16 @@
+#epp "defmacro"
+
+defmacro max(a, b)  (a > b ? a : b)
+defmacro swap(t, a, b) {t tmp; tmp = a; a = b; b = tmp;}
+
+class Testdefmacro {
+  public static void main(String argv[]){
+
+    System.out.println(max(5, 10) == 10);
+
+    int a = 1, b = 2;
+    System.out.println(a == 1 && b == 2);
+    swap(int, a, b);
+    System.out.println(a == 2 && b == 1);
+  }
+}

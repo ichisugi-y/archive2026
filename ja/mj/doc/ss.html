@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<link rel="stylesheet" type="text/css" href="./style.css">
+<title> ss plug-in </title>
+</head> <body>
+<div class="header-link">
+[<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
+[<a href="index.html">Document index</a>]
+</div>
+<h1> ss plug-in</h1>
+<ul class="headers">
+<li><a href="#note"><div style="color:red">注意</div></a>
+<li><a href="#intro">概要</a>
+<li><a href="#example">例</a>
+<li><a href="#note">注意</a>
+<li><a href="#syntax">文法</a>
+</p></ul><p>
+</p><p>
+</p><h2><a name="note"><div style="color:red">注意</div></a></h2><p>
+　ss plug-in は、 MJ1.0 からは使われていません。
+　以下の説明は、MJ0.1 のためのものです。
+</p><p>
+</p><h2><a name="intro">概要</a></h2><p>
+ MJ には SS (startup-singleton) という名前のクラスがあり、
+Java 言語の static field/method の代わりになっています。
+しかし、 class SS {...} の中に SS field/method を
+書かなければならないのはめんどうです。
+</p><p>
+そこで、 SS field/method を従来の static field/method のように
+気軽に書けるようにするシンタックスシュガーを
+提供するのが、この ss plug-in です。
+ss plug-in は、最初から標準 plug-in として mjc の処理系に取り込まれています。
+</p><p>
+</p><p>
+ss plug-in は、 SS field/method がそのままではあまりに使いにくいために、
+とりあえず実装してみたシンタックスシュガーです。
+将来的には、もっといい構文を思い付けば、それに変えます。
+</p><p>
+</p><p>
+</p><h2><a name="example">例</a></h2><p>
+</p><p>
+ フィールド宣言・メソッド宣言の先頭に "ss" と書くことで、
+SS field/method を宣言できます。
+</p><p>
+ module の body か、
+ 任意のクラスの body に SS field/method を書くことができます。
+</p><p>
+</p><p>
+</p><p>
+<pre>
+module test {
+  define class C {
+    ss int fff;
+    define void foo() { }
+    define ss void foo() { }
+  }
+  ss void main(String[] args){
+    original(args);
+    System.out.println("hello.");
+  }
+}
+</pre>
+</p><p>
+このプログラムは、 ss plug-in によって次のプログラムにマクロ展開されます。
+<pre>
+module test {
+  define class C {
+    define void foo() { }
+  }
+  class SS {
+    int fff;
+    define void foo() { }
+    void main(String[] args){
+      original(args);
+      System.out.println("hello.");
+    }
+  }
+}
+</pre>
+</p><p>
+</p><p>
+</p><h2><a name="note">注意</a></h2><p>
+"ss" は、 "define" と modifier の間に
+書く必要があります。（ "define" も "ss" も modifier ではありません。）
+"define" 前に書いたり、 modifier のうしろに書くと、
+シンタックスエラーになります。
+</p><p>
+ss field/method は、あくまで単純なシンタックスシュガーであって、
+static scope ルールには従いません。
+クラス内部に書かれた ss method は、モジュール内の他のクラスからも
+参照することができます。
+</p><p>
+</p><p>
+SS という単純名のクラスが他にあると、動作がおかしくなります。
+これは、現在の実装のバグです。
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="syntax">文法</a></h2><p>
+<pre>
+</p><p>
+MJTypeDeclaration
+        &lt;original alternatives&gt;
+        SSMemberDeclaration
+</p><p>
+MJClassBodyDeclaration
+        &lt;original alternatives&gt;
+        SSMemberDeclaration
+</p><p>
+SSMemberDeclaration
+        MJMarks ss Modifier* Type VariableDecorators
+        MJMarks ss Modifier* Type MJName ( FormalParameterList ) ...
+</pre>
+</p><p>
+</p><hr>
+<table width="100%"> <tr><td>
+<img src="images/img002.gif" alt="mj-logo">
+</td><td>
+<div class="last-update"> Last updated: 
+ Dec 18 12:19:58 2001
+</div>
+<div class="header-link">
+[<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
+[<a href="index.html">Document index</a>]
+</div>
+</td></table>
+</body></html>

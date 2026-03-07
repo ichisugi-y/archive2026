@@ -1,0 +1,58 @@
+/*
+ *
+ * Copyright (C) 1997, 1998 Yuuji ICHISUGI
+ *
+ * Permission to use, copy, modify and redistribution this software in
+ * whole and in part, for evaluation or research purposes and without fee
+ * is hereby granted provided this copyright notice.
+ * See CopyrightAndLicensing.txt for licensing condition.
+ */
+
+
+/*
+
+*/
+
+#epp "Symbol"
+#epp "SystemMixin"
+#epp "AutoSplitFiles"
+#epp "BackQuote"
+
+
+package assert;
+import epp.*;
+
+SystemMixin assert {
+  class Epp {
+
+    extend void initInvokeStyleMacroTable() {
+      original();
+      defineInvokeStyleMacro(:assert, new AssertMacro());
+    }
+  }
+}
+
+class AssertMacro extends InvokeStyleMacro {
+  
+  public Tree call(Tree tree, Tree[] args){
+    int lineNumber = tree.lineNumber().intValue();
+    Tree message =
+      new LiteralTree(:string,
+		      "Assertion failed.:"+
+		      (String)Dynamic.get(:inputFileName)+
+		      ":"+ lineNumber +":");
+    return `(if (! ,(args[0]))
+	     (block (expressionStatement
+		     (invokeLong
+		      (name (id System) (id err))
+		      (id println)
+		      (argumentList ,message)))
+	      (throw
+	       (new
+		(name
+		 (id Error))
+		(argumentList
+		 (literalTree string "Assertion faild.")))))
+	     (emptyStatement));
+  }
+}

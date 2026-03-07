@@ -1,0 +1,22 @@
+*** de/fub/bytecode/classfile/ClassParser.java	Tue Apr 23 11:47:18 2002
+--- de/fub/bytecode/classfile/ClassParser.java.orig	Thu Aug 10 17:36:14 2000
+***************
+*** 272,280 ****
+      minor = file.readUnsignedShort();
+      major = file.readUnsignedShort();
+  
+!     // Commented out by ichisugi 2002-04-23
+!     //if(!((major == MAJOR_1_1) && (minor == MINOR_1_1)) &&
+!     //   !((major == MAJOR_1_2) && (minor >= MINOR_1_2)))
+!     //  System.err.println("Possibly incompatible version: " + major + "." + minor);
+    }    
+  }
+--- 272,279 ----
+      minor = file.readUnsignedShort();
+      major = file.readUnsignedShort();
+  
+!     if(!((major == MAJOR_1_1) && (minor == MINOR_1_1)) &&
+!        !((major == MAJOR_1_2) && (minor >= MINOR_1_2)))
+!       System.err.println("Possibly incompatible version: " + major + "." + minor);
+    }    
+  }

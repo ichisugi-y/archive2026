@@ -1,0 +1,166 @@
+/*
+ *
+ * Copyright (C) 1997, 1998 Yuuji ICHISUGI
+ *
+ * Permission to use, copy, modify and redistribution this software in
+ * whole and in part, for evaluation or research purposes and without fee
+ * is hereby granted provided this copyright notice.
+ * See CopyrightAndLicensing.txt for licensing condition.
+ */
+
+
+
+/*
+ User defined operators.
+
+*/
+
+#epp "Symbol"
+#epp "SystemMixin"
+#epp "AutoSplitFiles"
+#epp "BackQuote"
+#epp "EppMacros"
+
+package UserOp;
+import epp.*;
+
+
+//	 SystemMixin-NAME,	TOKEN,		PRECEDENCE
+defineBinaryOperator(UMul,	:"(*)",		multiplicativeExpression);
+defineBinaryOperator(UDiv,	:"(/)",		multiplicativeExpression);
+defineBinaryOperator(UPercent,	:"(%)",		multiplicativeExpression);
+defineBinaryOperator(UPlus,	:"(+)",		additiveExpression);
+defineBinaryOperator(UMinus,	:"(-)",		additiveExpression);
+defineBinaryOperator(URshift,	:"(<<)",	shiftExpression);
+defineBinaryOperator(ULShift,	:"(>>)",	shiftExpression);
+defineBinaryOperator(UULShift,	:"(>>>)",	shiftExpression);
+defineBinaryOperator(ULT,	:"(<)",		relationalExpression);
+defineBinaryOperator(UGT,	:"(>)",		relationalExpression);
+defineBinaryOperator(ULE,	:"(<=)",	relationalExpression);
+defineBinaryOperator(UGE,	:"(>=)",	relationalExpression);
+defineBinaryOperator(UEQ,	:"(==)",	equalityExpression);
+defineBinaryOperator(UNE,	:"(!=)",	equalityExpression);
+defineBinaryOperator(UAnd,	:"(&)",		andExpression);
+defineBinaryOperator(UNot,	:"(^)",		exclusiveOrExpression);
+defineBinaryOperator(UOr,	:"(|)",		inclusiveOrExpression);
+
+
+SystemMixin UserOp {
+  class Epp {
+    
+    // Extending the lexical analyzer.
+    extend Token readOperator(EppInputStream in, char c){
+      if (c == '(') {
+	int p = in.pointer();
+      check:
+	switch (in.getc()){
+	case '*':
+	  if (in.getc() == ')') return :"(*)"; else break check;
+	case '/':
+	  if (in.getc() == ')') return :"(/)"; else break check;
+	case '%':
+	  if (in.getc() == ')') return :"(%)"; else break check;
+	case '+':
+	  if (in.getc() == ')') return :"(+)"; else break check;
+	case '-':
+	  if (in.getc() == ')') return :"(-)"; else break check;
+	case '<':
+	  switch (in.getc()){
+	  case ')':
+	    return :"(<)";
+	  case '<':
+	    if (in.getc() == ')') return :"(<<)"; else break check;
+	  case '=':
+	    if (in.getc() == ')') return :"(<=)"; else break check;
+	  default:
+	    break check;
+	  }
+	case '>':
+	  switch (in.getc()){
+	  case ')':
+	    return :"(>)";
+	  case '>':
+	    switch (in.getc()){
+	    case ')':
+	      return :"(>>)";
+	    case '>':
+	      if (in.getc() == ')') return :"(>>>)"; else break check;
+	    default: break check;
+	    }
+	  case '=':
+	    if (in.getc() == ')') return :"(>=)"; else break check;
+	  default:
+	    break check;
+	  }
+	case '=':
+	  if (in.getc() == '=' && in.getc() == ')') return :"(==)";
+	  else break check;
+	case '!':
+	  if (in.getc() == '=' && in.getc() == ')') return :"(!=)";
+	  else break check;
+	default:
+	  break;
+	}
+	in.backtrack(p);
+	return original(in, '(');
+      } else {
+	return original(in, c);
+      }
+    }
+
+    extend void initMacroTable() {
+      original();
+      defineMacro(:"(*)",	new UserOpMacro(:"times"));
+      defineMacro(:"(/)",	new UserOpMacro(:"divide"));
+      defineMacro(:"(%)",	new UserOpMacro(:"modulus"));
+      defineMacro(:"(+)",	new UserOpMacro(:"plus"));
+      defineMacro(:"(-)",	new UserOpMacro(:"minus"));
+      defineMacro(:"(<<)",	new UserOpMacro(:"leftShift"));
+      defineMacro(:"(>>)",	new UserOpMacro(:"rightShift"));
+      defineMacro(:"(>>>)",	new UserOpMacro(:"unsignedRightShift"));
+      defineMacro(:"(<)",	new UserOpMacro(:"lessThan"));
+      defineMacro(:"(>)",	new UserOpMacro(:"greaterThan"));
+      defineMacro(:"(<=)",	new UserOpNotMacro(:"greaterThan"));
+      defineMacro(:"(>=)",	new UserOpNotMacro(:"lessThan"));
+      defineMacro(:"(==)",	new UserOpMacro(:"equals"));
+      defineMacro(:"(!=)",	new UserOpNotMacro(:"equals"));
+      defineMacro(:"(&)",	new UserOpMacro(:"and"));
+      defineMacro(:"(^)",	new UserOpMacro(:"not"));
+      defineMacro(:"(|)",	new UserOpMacro(:"or"));
+    }
+  }
+}
+
+
+class UserOpMacro extends Macro {
+  
+  Symbol op;
+  UserOpMacro(Symbol op){
+    this.op = op;
+  }
+  
+  public Tree call(Tree tree){
+    checkArgsLength(tree, 2);
+    Tree[] args = macroExpandArgs(tree.args());
+    return `(invokeExp ,(args[0])
+	     ,(new Identifier(op))
+	     (argumentList ,(args[1])));
+  }
+}
+
+
+class UserOpNotMacro extends Macro {
+  
+  Symbol op;
+  UserOpNotMacro(Symbol op){
+    this.op = op;
+  }
+  
+  public Tree call(Tree tree){
+    checkArgsLength(tree, 2);
+    Tree[] args = macroExpandArgs(tree.args());
+    return `(! (invokeExp ,(args[0])
+		,(new Identifier(op))
+		(argumentList ,(args[1]))));
+  }
+}

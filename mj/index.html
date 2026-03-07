@@ -1,0 +1,200 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>MixJuice : 
+An object-oriented language
+with simple and powerful module mechanism</TITLE>
+</HEAD>
+<link rel="stylesheet" type="text/css" href="./style.css">
+<BODY BGCOLOR="#FFFFFF">
+
+<a href="../ja/mj/">[ Japanese page ]</a>
+
+<h1>
+MixJuice : <br>
+An enhancement of the Java language
+with difference-based modules</h1>
+<div align=right>
+<IMG SRC="/cgi-bin/counter.cgi?df=y-ichisugi/mj-counter.dat&st=7000" ALT="">
+</div>
+
+<h2>What is MixJuice?</h2>
+<p>
+MixJuice
+is an enhancement of the Java language which adopts
+difference-based modules instead of Java's original module
+mechanism. We have completely separated the class mechanism and the
+module mechanism, and then unified the module mechanism and the
+differential programming mechanism. This module mechanism enhances the
+extensibility, reusability and maintainability of programs. In
+particular, collaborations, which crosscut several classes, can be
+separated into different modules that can be developed and tested by
+independent development teams.
+</p>
+<div align=center><img src="soc.gif"></div>
+<p>
+The language features of MixJuice can be extended by adding
+EPP plug-ins.
+<a href="../epp/index.html">EPP</a>
+ (Extensible Pre-Processor) is a language extension
+framework, which are used to implement the MixJuice language.
+Currently, Collection plug-in and assert2 plug-in are included
+in the MixJuice language by default.
+Collection plug-in provides built-in parameterized collection types
+and foreach statement.
+assert2 plug-in is an emulation of Java2 1.4 assert statement.
+</p>
+
+<h2>Documents</h2>
+<ul>
+<li>Yuuji Ichisugi, Akira Tanaka:<br>
+"Difference-Based Modules: A Class-Independent Module Mechanism",<br>
+In Proc. of  <a href="http://www.ecoop2002.lcc.uma.es/">ECOOP 2002</a>,
+<a href="http://link.springer.de/link/service/series/0558/tocs/t2374.htm">LNCS 2374</a>, June 2002. 
+ <A href="papers/ecoop2002-en.pdf">ecoop2002-en.pdf</A>, 
+slides: <a href="mj-e-20020612.pdf">mj-e-20020612.pdf</a>
+<li>MixJuice1.0 Users Manual May 21, 2002:
+<a href="mj-manual-20020521.pdf">mj-manual-20020521.pdf</a>
+<!--
+<li>Old presentation slides:
+<a href="mj-e-20011115.pdf">mj-e-20011115.pdf</a>
+<li>OOPSLA 2000 Poster session abstract:
+<a href="paper-2000-719.pdf">paper-2000-719.pdf</a>
+ -->
+ <li><a href="faq-spec-eng.html">FAQ</a><font COLOR="red"> [New !]</font></li>
+</ul>
+
+<h2>Download</h2>
+<p>
+<ul>
+<li> Windows Version <font COLOR="red"> [New !]</font><br>
+<ul>
+<li>MixJuice 1.1 installer  mj.msi</li>
+<li><a href="2003/msi/doc/install.html">Installation Manual</a> </li>
+</ul>
+</li>
+<li> Unix or Cygwin Version<br>
+MixJuice 1.1 has been tested on the following environments.<br>
+</p>
+<ul>
+<li>linux, IBM JDK1.1.8
+<li>linux, Sun j2sdk1.4.1_01
+<li>Windows2000, cygwin 1.3.16-1, Sun JDK1.2.2
+</ul>
+<p>
+By unzipping the downloaded zip file, you will find the directory <tt>mj</tt>. 
+Add <tt>mj/bin</tt> to your <tt>PATH</tt>.
+<tt>CLASSPATH</tt> need not to be set.
+</p>
+<p>
+<a href="download/mj-1.1.zip">mj-1.1.zip</a> (2003-01-17)
+</li>
+<li><a href="form.html">License</a></li>
+</ul>
+
+<h2>Demo Applets</h2>
+<p>
+<ul>
+<li><a href="demo.html">Drawing tool, Coffee cup</a>
+<li><a href="2003/sweeper/sweeper_demo_en.html">Sweeper Robot Simulation
+ (with detailed explanation of its implementation)</a><font COLOR="red"> [New !]</font><br>
+</ul>
+</p>
+
+<h2>Related Documents and Software</h2>
+
+<h3>An Experimental Report on Porting a Java Application to MixJuice</h3>
+<p>This document provides the knowledge obtained by porting a rather large Java program to MixJuice .
+The program has about 10 thousands lines excluding comment. 
+</p>
+<p>
+  <a href="2003/mjGrappa/index.html">Porting Grappa to MixJuice</a><font COLOR="red"> [New !]</font><br>
+</p>
+
+
+<h3>Composability of Mixins and Modules</h3>
+<p>
+We have applied the notion of "Design by Contracts" and
+"behavioral subtyping" to mixins and difference-based modules.
+See the following paper for more details.
+</p>
+<p>
+Yuuji Ichisugi, Akira Tanaka, Takuo WATANABE:<br>
+"Extension Rules: Description Rules for Safely Composable Aspects"<br>
+Technical Report of National Institute of Advanced Industrial Science and Technology(AIST), AIST01-J00002-4, Feb 2003.
+<A href="papers/tr2003.pdf">tr2003.pdf</A><font COLOR="red"> [New !]</font>
+</p>
+
+
+
+<h3>Design Pattern improvement catalog for MixJuice</h3>
+<p>
+The book "Design Patterns" written by GoF explains not only the merits of
+design patterns, but also the limitations of
+extensibilty, type-safety and encapsulation.
+We have found that many of these limitations can be removed in MixJuice.
+See the following page for more details.
+</p>
+
+<p><a href="http://cvs.m17n.org/~akr/mj/design-pattern/en/">
+Design Pattern improvement catalog for MixJuice </a>(In English)<font COLOR="red"> [New !]</font></p>
+
+<p>
+See also the following work that are strongly related to ours.
+</p>
+
+<p>
+Hannemann, J., Kiczales, G. <br>
+"Design Pattern Implementation in Java and AspectJ",<br>
+In Proc of OOPSLA 2002.<br>
+Available from this page:
+"<a href="http://www.cs.ubc.ca/~jan/AODPs/">Aspect-Oriented Design Pattern Implementations</a>"
+</p>
+
+
+<h3>Layerd Class Diagram</h3>
+<p>
+We have desinged "layerd class diagram", which is an extension of
+UML class diagram.
+Layerd class diagram is useful to explain how programs are 
+extended by modules in MixJuice.
+This notation may be used for other AOP languages and open-class languages,
+such as AspectJ, Hyper/J, Cecil, Ruby etc.<br>
+Here is description with some examples.</p>
+<p><a href="papers/lclass-diag-20021030.pdf">lclass-diag-20021030.pdf</a>
+</p>
+
+
+<h3>Difference-based modules for emacs-lisp</h3>
+<p>
+dm-elisp is an emacs-lisp with difference-based modules.
+Although the current implementation is not practical,
+I think this module mechanism has a potential
+to become the standard module mechanism of various languages,
+including emacs-lisp.
+<br>
+</p>
+<p><a href="dm-elisp/index.html">dm-elisp page</a></p>
+
+<h3>Extensible Java Pre-Processor EPP</h3>
+<p>
+EPP is a language extension
+framework, which are used to implement the MixJuice language.
+</p>
+<p><a href="../epp/index.html">EPP page</a></p>
+
+ 
+<h2>Links</h2>
+<p>Aspect-Oriented Software Development: 
+<a href="http://aosd.net">http://aosd.net</a>
+</p>
+
+<h2>Contact</h2>
+<p>
+Yuuji ICHISUGI <br>
+National Institute of Advanced Industrial Science and Technology(AIST) <br>
+<img src="../ichisugi-mail.gif"><br>
+    http://staff.aist.go.jp/y-ichisugi/<br>
+</p>
+</body>
+</html>

@@ -1,0 +1,1689 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<link rel="stylesheet" type="text/css" href="./style.css">
+<title> MJ チュートリアル </title>
+</head> <body>
+<div class="header-link">
+[<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
+[<a href="index.html">Document index</a>]
+</div>
+<h1>MJ チュートリアル</h1>
+<ul class="headers">
+<li><a href="#intro">はじめに</a>
+<li><a href="#preparation">準備</a>
+<li><a href="#run">コンパイルずみモジュールの実行 : mj コマンド</a>
+<li><a href="#module">モジュールの定義</a>
+<li><a href="#multiple-inheritance">モジュールの多重継承</a>
+<li><a href="#multiple-selected-modules">複数の差分の追加: mj コマンドの -s オプション</a>
+<li><a href="#compile">コンパイル : mjc コマンド</a>
+<li><a href="#configuration">モジュールのグループ化 : mjb, mjball コマンド</a>
+<li><a href="#dump">リンクしたアプリケーションのダンプ : mjdump コマンド</a>
+<li><a href="#ss">モジュール <tt>mj.lang.ss</tt> と クラス SS</a>
+<li><a href="#constructor">コンストラクタ</a>
+<li><a href="#abstract-method">abstract method</a>
+<li><a href="#scope">名前空間</a>
+<li><a href="#Java">Java 言語のクラスライブラリの利用</a>
+<li><a href="#SharpPlus"> #+comment</a>
+<li><a href="#uses"> uses 宣言</a>
+<li><a href="#dynamic-loading">Dynamic loading</a>
+<li><a href="#fqn">完全限定名(Fully-Qualified-Name, FQN)</a>
+<li><a href="#complementary">補完モジュール</a>
+</p></ul><p>
+</p><p>
+</p><p>
+</p><h2><a name="intro">はじめに</a></h2><p>
+</p><p>
+このドキュメントでは、 MJ の実行環境と言語仕様について、
+ひととおり簡単に説明します。
+予備知識は、 Java 言語の知識以外は必要ありません。
+</p><p>
+このチュートリアルに出てくる全てのプログラムは、
+すでにコンパイルして配布パッケージの mj.jar の中に入っています。
+<a href="install.html">「インストールと実行方法」</a>に従って
+mj をインストールすれば、実際に実行してみることができます。
+また、ソースコードは、
+配布パッケージの lib/Tutorial.java の中にあります。
+</p><p>
+このチュートリアルでは、 <a href="collection.html">Collection plug-in</a>、
+<a href="assert.html">assert2 plug-in</a>、
+については
+触れません。それぞれのドキュメントを参照してください。
+</p><p>
+なお、 MJ におけるプログラミングスタイルや設計方法論については、
+このドキュメントは説明の対象としません。
+</p><p>
+MJ の言語仕様の詳細については、<a href="spec.html">「MJ言語仕様メモ」</a>を
+参照してください。
+そこでは、<a href="spec.html#syntax">BNF による文法</a>
+の記述もあります。
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="preparation">準備</a></h2><p>
+</p><p>
+まずは空の作業ディレクトリを作って、そこで実行をはじめるとよいと思います。
+作業ディレクトリには、
+eppout というディレクトリを作っておく必要があります。
+<pre>
+% mkdir eppout
+</pre>
+</p><p>
+ディレクトリ eppout の下には、プリプロセッサが出力する
+java ファイルと、コンパイル結果のクラスファイルが置かれます。
+</p><p>
+</p><p>
+</p><h2><a name="run">コンパイルずみモジュールの実行 : mj コマンド</a></h2><p>
+</p><p>
+ソースコードのコンパイルの説明をする前に、
+まず実行の仕方から説明します。
+</p><p>
+mj.jar の中には <tt>t.m1</tt> というモジュールが含まれています。
+このプログラムのソースは、 Java で言えば、次のものに相当します。
+（MJ で書かれた本当のソースは、あとでお見せします。）
+これは、クラス C とそのサブクラス SubC を定義する、簡単なプログラムです。
+<pre>
+class C  {
+  void m() { System.out.println("m1:C#m()"); }
+}
+class SubC extends C {
+  void m() { super.m(); System.out.println("+ m1:SubC#m()"); }
+}
+class SS {
+  public static void main(String[] args){
+    System.out.println("----- invoke C#m();");
+    C c = new C();
+    c.m();
+    System.out.println("----- invoke SubC#m();");
+    SubC subc = new SubC();
+    subc.m();
+  }
+}
+</pre>
+</p><p>
+モジュール<tt>t.m1</tt>は実行可能です。
+これを実行してみましょう。
+MJ で書かれたプログラムを実行するには、<em>mj コマンド</em>を使います。
+mj コマンドは、モジュール名を１つ引数に取ります。
+</p><p>
+<pre>
+% mj t.m1
+----- invoke C#m();
+m1:C#m()
+----- invoke SubC#m();
+m1:C#m()
++ m1:SubC#m()
+</pre>
+</p><p>
+このように実行されます。
+</p><p>
+同様に、 <tt>t.m2</tt> というモジュールも mj.jar の中に入っています。
+<tt>t.m2</tt> は、 <tt>t.m1</tt> に差分を追加したプログラムです。
+<tt>t.m2</tt> は、 Java で書けば次のようになります。
+つまり、 <tt>t.m1</tt> のソースに２行追加したプログラムです。
+<pre>
+class C  {
+  void m() {
+    System.out.println("m1:C#m()"); 
+    System.out.println("+ m2:C#m()");  // 追加
+  }
+}
+class SubC extends C {
+  void m() { 
+    super.m();
+    System.out.println("+ m1:SubC#m()"); 
+    System.out.println("+ m2:SubC#m()");  // 追加
+  }
+}
+class SS {
+  public static void main(String[] args){
+    System.out.println("----- invoke C#m();");
+    C c = new C();
+    c.m();
+    System.out.println("----- invoke SubC#m();");
+    SubC subc = new SubC();
+    subc.m();
+  }
+}
+</pre>
+</p><p>
+<tt>t.m2</tt> を実行してみましょう。
+<pre>
+% mj t.m2
+----- invoke C#m();
+m1:C#m()
++ m2:C#m()
+----- invoke SubC#m();
+m1:C#m()
++ m2:C#m()
++ m1:SubC#m()
++ m2:SubC#m()
+</pre>
+</p><p>
+このように実行されます。
+</p><p>
+</p><p>
+<tt>t.m2</tt> のように、オリジナルのシステムに少し差分を追加するプログラムを、
+別のモジュールとして分離して書けることが MJ の特徴です。
+従来のオブジェクト指向言語のクラス継承の機構と似ていますが、
+superclass C のメソッドそのものを拡張できる点が違います。
+クラス継承では、 superclass のメソッドの機能を拡張するには、
+別の subclass を作る必要があります。
+subclass を定義しても、 superclass のメソッドは拡張される前のままです。
+ところが MJ では、 superclass のメソッドを、別の subclass を定義することなしに
+拡張することができます。
+</p><p>
+</p><p>
+</p><h2><a name="module">モジュールの定義</a></h2><p>
+</p><h3> <tt>t.m1</tt> のソースコード</h3><p>
+</p><p>
+</p><p>
+具体的に、 MJ でモジュールをどのように記述するかを以下に説明します。
+</p><p>
+まず <tt>t.m1</tt> の MJ で書かれたソースを見てみましょう。
+<pre>
+module t.m1 {
+  define class C {
+    define C(){}
+    define void m(){ System.out.println("m1:C#m()"); }
+  }
+  define class SubC extends C {
+    define SubC(){}
+    void m(){ original(); System.out.println("+ m1:SubC#m()"); }
+  }
+  class SS {
+    void main(String[] args){
+      System.out.println("----- invoke C#m();");
+      C c = new C();
+      c.m();
+      System.out.println("----- invoke SubC#m();");
+      SubC subc = new SubC();
+      subc.m();
+    }
+  }
+}
+</pre>
+</p><p>
+Java 言語による記述とまず違うのが、 <em>"module"</em> という構文です。
+これは Java 言語における package にほぼ相当し、
+この構文の中にクラス定義を書きます。
+</p><p>
+モジュール内部の記述では、
+<em>"define"</em> というキーワードの存在が、
+ Java と比べたときの大きな違いです。
+クラス名やメソッドセレクタを最初に定義するときには、
+この "define" を指定する必要があります。
+superclass のメソッドを継承して override する場合は、
+"define" はつけません。
+MJ でのプログラミングでは、
+定義と拡張の区別をプログラマーが意識することが重要なため、
+このキーワードが導入されました。
+Java や C++ では、「 superclass のメソッドを override したつもりが、
+メソッド名のスペルミスのせいで、別のメソッドを定義していた」という
+ミスが時々起こります。このミスは、コンパイルエラーにはならないため、
+見つけるのに手間取る場合があります。
+"define" キーワードの指定は、この種のエラーをコンパイル時に検出するためにも
+役立ちます。
+なお、 "define" キーワードは、 field の定義には必要ありません。
+field には「拡張」という概念がなく、定義しかありえないからです。
+field 定義に "define" キーワード指定しても無視されます。
+</p><p>
+</p><p>
+main の書き方も Java とは違います。
+現在の MJ は static method をサポートしていません。
+代わりに、 <em>SS</em> という名前のクラスが特別な役割を果たします。
+SS は、 Startup-Singleton の略です。
+MJ のアプリケーションが起動すると、クラス SS のインスタンスが１つ生成され、
+そのメソッド main(String[]) が呼び出されます。
+class SS には "define" がついていません。
+この理由は<a href="#ss">「モジュール mj.lang.ss と クラス SS」</a>
+の章で説明します。
+</p><p>
+</p><p>
+MJ では、 super class のメソッドを呼び出すには、 <tt>super.m()</tt> ではなく
+<tt>original()</tt> と書きます。
+このプログラム例では、  class SubC のメソッド m で、
+original 呼び出しを行っています。これは、 class C のメソッド m を
+呼び出します。
+</p><p>
+</p><p>
+public/protected/private というキーワードは、 MJ では使いません。
+指定しても無視されます。
+</p><p>
+</p><p>
+</p><h3> <tt>t.m2</tt> のソースコード</h3><p>
+</p><p>
+次に <tt>t.m2</tt> の MJ で書かれたソースを見てみましょう。
+<pre>
+module t.m2 extends t.m1 {
+  class C {
+    void m(){ original(); System.out.println("+ m2:C#m()"); }
+  }
+  class SubC {
+    void m(){ original(); System.out.println("+ m2:SubC#m()"); }
+  }
+}
+</pre>
+</p><p>
+<tt>t.m2</tt> は、 <tt>t.m1</tt> に対する差分だけを記述するモジュールです。
+先頭の "<tt>module t.m2 extends t.m1</tt>" という部分がそれを表しています。
+ <tt>t.m1</tt> は <tt>t.m2</tt> の <em>super-module</em> 、
+<tt>t.m2</tt> は <tt>t.m1</tt> の <em>sub-module</em> 、と呼びます。
+</p><p>
+モジュール本体では、オリジナルのプログラム（すなわち super-module）
+に対する差分を記述します。
+クラス C およびクラス SubC の宣言に "define" がありませんが、
+これは、 super-module で定義されたクラスに対する差分を定義することを
+意味します。
+クラス C および クラス SubC のメソッド m() にも "define" がありませんが、
+これも、オリジナルのメソッドに対する差分を定義していることを意味します。
+</p><p>
+</p><p>
+それぞれのメソッド m() の本体には、
+<tt>original();</tt> という構文があります。
+これは、「 super-module におけるオリジナルのメソッド」への呼び出しを
+意味します。
+</p><p>
+メソッドの定義や差分を、「<em>メソッド断片</em>」とも呼ぶことがあります。
+例えば <tt>t.m2</tt> における SubC のメソッド断片 m() の定義を、
+ <tt>SubC#m()@t.m2</tt> と
+表記することにします。
+</p><p>
+<tt>t.m1</tt> と <tt>t.m2</tt> に含まれる４つのメソッド断片の関係を図で表すと、
+次のようになります。
+</p><p>
+<pre>
+  module t.m2                     module t.m1
+  +-------------+                 +-------------+
+  |             |                 |             |
+3:|C#m()@t.m2   |       -&gt;      4:|C#m()@t.m1   |
+  |             |   difference    |             |
+  |             |                 |   ^ inherit |
+  |             |                 |             |
+1:|SubC#m()@t.m2|       -&gt;      2:|SubC#m()@t.m1|
+  |             |   difference    |             |
+  +-------------+                 +-------------+
+</pre>
+</p><p>
+図中の1:〜4:の数字は、 original 呼び出しで呼び出されるメソッド断片の
+順序を表します。
+まずクラス  SubC のインスタンスに対してメソッド
+  <tt>m()</tt>  が呼び出されると、
+１番目のメソッド断片  <tt>SubC#m()@t.m2</tt>  がまず実行されます。
+このメソッド断片  <tt>SubC#m()@t.m2</tt>  の実行中に、
+もし original 呼び出しが実行されると、
+２番目のメソッド断片  <tt>SubC#m()@t.m1</tt>  が呼び出されます。
+以後同様に、 <tt>C#m()@t.m2</tt> 、 <tt>C#m()@t.m1</tt> が呼び出されます。
+MJ における差分の追加とは、
+オリジナルのプログラムにおける superclass 、 subclass の
+それぞれのメソッド定義を override することであると考えれば、
+この動作は自然に理解できると思います。
+</p><p>
+</p><p>
+</p><p>
+</p><h3> super-module の自動ロード</h3><p>
+</p><p>
+<tt>t.m2</tt> を実行する際に、
+ mj コマンドの引数にはモジュール名 <tt>t.m2</tt> のみを指定します。
+<tt>t.m1</tt> の名前は指定する必要はありません。
+mj コマンドは、引数で指定されたモジュールを
+まず load し、その実行に必要なモジュール、すなわち super-module も
+ load します。同様に、すべての先祖モジュールも load します。
+この場合は、 <tt>t.m2</tt> を指定すれば、 mj コマンドが自動的にその 
+super-module である <tt>t.m1</tt> も load します。
+</p><p>
+この機能は、 Emacs Lisp, Common Lisp などのシステムにおける
+require 宣言の機能に似ています。
+これらのシステムでは、
+あるパッケージが必要とする他のパッケージを "require" という構文で
+宣言します。あるパッケージをシステムに load すると
+そのパッケージが require するパッケージも自動的に load されます。
+MJ における extends 宣言は、この require 宣言の機能も兼ねているのです。
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="multiple-inheritance">モジュールの多重継承</a></h2><p>
+</p><p>
+モジュールを定義するとき、 super-module を複数指定することができます。
+</p><p>
+まず、 <tt>t.m2</tt> とほぼ同様のプログラム <tt>t.m3</tt> があるとします。
+<pre>
+module t.m3 extends t.m1 {
+  class C {
+    void m(){ original(); System.out.println("+ m3:C#m()"); }
+  }
+  class SubC {
+    void m(){ original(); System.out.println("+ m3:SubC#m()"); }
+  }
+}
+</pre>
+</p><p>
+<tt>t.m3</tt> を実行すると次のようになります。
+<pre>
+% mj t.m3
+----- invoke C#m();
+m1:C#m()
++ m3:C#m()
+----- invoke SubC#m();
+m1:C#m()
++ m3:C#m()
++ m1:SubC#m()
++ m3:SubC#m()
+</pre>
+</p><p>
+</p><p>
+そして、 <tt>t.m2</tt> と <tt>t.m3</tt> の両方を継承するモジュール
+ <tt>t.m4</tt> を、次のように定義できます。
+<pre>
+module t.m4 extends t.m2, t.m3 {
+  class C {
+    void m(){ original(); System.out.println("+ m4:C#m()"); }
+  }
+  class SubC {
+    void m(){ original(); System.out.println("+ m4:SubC#m()"); }
+  }
+}
+</pre>
+</p><p>
+ここで、 <tt>t.m2</tt> と <tt>t.m3</tt> は共に 
+<tt>t.m1</tt> を super-module に持つので、
+いわゆるダイアモンド継承の形になります。
+MJ では、 CLOS などの言語と同様に、 topological sort によって
+モジュールの <em>linearize</em> （１列に並べること）をします。
+</p><p>
+例えば、 <tt>t.m4</tt> の実行は、次のように行われます。
+まず、 <tt>t.m4</tt> とその先祖モジュールの集合を求めます。
+それは <tt>{t.m1, t.m2, t.m3, t.m4}</tt>  です。
+そして、この集合を super-module/sub-module の上下関係を保存するように 
+topological sort することによって linearize します。
+linearize した結果を、 <em>linearized list</em> と呼びます。
+この場合、 linearized list は <tt>(t.m1 t.m2 t.m3 t.m4)</tt> になります。
+そして、 linearized list の最初の方から順に差分を追加していき、
+できあがったプログラムを実行します。
+つまり、プログラム a に対して差分 b を追加した結果を a &lt;- b と表記するなら、
+<tt>(((t.m1 &lt;- t.m2) &lt;- t.m3) &lt;- t.m4)</tt> を実行します。
+したがって、 <tt>t.m4</tt> の実行結果は、次のようになります。
+<pre>
+% mj t.m4
+----- invoke C#m();
+m1:C#m()
++ m2:C#m()
++ m3:C#m()
++ m4:C#m()
+----- invoke SubC#m();
+m1:C#m()
++ m2:C#m()
++ m3:C#m()
++ m4:C#m()
++ m1:SubC#m()
++ m2:SubC#m()
++ m3:SubC#m()
++ m4:SubC#m()
+</pre>
+</p><p>
+ここで、 linearize するときに、
+上下関係が定義されていない <tt>t.m2</tt> と <tt>t.m3</tt> の
+順序をどうするか、という問題があります。
+MJ は、 <tt>t.m4</tt> の super-module 宣言における順序は、無視します。
+つまり、次のいずれの書き方をしても、動作に影響は与えません。
+<pre>
+module t.m4 extends t.m2, t.m3 {...}
+module t.m4 extends t.m3, t.m2 {...}
+</pre>
+</p><p>
+MJ の言語処理系は、言語仕様によって決められたアルゴリズムにより、
+<tt>t.m2</tt> と <tt>t.m3</tt> の間の順序を決めます。
+（現在のところ、モジュールの名前の情報を使って、
+"monotonic" な linearize を行うアルゴリズムを採用しています。）
+プログラマーが <tt>t.m2</tt> と
+ <tt>t.m3</tt> の間の順序を制御する方法はありません。
+また、プログラマーは、 <tt>t.m2</tt> と <tt>t.m3</tt>
+ の間の順序を仮定してプログラムを書いてはいけません。
+</p><p>
+ MJ とは違い、 CLOS などの言語では、
+ superclass の並べ方が優先度に影響を与えます。
+これを local precedence order と呼びます。
+MJ でもこの機能を入れることは可能ですが、
+現在は入れていません（<a href="faq-spec.html#local-precedence-order">FAQ 参照</a>）。
+</p><p>
+</p><p>
+</p><p>
+C++ などの言語における多重継承の最大の問題点は、
+名前の衝突です。 MJ ではこの問題は完全に解決されています。
+これについては <a href="#fqn">「完全限定名」</a>の章で説明します。
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="multiple-selected-modules">複数の差分の追加: mj コマンドの -s オプション</a></h2><p>
+</p><p>
+アプリケーションのエンドユーザは、
+独立に開発された複数の差分を、
+コードを１行も書かずに組み合わせて使うことができます。
+（MJ のモジュールのこの性質を、 <em>plug-and-play module</em>
+ と呼んでいます。）
+</p><p>
+例えば <tt>t.m2</tt> と <tt>t.m3</tt> は <tt>t.m1</tt> に対する全く独立した差分ですが、
+エンドユーザが、
+２つの差分を両方を同時に <tt>t.m1</tt> に追加することができます。
+それには、 mj コマンドの -s オプションを使い、複数のモジュールを選択します。
+<pre>
+% mj -s t.m3 t.m2
+----- invoke C#m();
+m1:C#m()
++ m2:C#m()
++ m3:C#m()
+----- invoke SubC#m();
+m1:C#m()
++ m2:C#m()
++ m3:C#m()
++ m1:SubC#m()
++ m2:SubC#m()
++ m3:SubC#m()
+</pre>
+</p><p>
+mj コマンドの引数に指定されたモジュールの集合
+ <tt>{t.m2, t.m3}</tt> の要素を、 <em>selected module</em> と呼びます。
+</p><p>
+</p><p>
+-s オプションによって、 selected module が複数指定された場合の
+mj コマンドの動作は、次のようになります。
+上の例のように selected module の集合が <tt>{ t.m2, t.m3 }</tt>
+ だったとします。
+mj コマンドは、全ての selected module を extends する仮想的なモジュールを、
+"_bottom" という名前で作ります。このモジュールを <em>bottom module</em>
+ と呼びます。
+つまり、この場合、次のようなモジュールを作ります。
+<pre>
+module _bottom extends t.m2, t.m3 {}
+</pre>
+</p><p>
+そして、あたかも "mj _bottom" というコマンドが実行されたかのように
+処理します。
+つまり、 _bottom とその先祖モジュールの集合を求め、
+それを super-module/sub-module の関係を保存するように linearize して
+linearized list を作り、
+linearized list の上から順に差分を追加して行き、
+できあがったアプリケーションを実行します。
+今の例の場合、 linearized list は
+ <tt>(t.m1 t.m2 t.m3 _bottom)</tt> となります。
+</p><p>
+</p><p>
+extends 宣言でのモジュールの並べ方が実行に影響を与えないのと同様に、
+-s オプションによる selected module の並べ方も、実行に影響を与えません。
+例えば、次のどの方法で実行しても
+結果は変わりません。
+<pre>
+% mj -s t.m2 t.m3
+% mj -s t.m3 t.m2
+</pre>
+</p><p>
+</p><p>
+１つの差分を同時に何度も追加することは（現在の MJ では）できません。
+同じモジュール名を -s オプションで複数回指定しても、
+１つ指定した場合と効果は変わりません。
+例えば、次の例は、いずれも同じ動作をします。
+<pre>
+% mj -s t.m2 t.m3
+% mj -s t.m2 -s t.m2 t.m3
+</pre>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="compile">コンパイル : mjc コマンド</a></h2><p>
+さて、ここでようやくコンパイルの仕方の説明に入ります。
+これは、モジュール２つから成る Hello World プログラムのソースコードです。
+<pre>
+module t.hello {
+  class SS {
+    void main(String[] args){
+      original(args);
+      System.out.println("Hello.");
+    }
+  }
+}
+module t.world extends t.hello {
+  class SS {
+    void main(String[] args){
+      original(args);
+      System.out.println("World.");
+    }
+  }
+}
+</pre>
+</p><p>
+２つのモジュールは、２つのファイルに分けてもいいし、
+１つのファイルに書いてもかまいません。
+ソースファイルは、 ".java" で終わらなければなりません。
+その点以外は、ファイル名とファイルの置き場所には制限はありません。
+（１つのモジュールを複数のファイルに分けて書くことはできません。）
+</p><p>
+１つのソースファイル中に複数のモジュールを書く場合、
+ソースファイル中のモジュールの順序はプログラムの意味に影響を与えません。
+</p><p>
+ソースファイルをコンパイルするには、 <em>mjc コマンド</em> を用います。
+仮にそれぞれのモジュールを Hello.java, World.java に書いたとします。
+この２つのモジュールをコンパイルするには、以下の方法があります。
+<pre>
+% mjc Hello.java World.java
+または
+% mjc World.java Hello.java 
+または
+% mjc Hello.java; mjc World.java
+</pre>
+</p><p>
+次のように World.java だけを指定した場合は、
+モジュール world が依存しているファイル Hello.java は
+コンパイルされないので、注意してください。
+<pre>
+% mjc World.java
+</pre>
+</p><p>
+</p><p>
+mjc の処理は、 EPP による preprocess と、 javac による compile の
+２つのフェーズから成ります。
+コンパイルが正常に終了すると、メッセージの出力は次のようになります。
+<pre>
+% mjc Hello.java World.java
+Preprocessing phase.
+Compiling phase.
+Done.
+</pre>
+</p><p>
+ほとんどのコンパイルエラーは、 Preprocessing phase で出るはずです。
+ある種のエラーは、 Compiling phase で出ます。
+</p><p>
+</p><p>
+</p><p>
+コンパイルずみのモジュールのクラスファイルの置き場所が CLASSPATH の中に
+入っているなら、
+そのモジュールをソースコードの中から参照することができます。
+</p><p>
+コンパイル後のクラスファイルは eppout の下にできるので注意してください。
+ /a/b/c というディレクトリで mjc コマンドを実行したなら、
+その時できたクラスファイルを参照するには、 /a/b/c/eppout を
+CLASSPATH に含める必要があります。
+（mj コマンド、 mjc コマンドは、 eppout を自動的に CLASSPATH に含めるため、
+単一のディレクトリで作業している限りは、このことを意識する必要はありません。）
+</p><p>
+次のようにして eppout の下のクラスファイルを jar にまとめることもできます。
+（ <em>mjclear コマンド</em> は、
+ eppout の下のクラスファイルを削除するコマンドです。）
+<pre>
+% mjclear
+% mjc Hello.java
+Preprocessing phase.
+Compiling phase.
+Done.
+% cd eppout
+% jar cvf0 ../hello.jar .
+</pre>
+</p><p>
+この jar ファイルを CLASSPATH で指定することで、
+ライブラリとして、 mjc コマンドなどから参照することができます。
+<pre>
+% setenv CLASSPATH hello.jar:$CLASSPATH
+% mjclear
+% mjc World.java
+Preprocessing phase.
+Compiling phase.
+Done.
+% mj t.world
+Hello.
+World.
+</pre>
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="configuration">モジュールのグループ化 : mjb, mjball コマンド</a></h2><p>
+</p><h3>mjb コマンド</h3><p>
+</p><p>
+細かいモジュールがたくさんあると、
+それらを１つにまとめた方が便利な場合があります。
+それを行うのが <em>mjb コマンド</em>です。
+mjb コマンドは、次のような形式で実行します。
+<pre>
+% mjb bottom m1 m2 m3 ...
+</pre>
+</p><p>
+mjb コマンドは、第二引数以降で指定されたすべてのモジュールを
+extends する module を、第一引数で指定された名前で生成します。
+</p><p>
+例えば、
+<pre>
+% mj -s t.m2 t.m3
+</pre>
+</p><p>
+は、次の実行と同じ結果になります。
+<pre>
+% mjb m2m3 t.m2 t.m3
+% mj m2m3
+</pre>
+</p><p>
+この "<tt>mjb m2m3 t.m2 t.m3</tt>" の実行は、
+次のプログラムをコンパイルしたことと等価です。
+<pre>
+module m2m3 extends t.m2, t.m3 {}
+</pre>
+</p><p>
+</p><p>
+</p><h3>mjball コマンド</h3><p>
+</p><p>
+ソースファイルの中に細かいモジュールがたくさんあると、
+それらをすべて extends する bottom module を定義したくなります。
+そのようなときに用いるのが <em>mjball コマンド</em>です。
+mjball コマンドは、「直前の mjc コマンドがコンパイルしたすべてのモジュール」を
+extends するモジュールを生成します。
+</p><p>
+例えば、 A.java, B.java, C.java に a, b, c という３つのモジュールが
+定義されているとします。
+次の３通りの方法は、いずれもこの３つのモジュールを組み合わせて実行します。
+<pre>
+% mjc A.java B.java C.java
+% mj -s a -s b c
+</pre>
+</p><p>
+<pre>
+% mjc A.java B.java C.java
+% mjb all a b c
+% mj all
+</pre>
+</p><p>
+<pre>
+% mjc A.java B.java C.java
+% mjball all
+% mj all
+</pre>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="dump">リンクしたアプリケーションのダンプ : mjdump コマンド</a></h2><p>
+<em>mjdump コマンド</em>は、
+ClassLoader が使えない環境で MJ のアプリケーションを実行したい場合などに
+使うコマンドです。
+</p><p>
+mj コマンドの動作は、次の２つの部分に分かれます。
+<ol>
+<li>モジュールのクラスファイルを
+ CLASSPATH の中から探してバイト列として読み込み、
+バイトコード編集によって JavaVM が load 可能な形に変換する。
+<li>変換されたクラスファイルを独自の ClassLoader によって JavaVM に load して、
+起動する。
+</ol>
+</p><p>
+したがって、 applet など ClassLoader が使えない状況では、
+mj コマンドによる実行はできません。
+</p><p>
+mjdump コマンドは、バイトコード編集されたクラスファイルを
+JavaVM に load せずに、ファイルシステムに出力するコマンドです。
+</p><p>
+</p><p>
+mjdump の実行例：
+<pre>
+% mjdump -s t.m2 t.m3
+Dump class : eppout/mjdump/mjc/Start.class
+Dump class : eppout/mjdump/mjc/SS.class
+Dump class : eppout/mjdump/t/m1/_Delta_java_lang_Object.class
+Dump class : eppout/mjdump/t/m1/_Delta_t_m1_C.class
+Dump class : eppout/mjdump/t/m2/_Delta_t_m1_C.class
+Dump class : eppout/mjdump/t/m3/_Delta_t_m1_C.class
+Dump class : eppout/mjdump/t/m1/C.class
+Dump class : eppout/mjdump/t/m1/_Delta_t_m1_SubC.class
+Dump class : eppout/mjdump/t/m2/_Delta_t_m1_SubC.class
+Dump class : eppout/mjdump/t/m3/_Delta_t_m1_SubC.class
+Dump class : eppout/mjdump/t/m1/SubC.class
+Dump class : eppout/mjdump/mj/lang/ss/_Delta_mjc_SS.class
+Dump class : eppout/mjdump/mj/lang/ss/_Delta_mj_lang_ss_SS.class
+Dump class : eppout/mjdump/t/m1/_Delta_mj_lang_ss_SS.class
+Dump class : eppout/mjdump/mj/lang/ss/SS.class
+</pre>
+</p><p>
+</p><p>
+</p><p>
+出力結果は eppout/mjdump の下にあります。
+この下に出力されたクラスファイルは、普通の Java のクラスファイルと
+全く同じように実行することができます。
+main メソッドは、 mjc.Start というクラスにあります。
+実行は次のように行います。
+<pre>
+% cd eppout/mjdump
+% java mjc.Start
+----- invoke C#m();
+m1:C#m()
++ m2:C#m()
++ m3:C#m()
+----- invoke SubC#m();
+m1:C#m()
++ m2:C#m()
++ m3:C#m()
++ m1:SubC#m()
++ m2:SubC#m()
++ m3:SubC#m()
+</pre>
+</p><p>
+mjdump で出力したクラスファイルは
+ClassLoader を使わない普通の Java プログラムなので、
+ applet や MIDlet として使うこともできます。
+</p><p>
+</p><p>
+</p><p>
+mj コマンドには起動が遅い（１〜２秒ほど）という問題がありますが、
+mjdump コマンドを使って出力したクラスファイルは、
+普通の Java アプリケーションと同様、瞬時に実行できます。
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="ss">モジュール <tt>mj.lang.ss</tt> と クラス SS</a></h2><p>
+</p><h3> <tt>mj.lang.ss</tt></h3><p>
+class SS は、実は、 <tt>mj.lang.ss</tt> というモジュールで、
+ほぼ次のように定義されています。
+<pre>
+module mj.lang.ss
+{
+  define class SS {
+    static SS instance;
+    define SS(){}
+    define void main(String[] args){}
+  }
+} 
+</pre>
+</p><p>
+<tt>t.m1</tt> は、 class SS を参照しています。
+つまり、 <tt>t.m1</tt> は <tt>mj.lang.ss</tt> に対する差分の追加であり、
+本来なら次のように宣言すべきです。
+<pre>
+module t.m1 extends mj.lang.ss {...} 
+</pre>
+</p><p>
+しかし、 <tt>mj.lang.ss</tt> はほとんどすべてのモジュールが extends すべき
+モジュールなので、プログラマーの便宜を図るため、
+コンパイラが自動的に <tt>extends mj.lang.ss</tt> を挿入して
+コンパイルするしかけになっています。
+</p><p>
+現在のところ、自動的に extends されるモジュールは、
+<tt>mj.lang.ss</tt> だけです。
+</p><p>
+</p><p>
+</p><p>
+</p><h3> クラス SS のインスタンス</h3><p>
+ 現在のMJ は static method の定義をサポートしていないため、
+代わりに singleton object のメソッドを使う必要があります。
+</p><p>
+mj コマンドは、アプリケーションの起動時にまずクラス SS のインスタンスを生成し、
+クラス SS の static field である SS.instance に代入します。
+その後、クラス SS の void main(String[]) を実行します。
+</p><p>
+クラス SS のメソッドは、 SS.instance に入れられているsingleton object を通して
+呼び出すことができます。
+</p><p>
+例：
+<pre>
+module t.ss.method {
+  class SS {
+    define int foo(){ return 123; }
+    void main(String[] args){
+      original(args);
+      A a = new A();
+      System.out.println(a.bar());  // 1230
+    }
+  }
+  define class A {
+    define A(){}
+    define int bar(){
+      return SS.instance.foo() * 10;
+    }
+  }
+}
+</pre>
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="constructor">コンストラクタ</a></h2><p>
+</p><h3>コンストラクタの仕様</h3><p>
+MJ では Java 言語と同様にコンストラクタを定義できます。
+ただし、Java 言語と比べて以下の違いがあります。
+<ul>
+<li>すべてのクラスは、コンストラクタがどこかで少なくとも１つ定義されている
+必要があります。
+（Java と違い、コンストラクタが１つも定義されていない場合に
+「デフォルトコンストラクタ」が自動的に追加されることはありません。）
+<li>コンストラクタにも「定義」と「拡張」があります。
+定義の前には "define" を付ける必要があります。
+<li>コンストラクタ本体の先頭は Java 同様、特別扱いされます。
+先頭に super(...), this(...), original(...) のいずれもなければ、
+先頭に自動的に super() が追加されます。
+（ original(...) の書き忘れはチェックされないので注意してください。）
+<li> super(...) （引数を持った super class のコンストラクタ呼び出し）は、
+ super class が Java 言語の class である場合はサポートされていません。
+コンパイルエラーになります。
+ただし、引数がない super() は許されます。
+</ul>
+</p><p>
+これは、コンストラクタを持つクラス Point の例です。
+</p><p>
+<pre>
+module t.point.m {
+  define class Point {
+    int x;
+    int y;
+    define Point(int x, int y){
+      this.x = x; this.y = y;
+    }
+    define void move(int dx, int dy){ x += dx; y += dy; }
+    define int getX(){ return x; }
+    define int getY(){ return y; }
+  }
+  class SS {
+    void main(String[] args){
+      original(args);
+      Point p = new Point(10, 10);
+      p.move(1, 2);
+      System.out.println(p.getX());  // 11
+      System.out.println(p.getY());  // 12
+    }
+  }
+}
+</pre>
+</p><p>
+</p><p>
+</p><h3>コンストラクタの実現方法</h3><p>
+現在のバージョンのMJ コンパイラによる、コンストラクタの
+実現方法について解説します。
+</p><p>
+ new C(...) というコンストラクタ呼び出しは、
+<tt>new C()._call_init_C(...)</tt> にマクロ展開されます。
+</p><p>
+ define C(...){...} というコンストラクタ定義は、
+次のように２つのメソッド定義にマクロ展開されます。
+</p><p>
+<pre>
+define C _call_init_C(...){
+  _init_C(...);
+  return this;
+}
+define void _init_C(...){...}
+</pre>
+</p><p>
+ define abstract C(...); という "abstract constructor" は、
+次のように２つのメソッドにマクロ展開されます。
+</p><p>
+<pre>
+define C _call_init_C(...){
+  _init_C(...);
+  return this;
+}
+define abstract void _init_C(...);
+</pre>
+</p><p>
+ C(...){...} という「コンストラクタの拡張」は、次のようにマクロ展開されます。
+</p><p>
+<pre>
+ void _init_C(...){...}
+</pre>
+</p><p>
+コンストラクタの先頭には、 super(...), this(...) が書けます。
+super(...) があれば、それは  _init_S(...) にマクロ展開されます。
+this(...) があれば、それは _init_C(...) にマクロ展開されます。
+</p><p>
+</p><p>
+本来は _call_init_C や _init_C というメソッドはユーザからは見えないように
+実装すべきですが、現在の実装では単なるマクロなので、
+ユーザからも見えてしまいます。
+コンパイルエラーのメッセージやスタックトレースにもこれらの名前が出てくるので、
+注意してください。
+</p><p>
+</p><p>
+</p><h2><a name="abstract-method">abstract method</a></h2><p>
+</p><p>
+</p><h3>abstract method のリンク時チェック</h3><p>
+</p><p>
+クラス名を定義するときに abstract という modifier を付けると、
+そのクラスは abstract class になります。
+abstract でないクラスは、リンク時に abstract method を持っていると
+エラーになります。（Java とは違い、コンパイル時にはエラーになりません。）
+abstract class は、 abstract method が残っていても
+リンク時エラーにはなりません。
+</p><p>
+これは abstract な class C と abstract でない class SubC を定義する例です。
+</p><p>
+<pre>
+module t.abst.m1 {
+  define abstract class C {
+    define C(){}
+    define abstract int foo();
+  }
+  define class SubC extends C {
+    define SubC(){}
+    define abstract int bar();
+  }
+  class SS {
+    void main(String[] args){
+      original(args);
+      SubC c = new SubC();
+      System.out.println(c.foo());
+      System.out.println(c.bar());
+    }
+  }
+}
+module t.abst.m2 extends t.abst.m1 {
+  class SubC {
+    int foo(){ return 111; }
+    int bar(){ return 222; }
+  }
+}
+</pre>
+</p><p>
+<tt>t.abst.m1</tt> と <tt>t.abst.m2</tt> を実行すると、次のような結果になります。
+<pre>
+% mj t.abst.m1
+MJLinker: non-abstract class t.abst.m1.SubC has an abstract method
+ : abstract int t.abst.m1::bar()
+</pre>
+</p><p>
+<pre>
+% mj t.abst.m2
+111
+222
+</pre>
+</p><p>
+</p><h3>interface</h3><p>
+interface も、 Java 言語と同様に使えます。
+メソッドを定義するときは、やはり "define" を付ける必要があります。
+interface のメソッドを "implements" するクラス側では、
+ "define" を付ける必要はありません。例：
+</p><p>
+</p><p>
+<pre>
+module t.color {
+  define interface Color {
+    int RED = 0xff0000;
+    int GREEN = 0x00ff00;
+    int BLUE = 0x0000ff;
+    define int getRGBCode();
+  }
+  define class ColorImplementation implements Color {
+    define ColorImplementation(){}
+    int code = 0x000001;
+    int getRGBCode(){ return code; }
+  }
+  class SS {
+    void main(String[] args){
+      original(args);
+      Color c = new ColorImplementation();
+      System.out.println(c.getRGBCode()); // 1
+      System.out.println(Color.BLUE);     // 255
+    }
+  }
+}
+</pre>
+</p><p>
+</p><p>
+interface に対する差分の追加は、現在は完全には実装されていないので、
+注意してください。
+field （定数）の追加のみが正しく動作します。
+</p><p>
+</p><p>
+</p><h3>仕様モジュールと実装モジュール</h3><p>
+</p><p>
+abstract method を使って、１つのクラスを、
+外部インターフェースのみを定義するモジュール
+（<em>仕様モジュール</em>と呼びます）と、
+実装のみを定義するモジュール（<em>実装モジュール</em>と呼びます）に
+分離することができます。
+例えば、前節のモジュール <tt>t.point.m</tt> は、次のように３つの
+モジュールに分けることができます。
+<pre>
+module t.point {
+  define class Point {
+    define abstract Point(int x, int y);
+    define abstract void move(int dx, int dy);
+    define abstract int getX();
+    define abstract int getY();
+  }
+}
+module t.point.implementation extends t.point {
+  class Point {
+    int x;
+    int y;
+    Point(int x, int y){
+      this.x = x; this.y = y;
+    }
+    void move(int dx, int dy){ x += dx; y += dy; }
+    int getX(){ return x; }
+    int getY(){ return y; }
+  }
+}
+module t.point.test extends t.point {
+  class SS {
+    void main(String[] args){
+      original(args);
+      Point p = new Point(10, 10);
+      p.move(1, 2);
+      System.out.println(p.getX());  // 11
+      System.out.println(p.getY());  // 12
+    }
+  }
+}
+</pre>
+</p><p>
+クラス Point の外部インターフェースを定義するモジュールが、 <tt>t.point</tt> 、
+内部実装を定義するモジュールが <tt>t.point.implementation</tt> です。
+モジュール <tt>t.point.test</tt>は <tt>t.point</tt> にのみ依存し、
+<tt>t.point.implementation</tt> には依存していない点に注意してください。
+</p><p>
+このプログラムを実行するには注意が必要です。
+<tt>t.point.test</tt> だけを selected module として指定すると次のように
+エラーになります。
+<pre>
+% mj t.point.test
+MJLinker: non-abstract class t.point.Point has an abstract method
+ : abstract int t.point::getY()
+</pre>
+</p><p>
+次のように実装モジュールも selected module に加えるか、
+mjball コマンドを使ってすべてのモジュールをひとまとめにしておく必要があります。
+</p><p>
+<pre>
+% mj -s t.point.implementation t.point.test
+11
+12
+</pre>
+</p><p>
+</p><p>
+</p><p>
+</p><h3>コラボレーションベースのモジュール化</h3><p>
+</p><p>
+差分ベースモジュールを使って、複数のクラスをまたがるコラボレーションを、
+別のモジュールに分離することが可能です。
+次のような Java で書かれたプログラムを考えます。
+</p><p>
+<pre>
+class A {  // class A uses class B
+  void m1(B b){ ... b.m3(); ...}
+  void m2(){...}
+}
+class B {  // class B uses class A
+  void m3(){...}
+  void m4(A a){ ... a.m2(); ...}
+}
+</pre>
+</p><p>
+このプログラムは、クラス A とクラス B がそれぞれ相互に依存しているため、
+モジュラリティの悪い構造をしています。
+しかし２つのクラスは、実質的には、
+独立した２つのコラボレーションを含んでいます。
+このプログラムは、 MJ では次のようにモジュール分割することができます。
+</p><p>
+<pre>
+module A_B {
+  define class A {}
+  define class B {}
+}
+module collaboration_m1_m3 extends A_B {
+  class A {
+    define void m1(B b){ ... b.m3(); ...}
+  }
+  class B {
+    define void m3(){...}
+  }
+}
+module collaboration_m2_m4 extends A_B {
+  class A {
+    define void m2(){...}
+  }
+  class B {
+    define void m4(A a){ ... a.m2(); ...}
+  }
+}
+</pre>
+</p><p>
+このようにコラボレーションを別のモジュールに分離することで、
+以下のメリットが生じます。
+</p><p>
+<ul>
+<li> それぞれのモジュールが依存するソースコードのサイズが減ります。
+これは一般には、保守性が向上することを意味します。
+<li> collaboration_m1_m3 と collaboration_m2_m4 は
+相互に全く依存していないため、
+他方が存在していなくても、一方をコンパイル・実行することが可能です。
+このため、別々のプログラマーによる開発・テストが可能になります。
+<li> それぞれのコラボレーションとは
+違うバージョンのモジュールを実装することにより、
+異なるコンフィギュレーションのアプリケーションを構築できるようになります。
+例えば、 collaboration_m1_m3 の代わりに、 my_collaboration という
+モジュールを実装して用いることが可能になります。
+この時、他のモジュールの再コンパイルは必要ありません。
+</ul>
+</p><p>
+</p><p>
+</p><h2><a name="scope">名前空間</a></h2><p>
+</p><h3>名前空間の継承</h3><p>
+モジュールの継承は、差分の追加の他に、
+名前空間の継承も意味します。
+</p><p>
+コンパイラは、あるモジュールをコンパイルする際、
+そのモジュールが extends していないモジュールは存在しないものとして
+処理します。
+例えば、次のプログラムは、コンパイルエラーになります。
+m2 が extends m1 という宣言をしていないので、 m2 からは m1 の中のクラス A が
+見えないからです。
+<pre>
+module m1 {
+  define class A {}
+}
+module m2 {
+  class SS {
+    void main(String[] args){
+      original(args);
+      A a = new A(); // error
+    }
+  }
+}
+</pre>
+</p><p>
+</p><p>
+</p><p>
+</p><h3>名前空間のネストの表現方法</h3><p>
+</p><p>
+Java 言語では、 package と
+ nested class を用いて名前空間のネストを表現できます。
+MJ では、名前空間のネストは、モジュールの継承によって表現します。
+例えば次のような Java のプログラムを考えます。
+<pre>
+public class A {
+  protected static int x = 123;
+  public static class B {
+    public int getX(){ return x; }
+  }
+  public static void main(String[] args){
+    System.out.println(new B().getX()); // 123
+  }
+}
+</pre>
+</p><p>
+これと同様のプログラムを MJ では次のように表現します。
+<pre>
+module t.nest.interface_A_B {
+  define class A { }
+  define class B {
+    define abstract B();
+    define abstract int getX();
+  }
+}
+module t.nest.implementation_A_B extends t.nest.interface_A_B {
+  class A {
+    static int x = 123;
+  }
+  class B {
+    B(){}
+    int getX(){ return A.x; }
+  }
+}
+module t.nest.test extends t.nest.interface_A_B {
+  class SS {
+    void main(String[] args){
+      original(args);
+      System.out.println(new B().getX());       // 123
+    }
+  }
+}
+</pre>
+</p><p>
+このプログラムを実行すると、次のようになります。
+<pre>
+% mj -s t.nest.implementation_A_B t.nest.test
+123
+</pre>
+</p><p>
+モジュール interface_A_B はクラス A, B の public な名前を定義し、
+モジュール implementation_A_B はクラス A, B の実装と protected な名前を
+定義しています。
+</p><p>
+この例では、クラス B の中からクラス A の static field に対し、
+ <tt>A.x</tt> と書いて直接アクセスしています。
+このように、 MJ では、 field に限らず、すべての名前は、
+同一モジュールあるいは子孫モジュールから
+直接アクセスすることができます。
+このシンプルなルールだけで、従来のオブジェクト指向言語の
+public/protected, nested class の機能をすべて表現します
+（<a href="faq-spec.html#encapsulation">FAQ 参照</a>）。
+</p><p>
+Java では protected member は subclass からアクセスできますが、
+MJ では、名前の参照可能性に関して subclass は特別扱いされません。
+したがって、上の例の Java での表現と MJ での表現は、
+中身が完全に同一というわけではありません。
+MJ のこの仕様が何か不都合を引き起こし得るのかどうかは、
+現時点ではわかりません。
+今のところは、 MJ では名前の参照可能性に関して subclass の特別扱いは
+不要だと考えています。
+</p><p>
+</p><p>
+</p><h3>名前空間の多重継承</h3><p>
+nested class では、入れ子状の名前空間しか表現できませんが、
+MJ ではモジュールの多重継承が可能なため、
+重なりがあるような、より一般的な名前空間を表現できます。
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="Java">Java 言語のクラスライブラリの利用</a></h2><p>
+</p><p>
+MJ からは、  CLASSPATH に入っている Java 言語のクラスライブラリが利用できます。
+</p><p>
+MJ のクラスは、 Java のクラスを継承したり
+Java のインターフェースを implements することができます。
+このとき、現在の実装ではいくつか制約があります。（詳しくは
+<a href="spec.html#java-class-inheritance">言語仕様メモ</a>参照。）
+</p><p>
+</p><p>
+継承に関する制約以外は、制約は（たぶん）全くありません。
+すべてのクラスライブラリは、 Java 言語から利用するのと
+全く同じように MJ から利用できます。
+</p><p>
+MJ で定義したクラスは、そのモジュールを extends しないと参照できませんが、
+Java のクラスは、完全限定名を指定すれば参照できます。
+</p><p>
+Java の import 宣言の代わりになるものとして、
+MJ には <em>imports 宣言</em>（末尾の s に注意）があります。
+module 定義の先頭で imports 宣言しておくことで、
+Java 言語と同様、クラスを単純名で参照できるようになります。
+</p><p>
+imports 宣言の効果は、 sub-module に継承されます。
+（経験上この仕様の方が便利です。）
+名前空間を汚染しないように、 imports 宣言はできるだけ
+モジュール継承グラフの下側（ sub-module 側）で行った方がよいでしょう。
+</p><p>
+</p><p>
+これは、 imports 宣言を使ったプログラム例です。
+imports 宣言の最後に "<tt>;</tt>" は書かない点に注意してください。
+<pre>
+module t.javalib.m1
+imports java.io.*
+imports java.util.Vector
+{
+}
+module t.javalib.m2 extends t.javalib.m1 {
+  class SS {
+    void main(String[] args){
+      original(args);
+      File f = new File("f");
+      Vector v = new Vector();
+    }
+  }
+}
+</pre>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="SharpPlus"> #+comment</a></h2><p>
+</p><p>
+MJ では、 Java と同様の <tt>//</tt> 、 <tt>/*...*/</tt>
+というコメントが使えます。
+それに加え、 <em>#+identifier &lt;構文&gt;</em> という形式のコメントアウトの
+方法があります。
+例えば、 #+comment と書くと、その直後の構文１つがコメントアウトされます。
+ただしその構文にシンタックスエラーがあってはいけません。
+</p><p>
+ #+identifier の後ろに書ける構文は、
+ module 定義、クラス・インターフェース定義、
+メンバ定義またはステートメントに限られます。
+</p><p>
+ #+ はネストすることも可能です。
+</p><p>
+複数のモジュールを一度にコメントアウトしたい時のために、
+module を { } で囲めるようになっています。
+複数のモジュールを { } で囲んでも、プログラムとしての意味は変わりません。
+（スコープを制限したりモジュールをグループ化したりする効果は一切ないので
+注意してください。）
+</p><p>
+ #+ は、 // を前に書くことで、無効にすることができます。
+一時的にコメントアウトの効果をはずす時に便利です。
+</p><p>
+これは、 #+comment を使ったプログラム例です。
+</p><p>
+<pre>
+module t.sharpPlus.m1 {
+  class SS {
+    void main(String[] args){
+      original(args);
+ #+comment
+      System.out.println("aaa");
+      //#+comment
+      {
+        System.out.println("bbb");
+      }
+      System.out.println("ccc");
+    }
+  }
+}
+ #+comment
+{
+  module t.sharpPlus.m1{
+ #+comment
+    class C { }
+  }
+ #+comment
+  module t.sharpPlus.m2{
+  }
+}
+</pre>
+</p><p>
+上のプログラムは、結局、次のプログラムと等価です。
+<pre>
+module t.sharpPlus.m1 {
+  class SS {
+    void main(String[] args){
+      original(args);
+      {
+        System.out.println("bbb");
+      }
+      System.out.println("ccc");
+    }
+  }
+}
+</pre>
+</p><p>
+</p><p>
+実装の都合上、 #+comment &lt;Statement&gt; は、
+ ";" （すなわち空文）に変換されます。
+return 文などの後ろにこれを書くと、
+jikes コンパイラでは、 "This statement is unreachable." となるので
+注意してください。
+</p><p>
+ #+ 構文は、 C 言語の#ifdef のような条件コンパイルの機構としても使えます。
+<pre>
+mjc -J-Ddebug=true 
+</pre>
+というオプションを付けることで、
+ #+debug 以降の構文は有効に、 #-debug 以降の構文は無効になります。
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="uses"> uses 宣言</a></h2><p>
+</p><p>
+モジュール間の「extends する」という関係にはサイクルが許されません。
+しかし、特にプログラム開発の初期の段階ではどうしても、
+モジュール間の相互依存が生じます。
+そこで導入されたのが <em>uses 宣言</em>です。
+</p><p>
+</p><p>
+uses 宣言は、 extends 宣言と同様に、名前空間の継承を行いますが、
+参照関係のサイクルが許されます。
+</p><p>
+その代わり、 uses 宣言を使うと分割コンパイルはできなくなります。
+例えば、次のプログラム例で、２つのモジュールがそれぞれ
+ A.java, B.java というファイルに書かれているとします。
+</p><p>
+<pre>
+module t.uses.a uses t.uses.b {
+  define class A {
+    define A(){}
+    define B getB(){ return new B(); }
+  }
+}
+module t.uses.b uses t.uses.a {
+  define class B {
+    define B(){}
+    define A getA(){ return new A(); }
+  }
+}
+</pre>
+</p><p>
+このプログラムをコンパイルするには、 A.java, B.java を、
+mjc の引数に同時に与えなければなりません。
+（そうしないとコンパイルエラーになるか、古いコンパイル結果を
+参照してコンパイルすることになります。）
+</p><p>
+</p><p>
+</p><p>
+extends 宣言は、モジュールを linearize するときの上下関係の制約を与えますが、
+uses 宣言は、与えません。
+extends 宣言と uses 宣言の違いは、これだけです。
+</p><p>
+モジュール a で定義された名前（クラス・インターフェースまたはメソッド）を
+モジュール b で拡張する場合は、 linearized list で 
+b は a よりも下に来ないと、正しいプログラムにはなりません。
+したがって、この場合は b uses a ではなく、
+b extends a と宣言しなければなりません。
+</p><p>
+それ以外の場合、つまり a で定義された名前を b で利用しているだけならば、
+b uses a と宣言してもかまいません。
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="dynamic-loading">Dynamic loading</a></h2><p>
+MJ でも Java 同様にクラスの dynamic loading をすることが可能です。
+次のプログラムは、dynamic loading の例です。
+</p><p>
+<pre>
+module t.forName {
+  define class A {
+    static int x = 123;
+  }
+  class SS {
+    void main(String[] args){
+      original(args);
+      try {
+        Class c = Class.forName("t.forName.A");
+        A a = (A)c.newInstance();
+        System.out.println(a.x); // 123
+      } catch (Throwable e){
+        e.printStackTrace(System.err);
+        System.err.println(e.getMessage());
+        throw new Error();
+      }
+    }
+  }
+}
+</pre>
+</p><p>
+なお、現在の実装では c.newInstance(); を実行したときに、
+クラス A のコンストラクタは呼ばれないので注意して下さい。
+メソッド _init_A を明示的に呼び出す必要があります。
+</p><p>
+</p><p>
+</p><h2><a name="fqn">完全限定名(Fully-Qualified-Name, FQN)</a></h2><p>
+</p><p>
+大規模なアプリケーションでは、一般に名前の衝突が深刻な問題となります。
+MJ では特にモジュールの多重継承によって、
+別々に定義されれた名前が、衝突する可能性があります。
+</p><p>
+Java 言語では、 import 宣言で生じるクラス名の衝突を解決するために
+クラスの完全限定名を使用します。
+MJ はこのアイデアを、フィールド・メソッド名にも適用することで、
+名前の衝突の問題を解決しています。
+</p><p>
+MJ では、
+ソースコード中のある地点において、２つ以上の foo という名前が参照可能な時、
+もしその地点で foo という「単純名」を使ったら、
+ ambiguous error になります。
+MJ では、名前の shadow (hide とも言います) は決して起きません。
+ambiguous error が起きた場合、プログラマーは「完全限定名」を
+指定することで必ずそのエラーを回避することができます。
+この原則は、すべての名前（型名、フィールド名、
+メソッド名、ローカル変数名）で徹底されています。
+</p><p>
+（Java は、名前の衝突の扱い方が非常に不統一です。
+例えばローカル変数は外側のローカル変数を shadow できないのに、
+ローカル変数でフィールドを shadow することはできます。
+また、 interface のフィールド（定数）は、多重継承によって名前が衝突しても
+別々の定数として扱われますが、 interface のメソッドは、
+signature が同じならば同一のメソッドとして扱われます。）
+</p><p>
+</p><p>
+</p><p>
+完全限定名は「その名前を最初に定義したモジュール名 m 」と「単純名 n」の組で
+表され、 MJ のソースコード上では、 <tt>FQN[m::n]</tt> と表記します
+（<a href="faq-spec.html#fqn-syntax">FAQ 参照</a>）。
+メソッド完全限定名は、メソッド宣言とメソッド呼び出しの両方で
+使うことができます。次の例を見てください。
+</p><p>
+<pre>
+module t.fqn.m1 {
+  define class A {
+    define A(){}
+  }
+}
+module t.fqn.m2 extends t.fqn.m1 {
+  class A {
+    define int m(){ return 2; }
+  }
+}
+module t.fqn.m3 extends t.fqn.m1 {
+  class A {
+    define int m(){ return 3; }
+  }
+}
+module t.fqn.m4 extends t.fqn.m2, t.fqn.m3 {
+  class A {
+    int FQN[t.fqn.m2::m](){ return original() * 10; }
+    int FQN[t.fqn.m3::m](){ return original() * 100; }
+  }
+  class SS {
+    void main(String[] args){
+      original(args);
+      A a = new A();
+      //System.out.println(a.m()); // error
+      System.out.println(a.FQN[t.fqn.m2::m]());  // 20
+      System.out.println(a.FQN[t.fqn.m3::m]());  // 300
+    }
+  }
+}
+</pre>
+</p><p>
+上のプログラム例で、もし完全限定名を使わずに a.m() というふうに
+あいまいなメソッド呼び出しを行うと、次のようなエラーになります。
+</p><p>
+<pre>
+% mjc Tutorial.java
+Preprocessing phase.
+Tutorial.java:322: MJ: Reference to m() of t.fqn.m1.A is ambiguous. :
+    t.fqn.m2::m
+    t.fqn.m3::m
+</p><p>
+      System.out.println(a.m()); // error
+                         ^
+1 errors
+</pre>
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="complementary">補完モジュール</a></h2><p>
+</p><p>
+MJ では、複数のモジュールを組み合わせたとき、<em>実装欠損</em>という
+現象が起きる場合があります。
+欠損を埋めるためのモジュールが<em>補完モジュール</em>です。
+</p><p>
+実装欠損について、詳しく説明しましょう。
+次のプログラムを考えます。
+</p><p>
+<pre>
+module t.compl.orig {
+  define abstract class S { }
+  define class A extends S { }
+}
+module t.compl.sub extends t.compl.orig {
+  define class B extends S { }
+}
+module t.compl.abst extends t.compl.orig {
+  class S {
+    define abstract int m();
+  }
+  class A {
+    int m(){ return 1; }
+  }
+}
+module t.compl.compl_sub_abst complements t.compl.sub, t.compl.abst {
+  class B {
+    int m(){ return 2; }
+  }
+}
+</pre>
+</p><p>
+<tt>t.compl.orig</tt> は、
+ abstract なクラス S とそのサブクラス A を定義しています。
+<tt>t.compl.sub</tt> は、新たなサブクラス B を定義しています。
+一方、 <tt>t.compl.abst</tt> は、クラス S に abstract method m を定義し、
+サブクラス A でそれを実装しています。
+</p><p>
+<tt>t.compl.sub</tt> と <tt>t.compl.abst</tt> は、いずれもリンク時エラーを起こさない、
+完全なプログラムです。
+ところが、この両方のモジュールを同時に使おうとすると、
+次のようにリンク時エラーになります。
+<pre>
+% mj -s t.compl.sub t.compl.abst
+MJLinker: non-abstract class t.compl.sub.B has an abstract method
+ : abstract int t.compl.abst::m()
+</pre>
+</p><p>
+つまり、クラス B のメソッド m を誰も実装していないために、
+エラーになります。
+このように、正しく動く複数のモジュールを組み合わせたとき、
+実装されていない abstract method が発生する現象を「実装欠損」と呼んでいます。
+一般に実装欠損を自動的に埋めることは不可能です。
+誰かが仕様を理解して、実装欠損を埋めるモジュールを実装しなければなりません。
+このようなモジュールを補完モジュールと呼びます。
+</p><p>
+MJ は、エンドユーザが、実装の詳細を知らなくても、
+モジュールを組み合わせて自分の好みのアプリケーションを構築できることを
+目標としています。
+エンドユーザにとっての使い勝手を良くするために、
+MJ のリンカーは、補完モジュールの自動リンクの機能を持っています。
+</p><p>
+<tt>t.compl.sub</tt> と <tt>t.compl.abst</tt> の間を補完する
+補完モジュールは、 "<tt>complements t.compl.sub, t.compl.abst</tt>" という
+<em>complements 宣言</em>を持つモジュールとして定義します。
+</p><p>
+例えば誰かが次のような補完モジュールを実装して、
+ CLASSPATH を通して見える場所に置いたとします。
+</p><p>
+<pre>
+module t.compl.compl_sub_abst complements t.compl.sub, t.compl.abst {
+  class B {
+    int m() { return 2; }
+  }
+}
+</pre>
+</p><p>
+ここで、 complements 宣言は、コンパイラにとっては、
+ extends 宣言と全く同じ意味です。
+ただし、このモジュールが補完の対象とするモジュールの情報が、
+コンパイル結果のクラスファイルに付加されます。
+</p><p>
+そして、エンドユーザが次のように
+ <tt>t.compl.sub</tt> と <tt>t.compl.abst</tt> を
+組み合わせようとすると、リンカーは、 CLASSPATH の中から
+補完モジュール <tt>t.compl.compl_sub_abst</tt> を見つけ、
+それもリンクの対象とします。
+</p><p>
+</p><p>
+<pre>
+% mj -s t.compl.sub t.compl.abst
+</pre>
+</p><p>
+つまりエンドユーザにとっては補完は自動的に行われるため、
+実装欠損の問題を意識しなくてもすみます。
+</p><p>
+</p><hr>
+<table width="100%"> <tr><td>
+<img src="images/img002.gif" alt="mj-logo">
+</td><td>
+<div class="last-update"> Last updated: 
+ May 20 16:47:37 2002
+</div>
+<div class="header-link">
+[<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
+[<a href="index.html">Document index</a>]
+</div>
+</td></table>
+</body></html>

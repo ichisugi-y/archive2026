@@ -1,0 +1,5 @@
+AppName = IMJdemoMJ-vapor
+PackageURL = IMJdemoMJ-vapor.jar
+AppSize = 7095
+AppClass = mj.demo.base.IMJdemo
+LastModified = Wed, 21 Feb 2001 20:02:50

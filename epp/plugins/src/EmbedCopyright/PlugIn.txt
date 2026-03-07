@@ -1,0 +1,109 @@
+/*
+ *
+ * Copyright (C) 1997, 1998 Yuuji ICHISUGI
+ *
+ * Permission to use, copy, modify and redistribution this software in
+ * whole and in part, for evaluation or research purposes and without fee
+ * is hereby granted provided this copyright notice.
+ * See CopyrightAndLicensing.txt for licensing condition.
+ */
+
+
+/*
+ Usage:
+	epp -plug-in EmbedCopyright File1.java File2.java ...
+
+ This plug-in embeds copyright message into all classes.
+ The message is added to each class as a static final String field.
+
+ The contents of a text file, "Copyright.txt", is used as
+a copyright message.
+
+
+ NOTE:
+ Re-definition of the super class's field with the same name
+will cause no errors.  It just shadows the super class's field.
+ Therefore, embedded field in subclasses will cause no errors.
+
+*/
+
+#epp "Symbol"
+#epp "SystemMixin"
+#epp "AutoSplitFiles"
+#epp "BackQuote"
+
+
+package EmbedCopyright;
+import epp.*;
+import java.io.*;
+
+
+SystemMixin EmbedCopyright {
+  class Epp {
+    
+    extend void initMacroTable() {
+      original();
+      String str = readCopyrightFile();
+      redefineMacro(:classBody,
+		    new EmbedCopyrightMacro
+		    (((Macro)Macro.macroTable.get(:classBody)),
+		     str));
+    }
+    
+    define implement String readCopyrightFile(){
+      DataInputStream out;
+      try {
+	out = new DataInputStream
+	  (new BufferedInputStream
+	   (new java.io.FileInputStream(copyrightFileName())));
+      } catch (IOException e) {
+	System.err.println("EmbedCopyright: Warning: The file "+
+			   copyrightFileName()+
+			   " cound not be opend.");
+	return "This is a sample Copyright message.";
+      }
+      try {
+      	return out.readLine();
+      } catch (IOException e) {
+	throw error("EmbedCopyright: Can not read a line from "+
+		    copyrightFileName());
+      } finally {
+	try {
+	  out.close();
+	} catch (IOException e) {
+	  throw error("EmbedCopyright: Can not close "+
+		      copyrightFileName());
+	}
+      }
+    }
+    
+    define implement String copyrightFileName(){
+      return "Copyright.txt";
+    }
+  }
+}
+
+class EmbedCopyrightMacro extends Macro {
+  Macro orig;
+  String message;
+  
+  EmbedCopyrightMacro(Macro orig, String message){
+    this.orig = orig;
+    this.message = message;
+  }
+  
+  public Tree call(Tree tree){
+    // NOTE:
+    // The dynamic variable :beginningOfClassBody is unbound at here.
+    TreeVec tvec = new TreeVec();
+    tvec.addA(tree.args());
+    tvec.add(
+	     `(decl (modifiers (id public) (id static) (id final))
+	       (id String)
+	       (vardecls
+		(varInit (id EmbeddedCopyrightString)
+		 ,(new LiteralTree(:string, message)))))
+	     );
+    return orig.call(tree.modifyArgs(tvec.toArray()));
+  }
+}

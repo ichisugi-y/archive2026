@@ -1,0 +1,14 @@
+package mj.demo.base;
+
+import org.fukuno.applet.iEmulator.Emulator;
+
+import com.nttdocomo.ui.IApplication;
+
+
+public class IMJdemoEmulator extends Emulator 
+{
+	protected IApplication createIApplication() 
+	{
+		return new IMJdemo();
+	}
+}

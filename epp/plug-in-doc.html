@@ -1,0 +1,349 @@
+<HEAD>
+<html>
+<head>
+<title>EPP1.0 プラグイン</title>
+ <meta charset="UTF-8">
+</head>
+<body>
+
+
+<h1>EPP1.0 plug-ins</h1>
+
+(Last update: 1998-02-22)
+<p>
+ EPP 1.0 についてくる plug-in の説明です。
+<p>
+説明のあと、「plug-in ソース」「使用例」「変換結果」のリンクがあります。<br>
+<ul>
+<li>「plug-in ソース」は、その plug-in のソースコードです。<br>
+<li>「使用例」は、その plug-in の使ったプログラム例です。
+使用例の中の System.out.println は、
+正しく動けばすべて true を出すはずです。 <br>
+<li>「変換結果」は、使用例を -readable オプションをつけて展開した結果です。
+</ul>
+
+
+<hr>
+<h3>目次</h3><br>
+
+<h4>実用的 plug-in</h4>
+<UL>
+<LI> <a href="#AutoSplitFiles">AutoSplitFiles</a>
+複数の public クラスを１つのファイルで定義
+<LI> <a href="#defmacro">defmacro</a>
+#define に近いマクロ定義
+<LI> <a href="#EmbedCopyright">EmbedCopyright</a>
+全 class ファイルへのメッセージ埋め込み
+<LI> <a href="#enum">enum</a>
+enum 風定数宣言
+<LI> <a href="#OptParam">OptParam</a>
+省略可能な実引数
+<LI> <a href="#UserOp">UserOp</a>
+ユーザ定義用演算子
+<LI> <a href="#Math">Math</a>
+java.lang.Math を使いやすくする
+<LI> <a href="#assert">assert</a>
+assert マクロ
+<LI> <a href="#noassert">noassert</a>
+assert マクロを無効にする
+</UL>
+<h4>plug-in プログラマーのためのサンプル plug-in</h4>
+(配布パッケージの epplib.jar には入っていません。)
+<UL>
+<LI> <a href="#SWAP">SWAP</a> SWAP マクロ
+<LI> <a href="#CallByReference">CallByReference</a> 疑似 call by reference
+<LI> <a href="#PComp">PComp</a> Python 風比較演算子
+</UL>
+<h4>plug-in プログラムに使用する plug-in</h4>
+(runtime が必要なので、普通の Java プログラムからは使えません。)
+<UL>
+<LI> <a href="#SystemMixin">SystemMixin</a> プログラムの部品化を支援
+<LI> <a href="#Symbol">Symbol</a> lisp の symbol と同じ
+<LI> <a href="#BackQuote">BackQuote</a> Tree をソースコードに埋め込むマクロ
+<LI> <a href="#EppMacros">EppMacros</a> 非終端記号と二項演算子の定義のサポート
+</UL>
+
+
+
+<hr>
+<h3> <a name="AutoSplitFiles"> AutoSplitFiles </a> </h3>
+この plug-in を指定しておくと、
+１つのファイルに、複数の public なクラスをまとめて書くことができます。
+EPP は、クラスごとに自動的にファイルに分けてくれます。
+friendly なクラス（つまり public が指定されていないクラス）は、
+もともとのファイルに残されます。
+<p>
+各クラスの内容は、もともとのファイルでの位置と同じ行に出力されます。
+例えば、 File.java に public なクラス A, C と friendly なクラス B が
+あったとすると、 eppout の下には File.java、 A.java 、 C.java が
+作られ、それぞれの中身は以下のようになります。
+
+<pre>
+ File.java          eppout/File.java  eppout/A.java    eppout/C.java
++--------------+    +--------------+ +--------------+ +--------------+ 
+|public class A|    |              | |public class A| |              | 
++--------------+    +--------------+ +--------------+ +--------------+ 
+|class B       | => |class B       | |              | |              | 
++--------------+    +--------------+ +--------------+ +--------------+ 
+|public class C|    |              | |              | |public class C| 
++--------------+    +--------------+ +--------------+ +--------------+ 
+</pre>
+
+
+展開後の Java プログラムを javac してエラーが出ても、
+クラス名と行番号から、もともとの場所を容易に特定できます。
+
+
+
+<hr>
+<h3> <a name="defmacro"> defmacro </a> </h3>
+C プリプロセッサの #define のように、簡単にマクロ定義ができるように
+する plug-in です。<br>
+例：
+<pre>
+        defmacro max(a, b)  (a &gt b ? a : b)
+        defmacro swap(t, a, b) {t tmp; tmp = a; a = b; b = tmp;}
+</pre>
+
+マクロ展開のパターンは、"(" か "{" で始まらなければなりません。
+"(" で始まる場合は式として、 "{" ではじまる場合はブロックとして
+その先がパーズされます
+cpp と違って、変換はトークン単位ではなく、構文解析後の tree に
+対して行なわれます。
+（したがって、この defmacro では、 Java の文法の変更はできません。）
+<p>
+マクロは関数呼び出しのスタイルに限られます。
+#define と違って、次のようなマクロは定義できません。
+<pre>
+        defmacro  SIZE   1024            /* これはだめです。 */
+</pre>
+
+ cpp の #define の場合は次のように展開後の引数の内側をかっこでくくる
+必要がありますが、この defmacro ではその必要はありません。
+<pre>
+        #define max(a, b)  ((a) &gt (b) ? (a) : (b))
+</pre>
+
+<br>
+<a href="plugins/src/defmacro/PlugIn.txt">plug-in ソース</a> / 
+<a href="plugins/src/test/Testdefmacro.txt">使用例</a> / 
+<a href="plugins/src/test/eppout/Testdefmacro.txt">変換結果</a>
+
+
+
+
+<hr>
+<h3> <a name="EmbedCopyright"> EmbedCopyright </a> </h3>
+すべてのクラスファイル中に "Copyright 1998 ..." のような文字列を
+埋め込むための plug-in です。
+これを使うためには、
+まず、カレントディレクトリに Copyright.txt というファイルを作り、
+その中に埋め込みたいメッセージを書きます。
+そして、
+<pre>
+        epp -plug-in EmbedCopyright *.java
+</pre>
+のようにしてこの plug-in を指定すれば、 Copyright.txt の中身が
+すべてのクラスの static field の初期値の形で埋め込まれます。
+
+<br>
+<a href="plugins/src/EmbedCopyright/PlugIn.txt">plug-in ソース</a> / 
+<a href="plugins/src/test/TestEmbedCopyright.txt">使用例</a> / 
+<a href="plugins/src/test/eppout/TestEmbedCopyright.txt">変換結果</a>
+
+
+<hr>
+<h3> <a name="enum"> enum </a> </h3>
+連続した整数値を持つ定数の宣言を容易にする plug-in です。
+使い方は使用例を見て下さい。
+<br>
+<a href="plugins/src/enum/PlugIn.txt">plug-in ソース</a> / 
+<a href="plugins/src/test/Testenum.txt">使用例</a> / 
+<a href="plugins/src/test/eppout/Testenum.txt">変換結果</a>
+
+
+<hr>
+<h3> <a name="OptParam"> OptParam </a> </h3>
+C++ と同様に、省略可能な引数を持った
+メソッド定義を可能にする plug-in です。
+<br>
+<a href="plugins/src/OptParam/PlugIn.txt">plug-in ソース</a> / 
+<a href="plugins/src/test/TestOptParam.txt">使用例</a> / 
+<a href="plugins/src/test/eppout/TestOptParam.txt">変換結果</a>
+
+
+<hr>
+<h3> <a name="UserOp"> UserOp </a> </h3>
+ユーザが定義したクラス用の演算子です。
+Nik Shaylor さんの jpp (http://www.digiserve.com/nshaylor)にならって、
+かっこつきのオペレータをユーザ用演算子としました。
+優先順位は、組み込みの演算子と同じです。
+各演算子は、以下のようなメソッド呼び出し式に展開されます。
+
+<pre>
+       a (+)  b     a.plus(b)   
+       a (-)  b     a.minus(b)
+       a (*)  b     a.times(b)
+       a (/)  b     a.divide(b)
+       a (%)  b     a.modulus(b)
+       a (<<) b     a.leftShift(b)
+       a (>>) b     a.rightShift(b)
+       a (>>>) b    a.unsignedRightShift(b)
+       a (==) b     a.equals(b)
+       a (!=) b    !a.equals(b)
+       a (&lt)  b     a.lessThan(b)
+       a (&gt)  b     a.greaterThan(b)
+       a (&lt=) b    !a.greaterThan(b)
+       a (&gt=) b    !a.lessThan(b)
+       a (&) b      a.and(b)
+       a (|) b      a.or(b)
+       a (^) b      a.not(b)
+</pre>
+
+ この plug-in は、 EPP の lexical analyzar を拡張する例でもあります。
+
+<br>
+<a href="plugins/src/UserOp/PlugIn.txt">plug-in ソース</a> / 
+<a href="plugins/src/test/TestUserOp.txt">使用例</a> / 
+<a href="plugins/src/test/eppout/TestUserOp.txt">変換結果</a>
+
+
+
+<hr>
+<h3> <a name="Math"> Math </a> </h3>
+この plug-in は、クラス Math が持つ static method を、
+関数のように扱えるようにするものです。
+例えば、 Math.sin(x) の代わりに、単に sin(x) と書けるようになります。
+<br>
+<a href="plugins/src/Math/PlugIn.txt">plug-in ソース</a> / 
+<a href="plugins/src/test/TestMath.txt">使用例</a> / 
+<a href="plugins/src/test/eppout/TestMath.txt">変換結果</a>
+
+
+
+<hr>
+<h3> <a name="assert"> assert </a> </h3>
+assert マクロです。
+条件式を評価して false だったら、ファイル名と行番号を System.err に
+出力した後、 Error を throw します。
+assert マクロを空文に展開するには、 noassert plug-in を使います。
+<br>
+<a href="plugins/src/assert/PlugIn.txt">plug-in ソース</a> / 
+<a href="plugins/src/test/Testassert.txt">使用例</a> / 
+<a href="plugins/src/test/eppout/Testassert.txt">変換結果</a>
+
+
+<hr>
+<h3> <a name="noassert"> noassert </a> </h3>
+assert マクロを空文に展開するための plug-in です。
+通常は、 EPP を起動する時に以下のようにオプションを指定して使用します。
+<pre>
+        epp -plug-in noassert File1.java File2.java ...
+</pre>
+noassert plug-in を追加することで、 assert plug-in の機能を override します。
+
+<br>
+<a href="plugins/src/noassert/PlugIn.txt">plug-in ソース</a> / 
+<a href="plugins/src/test/Testnoassert.txt">使用例</a> / 
+<a href="plugins/src/test/eppout/Testnoassert.txt">変換結果</a>
+
+
+
+
+
+
+<hr>
+<h3> <a name="SWAP"> SWAP </a> </h3>
+swap マクロです。もっとも簡単な plug-in の例です。
+<br>
+<a href="plugins/sample/SWAP/PlugIn.txt">plug-in ソース</a> / 
+<a href="plugins/sample/test/TestSWAP.txt">使用例</a> / 
+<a href="plugins/sample/test/eppout/TestSWAP.txt">変換結果</a>
+
+
+<hr>
+<h3> <a name="CallByReference"> CallByReference </a> </h3>
+この plug-in は、 call by reference っぽいものを実現します。
+呼び出し側では、値を入れてもらう変数に &amp をつけて渡します。
+呼ばれる関数の側は、その引数は配列型として宣言し、
+ x[0] = value; とやって値を返します。
+<p>
+なお、現在の実装では &amp をつけられるのは int 型の変数のみです。
+現在のバージョンの EPP は型情報をいっさい扱っていないためです。
+<br>
+<a href="plugins/sample/CallByReference/PlugIn.txt">plug-in ソース</a> / 
+<a href="plugins/sample/test/TestCallByReference.txt">使用例</a> / 
+<a href="plugins/sample/test/eppout/TestCallByReference.txt">変換結果</a>
+
+
+
+
+<hr>
+<h3> <a name="PComp"> PComp </a> </h3>
+この plug-in は、比較演算子の文法を Python という言語と同じものにします。
+<pre>
+        if (0 &lt= x &amp&amp x &lt max) ...;
+</pre>
+と書く代わりに、
+<pre>
+        if (0 &lt= x &lt max) ...;
+</pre>
+というふうに、数学的な記法そのままで書けます。
+<p>
+他の plug-in は Java の機能を「拡張」するものですが、
+この plug-in は、オリジナルの Java の文法の一部を「置き換える」例に
+なっています。
+（ソースコードの先頭の方で、
+標準の Java パーザ部品を取り除いています。）
+<p>
+なお、この plug-in も、比較の対象は int 型だと仮定しています。
+<br>
+<a href="plugins/sample/PComp/PComp.txt">plug-in ソース</a> / 
+<a href="plugins/sample/test/TestPComp.txt">使用例</a> / 
+<a href="plugins/sample/test/eppout/TestPComp.txt">変換結果</a>
+
+
+
+
+
+<hr>
+<h3> <a name="SystemMixin"> SystemMixin </a> </h3>
+この plug-in は、 plug-in 開発用です。<br>
+プログラムの部品化を支援する System Mixin の機能を Java に追加するものです。
+
+<hr>
+<h3> <a name="Symbol"> Symbol </a> </h3>
+この plug-in は、 plug-in 開発用です。<br>
+lisp の symbol のようなものを提供します。
+各 plug-in のソース中にある、 :foo や :"+" などが symbol を表します。
+
+<hr>
+<h3> <a name="BackQuote">  </a>BackQuote</h3>
+この plug-in は、 plug-in 開発用です。<br>
+ lisp の backquote macro の機能を Java に追加し、
+tree 状の抽象構文木を扱いやすくするためのものです。
+たとえば Math plug-in のソースでは、以下のように backquote macro を
+使っています。
+<pre>
+    Tree fname = tree.args()[0];
+    return `(invokeLong
+             (name (id java) (id lang) (id Math))
+             ,fname
+             (argumentList ,@args));
+</pre>
+
+
+<hr>
+<h3> <a name="EppMacros"> EppMacros </a> </h3>
+この plug-in は、 plug-in 開発用です。<br>
+非終端記号と二項演算子の定義を容易にするために、
+以下の２つのマクロを提供します。
+<pre>
+        defineNonTerminal(NonTerminalName, DefaultValue);
+        defineBinaryOperator(SystemMixinNAME, Token, PRECEDENCE);
+</pre>
+
+
+<hr>
+<A HREF="http://www.etl.go.jp/‾epp">
+        To Home Page of EPP</A>

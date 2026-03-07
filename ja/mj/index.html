@@ -1,0 +1,244 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<link rel="stylesheet" type="text/css" href="./style.css">
+<title> プログラミング言語 MixJuice </title>
+</head> <body>
+<div class="header-link">
+[<a href="index.html">MJ Top page</a>]
+[<a href="site-map.html">Site map</a>]
+</div>
+<h1>プログラミング言語 MixJuice</h1>
+<ul class="headers">
+</p></ul><p>
+</p><p>
+<table width="95%"  style="font-size:x-small">
+<tr><td>
+<a href="doc/whats-new.html">更新情報</a><br>
+<a href="doc/index.html">ドキュメント</a><br>
+<a href="demo.html">デモアプレット</a><br>
+<a href="http://groups.yahoo.co.jp/group/mj-language/">mj-language ML</a><br>
+<a href="http://groups.yahoo.co.jp/group/aosd-jp/">aosd-jp ML</a><br>
+</td><td>
+<table cellspacing=0 cellpadding=2 border=1 bgcolor="#FFFFCC"><tr><td>
+<center>
+<a href="http://groups.yahoo.co.jp/group/mj-language/">
+<img src="http://www.egroups.co.jp/img/ui/join.gif" border=0><br>
+<div style="font-size:x-small">mj-language ML に参加しませんか？</div>
+</a>
+</center>
+</td><td>
+</p><p>
+<center>
+<a href="http://groups.yahoo.co.jp/group/aosd-jp/">
+<img src="http://www.egroups.co.jp/img/ui/join.gif" border=0><br>
+<div style="font-size:x-small">aosd-jp ML に参加しませんか？</div>
+</a>
+</center>
+</td>
+</tr></table>
+</p><p>
+</p><p>
+</td><td>
+<div align=right style="font-size:small">
+<a href="../../mj/index.html">[ English page ]</a>
+</div>
+</td>
+</tr>
+</table>
+</p><p>
+</p><p>
+MixJuice （以下 MJ と略） は、Java 言語を改良した言語です。
+最大の特徴は「差分ベースモジュール」と呼ぶモジュール機構です。
+このモジュール機構は、 Java 言語のモジュール機構よりも
+はるかにシンプルであるにもかかわらず、
+プログラムの再利用性・拡張性・保守性をより向上させます。
+具体的には、 MJ のモジュール機構は以下の特長を持ちます。
+<ul>
+<li> 拡張性の高いアプリケーションが簡潔に書ける。
+<li> クラスとモジュールが直交しており、モジュール化の自由度が高い。
+例えば複数のクラスを横断するコラボレーションをモジュールとして
+切り出すことができる。
+<li> アプリケーションのエンドユーザが、
+実装の詳細を知らなくてもモジュールを組み合わせて使うことができる。
+</ul>
+</p><p>
+詳しくは、下記のドキュメントを御覧ください。
+<ol>
+<li>「オブジェクトの広場」解説記事<br>
+<a href="http://www.ogis-ri.co.jp/otc/hiroba/technical/MixJuice/index.html">
+「オブジェクト指向言語は間違っていた！--- 新世紀言語 MixJuice ---」
+</a><br>
+<li>研究発表用スライド
+<A href="../../mj/papers/mj-20020830.pdf">mj-20020830.pdf</A> <br>
+<li>一杉裕志、田中哲：<br>
+「差分ベースモジュール：クラス独立なモジュール機構」<br>
+産業技術総合研究所テクニカルリポート AIST01-J00002-1, Dec. 2001.
+<a href="../../doc/AIST01-J00002-1.pdf">
+AIST01-J00002-1.pdf</a><br><br>
+<li><a href="doc/index.html">MJ ドキュメント</a><br>
+<li><a href="doc/faq.html">FAQ</a>
+<li><a href="design-pattern/index.html">
+MixJuice によるデザインパターン改善カタログ（日本語版）</a><font COLOR="red"> [New !]</font>、
+<a href="http://cvs.m17n.org/~akr/mj/design-pattern/en/">（英語版）
+</a>
+<li>レイヤードクラス図 <a href="../../mj/papers/lclass-diag-20021030.pdf">lclass-diag-20021030.pdf</a>
+<li><a href="../../mj/2003/index.html">2003年度作成のソフトウエアおよびドキュメント</a><font COLOR="red"> [New !]</font><br>
+</ol>
+</p><p>
+</p><p>
+<hr>
+<div style="font-size:large">ダウンロード</div>
+<ul>
+<li> Windows 版（cygwin 不要）<font COLOR="red"> [New !]</font><br>
+コマンドプロンプトから MixJuice の開発用コマンドが実行できます。
+<ul>
+<li>MixJuice 1.1 インストーラ mj.msi </li>
+<li><a href="../../mj/2003/msi/doc/install_ja.html">インストールマニュアル</a></li>
+</ul>
+</li>
+<li> Unix 版 <br>
+Unix 版 MixJuice 1.1 は下記の環境で操作確認しています。<br>
+<ul>
+<li>linux, IBM JDK1.1.8
+<li>linux, Sun j2sdk1.4.1_01
+<li>Windows2000, cygwin 1.3.16-1, Sun JDK1.2.2
+</ul>
+<p>
+Zip ファイルを展開すると <tt>mj</tt> というディレクトリができます。
+ディレクトリ <tt>mj/bin</tt> を <tt>PATH</tt> に追加して下さい。
+<tt>CLASSPATH</tt> の設定は不要です。
+</p>
+<p>
+<a href="../../mj/download/mj-1.1.zip">mj-1.1.zip</a> (2003-01-17)</li>
+<li><a href="form.html">MixJuice の License</a></li>
+</ul>
+</p><p>
+<hr>
+<div style="font-size:large">デモアプレット</div>
+<p>
+<a href="demo.html">ドローツール、コーヒーカップ</a><br>
+<a href="../../mj/2003/sweeper/sweeper_demo_ja.html">掃除ロボット シミュレーション</a> <font COLOR="red"> [New !]</font><br>
+</p><p>
+<hr>
+<div style="font-size:large">大規模ソフトウエアのMixJuiceへの移植実験のレポート</div>
+ <p>
+比較的大規模な既存のオープンソースJavaアプリケーション Grappa のMixJuiceへの移植実験を行い、
+ MixJuice が有する差分ベースモジュールの評価を行いました。 
+</p><p>
+   <a href="../../mj/2003/mjGrappa/index_ja.html">GrappaのMixJuiceへの移植実験レポート</a><font COLOR="red"> [New !]</font><br>
+    </p>
+<hr>
+</p>
+<div style="font-size:large">差分ベースモジュール for emacs-lisp</div>
+</p><p>
+emacs-lisp 用差分ベースモジュールを作ってみました。
+まだ実用的ではありませんが、 Java 言語以外にも差分ベースモジュールが
+適用可能であることを示す一例になっています。<br>
+<a href="../../mj/dm-elisp/index.html">dm-elisp</a>
+</p><p>
+</p><p>
+<hr>
+<div style="font-size:large">論文</div>
+</p><p>
+<ul>
+</p><p>
+<li>一杉裕志、田中哲、渡部卓雄：<br>
+「拡張ルール：安全に結合可能なアスペクトの記述ルール」<br>
+<a href="http://wwwfun.kurims.kyoto-u.ac.jp/~nisimura/ppl2003/">PPL2003</a> 
+発表資料, Mar, 2003.
+<A href="../../mj/papers/ppl2003.pdf">ppl2003.pdf</A><br>
+<li>Yuuji Ichisugi, Akira Tanaka, Takuo WATANABE:<br>
+"Extension Rules: Description Rules for Safely Composable Aspects"<br>
+Technical Report of National Institute of Advanced Industrial Science and Technology(AIST), AIST01-J00002-4, Feb 2003.
+<A href="../../mj/papers/tr2003.pdf">tr2003.pdf</A><br>
+</p><p>
+<li>一杉裕志<br>
+「pxml plug-in チュートリアル」
+<a href="http://www.apgrid.org/sat/japanese/jigyoannnai/2002event/show2gaiyou.html">
+つくばテクノロジーショーケース</a> 配布資料, Jan 2003.
+<A href="../../mj/papers/pxml20030130.txt">pxml20030130.txt</A><br>
+</p><p>
+<li>一杉裕志、田中哲、渡部卓雄：<br>
+「安全に結合可能な mixin を提供するためのルール」,
+コンピュータソフトウエア, Vol.20, No.3(2003), pp.80--87. 
+</p><p>
+<li>田中哲、一杉裕志:<br>
+「MixJuice 言語によるデザインパターンの改善」,
+情報処理学会論文誌：プログラミング, Vol.44 No.SIG 4(PRO 17), pp25--46, Mar. 2003. 
+</p><p>
+<li>田中哲、一杉裕志:<br>
+「MixJuice 言語によるデザインパターンの改善」<br>
+情報処理学会プログラミング言語研究会 発表資料, Oct. 2002.
+<A href="../../mj/papers/pro200210.pdf">pro200210.pdf</A>
+ （スライド <A href="../../mj/papers/pro200210slides.pdf">pro200210slides.pdf</A>）
+<li>一杉裕志、田中哲、渡部卓雄：<br>
+「安全に結合可能なアスペクトを提供するためのルール」<br>
+<a href="http://www.iplab.is.tsukuba.ac.jp/jssst2002/">ソフトウエア科学会第１９回大会</a>, Sep. 2002.
+<A href="../../mj/papers/mj-jssst2002.pdf">mj-jssst2002.pdf</A>
+ （スライド <A href="../../mj/papers/mj-jssst20020911.pdf">mj-jssst20020911.pdf</A>）
+<li>Yuuji Ichisugi, Akira Tanaka:<br>
+"Difference-Based Modules: A Class-Independent Module Mechanism",<br>
+In Proc. of  <a href="http://www.ecoop2002.lcc.uma.es/">ECOOP 2002</a>,
+<a href="http://link.springer.de/link/service/series/0558/tocs/t2374.htm">LNCS 2374</a>, June 2002.
+<A href="../../mj/papers/ecoop2002-en.pdf">ecoop2002-en.pdf</A>
+<li>一杉裕志：<br>
+「シンプルかつ強力なモジュール機構を有する
+オブジェクト指向言語 MixJuice の提案」<br>
+コンピュータソフトウエア, Vol.18,No.6(2001),pp.54--58.
+<br>
+<li>田中哲、一杉裕志：<br>
+「プログラミング言語 MixJuice による HTTP server のモジュール化」<br>
+<a href="http://www.fun.ac.jp/jssst2001/">ソフトウエア科学会第１８回大会</a>, Sep. 2001.
+<A href="../../mj/papers/mj-jssst2001.pdf">mj-jssst2001.pdf</A><br>
+<li>一杉裕志：<br>
+「シンプルかつ強力なモジュール機構を有する
+オブジェクト指向言語 MixJuice の提案」<br>
+ソフトウエア科学会第１７回大会, Sep. 2000.
+<A href="../../mj/papers/mj-jssst2000.pdf">mj-jssst2000.pdf</A><br>
+</ul>
+</p><p>
+</p><p>
+</p><p>
+<hr>
+<div style="font-size:large">研究・開発の目的</div>
+</p><p>
+ MJ は「部品化された言語処理系」の実装用言語として開発を始めました。
+また、広い意味でのアスペクト指向プログラミングを
+支援する汎用言語でもあります。
+詳しくは、下記のページを御覧ください。
+<ol>
+<li><a href="language.html">言語処理系の部品化</a>
+<li><a href="soc.html">アスペクト指向言語、separation of concerns 関連研究メモ</a>
+<li> Aspect-Oriented Software Development <a href="http://aosd.net">http://aosd.net</a>
+</ol>
+</p><p>
+</p><p>
+</p><p>
+<hr>
+<div style="font-size:large">プロジェクトスタッフ</div>
+</p><p>
+<ul>
+<li><a href="http://www.aist.go.jp/index_j.html">
+<img src="images/aist-logo-s.gif" alt="aist-logo" border=0></a> 
+産業技術総合研究所 情報処理研究部門 ／ <br>
+<a href="http://www.jst.go.jp/">
+<img src="images/jst-logo-s.gif" alt="jst-logo" border=0></a> 
+科学技術振興事業団 さきがけ研究２１ 元 研究員
+一杉裕志<br>
+<li>産業技術総合研究所 情報処理研究部門 田中哲<br>
+</ul>
+</p><hr>
+<table width="100%"> <tr><td>
+<img src="images/img002.gif" alt="mj-logo">
+</td><td>
+<div class="last-update"> Last updated: 
+ 2004-09-03
+</div>
+<div class="header-link">
+[<a href="index.html">MJ Top page</a>]
+[<a href="site-map.html">Site map</a>]
+</div>
+</td></table>
+</body></html>

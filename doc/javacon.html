@@ -1,0 +1,609 @@
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-2022-jp">
+  <TITLE>EPP:Extensible Java Preprocessor Kit</TITLE>
+</HEAD>
+<BODY>
+
+
+<H2 ALIGN=CENTER> 
+技術部門:<br>
+拡張可能 Java プリプロセッサキット EPP<BR>一杉裕志<BR>電子技術総合研究所
+<BR>ichisugi@etl.go.jp
+</H2>
+
+<HR>
+
+<H2> <a name="overview">1.応募の技術的主張の概要 </a> </H2>
+拡張可能 Java プリプロセッサキット <a href="#epp-home">EPP</a> は、
+次の２通りの使い方ができるシステムである。
+
+<UL>
+<LI> Java 言語を拡張するためのプリプロセッサ<br>
+ EPP は Java ソースコードをパーズし、いったん構文解析したあと、
+ふたたび Java のソースコードを出力するプリプロセッサである。
+ EPP それ自体は、入力プログラムの意味を変えずに出力する
+「何もしない」プリプロセッサである。
+しかし、ユーザは、EPP に入力するソースコードの先頭で、
+ EPP plugin を指定することにより、 EPP の動作を変更・拡張することができる。
+これにより Java 言語を拡張することができる。
+
+<p>
+EPP plugin は複数
+同時に指定することもできる。
+ plugin どうしの衝突による不具合が起きにくいスタイルで、
+個々の plugin が実装されている。
+
+<p>
+ EPP plugin の簡単な例として現在以下のようなものがある。
+（詳しくは<a href="http://www.etl.go.jp/etl/bunsan/~ichisugi/epp-examples">
+http://www.etl.go.jp/etl/bunsan/~ichisugi/epp-examples</a>）
+いずれも１００行程度の記述で実現されている。
+
+<UL>
+<LI> enum :<br> 連続した整数値を持つ定数定義を容易にする。
+<LI> Optional Arguments :<br> C++ と同様に、省略可能な引数を持つ
+メソッド定義を可能にする。
+<LI> ファイル自動分割 :<br>
+ 複数の public, friendly なクラスを１つのファイルに
+まとめて書けるようにする。
+<LI> swap マクロ
+<LI> assert マクロ
+<LI> JPP 風演算子オーバーロード :<br>
+  a (+) b  という式を  a.plus(b) に変換する、など。
+<LI> Symbol :<br> Lisp の symbol のようなものを提供する。
+<LI> 疑似 call by reference :<br> 
+C のように foo(&amp x) という呼び出しを可能にする。
+<LI> Python 風比較演算子 :<br> 
+if (0 &lt= a &lt 100) ... のような記述を可能にする。
+<LI> defmacro :<br> ソースコード上での簡単なマクロ定義を可能にする。
+</UL>
+
+<p>
+また、より複雑な EPP plugin の例として以下の２つがある。
+いずれも５００行程度のトランスレータと
+Java で書かれた runtime system によって実装されている。
+
+<ul>
+<li> <a href="#swopp97">Tiny DataParallel Java[7]</a> <br>
+これは Hatcher and Quinn の <a href="#dataparallel-c">DataParallel C[4]</a>
+ と同様のデータ並列モデルに
+基づく並列言語である。
+Tiny DataParallel Java のソースコードは、 thread 生成や同期のコードを
+埋め込んだ Java プログラムに変換される。
+
+<li> System Mixin <br>
+ソフトウエア部品の再利用性を高める
+<a href="#sec32">system mixin</a>
+ と呼ぶ特殊な継承機構を Java に入れる plugin である。
+</ul>
+
+
+<LI> Java プログラムのソースコード操作ツール<br>
+EPP は既存の Java ソースコードに対して何らかの処理を行なうツールの
+フレームワークとして用いることができる。
+
+<p>
+例として、 Java プログラム難読化ツールを作成した。
+これは、 private な method,field 名とローカル変数名を無意味な
+名前に置き換えることにより、
+ソースコードの解読を難しくするものである。
+他の応用例として、
+<a href="#ichisugi97prosym-s">ソフトウエア電子すかし[8]</a>、
+ソースレベル最適化、クロスリファレンス作成などが考えられる。
+</UL>
+
+
+EPP は以下の技術的特長を持つ。
+<ul>
+<li> EPP plugin は system mixin と呼ぶ特殊な継承機構を持つ
+オブジェクト指向言語で書かれる。
+plugin はオリジナルの EPP に対する差分を記述したものであるため、
+複数組み合わせて使うことが可能である。
+また、 plugin 単位で分割コンパイルしておくことができる。
+<li> EPP のパーザは、広範囲の文法拡張が可能な設計になっている。
+<li> 構文解析木のフォーマットはシンプルで、 EPP plugin から
+操作しやすい構造である。
+<li> EPP のアーキテクチャは、他の言語のプリプロセッサにも応用できる。
+特に、 C 言語のプリプロセッサは、 EPP のほとんどの部品を再利用して
+容易に構築できると思われる。
+</ul>
+
+
+<hr>
+<h2> <a name="background">2. 応募の背景 </h2>
+
+<h3> <a name="sec21"> 2.1. Java の言語拡張機能の必要性 </a> </h3>
+
+Java はシンプルで優れた言語であるが、
+言語機能を拡張するための機構はほとんど持たない。
+
+<p>
+クラスおよび継承機構は、
+プログラムが扱うデータ構造を拡張するための強力な機構であるが、
+古くからある他のオブジェクト指向言語は、
+それに加えて制御構造や演算子を拡張する機能も持っている。
+C++ はプリプロセッサ、演算子オーバーロード、 Template などの機能を
+持っているし、 Smalltalk や CLOS は closure や metaobject の機構を持っている。
+つまり、これらの言語はデータ構造、制御構造、演算子のそれぞれを
+拡張する機構を備えている。
+
+<p>
+これらの言語拡張機能なしでは、
+使いやすい形でのライブラリ提供は不可能である。
+例えば行列を表すクラスがある場合、 add(m1, m2) という記述よりは
+m1 + m2 の方が明らかに分かりやすい。
+行列演算を多用するアプリケーションにとっては、
+この種の「シンタックスシュガー」が、記述性・保守性向上のために不可欠である。
+
+<p>
+Java に対する言語拡張機能が強く求められているもう１つの例として、
+分散・並列アプリケーションがある。
+Java は標準で socket, thread, 同期などの機構を可搬性の高い形で提供している。
+しかしこれらの機構は低レベルであるため、エンドユーザにとっては
+必ずしも使いやすいものではない。
+より高レベルで使いやすい並列言語機構を提供するためには、
+構文等を拡張する機能が必要である。
+
+
+
+<h3> <a name="sec22"> 2.2. 従来技術 </a> </h3>
+
+ Java 言語に言語拡張の機能を提供する従来技術としては以下のようなものがある。
+<UL>
+ <LI> <a href="http://www.digiserve.com/nshaylor">JPP</a> :
+ 演算子オーバーロード、 closure などを提供する。
+ <LI> <a href="http://wwwipd.ira.uka.de/~pizza">Pizza</a> :
+ C++ の Template, closure, 代数的型定義の機能を提供する。
+ <LI> <a href="http://ourworld.compuserve.com/homepages/DeHoeffner/jump.htm">
+JUMP</a> :
+ C++ と同様の Template 、演算子オーバーロードなどを提供する。
+ <LI> <a href="#jtrans-framework">JTRANS[6]</a> :
+ 項書き換え規則によるマクロ定義の機構を提供する。
+
+</UL>
+
+これらのシステムが提供する機能は Java の欠点を補うものの、
+新たな並列構文の導入などが行なえるほど強力ではない。
+しかも、これらの拡張機能は「だきあわせ」の形でしか提供されていない。
+例えば Pizza の Template と JPP の演算子オーバーロードの
+両方を使おうと思っても不可能である。
+ 利用者は、プロジェクトの早い段階で使う処理系を選択しなければならず、
+しかも一旦選択したら他の機能を利用することはもはや不可能になってしまう。
+
+<p>
+ また、 Java 以外の言語、特に C++ に関して、強力な
+言語拡張機能を提供する研究として、
+<a href="#mpc++">MPC++[5]</a> 、 <a href="#open-c++2">Open C++[2]</a> 、
+<a href="http://www.dcs.kcl.ac.uk/Future_Directions/">EC++</a>
+などがある。
+これらのシステムは、言語拡張をモジュールの形で提供できるので、
+エンドユーザは自分が使いたい拡張機能を複数選んで使うことができる。
+しかし、いずれも文法拡張の範囲は制限されている。
+
+
+
+
+<hr>
+<h2> <a name="background">3. 応募の構成・新規性・有用性 </a> </H2>
+
+<h3> <a name="sec31"> 3.1. EPPの構成 </a> </h3>
+ EPP は、ソフトウエア部品の再利用性・拡張性を高める
+<a href = "#ld-2-manual">system mixin[10]</a> と
+呼ぶ特殊な継承機構を持ったオブジェクト指向言語
+ Ld-2 によって書かれている。
+Ld-2 は現在 Common Lisp の上に実装されている（<a href="#fig1"> 図1 </a>）。
+（なお、現在 EPP を全て Java で書き直す作業を行なっている。）
+
+<p>
+EPP の中心部では、構文解析木の構造と、プリプロセッサが持つ３つのパス
+（構文解析パス、マクロ展開パス、出力パス）の枠組を定義している。
+EPP plugin は、この部分に変更を加えることで、
+構文解析木のフォーマットを拡張したり、
+新たなパスを追加したりすることができる。
+特に、出力パスの直前に新たなパスを追加することで、ソースコードに対して
+大域的な変換を施す plugin が実装できる。
+
+<p>
+ EPP の Java パーザは、 Yacc などのツールは使わず、
+基本的に再帰下降<a href="#dragon">[1]</a>のスタイルで書かれている。
+文法は、 Java 言語仕様書<a href="#jls1">[3]</a>を元にしている。
+パーザ部には、
+差分的拡張を想定した "hook" がメソッドの形で多く埋め込んである。
+例えば、 exp-left という名前のメソッドは、非終端記号 Expression に、
+左結合演算子の文法ルールを追加するための hook である。
+同様に右結合、前置、後置演算子のための hook がほとんど全ての
+非終端記号ごとに定義されている。
+（<a href="#appendix">付録</a>のプログラムは、
+ EPP と同じスタイルで記述したパーザの一部である。）
+
+<p>
+EPP plugin は、パーザ部が持つメソッドを
+継承によって拡張することで、文法を拡張し、
+新しい構文や演算子を導入することができる。
+そして、追加した抽象構文木に対するマクロ展開関数を追加することで、
+新たな言語機能を実現できる。
+
+
+<a name="fig1"></a>
+<p align=center>
+<table border>
+<tr> <th> (Application Programs) </th> </tr>
+<tr> <th> EPP Plugins </th> </tr>
+<tr> <th> Java Grammar Rules (1957lines) </th> </tr>
+<tr> <th> EPP Micro Core (597 lines) </th> </tr>
+<tr> <th> Object-Oriented Language Ld-2 (764 lines) </th> </tr>
+<tr> <th> Common Lisp </th> </tr>
+</table>
+<br><strong>図1:</strong> EPP の構成</a>
+
+
+<h3> <a name="sec32"> 3.2. System Mixin </a> </h3>
+EPP の記述言語 Ld-2 が持つ <a href = "#ld-2-manual">system mixin[10]</a> と
+呼ぶ継承機構について
+簡単に説明する。
+
+<p>
+system mixin は、オリジナルのソースコードに対する差分だけを
+抜き出した patch file のようなものである。
+複数の system mixin が、アプリケーションの起動時に１列につなぎ合わされ、
+１つの完全なシステムになってから、実行される。
+通常のオブジェクト指向言語の継承と違うのは、
+継承の単位がクラスではなく、クラス階層全体、つまりシステム全体である、
+という点である。
+また、 C++ などの継承では subclass を定義する時に super class を
+静的に指定するが、 system mixin の定義時にはオリジナルのソースコードは
+指定しない。この点は CLOS での mixin を使った記述スタイルと似ている。
+
+<p>
+EPP plugin は、この system mixin を定義するファイルである。
+EPP は起動されると、指定された system mixin を標準の Java プリプロセッサに
+加えることで、「拡張された」 Java プリプロセッサを構築する。
+そしてそれを起動し、プリプロセスを開始する。
+
+
+
+
+
+
+<h3> <a name="sec33"> 3.3. EPP の利点 </a> </h3>
+EPP は、同様の他の言語拡張ツールや Yacc などの Parser generator と比較して
+次のような利点を持つ。
+
+<UL>
+ <LI> 複数の拡張を組み合わせることが容易。<br>
+最初から部品の組み合わせを重視して設計されている言語 Ld-2 を記述言語として
+用いているため、組み合わせの自由度の高い plugin が作成可能である。
+
+ <LI> 広範囲の文法拡張が可能。<br>
+文法ルールの記述は制限された宣言的記述ではなく、
+手続き型言語で行なわれているため、
+バックトラックや文脈依存など、 ad hoc なテクニックが自由に行なえる。
+
+ <LI> 抽象構文木に対する操作が容易。<br>
+抽象構文木は list で表現されているため、 lisp が持つ豊富な
+list 操作ライブラリ関数等によって、木に対する操作が容易に行なえる。
+また、木のフォーマットはシンプルであるため、再帰的処理が簡単に行なえる。
+
+</UL>
+
+
+<h3> <a name="sec34"> 3.4. EPP on Java とその利点 </a> </h3>
+先に述べたように、現在 EPP をすべて Java で書き直している。
+
+<a href="#appendix">付録</a>のプログラム例は、
+ System Mixin plugin および Symbol plugin を追加した
+Java を用いて書いた再帰下降パーザの一部である。
+この例と同じスタイルで、 EPP を書き直す予定である。
+これが完了すると、次のような大きな利点がある。
+
+<ul>
+<li> Java が動くすべての環境で、 EPP および plugin の動作が保証される。
+従来は、処理系ごとの言語仕様の独自拡張は
+ portability の問題からユーザに敬遠されていた。
+しかし、 EPP plugin による言語拡張は、普通の Java プログラムと同様の
+portability を持つことになる。
+したがって、通常のライブラリと同じ手軽さで流通・利用され得ると
+考えられる。
+
+<li> System Mixin 単位での分割コンパイルが可能なので、
+ Plugin のバイトコードによる配布が可能である。
+つまり、 EPP を使って開発した高度な言語拡張 plugin を、
+ソースコードを非公開にしたまま商品化することも可能となる。
+便利な言語機能は、他の言語機能や特定の言語処理系と「だきあわせ」しなくても、
+それ単体で普及させることができるため、競争原理が健全に働き、
+言語機能の高度化・多様化が促進される。
+
+<li>  Lisp の backquote macro 相当する機能や
+pattern matching の機能を追加する plugin を提供する予定である。
+これを用いれば、抽象構文木の具体的な構造を意識しなくても
+木に対する操作が記述できるため、 plugin の記述がはるかに容易になる。
+</ul>
+
+
+<hr>
+<h2> <a name="examples">4. 応募システムの実行例 </a> </H2>
+ EPP plugin を用いた Java プログラムの例を２つ紹介する。
+その他の plugin の実行例については 
+<a href="http://www.etl.go.jp/etl/bunsan/~ichisugi/epp-examples">
+http://www.etl.go.jp/etl/bunsan/~ichisugi/epp-examples</a>
+から参照することができる。
+
+<p>
+まず、 Python 風比較演算子の plugin を使ったプログラム例である。
+この plugin は、 0 &lt= a &lt 100 といった記述を可能にする。
+先頭の #epp ではじまる行で、取り込む plugin を指定している。
+この plugin は、オリジナルの Java の比較演算子の文法ルールを取り除き、
+独自の文法ルールとマクロ展開関数を追加することで実現されている。
+
+<pre>
+#epp load "pcompare"
+public class test {
+  public static void main(String[] argv){
+    int a = 10;
+    if (0 &lt= a &lt 100) System.out.println("Correct!");
+  }
+}
+</pre>
+
+ このプログラムは、次のようなプログラムに変換される。
+（一時変数 T0 は、 a の値が複数回評価されないために必要。）
+<pre>
+public class test {
+  public static void main(String argv[]){
+    int a = 10; int T0; 
+    if((((0) &lt= (T0 = (a))) && ((T0) &lt (100))))
+       System.out.println("Correct!");
+  }
+}
+</pre>
+
+なお、この例では見やすくするため改行を入れているが、
+ EPP のデフォルトの動作では、
+オリジナルのソースファイルの行をできるだけ変えずに出力する。
+これは、プログラムの symbolic debug を容易にするためである。
+
+<p>
+ 次は Tiny Data-Parallel Java plugin を使って、
+区分求積によって円周率を計算するプログラム例である。
+プログラマーから見ると、
+parallel という modifier を指定した class の
+メソッド run が、コンストラクタで指定された個数の細粒度の仮想プロセッサ上で、
+同期をとって実行されるように見える。
+（なお、メソッド run の中では、
+ if 文、 while 文、遠隔代入・遠隔参照なども実行できる。）
+
+<pre>
+#epp load "datap01"
+
+public class CalcPi {
+  public static void main(String argv[]){
+    int num = Integer.parseInt(argv[0]);       // 仮想プロセッサの数
+    DpCalcPi.PE_n = Integer.parseInt(argv[1]); // 実行する Java スレッドの数
+    System.out.println("Start execution on "+DpCalcPi.PE_n+" Java threads.");
+
+    DpCalcPi.width = 1.0 / num;
+    DpCalcPi p = new DpCalcPi(num); // 仮想プロセッサの生成
+    p.run();             // 並列実行
+    System.out.println(DpCalcPi.result * DpCalcPi.width);
+  }
+}
+
+// parallel という modifier のあるクラスは、特別に処理される。
+parallel class DpCalcPi {
+  static double result;  // 単一変数：全ての仮想プロセッサから共有される
+  static double width;   // 単一変数
+  double x;              // 並列変数：仮想プロセッサごとに別の値を持つ
+  // データ並列メソッド
+  public void run(){
+    x = (VPID() + 0.5) * width;
+    // reduction operator 。値の総和を result に代入。
+    set_sum(result, 4.0 / (1.0 + x * x)); 
+  }
+}
+</pre>
+
+
+変換結果のプログラムの一部は以下のようになる。
+実行時に、指定された数の Java スレッドが生成され、
+メソッド run が並列に実行される。
+プログラマから見た細粒度の仮想プロセッサは
+個々のスレッドに割り当てられ、 for 文によって
+エミュレートされる。以下の環境で並列実行が確かめられている。
+<ul>
+<li> JDK, Windows NT4.0, 2 processors Pentium Pro machine.
+<li> <a href="http://www.cs.arizona.edu/sumatra/toba/">Toba</a>
+ (Java to C translator の１つ), Solaris2.5, 32 processors CRAY CS6400.
+</ul>
+
+<pre>
+  public void run(){
+    ...
+    for (vpi = (0); (vpi) &lt (vpn); vpi++) {
+      (vp_x)[vpi] = (((VPID(vpi)) + (0.5)) * (width));
+      }
+    sync(); 
+    for (vpi = (0); (vpi) &lt (vpn); vpi++) {
+      {
+        T_sum = (0.0); 
+        for (vpi = (0); (vpi) &lt (vpn); vpi++)
+           T_sum += ((4.0) / ((1.0) + (((vp_x)[vpi]) * ((vp_x)[vpi])))); 
+        break; 
+        } 
+      } 
+    sync(); 
+    for (vpi = (0); (vpi) &lt (vpn); vpi++) {
+      {
+        if ((PE_i) == (0)) result = (calc_sum()); else ; 
+        break; 
+        } 
+      } 
+    ...
+  }
+</pre>
+
+
+<hr>
+<h2> <a name="background">5. まとめ </a> </H2>
+拡張可能 Java プリプロセッサキット EPP について述べた。
+Java は優れた言語であるが、言語機能や構文を拡張する機能を全く持たない。
+EPP はこの欠点を補い、様々な新しい言語機能や、
+使いやすいライブラリを提供することを可能にする。
+
+
+<hr>
+<H2><A NAME="reference">参考文献</A></H2>
+
+<DL COMPACT>
+
+<dt> <a name="dragon"><strong> [1] </strong> </a><dd>
+A.V. Aho, R.Sethi, and J.D. Ullmann.
+Compilers: Principles, Techniques and Tools.
+ Addison-Wesley Publishing company, 1987.
+
+<dt> <a name="open-c++2"><strong> [2] </strong> </a><dd>
+Chiba, S.:
+"A Metaobject Protocol for C++",
+In Proc. of OOSPLA'95, pp.285--299, 1995.
+
+
+<dt> <a name="jls1"><strong> [3] </strong> </a><dd>
+J.Gosling, B.Joy, and Steele. G.
+The Java Language Specification.
+Java Series. Sun Microsystems, 1996.
+
+<dt> <a name="dataparallel-c"><strong> [4] </strong> </a><dd>
+Hatcher, P.J. and Quinn, M.J.:
+"Data-Parallel Programming on MIMD Computers",
+MIT Press, 1991.
+
+<dt> <a name="mpc++"><strong> [5] </strong> </a><dd>
+ Ishikawa, Y.:
+"Meta-level Architecture for Extendable C++ Draft Document",
+Technical Report TR-94024, RWCP, 1994.
+
+<dt> <a name="jtrans-framework"><strong> [6] </strong> </a><dd>
+Kumeta, A. and Komuro, M.:
+"Meta-Programming Framework for Java",
+The 12th workshop of object oriented computing WOOC'97,
+Japan Society of Software Science and Technology, March, 1997.
+
+<dt> <a name="swopp97"><strong> [7] </strong> </a><dd>
+Yves Roudier, Yuuji Ichisugi:
+"Java Data-parallel Programming using an Extensible Java Preprocessor",
+SWoPP'97.
+
+<dt> <a name="ichisugi97prosym-s"><strong> [8] </strong> </a><dd>
+一杉裕志:
+"ソフトウエア電子すかしの挿入法、攻撃法、評価法、実装法"
+夏のプログラミングシンポジウム, July, 1997.
+
+<dt> <a name="epp-home"><strong> [9] </strong> </a><dd>
+一杉裕志：
+EPP and Lods home page.<br>
+<a href="http://www.etl.go.jp/etl/bunsan/~ichisugi">
+http://www.etl.go.jp/etl/bunsan/~ichisugi</a>
+
+<dt> <a name="ld-2-manual"><strong> [10] </strong> </a><dd>
+一杉裕志:
+"オブジェクト指向言語 Ld-2 ユーザーズマニュアル (DRAFT)",
+can be obtained from <a href="#epp-home"> EPP and Lods home page</a>,
+ 1997.
+
+</DL> 
+
+
+
+<hr>
+<H2><A NAME="appendix">付録：System Mixin を使ったパーザ記述の例</A></H2>
+
+このプログラム例は、 System Mixin plugin および Symbol plugin を追加した
+Java を用いて書いた再帰下降パーザの一部である。
+<a href="#sec34">3.4節</a>で述べたように、
+これと同様のスタイルで、現在 EPP の Java による書き直しを行なっている。
+なお、このパーザの完全なソースは、
+<a href="http://www.etl.go.jp/etl/bunsan/~ichisugi/epp-examples">
+http://www.etl.go.jp/etl/bunsan/~ichisugi/epp-examples</a>
+から参照できる。
+
+
+<pre>
+// 非終端記号 Exp の定義
+SystemMixin Exp {
+  class Parser {
+    // 式を構文解析して構文解析木を返すメソッド
+    define Object exp(){
+      Object tree = expTop();
+      Object newTree;
+      // 左再帰ルールが適用可能な間ループをまわる。
+      while (true){
+        newTree = expLeft(tree);
+        if (newTree == null) break;
+        tree = newTree;
+      }
+      return tree;
+    }
+    // 前置演算子のための hook 。
+    define Object expTop(){
+      return expRight(exp1());
+    }
+    // 右結合演算子のための hook 。
+    define Object expRight (Object tree) { return tree; }
+    // 左結合演算子、後置演算子のための hook 。
+    // このメソッドは、もし演算子があれば構文解析木を、なければ null を返す。
+    define Object expLeft (Object tree) { return null; }
+    // 次の優先度の非終端記号の構文解析を呼び出すメソッド。
+    define Object exp1 () { return term(); }
+  }
+}
+
+// 左結合２項演算子の定義例
+SystemMixin Plus {
+  class Parser {
+    // メソッド expLeft の拡張。
+    Object expLeft (Object tree) {
+      if (lookahead() == :"+") {
+        return Util.list(match(:"+"), tree, exp1());
+      } else {
+        // 「オリジナル」のメソッドを呼び出す。
+        return original(tree);
+      }
+    }
+  }
+}
+
+// 右結合２項演算子の定義例
+SystemMixin Assign {
+  class Parser {
+    Object expRight (Object tree) {
+      if (lookahead() == :"=") {
+        return Util.list(match(:"="), tree, exp());
+      } else {
+        return original(tree);
+      }
+    }
+  }
+}
+
+// 前置演算子の定義例
+SystemMixin PrePlusPlus {
+  class Parser {
+    Object factorTop () {
+      if (lookahead() == :"++") {
+        match(:"++");
+        return Util.list(:"pre++", factor());
+      } else {
+        return original();
+      }
+    }
+  }
+}
+</pre>
+
+<P>
+<HR>
+<A HREF="http://www.etl.go.jp/etl/bunsan/~ichisugi">
+        To Home Page of Yuuji Ichisugi</A>
+
+</BODY>
+</HTML>

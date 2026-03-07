@@ -1,0 +1,252 @@
+
+		The extensible Java pre-processor EPP 1.1.2
+
+
+							Yuuji ICHISUGI
+	National Institute of Advanced Industrial Science and Technology
+							2001-12-19
+
+
+What is EPP ?
+-------------
+ EPP is an extensible Java source-to-source pre-processor
+which can introduce new language features.
+
+The user can specify "EPP plug-ins" at the top of 
+Java source code in order to incorporate various extension of Java.
+Emitted source codes can be compiled by ordinary Java compilers,
+can be debugged by ordinary Java debuggers.
+
+ The source code of EPP is written in "Java extended by EPP" itself.
+The bootstapped byte-code is available in any platform
+where Java is supported.
+Plug-ins also work on any platform. Therefore,
+they can circulate and be used as casually as class libraries written in Java.
+
+ The newest version of EPP distribution package,
+explanation of plug-ins and related documents are available 
+from the following URL:
+
+	http://staff.aist.go.jp/y-ichisugi/epp/
+	http://staff.aist.go.jp/y-ichisugi/epp/edoc/
+	http://staff.aist.go.jp/y-ichisugi/
+
+
+System Requirement
+------------------
+ The EPP 1.1 was tested on the following environments.
+
+	Linux, IBM JDK1.1.8
+	Windows2000, Cygwin 1.3.2, Sun JDK1.2.2
+
+
+Directories
+-----------
+	epp/README			README, this file
+	epp/README-j			README in Japanese
+	epp/CopyrightAndLisencing.txt	Lisence
+
+	epp/doc/contributors		contributors
+
+	epp/unix/bin/			shell scripts for unix
+	epp/windows/bin/		shell scripts for gnu-win32 bash 
+	epp/windows/bin/epp.bat		a batch file for Windows
+
+	epp/jar/epp.jar			jar files of EPP and plug-ins
+
+	epp/src/level0/			EPP source files
+	epp/src/level1/			source files of plug-in library
+	epp/src/level1/test/		test programs for plug-in library
+	epp/src/sample/			sample plug-in source files
+	epp/src/sample/test/		test programs for sample plug-ins
+	epp/src/JavaClassAPI/		JavaClass API class files
+
+	epp/JavaSample/			sample of Java source, tree and output
+
+
+
+
+INSTALL
+-------
+ Do followings after JDK is installed.
+If you want to use EPP with JavaVM other than JDK,
+please edit the shell script EPP or the batch file EPP.BAT .
+
+1. For Unix users
+   --------------
+
+ Download the epp11x.zip and extract files.
+For example, if you type as follows, the directory "epp" will be created
+under your home directory.
+
+	% cd ~
+	% unzip epp11x.zip
+
+ Add the directory where EPP shell scripts exist to your PATH.
+For example, insert the following line into your ~/.cshrc file.
+
+	set path=(~/epp/unix/bin $path)
+
+ Set an environment variable CLASSPATH.
+For example, insert the following line into your ~/.cshrc file.
+
+	setenv CLASSPATH .:$HOME/epp/jar/epp.jar
+
+
+
+2. For Windows users
+   -----------------
+
+ Download the epp11x.zip and extract files
+under your root directory, for example.
+
+ Add the directory where EPP batch files exist to your PATH.
+For example, insert the following line into your \autoexec.bat file.
+(If you use Cygwin, add \epp\unix\bin .)
+
+	path \epp\windows\bin;%path%
+
+ Set an environment variable CLASSPATH.
+For example, insert the following line into your \autoexec.bat file.
+
+	set CLASSPATH=.;\epp\jar\epp.jar
+
+ If you use SDK for Java (jview), 
+add classes.zip or jdk1.2\jre\lib\rt.jar to your CLASSPATH explicitly.
+
+
+
+How to use EPP
+--------------
+1. Create a directory "eppout" at the directory where
+you will execute EPP.
+
+2. Write Java programs which uses EPP plug-ins.
+You can specify "#epp commands" in a Java source file.
+A #epp command is a line beginning with "#epp "
+and followed by a plug-in name.
+
+For example, if you want to use the "enum" plug-in in a Java source file,
+insert the following one line into the file.
+
+#epp jp.go.etl.epp.enum
+
+ If you insert white space character before #epp, the command will 
+become invalid and EPP will report an error.
+ #epp command will become comment if // is inserted before #epp.
+ Be careful that #epp commands will NOT become comment even if they are
+surrounded by /* */ .
+
+3. Execute EPP as follows.
+
+	epp File1.java File2.java ...
+
+EPP will emit translated files under the "eppout" directory.
+If EPP does not report errors, compile and execute the translated files.
+
+	cd eppout
+	javac *.java
+	java Xxx
+
+ You can specify -r option to translate all files contained
+in a directory.
+
+	epp -r dirname
+
+ There are some EPP test programs at the directory epp/plugins/src/test .
+You can translate and execute them.
+
+
+Options
+-------
+ The execution of epp with a -clear option will delete
+all "automatically generated files" under the "eppout" directory.
+Firstly, "epp -clear" will check all files
+contained in the "eppout" directory recursively
+whether all of them are automatically generated files or not.
+After the end of checking, files are deleted.
+If there is at least one file which seems not to be 
+a automatically generated file, the name of such files will be printed
+and epp will not delete any files.
+In that case, after confirmation by yourself whether the printed files are
+really useless files you want to delete,
+delete the files by yourself carefully.
+Then, try "epp -clear" again.
+ "epp -clear" will regard a file as an "automatically generated file" iff
+	Its file name ends with ".class"
+    or  Its file name ends with ".java" and the file begins with
+the string "/* Generated by EPP".
+
+
+ The execution of epp with no command line args will
+print a simple help message.
+
+% epp
+Usage: epp [options] file1.java file2.java...
+   or  epp [options] -r .
+
+Options:
+        -f              Force translation. (without time stamp checking)
+        -r dir          Translate Java files under the specified directories.
+        -clear          Clear files under eppout before translation.
+        -plug-in name   Add an extra plug-in at the end of the setup list.
+	...
+        -help,-?,/?     Print this message.
+
+
+
+Explanation of plug-ins
+-----------------------
+ Visit the EPP home page to obtain the explanation of
+plug-ins contained in the current distribution package.
+
+ Documents for plug-in programmers are not provided yet. Sorry.
+
+
+
+CAUTION
+-------
+ EPP will create files at the directory "eppout"
+and subdirectories of the "eppout".
+Do NOT put important files under the "eppout"
+because they may be overwritten.
+ In unix, making symbolic links under the "eppout" is also
+dangerous.
+
+ Please make backup of all important files
+before execution of EPP.
+
+
+
+JavaClass API
+-------------
+ EPP internally uses the package "JavaClass API" .
+ JavaClass is a LGPL class library for byte-code engineering,
+developed by Markus Dahm.
+See src/JavaClassAPI/README for more details.
+ To obtain full-set of class files, source files 
+and documents of JavaClass, please visit the following URLs.
+
+	http://www.inf.fu-berlin.de/~dahm/JavaClass/index.html
+or
+	http://staff.aist.go.jp/y-ichisugi/epp/JavaClass/JavaClass3.3.2.tar.gz
+
+
+ EPP does NOT contain all class files provided by JavaClass.
+ It only contains subset of class files required by EPP implementation.
+
+
+
+Copyright
+---------
+ This software is provided on an "AS IS" basis, without warranty
+of any kind.  See CopyrightAndLisencing.txt for more details.
+
+
+
+Contact
+-------
+ Questions, comments, bug reports are welcomed.
+The contact address is: 
+
+	y-ichisugi@aist.go.jp

@@ -1,0 +1,315 @@
+<HTML>
+<HEAD>
+<TITLE>EPP: An Extensible Pre-Processor Kit</TITLE>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<a href="j-index.html">[ Japanese ]</a><br>
+<img src="logo.GIF" ALT="logo">
+<h1>
+The extensible Java pre-processor EPP
+</h1>
+
+<h3 align="right">
+Yuuji ICHISUGI<br>
+National Institute of Advanced Industrial Science and Technology(AIST)
+</h3>
+
+
+<hr>
+<span style="color:#FF0000;font-weight:bold">
+<p>
+Sorry, I have stopped development of EPP.
+</p>
+</span>
+
+<hr>
+
+EPP is a powerful framework which supports implementation of the following tools:
+<ul>
+<li> Pre-processors which extend Java language
+<li> Java source-code analyzers (e.g. metrics tool, cross reference, ...)
+<li> Java source-code translators (e.g. source-level optimizer, obfuscator, ...)
+</ul>
+
+EPP has extensible parser and type-checker.
+Its architecture is powerful but simple and easy to understand,
+especially, if you have basic knowledge of lisp and compilers.
+
+<hr>
+<h3> Documents </h3>
+
+<p><a href="edoc/index.html">English documents(preliminary version)</a><br>
+
+<p><a href="doc/README-112">README</a> of EPP 1.1.2 <br>
+
+<p><a href="e-plug-in-doc.html">Explanation of EPP 1.0 plug-ins</a><br>
+
+<p><a href="epp20020606-e.pdf">Presentation slide</a><br>
+
+
+<h3>Download the newest version of EPP</h3>
+<a href="epp115.zip"> epp115.zip </a><br>
+
+
+<hr>
+<h3> What's new ?</h3>
+<p>
+2002-12-11 (EPP 1.1.5)<br>
+Shell scripts were slightly modified.<br>
+Type-checking of expressions like T.this, T.super.f, T.super.m(), exp.super()
+are now supported.
+
+<p>
+2002-04-23 (EPP 1.1.4)<br>
+Supports new classfile version of J2SE 1.4 .
+(<a href="JavaClass/jdk14.patch">patch</a> for JavaClass3.3.2 )
+
+<p>
+2001-12-20 (EPP 1.1.3)<br>
+Now, " byte b = 'c'; " passes the EPP type-checking pass.
+
+<p>
+2001-12-19 (EPP 1.1.2)<br>
+Built-in type NullOr&lt;T&gt; and ifNull statement
+was added to Collection plug-in.
+
+<p>
+2001-07-31 (EPP 1.1.1)<br>
+JDK14assert plug-in was added.
+Using this plug-in, EPP accepts JDK 1.4 assert statements. <br>
+Shell scripts now support cygwin1.3.2 .
+The older versions of cygwin are no longer supported. <br>
+Output encoding bug was fixed.
+
+<p>
+2001-05-14 (EPP 1.1.0)<br>
+EPP 1.1.0 became non-beta version.<br>
+Shell scripts were slightly modified.<br>
+
+<p>
+2001-04-11 (EPP 1.1.0 beta 15)<br>
+Collection plug-in was added.<br>
+
+<p>
+2000-09-03 (EPP 1.1.0 beta 14)<br>
+JavaClass included in epp.jar is updated to version 3.3.2 .<br>
+
+<p>
+2000-06-09 (EPP 1.1.0 beta 13)<br>
+Small bugs were fixed.<br>
+
+<p>
+2000-02-29 (EPP 1.1.0 beta 12)<br>
+Small bugs were fixed.<br>
+
+<p>
+1999-11-20 (EPP 1.1.0 beta 11)<br>
+-encoding and -target-classpath options were added.<br>
+From this version, you do not have to add rt.jar to your CLASSPATH explicitly
+if you are using JDK1.2 .<br>
+
+<p>
+1999-11-05 (EPP 1.1.0 beta 10)<br>
+Error recovery in type-checking pass was implemented.<br>
+MultipleInheritance plug-in and AssociationArray plug-in bugs were fixed.
+Generic plug-in is not fixed yet.<br>
+Shell scripts such as tryplugin support Windows Cygwin b20.1 .
+
+<p>
+1999-08-01 (EPP 1.1.0 beta 9)<br>
+Small bugs were fixed.
+
+<p>
+1999-07-04 (EPP 1.1.0 beta 8)<br>
+This version works on Linux JDK1.2 pre-release-v2.
+
+<p>
+1999-07-01 (EPP 1.1.0 beta 7)<br>
+<ul>
+<li><a href="edoc/edocalpha/Bugs.html">
+Major bugs of type-checking pass are fixed.</a>
+Now, type-checking of interfaces and inner classes are 
+completely implemented.
+EPP can type-check EPP itself and source code of JDK1.1.7B libraries.
+<br>
+<li>This version uses 
+<a href="http://www.inf.fu-berlin.de/~dahm/JavaClass/index.html">
+JavaClass API </a>
+(developed by Markus Dahm) to analyze class files during type-checking pass.
+<li>If you use jview,
+you should add classes.zip to your CLASSPATH explicitly.
+If it is not included, EPP can not find class files of Java libraries
+during type-checking pass.<br>
+<li>API defined at FileSig.java are modified.
+ API document is not updated yet.
+Currently, AssociationArray,Generic and MultipleInheritance plug-ins 
+do not work.<br>
+<li>Shell script for bootstrapping of EPP is provided. 
+(See epp/src/README .)<br>
+<li> -class-info and -file-signature options are added.<br>
+<li> This version does not work on JDK1.2 . (Fixed by beta8.)
+</ul>
+
+<p>
+1999-06-01 (EPP 1.1.0 beta 6)<br>
+Bug fixed version of beta 5. <br>
+
+<p>
+1999-04-03 (EPP 1.1.0 beta 5)<br>
+ParseParen, ParseComment plug-in are added.
+-tree-with-string, -tree-with-property options are added.
+beginningPoint, endPoint methods of Tree are implemented.
+
+<p>
+1999-03-02<br>
+<a href="edoc/index.html">English documents(preliminary version)</a>
+is provided.
+
+<p>
+1999-01-20 (EPP 1.1.0 beta 4)<br>
+Generic plug-in
+(small subset of <a href="http://www.cis.unisa.edu.au/~pizza/gj/">GJ</a>)
+and 
+TransStringEqual plug-in (an example of global source code translation)
+are added. <br>
+
+<p>
+1998-11-04 (EPP 1.1.0 beta 3)<br>
+ Plug-ins using type checking feature is added, such as
+ MultipleInheritance, OperatorOverloading, typedef, AssociationArray.<br>
+<p>
+1998-10-01 (EPP 1.1.0 beta 2)<br>
+ -global option is added.<br>
+<p>
+1998-08-01 (EPP 1.1.0 beta 1)<br>
+EPP and all plug-in's package name is changed.<br>
+How to install is changed.<br>
+RenamePackage, SharpPlus plug-in is added.<br>
+Type checking feature is partly implemented.<br>
+<p>
+1998-06-01 (EPP 1.0.1)<br>
+Error recovery is implemented.<br>
+ -v, -comment-colon, -D options are added.<br>
+ <a href="plugins/TestCommentColon.txt">
+This is a test program of -comment-colon option.</a><br>
+ "ifdef" plug-in is updated . <br>
+ <a href="plugins/src/test/Testifdef.txt">
+epp/plugins/src/test/Testifdef.txt</a> is a test program.<br>
+<p>
+1998-05-02 (EPP 1.0.0)<br>
+EPP became non-beta version.<br>
+All JDK1.1 syntax are supported.
+<p>
+1998-04-01<br>
+ "ifdef" plug-in was added to epplib.jar . <br>
+<p>
+1998-03-01<br>
+Distribution of EPP (Java version) was started.
+
+
+
+
+<hr>
+<h3>JavaClass</h3>
+ EPP internally uses the package "JavaClass" .
+ JavaClass is a LGPL class library for byte-code engineering,
+developed by Markus Dahm.
+ To obtain full-set of class files, source files 
+and documents of JavaClass, please visit the following URLs.<br>
+<p>
+	<a href="http://www.inf.fu-berlin.de/~dahm/JavaClass/index.html">
+	http://www.inf.fu-berlin.de/~dahm/JavaClass/index.html</a><br>
+or<br>
+	<a href="http://staff.aist.go.jp/y-ichisugi/epp/JavaClass/JavaClass3.3.2.tar.gz">
+	http://staff.aist.go.jp/y-ichisugi/epp/JavaClass/JavaClass3.3.2.tar.gz</a><br>
+
+<p>
+ Patch for JavaClass3.3.2 which passes J2SE 1.4 classfiles:<br>
+	<a href="http://staff.aist.go.jp/y-ichisugi/epp/JavaClass/jdk14.patch">
+	http://staff.aist.go.jp/y-ichisugi/epp/JavaClass/JavaClass/jdk14.patch</a><br>
+
+<hr>
+<h3>Papers</h3>
+<ul>
+
+ <li><a href="../doc/icse.ps.gz">icse.ps.gz</a><br>
+    <a href="http://www.etl.go.jp/etl/bunsan/~roudier">Yves ROUDIER</a>
+ and Yuuji ICHISUGI : <br>
+    "Mixin Composition Strategies for the Modular Implementation of 
+Aspect Weaving"<br>
+    <a href="http://www.parc.xerox.com/spl/projects/aop/icse98">
+Aspect-Oriented Programming Workshop</a> at 
+<a href="http://icse98.aist-nara.ac.jp">ICSE'98</a>, 
+    Kyoto, April 1998. <br>
+
+ <li><A HREF="../doc/iscope97.ps.gz">iscope97.ps.gz</A><br>
+    Yuuji ICHISUGI and Yves ROUDIER: <br>
+    "Extensible Java Preprocessor Kit and Tiny Data-Parallel Java"<br>
+    <a href="http://www.acl.lanl.gov/iscope">ISCOPE'97</a>, 
+    California, Dec 1997. <br>
+    (Revised version is in LNCS 1343, Springer-Verlag.)
+
+ <li><A HREF="../doc/obpdc.ps.gz">obpdc.ps.gz</A><br>
+	<a href="http://www.etl.go.jp/etl/bunsan/~roudier">Yves ROUDIER</a>
+ and Yuuji Ichisugi:<br>
+	"Integrating data-parallel and reactive constructs into Java",<br>
+	In Proc. of France-Japan Workshop on Object-Based Parallel
+	and Distibuted Computation (OBPDC'97), Oct 1997, France.<br>
+
+ <li> <A HREF="../doc/swopp97.ps.gz">swopp97.ps.gz</A><br>
+   Yves Roudier, Yuuji Ichisugi: <br>
+  "Java Data-parallel Programming using an Extensible Java Preprocessor",<br>
+   <a href="http://www.etl.go.jp/etl/comparc/SWoPP">SWoPP</a>'97, Aug 1997.
+
+ <li><A HREF="../doc/epp-slides.ps.gz">epp-slides.ps.gz</A><br>
+      Slides aboud EPP used in 
+     "Future Directions for Parallel C++", June 1997, London.
+</ul>
+
+<hr>
+<h3>Links</h3>
+<p>
+Extensible Java systems:
+</p>
+<ul>
+<li><a href="http://www.cs.cornell.edu/Projects/polyglot/">
+	Polyglot : A compiler front end framework for
+                             building Java language extensions.</a>
+<li><a href="http://www.cs.utah.edu/~jbaker/maya/">
+	Maya : Macros That Play </a>
+<li><a href="http://www.ai.mit.edu/~jrb/jse/index.htm">
+	JSE : The Java Syntactic Extender </a>
+<li><a href="http://lampwww.epfl.ch/~zenger/jaco/">
+	JaCo : an extensible Java compiler </a>
+<li><a href="http://www.csg.is.titech.ac.jp/~chiba/javassist/index.html">
+	Javassist : a load-time reflective system for Java</a>
+<li><a href="http://www.openjit.org/">
+	OpenJIT : a "reflective" JIT compiler</a>
+<li><a href="http://www.hlla.is.tsukuba.ac.jp/~mich/openjava/">
+	OpenJava :The next generation of preprocessor mechanism for Java </a>
+<li><a href="http://www.cs.utexas.edu/users/schwartz/software.html">
+	JTS : Tools for Implementing Domain-Specific Languages  </a>
+<li><a href="http://www.inria.fr/sloop/javall/">
+	ProActive : The Java library for Parallel, Distributed, Concurrent computing with Security and Mobility</a>
+</ul>
+
+
+<hr>
+<p>
+ This software is written by Yuuji ICHISUGI
+as a duty at the AIST (formerly known as Electrotechnical Laboratory, ETL)
+that is a national research institute in Japan.
+(The management number of this software is 1998-ETL-E9301-01 .)
+<p>
+ This software is provided on an "AS IS" basis, without warranty
+of any kind. <br>
+Commercial license will be available for use in commercial
+   products. Please contact to the author for more details.
+<p>
+
+<hr>
+<a href="../index.html">
+	To the Home Page of Yuuji Ichisugi</a>.<br>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<html>
+<head>
+<title>BUGS</title>
+</head>
+<body bgcolor="#FFFFFF">
+<a href="http://www.etl.go.jp/~epp"> To Home Page of EPP</a>.
+<a href="http://www.etl.go.jp/~ichisugi"> To Home Page of Y.Ichisugi</a>.
+<hr>
+<img src="gif/epp-logo-small.gif" align=right><br>
+<h1>BUGS</h1>
+<hr>
+The type checking mechanism of the current version (epp110beta10) has the
+following limitation and defects. 
+<br>
+
+<pre>
+<UL>
+<LI>Separate compilation is not supported.
+If you specify -type-check option, you should also specify -global .
+
+<LI>In initialization expressions, the types of the expressions are not
+checked. (For example, int x = "str";  do not result in an error.)
+
+<LI>There are still some bugs in inner class type-checking.
+(EPP can not type-check the JDK1.2 library source code.)
+
+<LI>Access privileges of methods and fields are totally ignored.
+(For example, code that call private methods do not result in an error.)
+
+<LI>Accessing instance variables or non-static methods from 
+static methods do not result in errors.
+
+<LI>Exception checks are totally ignored.
+(For example, checking for required "throws" declarations.)
+
+<LI>This version does not interpret constant expressions. Thus,
+EPP cannot determine the type of (a ? b : c).  EPP also cannot check
+assignment conversion.
+</UL>
+
+</pre>
+
+<hr>
+<a href="http://www.etl.go.jp/~epp"> To Home Page of EPP</a>.
+<a href="http://www.etl.go.jp/~ichisugi"> To Home Page of Y.Ichisugi</a>.
+<img src="gif/epp-logo-small.gif" align=right><br>
+
+</body>
+</html>

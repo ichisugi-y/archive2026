@@ -1,0 +1,65 @@
+/*
+ *
+ * Copyright (C) 1997, 1998 Yuuji ICHISUGI
+ *
+ * Permission to use, copy, modify and redistribution this software in
+ * whole and in part, for evaluation or research purposes and without fee
+ * is hereby granted provided this copyright notice.
+ * See CopyrightAndLicensing.txt for licensing condition.
+ */
+
+
+/*
+
+*/
+
+#epp "Symbol"
+#epp "SystemMixin"
+#epp "AutoSplitFiles"
+#epp "BackQuote"
+
+
+package Math;
+import epp.*;
+
+SystemMixin Math {
+  class Epp {
+
+    extend void initInvokeStyleMacroTable() {
+      original();
+      InvokeStyleMacro m = new MathMacro();
+      defineInvokeStyleMacro(:abs, m);
+      defineInvokeStyleMacro(:acos, m);
+      defineInvokeStyleMacro(:asin, m);
+      defineInvokeStyleMacro(:atan, m);
+      defineInvokeStyleMacro(:ceil, m);
+      defineInvokeStyleMacro(:cos, m);
+      defineInvokeStyleMacro(:exp, m);
+      defineInvokeStyleMacro(:floor, m);
+      defineInvokeStyleMacro(:IEEEremainder, m);
+      defineInvokeStyleMacro(:log, m);
+      defineInvokeStyleMacro(:max, m);
+      defineInvokeStyleMacro(:min, m);
+      defineInvokeStyleMacro(:pow, m);
+      defineInvokeStyleMacro(:random, m);
+      defineInvokeStyleMacro(:rint, m);
+      defineInvokeStyleMacro(:round, m);
+      defineInvokeStyleMacro(:sin, m);
+      defineInvokeStyleMacro(:sqrt, m);
+      defineInvokeStyleMacro(:tan, m);
+    }
+  }
+}
+
+class MathMacro extends InvokeStyleMacro {
+  
+  public Tree call(Tree tree, Tree[] args){
+    // Sample: "sin(0.0)"
+    //	-> (invoke1 (id sin) (argumentList (literalTree int "0.0")))
+    Tree fname = tree.args()[0];
+    return `(invokeLong
+	     (name (id java) (id lang) (id Math))
+	     ,fname
+	     (argumentList ,@args));
+  }
+}

@@ -1,0 +1,7122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML
+><HEAD
+><TITLE
+>Eclipse エディタ調査報告書</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"></HEAD
+><BODY
+CLASS="book"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="BOOK"
+><A
+NAME="AEN1"
+></A
+><DIV
+CLASS="TITLEPAGE"
+><H1
+CLASS="title"
+><A
+NAME="AEN2"
+>Eclipse エディタ調査報告書</A
+></H1
+><H3
+CLASS="corpauthor"
+>株式会社 デュオシステムズ</H3
+><HR></DIV
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>&#30446;&#27425;</B
+></DT
+><DT
+><A
+HREF="#eclipseEditor"
+>Eclipseのエディタ</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#sec:prepare"
+>事前準備</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#AEN16"
+>Eclipseソースツリーの取り込み</A
+></DT
+><DT
+><A
+HREF="#AEN38"
+>本ドキュメントを読む上で必要となるプラグイン</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="#sec:workbencheditor"
+>Eclipse のテキスト編集機能</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#AEN54"
+>Eclipse でのエディタの構成</A
+></DT
+><DT
+><A
+HREF="#AEN73"
+>デフォルトエディタ</A
+></DT
+><DT
+><A
+HREF="#AEN111"
+>Eclipse ワークベンチのエディタフレームワーク</A
+></DT
+><DT
+><A
+HREF="#sec:jfaceEditor"
+>JFace フレームワークが提供するエディタの機能</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="#sec:javaeditor"
+>JDT の Java エディタ</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#AEN501"
+>Java エディタの概要</A
+></DT
+><DT
+><A
+HREF="#AEN517"
+>Java エディタの実体</A
+></DT
+><DT
+><A
+HREF="#AEN563"
+>Java エディタの諸機能の実装</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="#sec:extendjavaeditor"
+>Java エディタの拡張</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#buildAll"
+>Eclipse のビルド</A
+></DT
+><DT
+><A
+HREF="#AEN774"
+>楽観的 try に関する拡張</A
+></DT
+><DT
+><A
+HREF="#AEN814"
+>マップ初期化子に関する拡張</A
+></DT
+></DL
+></DD
+></DL
+></DD
+><DT
+><A
+HREF="#java2MJPorting"
+>JavaプログラムをMixJuiceに移植する</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#sample"
+>Javaのサンプルプログラム</A
+></DT
+><DT
+><A
+HREF="#AEN988"
+>移植作業</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#AEN991"
+>defineをつける</A
+></DT
+><DT
+><A
+HREF="#AEN994"
+>メンバ名をFQNではなくシンプルネームで出力させる</A
+></DT
+><DT
+><A
+HREF="#AEN1017"
+>パッケージをモジュールへ</A
+></DT
+><DT
+><A
+HREF="#AEN1020"
+>import文を除去</A
+></DT
+><DT
+><A
+HREF="#AEN1027"
+>デフォルトのコンストラクタを追加</A
+></DT
+><DT
+><A
+HREF="#AEN1030"
+>スタティックメソッドをインスタンスメソッドへ</A
+></DT
+><DT
+><A
+HREF="#AEN1061"
+>リフレクションを使用してインスタンスを作る際、コンストラクタ呼び出しを追加する</A
+></DT
+><DT
+><A
+HREF="#AEN1064"
+>内部クラスの外部化</A
+></DT
+><DT
+><A
+HREF="#AEN1107"
+>superをoriginalに変更する</A
+></DT
+><DT
+><A
+HREF="#AEN1150"
+>C.classをClass.forName("C")へ変更する</A
+></DT
+><DT
+><A
+HREF="#AEN1153"
+>interfaceで定義したメソッドの実装</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="#AEN1158"
+>移植結果</A
+></DT
+><DT
+><A
+HREF="#AEN1171"
+>移植上の問題点</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="#AEN1174"
+>他モジュールの参照</A
+></DT
+><DT
+><A
+HREF="#AEN1203"
+>メンバがすべてpublicになる</A
+></DT
+><DT
+><A
+HREF="#AEN1210"
+>ドキュメンテーションツールがない</A
+></DT
+></DL
+></DD
+></DL
+></DD
+></DL
+></DIV
+><DIV
+CLASS="chapter"
+><HR><H1
+><A
+NAME="eclipseEditor"
+>Eclipseのエディタ</A
+></H1
+><P
+>&#13;本章では、Eclipseのエディタの構造、およびその変更方法につい
+て記述する。
+まず、<A
+HREF="#sec:prepare"
+><I
+>事前準備</I
+>&#38917;</A
+>でソース閲覧のための準備について述べ
+る。<A
+HREF="#sec:workbencheditor"
+><I
+>Eclipse のテキスト編集機能</I
+>&#38917;</A
+>で、Eclipseのワークベ
+ンチが提供する汎用エディタとその基本機能および実装について説明する。
+そして、<A
+HREF="#sec:javaeditor"
+><I
+>JDT の Java エディタ</I
+>&#38917;</A
+>で Java 専用エディタの実装につい
+て、ワークベンチのエディタ機能との関連を交えて説明する。
+最後に、
+<A
+HREF="#sec:extendjavaeditor"
+><I
+>Java エディタの拡張</I
+>&#38917;</A
+>で、Java エディタへの機能追加の実
+装事例を紹介するとともに、pxml 対応 Java エディタを実装する上での課題に
+も触れる。
+    </P
+><DIV
+CLASS="section"
+><HR><H1
+CLASS="section"
+><A
+NAME="sec:prepare"
+>事前準備</A
+></H1
+><P
+>&#13;本ドキュメントを理解するうえで、Eclipse のソースおよび、これを効率よく
+閲覧するためのツールが必要不可欠である。
+そこで、本ドキュメントを読み進めていく上での事前準備として、本節では
+Eclipse のソースツリーを Eclipse で閲覧する方法について説明する。
+なお、本節の内容には前回の調査報告の内容と重複する。手順等の詳細について
+は前回の調査報告を参照いただきたい。
+</P
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN16"
+>Eclipseソースツリーの取り込み</A
+></H2
+><P
+>&#13;本項では、Eclipse のソースツリーを Eclipse のワークスペースにイ
+ンポートする方法を説明する。
+インポート作業は下記の手順で行う。
+</P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>&#13;Eclipseのソースを展開する。展開先(pluginsディレクトリを含むディレクト
+ リ)を${ECLIPSESRC}とする。
+</P
+></LI
+><LI
+><P
+>&#13;Eclipseを起動し、<B
+CLASS="guimenu"
+>ファイル (File)</B
+>-&gt;<B
+CLASS="guimenuitem"
+>新規 (New)</B
+>-&gt;<B
+CLASS="guimenuitem"
+>プロジェクト (Project)</B
+>
+を選択。
+</P
+></LI
+><LI
+><P
+>&#13;新規プロジェクト (new project) が表示されたら、ダイアログの左側でシンプ
+ル(Simple)を選択し、右側でプロジェクト(Project) を選択する。Next をクリッ
+ク。
+</P
+></LI
+><LI
+><P
+>&#13;プロジェクト指定ダイアログで、デフォルトの使用 (Use default) のチェック
+をはずし、${ECLIPSESRC}/plugins/&#60;プラグイン名&#62; をDirectoryに指定す
+る。プロジェクト名 (Project name) には、&#60;プラグイン名&#62;を指定する。
+Finish をクリック。
+</P
+></LI
+><LI
+><P
+>&#13;以上の作業を、必要となるプラグイン全てに対して行う。
+依存関係のあるプラグインが取り込まれていないととエラーが表示されるが、こ
+れは必要なプラグインを全て取り込むことで表示されなくなる。
+</P
+></LI
+><LI
+><P
+>&#13;取り込み後、「Java ブラウズ」パースペクティブ等を利用することで、効率的
+にソースが閲覧できる。
+</P
+></LI
+></OL
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;Eclipse のソースはプラグインが一つのプロジェクトになるため,ワークスペー
+スが Eclipse プラグインでいっぱいになって、その他のプロジェクトの参照
+性が下がってしまう。
+こういうときには、複数のプロジェクトをまとめて１つの
+作業セット (working set) に登録すると効果的である。
+使用方法は「リソース」パースペクティブの「ナビゲータ」ビューや、「Java」
+パースペクティブの「パッケージ・エクスプローラー」ビュー、「Javaブラウズ」
+パースペクティブの「ナビゲータ」ビューなどの右上にある▼メニューをクリッ
+クし、「作業セットの選択(select working set...)」などを選択する。
+</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN38"
+>本ドキュメントを読む上で必要となるプラグイン</A
+></H2
+><P
+>&#13;本ドキュメントを読み進める上で必要となるプラグインは
+<A
+HREF="#fig:plugins"
+>&#22259;1</A
+>のとおりである。
+</P
+><DIV
+CLASS="figure"
+><A
+NAME="fig:plugins"
+></A
+><P
+><IMG
+SRC="images/ui-related-plugins.png"></P
+><P
+><B
+>&#22259; 1. Javaエディタに関係する Eclipseプラグイン</B
+></P
+></DIV
+><DIV
+CLASS="warning"
+><P
+></P
+><TABLE
+CLASS="warning"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/warning.gif"
+HSPACE="5"
+ALT="&#35686;&#21578;"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;org.eclipse.swt プラグインを取り込むと、.classpath がないというエラーが
+表示される。
+org.eclipse.swt のプラグインディレクトリ直下にある .classpath_&#60;ウィ
+ンドウシステム名&#62; の中のいずれかを .classpath にコピーすることで、こ
+のエラーは表示されなくなる。
+</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;
+% cd ${ECLIPSESRC}/plugins/org.eclipse.swt/
+% ln -s .classpath_&#60;ウィンドウシステム名&#62; .classpath</PRE
+></TD
+></TR
+></TABLE
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>&#13;なお、<A
+HREF="#fig:plugins"
+>&#22259;1</A
+>には依存関係があるパッケージや、将来
+的にエディタ拡張の過程で必要となることが想定されるプラグインなども一部含
+まれている。従って、本ドキュメント中に直接登場するプラグインはこのうちの
+ごく一部である。
+</P
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H1
+CLASS="section"
+><A
+NAME="sec:workbencheditor"
+>Eclipse のテキスト編集機能</A
+></H1
+><P
+>&#13;本節では Eclipse のワークベンチが提供するテキストエディタ関連のフレー
+ムワークについて説明する。
+</P
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN54"
+>Eclipse でのエディタの構成</A
+></H2
+><P
+>&#13;まず最初に、Eclipse でのエディタがどういう構成になっているかについて簡
+単に説明する。
+</P
+><P
+>&#13;Eclipse のエディタのユーザインタフェイスや動作などに関する基本機能は、
+ワークベンチでフレームワークとして提供されている。
+また、ワークベンチはそれ自身が基本的なテキストエディタも提供しており、
+ワークベンチが提供するこのテキストエディタはデフォルトエディタと呼ばれて
+いる。
+デフォルトエディタはワークベンチのエディタフレームワークの、最もシンプル
+な利用例と捉えることができる。
+</P
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;ワークベンチとは、Eclipse のコア部分のことである。Eclipse は言語や用
+途に関わらず必要となる一般的な機能をワークベンチとして提供している。一方
+で、Java 開発環境など特定の言語や環境に依存した機能は、ワークベンチとは
+独立したプラグインとして実装し、 Eclipse ワークベンチに個々のプラグイ
+ンを追加することで、環境依存の機能が利用できるようになる。Eclipse の配
+布パッケージには、ワークベンチのほかに
+JDT (Java Development Toolkit) プラグインと、PDE (Plugin Development
+Environment) プラグインが同梱されている。
+なお、実際にはワークベンチ自体もプラグインと同様の構成を取っているため、
+下記ではワークベンチプラグインといった表記も登場する。
+ワークベンチや JDT, PDE は何れも機能が多岐にわたるため、実際には複数のプ
+ラグインの集合として提供されている。
+</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>&#13;一方で、JDT が提供する Java エディタなど、特定の書式にカスタマイズされ
+た編集補助機能を保有するエディタは、個別のプラグインで提供される。
+これらの、これらのカスタマイズされたエディタも、デフォルトエディタと同様
+にワークベンチが提供するエディタフレームワークを利用することとなるが、
+その際に、対象としているドキュメントの書式に依存した様々な機能を付加的に
+実装して付け加える必要がある。
+</P
+><P
+>&#13;デフォルトエディタや Java エディタと、各種エディタフレームワークとの関係
+を整理した図が <A
+HREF="#fig:editorpackages"
+>&#22259;2</A
+>である。
+ここまでは Eclipse のエディタフレームワークとひとくくりにしてきたが、
+実際にはフレームワークは３種類のサブフレームワークから構成されている。
+それぞれ SWT が提供する基礎的なユーザインタフェイスフレームワーク、
+JFace が提供するテキストエディタのユーザインタフェイスに
+特化したフレームワーク、
+さらにワークベンチが提供する包括的なテキストエディタフレームワークである。
+</P
+><DIV
+CLASS="figure"
+><A
+NAME="fig:editorpackages"
+></A
+><P
+><IMG
+SRC="images/editor_framework.png"></P
+><P
+><B
+>&#22259; 2. 個々のエディタおよび各種エディタフレームワークの関係</B
+></P
+></DIV
+><P
+>&#13;
+</P
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;Eclipse はユーザインタフェイス用フレームワークとして Standard Widget
+Toolkit (SWT) と JFace の２種類を提供している。
+SWT は下位レベルのユーザインタフェイスツールキットである。SWT では OS や
+ウィンドウシステムに依存しない API を提供する。といっても、ウィンドウシ
+ステムが提供するウィジェットを隠蔽し、その他の部分の実装のシステムへの非
+依存性を保証するのが主要な機能なので、基本的には諸々のウィンドウシステム
+が提供すると同等のレベルの API と考えてよい。
+一方で、JFace は SWT よりも上位のレベルの機能を提供するユーザインタフェ
+イスツールキットである。具体的には、ダイアログやウィザード、アクションな
+どといった機能が提供される。JFace の殆んどの機能は SWT をベースとして実
+装されており、JFace フレームワークに則ったユーザインタフェイスを作成する
+限りにおいては SWT を殆んど参照することなくユーザインタフェイスを構築す
+ることが可能である。しかし、JFace は SWT を完全に隠蔽するものではないの
+で、必要に応じて SWT を直接利用することも可能である。 
+なお、JFace は J で始まるが Java エディタ専用というわけではなく、
+Eclipse の汎用のフレームワークである。
+</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>&#13;これらの３種類のテキストエディタフレームワークのうち、SWT と JFace に関
+するものは、ユーザインタフェイス、つまり入力および表示に関する機能が集約
+されている。一方でワークベンチのテキストエディタフレームワークは、表示の
+みならず、テキストエディタの動作そのものに関する機能を提供している。
+また、表示に関する諸々のフレームワークを集約し、より実装がしやすいように
+整理されている。
+</P
+><P
+>&#13;なお、上記の図ではそれぞれのコンポーネントから SWT への線が引かれている
+が、実際は JFace のエディタのフレームワークが SWT フレームワークのかなり
+の部分を隠蔽しており、エディタ機能の実装を行う過程で SWT のクラス等を直
+接参照することはまずないといっていい。
+実際、今回の調査報告でも SWT に属するクラスは一切登場しない。
+</P
+><P
+>&#13;次項以降では、まず Eclipse ワークベンチのデフォルトエディタについて説
+明した上で、ワークベンチおよび JFace が提供するエディタフレームワークを
+説明する。
+</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN73"
+>デフォルトエディタ</A
+></H2
+><P
+>&#13;デフォルトエディタは Eclipse でファイル等を開く際に、そのファイルタイ
+プに対応する拡張エディタが規定されていなかった場合に、使用されるエディタ
+である。
+Eclipse で .txt などのファイルを開いたときに、内容の表示に使われている
+エディタがデフォルトエディタであると考えて間違いない。
+デフォルトエディタは、本文の表示や入力された文字の挿入はもとより、
+範囲選択やカット＆ペーストなど、テキストエディタが持っている基本的な編集
+機能を全て提供している。
+</P
+><P
+>&#13;デフォルトエディタの実体はワークベンチプラグイン
+org.eclipse.ui.editors
+の org.eclipse.ui.editors.text パッケージにある TextEditor.java である。
+このソースは org.eclipse.ui.editors プラグイン の
+src/org/eclipse/ui/editors/text/TextEditor.java にある。
+</P
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;Eclipse で複数のプロジェクトの中から特定のクラスやメソッドを検索する際
+には、「検索(Search)」メニューの「検索(Search)」を選択し、開いたダイ
+アログの「Java 検索(Java Search)」を活用するとよい。
+また、既に表示されているソースコードの参照クラス等を見たい場合は、ソース
+中のクラスやメソッドを選択し、右ボタンメニューから「宣言を開く(Open
+Declaration)」や「検索(Search)」→「参照(References) / 宣言(Declarations)
+/ インプリメンター(Implementors)」→「ワークスペース(Workspace)」などを
+活用するとよい。各種ビューでも右ボタンメニューから同様の検索が可能である。
+</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>&#13;この TextEditor クラスは、Eclipse のワークベンチが提供するテキストエディ
+タ用のフレームワークを殆んどそのまま用いて、ミニマムのテキスト編集機能を
+持つエディタとして実装したものである。
+従って、実装の殆んどは、ワークベンチのテキストエディタ用フレームワークの
+クラスに依存している。
+デフォルトエディタクラス TextEditor のクラス階層を
+<A
+HREF="#texteditortree"
+>&#22259;3</A
+> に示す。
+</P
+><DIV
+CLASS="figure"
+><A
+NAME="texteditortree"
+></A
+><P
+><IMG
+SRC="images/ClassTree-TextEditor.png"></P
+><P
+><B
+>&#22259; 3. TextEditorのクラス階層</B
+></P
+></DIV
+><P
+>&#13;図中の TextEditor がデフォルトエディタである。また、JavaEditor は Java
+の編集のために様々な機能を付加したエディタである。
+なお、JavaEditor については、<A
+HREF="#sec:javaeditor"
+><I
+>JDT の Java エディタ</I
+>&#38917;</A
+>で解説する。
+</P
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;ワークベンチプラグインをはじめとして殆んど全てのプラグインは内部に複数の
+Java パッケージを保有している。例えば、ワークベンチプラグイン
+org.eclipse.ui.editors は下記のパッケージを含んでいる。
+</P
+><P
+></P
+><UL
+><LI
+><P
+>org.eclipse.ui.editors.text</P
+></LI
+><LI
+><P
+>org.eclipse.ui.internal.editors.text</P
+></LI
+><LI
+><P
+>org.eclipse.ui.texteditor</P
+></LI
+><LI
+><P
+>org.eclipse.ui.internal</P
+></LI
+></UL
+><P
+>&#13;プラグイン内のパッケージがプラグイン名のサブパッケージになっているとは限
+らないので注意が必要である。例えば、org.eclipse.ui.editors パッケージに
+は上記の様に org.eclipse.ui.texteditor パッケージが含まれている。
+</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>&#13;この図から、Eclipse のデフォルトエディタや Java エディタは共通のクラス
+StatusTextEditor がベースとなっていることがわかる。
+この StatusTextEditor クラスはワークベンチプラグイン
+org.eclipse.ui.workbench.text の org.eclipse.ui.texteditor パッケージに
+属するクラスである。
+実際には StatusTextEditor は同じく org.eclipse.ui.texteditor パッケージに
+属する AbstractTextEditor クラスを継承しており、この AbstractTextEditor
+がテキストエディタの基本機能を提供している。
+</P
+><DIV
+CLASS="warning"
+><P
+></P
+><TABLE
+CLASS="warning"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/warning.gif"
+HSPACE="5"
+ALT="&#35686;&#21578;"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;TextEditor は org.eclipse.ui.editors プラグインのクラス。一方で
+StatusTextEditor 等は org.eclipse.ui.workbench.texteditor プラグインであ
+る。
+たちが悪いことに両方とも同じ org.eclipse.ui.texteditor というパッケージ
+を持っている。プラグインの混同に注意。
+</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>&#13;Eclipse のテキストエディタはテキストエディタフレームワークの中
+のITextEditor インタフェイスを実装していなければならないが、ITextEditor
+で求められる機能は極めて多いため、Eclipse のエディタを実装するためには
+事実上テキストエディタフレームワークをベースとして構築しなければならない
+といっていい。<A
+HREF="#statusTextEditorRTree"
+>&#22259;4</A
+>にあるよ
+うに、AbstractTextEditor が ITextEditor
+インタフェイスの実装クラスとなっているため、AbstractTextEditor や
+StatusTextEditor を継承したクラスを実装することによってこの条件も満たせ
+る。
+</P
+><DIV
+CLASS="figure"
+><A
+NAME="statusTextEditorRTree"
+></A
+><P
+><IMG
+SRC="images/ReverseTree-StatusTextEditor.png"></P
+><P
+><B
+>&#22259; 4. StatusTextEditor の継承および実装の関係図</B
+></P
+></DIV
+><P
+>&#13;逆にいうと、Eclipse ワークベンチが提供するテキストエディタ用のフレーム
+ワークは、デフォルトエディタに限らず、テキストエディタを実現する上で必要
+となる様々な機能を提供している。従って、テキストエディタフレームワークを
+活用することで様々な拡張エディタを比較的容易に実現することが可能となる。
+</P
+><P
+>&#13;デフォルトエディタでも、基本的なエディタの動作は全てワークベンチプラグイ
+ン org.eclipse.ui.workbench.texteditor のテキストエディタフレームワーク
+に依存している。
+TextEditor.java ではファイルの読み書きやアクションの設
+定、キーバインドをはじめとするエディタの動作の諸設定、行番号などを表示す
+るルーラーの実装を保持しているに過ぎない。これらについても殆んどは
+テキストエディタフレームワークの機能を利用しているだけで、TextEditor の
+内部では設定の管理と細かな動作の記述がなされているだけである。
+従って、TextEditor.java を見ても、フォントの装飾やポップアップなどの仕組
+みがどうなっているかを図り知るのは不可能である。
+</P
+><P
+>&#13;以降では、まず、ITextEditor や AbstractTextEditor などを包含する
+org.eclipse.ui.workbench.texteditor プラグインを概観する。
+その後で、フォントの装飾やポップアップと直接的に関係する JFace 関連のプ
+ラグインのテキストエディタフレームワークについて概観する。
+</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN111"
+>Eclipse ワークベンチのエディタフレームワーク</A
+></H2
+><P
+>&#13;先に述べたとおり、Eclipse のデフォルトエディタをはじめとするテキストエ
+ディタはワークベンチプラグイン等が提供する機能を利用して実現されている。
+本項では、Eclipse が提供するテキストエディタフレームワークのうち、
+org.eclipse.ui.workbench.texteditor プラグインの主要クラスについて、構成
+や機能等を解説する。
+特に、今回の調査のスコープとの関連性が高い動作設定とアクション定義につい
+て説明する。
+</P
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="AEN114"
+>エディタフレームワークの概要</A
+></H3
+><P
+>&#13;Eclipse のテキストエディタフレームワークは、ワークベンチのユーザインタ
+フェイスフレームワーク JFace が提供するテキスト表示機能等を集約し、さら
+にエディタとしての基本機能を付加したものである。
+Eclipse のテキストエディタフレームワークはワークベンチプラグイン
+org.eclipse.ui.workbench.texteditor で提供されている。
+先に、Eclipse のエディタは ITextEditor インタフェイスを実装しなければ
+ならないと述べたが、この ITextEditor も
+org.eclipse.ui.workbench.texteditor プラグイン内の
+src/org/eclipse/ui/texteditor/ にある。また、デフォルトエディタ
+TextEditor クラスの親クラス StatusTextEditor も
+org.eclipse.ui.workbench.texteditor プラグインにあるクラスで、プラグイン
+のソースツリーの中の src/org/eclipse/ui/texteditor/StatusTextEditor.java
+にある。
+</P
+><P
+>&#13;org.eclipse.ui.workbench.texteditor プラグインの
+org.eclipse.ui.texteditor パッケージは、テキストエディタそのものの基底ク
+ラス群のほか、テキストエディタにまつわるインタフェイス、テキストエディタ
+の動作（アクション）の実装クラス・インタフェイス群、およびこれらが使用す
+るクラスから構成されている。
+</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="editorStructure"
+>テキストエディタの構成</A
+></H3
+><P
+>&#13;先に述べたとおり、テキストエディタに提供する機能の大部分は
+AbstractTextEditor クラスに集約されている。
+AbstractTextEditor では、テキストエディタを構成する主要な機能を実装した
+クラスのインスタンスを保持している。
+本項では、この AbstractTextEditor が管理するインスタンスのうち、下記につ
+いて概観する。
+</P
+><P
+></P
+><UL
+><LI
+><P
+>fSourceVeiwer</P
+></LI
+><LI
+><P
+>fSourceViewerConfiguration</P
+></LI
+><LI
+><P
+>fInternalDocumentProvider</P
+></LI
+><LI
+><P
+>fPreferenceStore</P
+></LI
+><LI
+><P
+>fActions</P
+></LI
+></UL
+><P
+>&#13;fSourceViewer は ISourceViewer インタフェイスの実装クラスのインスタンス
+である。
+AbstractTextEditor の fSourceViewer は、テキストエディタのインスタンスが
+編集対象としているドキュメントの表示を担当する。
+ISourceViewer の実装クラスはソースコードの表示に関わる機能を提供するクラ
+スで、org.eclipse.jface.text プラグインの org.eclipse.jface.text.source
+パッケージで提供されている。
+</P
+><P
+>&#13;ISourceViewer はテキストファイルの表示機能を提供する ITextViewer 
+を継承したインタフェイスであり、通常のテキスト表示機能に、プログラムソー
+スの表示で必要となる機能を追加したものである。
+ITextViewer は org.eclipse.jface.text プラグインの
+org.eclipse.jface.text パッケージに含まれている。
+ISourceViewer や ITextViewer は表示機能のみを管轄しており、文字入力を
+はじめとする編集機能は直接的には保有していない。
+ちなみに、ITextViewer は、表示の形式等を管理・決定するクラス
+TextPresentation を内部で管理している。
+</P
+><P
+>&#13;ITextViewer の実装クラスとして TextViewer クラスが、また ISourceViewer
+の実装クラスとして SourceViewer がそれぞれインタフェイスと同じパッケージ
+内に提供されている。
+クラスの継承関係等は<A
+HREF="#sourceViewerTree"
+>&#22259;5</A
+>および
+<A
+HREF="#sourceViewerRTree"
+>&#22259;6</A
+>を参照。
+Java ソースのビューアクラス JavaSourceViewer も SourceViewer を継承した
+クラスとして実装されている。
+</P
+><DIV
+CLASS="figure"
+><A
+NAME="sourceViewerTree"
+></A
+><P
+><IMG
+SRC="images/ClassTree-SourceViewer.png"></P
+><P
+><B
+>&#22259; 5. StatusViewer のクラス階層</B
+></P
+></DIV
+><DIV
+CLASS="figure"
+><A
+NAME="sourceViewerRTree"
+></A
+><P
+><IMG
+SRC="images/ReverseTree-SourceViewer.png"></P
+><P
+><B
+>&#22259; 6. StatusTextEditor の継承および実装の関係図</B
+></P
+></DIV
+><P
+>&#13;fSourceViewerConfiguration は ISourceViewer の実装クラスの設定を管理する
+クラスである。
+SourceViewerConfiguration は org.eclipse.jface.text プラグインの
+org.eclipse.jface.text.source パッケージで提供されている。
+このクラスは JFace フレームワークが提供する様々な拡張機能
+の設定を一括して管理しているクラスである。
+SourceViewerConfiguration を ISourceViewer の configure メソッドで渡して
+やることで、SourceViewer 自身の表層を定義している。
+なお、JFace が提供する諸機能については、<A
+HREF="#sec:jfaceEditor"
+><I
+>JFace フレームワークが提供するエディタの機能</I
+>&#38917;</A
+>
+を参照のこと。
+</P
+><P
+>&#13;fInternalDocumentProvider は、IDocumentProvider インタフェイスのイン
+スタンスで、TextEditor と編集対象のドキュメントの実体（ファイルなど）と
+の対応付けを行っている。
+IDocumentProvider は org.eclipse.ui.workbench.texteditor プラグインの
+org.eclipse.ui.texteditor パッケージで提供されている。
+諸々のパッケージでファイルなどを対象とした実装クラスが提供されている
+(<A
+HREF="#documentProviderTree"
+>&#22259;7</A
+>)。
+</P
+><DIV
+CLASS="figure"
+><A
+NAME="documentProviderTree"
+></A
+><P
+><IMG
+SRC="images/ClassTree-DocumentProvider.png"></P
+><P
+><B
+>&#22259; 7. IDocumentProvider の実装クラス階層図</B
+></P
+></DIV
+><P
+>&#13;fPreferenceStore は IPreferenceStore インタフェイスのインスタンスで、
+エディタに関する様々な設定を保持している。
+IPreferenceStore は一種のハッシュテーブルで、機能的には
+java.util.Properties をリッチにしたものと考えてよい。実体は
+org.eclipse.jface プラグインの org.eclise.jface.preference パッケージに
+ある。
+AbstractEditor では、エディタの設定を保持するためにこの IPreferenceStore
+クラスを使用している。
+ここで対象となる設定項目とは、例えばエディタの表示色指定やキーバインドな
+どである。
+fPreferenceStore が保持する内容はエディタの諸機能の実装部分等から参照で
+きるため、エディタの拡張機能を実装した際に実装した機能に関連する設定を新
+たに fPreferenceStore に持たせることも可能である。
+ただし、設定項目を追加した場合、新たに追加された設定項目を変更するユーザ
+インタフェイスも必要となる。
+</P
+><P
+>&#13;fActions は AbstractEditor が管理するアクションの一覧を保持する HashMap
+である。
+アクションとは、キー操作などに連動して行うエディタの動作を定義したもので、
+カットアンドペーストや、検索、置換などがその代表例である。
+AbstractTextEditor が管理するアクションについては
+<A
+HREF="#sec:actions"
+><I
+>テキストエディタのアクション定義</I
+>&#38917;</A
+>を参照。
+</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="sec:actions"
+>テキストエディタのアクション定義</A
+></H3
+><P
+>&#13;テキストエディタフレームワークでは、カットアンドペースト、検索、置換など、
+テキストエディタに関連する様々な基本編集作を用意している。これらの動作は、
+org.eclipse.ui.workbench.texteditor プラグインの
+org.eclipse.ui.texteditor パッケージのクラスや、AbstractTextEditor の内
+部クラスなどとして提供されている。
+</P
+><P
+>&#13;<A
+HREF="#actionSamples"
+>&#34920;1</A
+>はその一例である。
+</P
+><DIV
+CLASS="table"
+><A
+NAME="actionSamples"
+></A
+><P
+><B
+>&#34920; 1. 
+テキストエディタフレームワークが提供するアクションの例</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>アクション</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>実装クラス</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>行単位の削除</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>DeleteLineAction</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>文字列の検索</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>FindNextAction</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>文字列の置換</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>FindReplaceAction</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>カーソルを指定された行に移動する</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>GotoLineAction</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インクリメンタルサーチ</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IncrementalFindAction</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>&#13;<A
+HREF="#textEditorActions"
+>&#22259;8</A
+> にテキストエディタに関するアクション
+クラスの一覧と継承関係を示す。
+</P
+><DIV
+CLASS="figure"
+><A
+NAME="textEditorActions"
+></A
+><P
+><IMG
+SRC="images/TextEditorActions.png"></P
+><P
+><B
+>&#22259; 8. テキストエディタのアクションクラスの継承関係</B
+></P
+></DIV
+><P
+>&#13;この中の ResourceAction 以下のクラスはいずれも org.eclipse.ui.texteditor
+パッケージのクラスである。
+org.eclipse.ui.workbench.texteditor プラグインで提供されるこれらのアクショ
+ンは、何れも TextEditroAction やその親クラスの ResourceAction などを継承
+していることがわかる。
+Eclipse フレームワークではキー入力などをハンドルする Action は IAction
+インタフェイスを実装していなければならない。この階層の中では Action クラ
+スが IAction を実装したクラスになっている。
+</P
+><P
+>&#13;これらのアクションは、AbstractTextEditor クラスの createActions メソッド
+で実体が作成され、エディタのアクションとして関連付けが行われる。
+</P
+><P
+>&#13;なお、カット、コピー、ペーストなどの編集機能についてはコアプラグイン
+org.eclipse.ui.workbench で提供されている。これらは、
+Eclipse UI/org/eclipse/ui/actions/ ディレクトリの中の TextActionHandler
+の内部クラスとして定義されている。
+</P
+><DIV
+CLASS="note"
+><P
+></P
+><TABLE
+CLASS="note"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="&#27880;&#24847;"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;dabbrev を実装する場合、上記のアクションと群と同様に ResourceAction もし
+くは TextEditorAction を継承したクラスを作成し、その中に動作を記述す
+ることになる。
+dabbrev では、通常近隣の行を検索し入力された文字列にマッチする行を検索す
+ることとなる。従って、FindNextActoin や DeleteLineAction などは参考にな
+る可能性がある。
+また、dabbrev の操作ではインクリメンタルサーチと同様に２
+回以上連続してアクションが呼ばれたときに動作が変化する(順位の低い候補を
+表示する)ので、IncrementalFindAction クラスや、同クラスを補助している
+IncrementalFindTarget クラスなどが参考になるものと思われる。
+</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>&#13;本来であれば、このほかの部分についても詳細な報告をすべきかもしれないが、
+今回調査対象になっている部分の殆んどは 
+org.eclipse.ui.workbench.texteditor プラグインではなく、JFace フレームワー
+ク関連のプラグインで提供されている。
+そこで、org.eclipse.ui.workbench.texteditor のフレームワーク解説はここで
+一旦終了し、次節では JFace の提供するテキストエディタフレームワークにつ
+いて説明する。
+</P
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="sec:jfaceEditor"
+>JFace フレームワークが提供するエディタの機能</A
+></H2
+><P
+>&#13;通常の拡張エディタは、Eclipse のワークベンチが提供するエディタフレーム
+ワークを利用して、対象となるドキュメントの種類に応じた特殊なアクションや
+編集機能、表示機能などを追加することで実現される。
+前節では、テキストエディタフレームワークを用いて実現できる拡張機能として
+アクションの追加について簡単に述べた。
+しかしながら、今回の調査範囲の機能のうち、特定言語に対応した色付けや、テ
+キストの自動インデント、コードアシストなどの機能に対する拡張は、
+テキストエディタフレームワークより下位の JFace フレームワークによって提
+供されている。デフォルトエディタや Java エディタも JFace フレームワーク
+を利用して色づけなどを行っている。
+そこで、本節では、JFace の中のテキストエディタに関するフレームワークが提
+供する拡張方法について説明する。
+</P
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="sec:jfaceOverview"
+>JFace テキストフレームワークが提供する機能の概要</A
+></H3
+><P
+>&#13;先にも述べたが JFace は Eclipse に対してユーザインタフェイス機能を提供
+する高位のフレームワークであり、ワークベンチプラグインの一部として提供さ
+れている。JFace フレームワークの大半の機能はワークベンチプラグイン
+org.eclipse.jface で提供されているが、テキストエディタに関連したフレーム
+ワークはワークベンチプラグイン org.eclipse.jface.text で提供されている。
+</P
+><P
+>&#13;エディタの諸機能のうち JFace のテキストエディタフレームワークが提供して
+いる機能は下記のとおりである。
+</P
+><P
+></P
+><UL
+><LI
+><P
+>フォントの装飾やスタイルの変更</P
+><P
+>&#13;テキスト中に現れる特定の文字や範囲に対して、指定された条件に従って文字色
+やフォント、フォントのスタイルを変更する機能を提供する。
+</P
+></LI
+><LI
+><P
+>テキストの整形（フォーマット）</P
+><P
+>&#13;文脈に応じて、テキスト中に空白や改行を適宜挿入しソースコードを見やすくす
+る機能を提供する。</P
+></LI
+><LI
+><P
+>補完候補の出力</P
+><P
+>&#13;文脈に応じて補完候補を表示、選択する機能を提供する。
+</P
+></LI
+><LI
+><P
+>ポップアップによるヘルプ等の表示</P
+><P
+>&#13;マウスカーソルの位置に応じて適切なコメントやヘルプをポップアップウィンド
+ウに表示する機能である。Java エディタの場合は、クラスやメソッド等の
+JavaDoc コメントや、変数の型、カーソル位置に関するエラーや警告のポップアッ
+プ表示に利用されている。</P
+></LI
+><LI
+><P
+>外部のドキュメント情報との連携</P
+><P
+>&#13;外部のドキュメント情報との連携は、エディタ以外の部分が保持しているドキュ
+メントのテキストに関連した情報との連携を行う。
+例えば、Java ソースファイルの場合、外部でソースの構文木情報などのドキュ
+メントモデルデータを管理しているが、エディタで Java ソースを編集した際に
+は、変更内容に応じて構文木情報を修正しなければならない。
+この機能は、このようなテキストの編集に伴って発生するテキストエディタ外
+のドキュメント情報の修正のトリガとして利用される機能である。
+</P
+></LI
+></UL
+><P
+>&#13;次項以降では、これら JFace のテキストフレームワークが提供する諸機能の仕
+組みと活用方法について概説する。
+</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="sec:basisOfTextFlamework"
+>JFace テキストフレームワークでの拡張機能設定</A
+></H3
+><P
+>&#13;まず最初に、ここでは上記の諸機能に共通する部分として、拡張機能の設定方法
+について概説する。
+</P
+><P
+>&#13;<A
+HREF="#sec:jfaceOverview"
+><I
+>JFace テキストフレームワークが提供する機能の概要</I
+>&#38917;</A
+>で述べたように、jface のテキストフ
+レームワークでは多種多様な機能を提供している。
+これらの機能は何れも対象となる位置の文脈など、ドキュメントにまつわる条件
+ごとに、その条件下で行うべき動作を指定する必要がある。
+フォントの装飾を例に取ると、ここでいう条件とは対象部分が文字列であるか予
+約語であるか平文であるか、といったものであり、また動作とは文字列であれば
+青色、コメントは茶色、本文は基本は黒だけど予約語だけは太字の紫にする、と
+いったものである。
+</P
+><P
+>&#13;従って、このような条件と動作の組み合わせを与えてやることで、これらの機能
+を実現することが可能となる。
+Eclipse の JFace テキストエディタフレームワークで提供する機能は、いず
+れもこの条件と動作のセットで定義される。
+</P
+><P
+>&#13;このうち条件は内容種別を表す String で付与する。例えば、文字列は
+"QUOTED_STRING", コメントは "COMMENT", それ以外は "OTHERS" という名前を
+割り当てる。
+一方で、動作はそれぞれの機能ごとに動作を記述したクラスを作成する。
+JFace フレームワークでは、個別機能ごとにインタフェイスやテンプレートクラ
+スが用意されており、個別のエディタではこれらを継承したクラスを実装するこ
+とで動作を付与する。
+内容種別の文字列と動作記述クラスとの対応関係は HashMap が保持しており、
+内容種別を与えることで実際の動作の定義を取得することが可能となる。
+</P
+><P
+>&#13;このような構成になっているのは、編集テキストの部分ごとにフォント装飾や
+テキスト整形のストラテジ(動作)が大きく異なるためではないかと想像され
+る。
+例えば Java のソースコードについて考えてみると、普通のソースコードの部分
+とコメント部分ではフォント装飾やコードアシストのストラテジは全く違ったも
+のである。そこで、内容種別ごとに動作が定義できるようになっているのではな
+いかと思われる。例えば、Java エディタでは、下記の６種類のパーティション
+が用意されている。
+</P
+><P
+></P
+><UL
+><LI
+><P
+>一行コメント (// で始まるコメント)</P
+></LI
+><LI
+><P
+>複数行にわたるコメント(/* から */ まで)</P
+></LI
+><LI
+><P
+>JavaDoc コメント(/** から */ まで)</P
+></LI
+><LI
+><P
+>文字列定数(ダブルクウォートで囲まれた部分)</P
+></LI
+><LI
+><P
+>文字定数(シングルクウォートで囲まれた部分)</P
+></LI
+><LI
+><P
+>Java プログラム本文(上記以外)</P
+></LI
+></UL
+><P
+>&#13;なお、これらの内容種別や動作の役割と関係は、
+<A
+HREF="#sec:javaeditor"
+><I
+>JDT の Java エディタ</I
+>&#38917;</A
+>で説明する。
+</P
+><P
+>&#13;さて、実際には、内容種別に対応した動作記述クラスを取得する前に、対象とな
+るドキュメントを解析し、テキスト中の種別の境界を決定したり、個別の部
+分ごとにドキュメントの内容種別を判別する必要がある。
+内容種別とその境目の情報はパーティションと呼ばれており、これらのパーティ
+ションの判定についてもフレームワークが提供されている。
+なお、パーティションの分割および内容種別の判定の詳細については
+<A
+HREF="#sec:partition"
+><I
+>テキストのパーティション</I
+>&#38917;</A
+> で説明する。
+</P
+><P
+>&#13;エディタが提供する諸機能は、全て org.eclipse.jface.text.source パッケー
+ジの SourceViewerConfiguration クラスで一括管理されている。
+拡張機能を実装した場合、実装した拡張機能のクラスを
+SourceViewerConfiguration のインスタンスに登録し、
+このインスタンスを AbstractTextEditor の setSourceViewerConfiguration メ
+ソッドに渡してやることで、機能が利用できるようになる。
+</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="sec:partition"
+>テキストのパーティション</A
+></H3
+><P
+>&#13;本項ではテキストのパーティションについて説明する。
+パーティションとは、編集対象テキストを、内容などに応じて部分ごとに分割し
+た際の個々の断片のことである。
+<A
+HREF="#sec:basisOfTextFlamework"
+><I
+>JFace テキストフレームワークでの拡張機能設定</I
+>&#38917;</A
+>で述べたように、Eclipse のエ
+ディタフレームワークでは、内容種別ごとにフォント装飾やテキスト整形の
+ストラテジを定義することが可能である。
+テキストのパーティションの特徴は下記のとおりである。
+</P
+><P
+></P
+><UL
+><LI
+><P
+>パーティションは重複しない</P
+></LI
+><LI
+><P
+>&#13;テキストの全ての文字は必ずどれか１つのパーティションに属する</P
+></LI
+><LI
+><P
+>&#13;パーティションには必ず１つの内容種別が割り当てられる</P
+></LI
+></UL
+><P
+>&#13;JFace テキストフレームワークでは、このパーティションをスキャンするための
+機能を提供している。このパーティションとスキャニングのフレームワークは
+ワークベンチプラグイン org.eclipse.jface.text の
+org.eclipse.jface.text.rules パッケージにある。
+このパッケージではパーティションに関するインタフェイスのほかに、ルールベー
+スのスキャナのテンプレートなども提供している。
+また、JFace プラグインが提供する装飾などの機能についても、テンプレートと
+なるクラスを提供している。
+関連するクラスおよびインタフェイスを<A
+HREF="#tab:partitionscanner"
+>&#34920;2</A
+>
+に示す。
+</P
+><DIV
+CLASS="table"
+><A
+NAME="tab:partitionscanner"
+></A
+><P
+><B
+>&#34920; 2. パーティションに関するクラス</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>名称</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>種別</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>役割</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IPartitionTokenScanner</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インタフェイス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;パーティションをスキャンするクラスのインタフェイス。ITokenScanner を継承
+している。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>ITokenScanner</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インタフェイス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;IPartitionTokenScanner の親インタフェイス。主要なメソッドは nextToken。
+nextToken を実行すると、次のパーティション情報を返す。
+パーティション情報は IToken インタフェイスの実装クラスに格納する。
+ITokenScanner ではパーティション分割に限らず、一般的なスキャニングの用途
+で使用できる。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>RuleBasedPartitionScanner</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>クラス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;IPartitionTokenScanner のテンプレート実装クラス。ルールに基づいたパーティ
+ションのスキャン機能を提供する。
+ルールは IRule インタフェイスの実装クラスで定義する。
+同じパッケージ内の BufferedRuleBasedScanner を継承。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>RuleBasedScanner</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>クラス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;RuleBasedPartitionScanner の親クラス(間に BufferedRuleBasedScanner があ
+るが)であり IPartitionScanner のテンプレート実装クラス。
+ルールに基づく基本的なスキャン機能を提供する。
+ルールは RuleBasedPartitionScanner と同様に IRule インタフェイスの実装ク
+ラスで定義する。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>RuleBasedPartitioner</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>クラス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;RuleBasedParitionScanner を利用してドキュメントのパーティション分割を行
+うクラス。org.eclipse.text プラグインの org.eclipse.jface.text パッケー
+ジの IDocumentParitioner インタフェイスの実装。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IToken</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インタフェイス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;パーティションの内容種別を格納するクラスのインタフェイス。
+パーティションの内容種別文字列は getData メソッド
+の戻り値を String にキャストすることで取得する。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>Token</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>クラス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;IToken の実装クラス。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IRule, IPredicateRule</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インタフェイス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;RuleBasedParitionScanner で利用するパーティション分割規則を定義するクラ
+スのインタフェイス。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;NumberRule, WhiteSpaceRule, WordRule, PatternRule,
+MultiLineRule, SingleLineRule, EndOfLineRule, WordPatternRule
+</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>クラス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IRule の実装クラス群。</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>&#13;基本的には IPartitionTokenScanner の実装クラスを用意すればよい。
+実装クラスは setRange もしくは  setPartialRange でスキャンする範囲を指定
+でき、かつ nextToken メソッドで範囲内のパーティションを順次取得できる
+ように実装する必要がある。
+nextToken の戻り値は IToken インタフェイスである。IToken は is 系のメソッ
+ドでトークンの種別が取得できるほか、getData メソッドの戻り値を String に
+キャストすることで内容種別を取得できるようにする必要がある。
+</P
+><P
+>&#13;IPartitionTokenScanner の実装クラスとして RuleBasedPartitionScanner が用
+意されている。このクラスは IRule インタフェイスの実装クラスによって与え
+られるルールを組み合わせることで、テキストをスキャンする機能をより簡単に
+実装できる。Java エディタでは、パーティションのスキャンに
+RuleBasedScanner を継承した JavaPartionScanner クラスを利用している
+(<A
+HREF="#fig:partitionscanner"
+>&#22259;9</A
+>)。
+</P
+><DIV
+CLASS="figure"
+><A
+NAME="fig:partitionscanner"
+></A
+><P
+><IMG
+SRC="images/ClassTree-ptscanner.png"></P
+><P
+><B
+>&#22259; 9. IPartitionTokenScanner のクラス階層図</B
+></P
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;ソースの解析やトークンというと、前回の調査報告で述べた Java コンパイラの
+ソース解析機能 (org.eclise.jdt.core プラグインの compilre ディレクトリに
+ある org.eclipse.jdt.internal.compiler.parser.Scanner クラスなど)や、そ
+の際に利用するトークン(org.eclipse.jdt.core プラグインの dom
+ディレクトリ以下にある org.eclipse.jdt.core.dom.ASTNode クラス や model
+ディレクトリ以下にある org.eclipse.jdt.core.IJavaElement など)との関係
+が気になる。
+しかし、残念ながら JFace テキストフレームワークが用意するスキャナやトー
+クンと、JDT のコンパイラにあるこれらのクラスとは一切無関係である。
+スキャナについては、JDT では Java エディタ専用のトークンおよびスキャナを
+Java コンパイラとは完全に独立して実装しており、トークンの取得にはこのス
+キャナを利用している。
+</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="sec:jfacepresentation"
+>フォントの装飾</A
+></H3
+><P
+>&#13;フォントの装飾に関する機能は org.eclipse.jface.text プラグインの
+org.eclipse.jface.text.presentation パッケージに用意されている。
+presentation パッケージのクラスは下記の 4 つである。
+</P
+><DIV
+CLASS="table"
+><A
+NAME="AEN316"
+></A
+><P
+><B
+>&#34920; 3. フォントの装飾に関するクラス</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>名称</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>種別</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>役割</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IPresentationDamager</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インタフェイス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>テキストの装飾の修正範囲を特定する</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IPresentationRepairer</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インタフェイス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>テキストの装飾を修正する</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IPresentationReconciler</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インタフェイス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;内容種別ごとの IPresentationDamager および IPresentationRepairer を保持
+する</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>PresentationReconciler</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>クラス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IPresentationReconciler のテンプレート実装</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>&#13;この機能は、文字入力などによって生じたテキストへの変更に対し、全体を再描
+画するのではなく、影響が波及する範囲のみを再描画することを想定した実装に
+なっている。
+例えば、１文字入力された場合、大抵はその文字、あるいはせいぜいそ
+の単語のみを変更すればよく、それ以外の部分については文字が入力される前の
+表示がそのまま利用できる。
+このように、テキスト全体を再描画する必要があるケースはそれほど多くはない。
+１文字入力されるたびにテキストビューを全て再描画してしまうと極めて効率が
+悪くなる恐れがあることから、
+テキストが変更される都度、変更によって表示の修正が必要となる必要
+最低限の範囲を特定し、その部分のみを修正することを意図しているものと思わ
+れる。
+なお、最初にテキストを表示する時には、テキスト全体が変更されたものするこ
+とで全体を描画させることが可能である。
+</P
+><P
+>&#13;jface.text.presentation パッケージのうち、テキスト修正動作に直接関連する
+ものは、IPresentationDamager と IPresentationRepairer である。
+IPresentationDamager インタフェ
+イスは、テキストの変更によって表示の修正が必要となる範囲を特定するクラ
+スのインタフェイスである。
+IPresentationDamager が特定した修正範囲に対し、実際にテキストの修正を行
+うクラスのインタフェイスが IPresentationRepairer である。
+</P
+><P
+>&#13;IPresentationDamager は getDamageRegion というメソッドを持っている。
+このメソッドは、
+テキストが編集などにより変更された際に、変更が行われた範囲と変更内容を受
+けて、その変更が影響する範囲を返す。
+IPresentationRepairer には createPresentation というメソッドがあり、この
+メソッドは、IPresentationDamager の getDamageRegion の返した範囲情報と、
+その部分へのテキスト表示設定を受け取ると、テキスト表示設定の内容を更新す
+る。
+</P
+><P
+>&#13;一方で IPresentationReconciler は、テキストの内容種別に対して適切な
+IPresentationDamager および IPresentationRepairer を提供する、いわば
+HashMap 的クラスのインタフェイスである。jface.text.presentation パッ
+ケージでは、IPresentationReconciler のテンプレート実装として
+PresentationReconciler クラスを提供している。
+大抵のエディタでは、 PresentationReconciler は拡張することなくそのまま利
+用可能である。実際に、Java エディタでも PresentationReconciler がそのまま
+利用されている。
+</P
+><P
+>&#13;IPresentationDamager と IPresentationRepairer については、
+jface.text.presentation パッケージにはインタフェイスしかないが、
+org.eclipse.jface.text.rules パッケージに実装クラスがある。
+RuleBasedDamagerRepairer および DefaultDamagerRepairer が該当するクラス
+である(<A
+HREF="#damagerRepairerClass"
+>&#34920;4</A
+>)。
+このうち、RuleBasedDamagerRepairer は DefaultDamagerRepairer を継承
+しただけのクラスなので、実際には DefaultDamagerRepairer が実装クラスの実
+体である。
+このクラスは、IPresentationDamager と IPresentationRepairer の両方を実装
+したクラスである。
+IPresentationDamager と IPresentationRepairer は相互に強く依存しているた
+め、単一のクラスに両方の機能を実装したものと想定される。
+DefaultDamagerRepairer はコンストラクタの引数として ITokenScanner など
+を必要とするが、これはパーティション内の更なるトークンの解析に利用される。
+後述の Java エディタでもこの DefaultDamagerRepairer を使用している
+(<A
+HREF="#sec:javapresentation"
+><I
+>フォント装飾の実装</I
+>&#38917;</A
+>参照)。
+詳細を理解するためには Java エディタでの実装を読むのがよい。
+</P
+><DIV
+CLASS="table"
+><A
+NAME="damagerRepairerClass"
+></A
+><P
+><B
+>&#34920; 4. IPresentationDamager と IPresentationRepairer の実装
+	    クラス</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>名称</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>役割</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>DefaultDamagerRepairer</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;DamagerとRepairerの両方の実装クラス。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>RuleBasedDamagerRepairer</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;DefaultDamagerRepairerを継承しただけのクラス。
+コンストラクタ以外の実装は持たない。
+外部からの参照もない。</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>&#13;このクラスは、<A
+HREF="#sec:partition"
+><I
+>テキストのパーティション</I
+>&#38917;</A
+>で説明した ITokenScanner を
+付与すると、この Scanner を利用して修正対象となる範囲を抽出し、その部分
+の表示を修正させる。
+修正範囲の表示内容の生成は AbstractTextEditor が保持する
+SourceCodeViewer に与えられた TextPresentation が行う
+(<A
+HREF="#editorStructure"
+><I
+>テキストエディタの構成</I
+>&#38917;</A
+>参照)。
+</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="sec:jfaceformatting"
+>テキストの整形に関するクラス</A
+></H3
+><P
+>&#13;テキストの整形に関する機能は org.eclipse.jface.text プラグインの
+org.eclipse.jface.text.formatter パッケージに用意されている。
+formatter パッケージのクラスは下記の 3 つである。
+</P
+><DIV
+CLASS="table"
+><A
+NAME="AEN368"
+></A
+><P
+><B
+>&#34920; 5. テキストの整形に関するクラス</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>名称</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>種別</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>役割</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IFormattingStrategy</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インタフェイス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;テキスト整形の動作を定義すると共に、実際にテキスト整形処理を行うクラスの
+インタフェイス。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IContentFormatter</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インタフェイス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;IFormattingStrategy を管理するクラスのインタフェイス。
+内容種別を与えると対応する IFormattingStrategy を返す。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>ContentFormatter</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>クラス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IContentFormatter のテンプレート実装クラス。</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>&#13;このうち、テキスト修正動作に直接関連するものは IFormattingStrategy であ
+る。IFormattingStrategy インタフェイスには format というメソッドがある。
+このメソッドは、整形対象の文字列や、そ
+の部分のインデント情報などを渡すと、その部分を整形した結果の文字列を返す。
+整形対象や整形後の文字列の受け渡しには String を利用している。
+このほかに、整形に時間を要するケースを想定してか、format の開始および停
+止を通知するメソッドがある。
+</P
+><P
+>&#13;IFormattingStrategy については、テンプレート実装は用意されていない。
+これは、FormattingStrategy クラスの実装は、ドキュメントの種類によって多
+種多様で、極めて一般化しにくいためではないかと想定される。
+なお、Java エディタでは独自に IFormattingStrategy の実装クラス
+JavaFormattingStrategy を用意している。
+</P
+><P
+>&#13;IContentFormatter インタフェイスは、テキストの内容種別に対して適切な
+IFormattingStrategy を提供するクラスである。
+このインタフェイスの役割は、フォントの装飾機能における
+IPresentationReconciler インタフェイスと同様であり、内容種別文字列をキー
+とする HashMap のようなものである。
+IContentFormatter のテンプレート実装が ContentFormatter クラスである。
+フォント装飾での PresentationReconciler と同様に、基本的には
+ContentFormatter もエディタ毎の実装はあまり必要はなく、
+Java エディタでも ContentFormatter がそのまま利用されている。
+</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="sec:jfaceassist"
+>補完候補の表示</A
+></H3
+><P
+>&#13;補完候補の表示に関する機能は org.eclipse.jface.text プラグインの
+org.eclipse.jface.text.contentassist パッケージに用意されている。
+contentassist パッケージのクラスは非常に多いが、そのうち主要なクラスは下
+記のとおりである。
+</P
+><DIV
+CLASS="table"
+><A
+NAME="AEN395"
+></A
+><P
+><B
+>&#34920; 6. 補完候補の表示に関するクラス</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>名称</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>種別</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>役割</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IContentAssistProcessor</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インタフェイス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;入力された文字列に対して、提示すべき補完候補の一覧を管理・取得するクラス
+のインタフェイス。
+また、メソッドなどを補完した最に提示するメソッドのパラメータの一覧情報も
+提供する。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;ICompletionProposal, ICompletionProposalExtension,
+ICompletionProposalExtension2</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インタフェイス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;１つ１つの補完候補の情報を保持するクラスのインタフェイス。
+また、補完候補に関する説明文も保持する。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>CompletionProposal</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>クラス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>ICompletionProposalのテンプレート実装クラス。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;IContextInformation, IContextInformationExtension</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インタフェイス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;メソッドなどを補完した際に、続けて提示されるメソッドのパラメータの一覧情
+報等を管理するクラスのインタフェイス。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>ContentInformation</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>クラス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IContextInformationのテンプレート実装クラス。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IContentAssistant</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インタフェイス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;IContentAssistProcessor を管理するクラスのインタフェイス。
+内容種別を与えると対応する IContentAssistProcessor を返す。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>ContentAssistant</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>クラス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IContentAssistantのテンプレート実装クラス。</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>&#13;補完候補は IContentAssistProcessor インタフェイスの実装が管理する。
+実際の補完候補は、１つづつ ICompletionProposal インタフェイスのインスタ
+ンスに格納されており、IConentAssistProcessor の
+computeCompletionProposals メソッドを呼ぶことで ICompletionProposal の配
+列を取得することができる。
+メソッド補完時などに表示されるパラメータの一覧も IContentAssistProcessor
+が管理しており、こちらは IContextInformation に格納される。
+これも同様に IContentAssistProcessor の compilteContextInformation メソッ
+ドを呼ぶことで、配列を取得することができる。
+IContentAssistProcessor および IContextInformation はそれぞれテンプレート
+実装が用意されている。
+なお、IContentAssistProcessor のテンプレート実装は用意されていない。
+</P
+><P
+>&#13;IContentAssistant インタフェイスは、テキストの内容種別に対して適切な
+IContentAssistProcessor を提供するクラスである。
+このインタフェイスの役割は、その他の機能と同様に、内容種別文字列をキー
+とする HashMap のようなものである。
+IContentAssistant のテンプレート実装が ContentAssistant クラスで
+ある。なお、Java エディタでは ContentAssistant クラスと、このクラスをを
+継承した JavaCorrectionAssistant の２つを利用している。
+</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="sec:jfaceinfo"
+>ポップアップの表示</A
+></H3
+><P
+>&#13;ポップアップの表示に関する機能は org.eclipse.jface.text プラグインの
+org.eclipse.jface.text.information パッケージに用意されている。
+information パッケージのクラスは下記のとおりである。
+</P
+><DIV
+CLASS="table"
+><A
+NAME="AEN437"
+></A
+><P
+><B
+>&#34920; 7. ポップアップの表示に関連するクラス</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>名称</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>種別</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>役割</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IInformationProvider</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インタフェイス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;テキスト中の注目している場所情報から、ポップアップ表示すべき文字列を決定
+する。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IInformationProviderExtension</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インタフェイス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;テキスト中の注目している場所情報から、ポップアップ表示すべき内容を文字列
+ではなくオブジェクトで返す。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IInformationPresentor</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インタフェイス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;IInformationProvider を管理するクラスのインタフェイス。
+内容種別を与えると対応する IInformationProvider を返す。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>InformationPresentor</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>クラス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;IInformationPresentor インタフェイスのテンプレート実装クラス。</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;もともとは、ポップアップの情報提示も org.eclipse.jface.text.contentassist
+パッケージで提供されていたが、org.eclipse.jface.text.information が後か
+ら追加されたようだ。現在でも org.eclipse.jface.text.contentassist にもポッ
+プアップに関連するクラスが残っており、こちらでもポップアップ表示が可能な
+ようである。
+</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>&#13;表示内容に直接関わるものは IInformationProvider インタフェイスと
+IInformationProviderExtension インタフェイスである。
+IInformationProvider インタフェイスには getSubject というメソッドと
+getInformation というメソッドがある。
+getSubject メソッドはテキスト中の指定されたポイントに対して、同じ情報が
+表示される範囲を返すメソッドである。
+例えば、Java ソースエディタを例に取ると、メソッド名の部分にマウスカーソ
+ルを移動させると、同じメソッド名の上をマウスカーソルが移動している間は、
+そのメソッドに関するポップアップメッセージを表示し続けるが、メソッド名の
+部分からマウスカーソルが外れるとポップアップメッセージは消滅する。
+この場合、getSubject は、このメソッド名の開始位置から終了位置までを表示
+範囲として返す。
+もう一つの getInformation メソッドは、getSubject メソッドが返した表示範
+囲に表示すべきメッセージを文字列 (String) で返す。
+例えば、Java ソースエディタで、getSubject が指し示した表示範囲が文字列だっ
+た場合、getInformation メソッドはそこで表示すべき内容、つまり、メソッド
+の型定義と JavaDoc コメントの冒頭部分を戻り値として返す。
+IInformationProviderExtension は、IInformationProvider の
+getInformation の戻り値を Object にした getInformation2 というメソッドを
+持っている。これは、ポップアップ表示の内容が String だけでは表現しきれな
+いケースを想定して用意されたものである。
+</P
+><P
+>&#13;IInformationProvide および IInformationProviderExtension の
+テンプレート実装はワークベンチでは用意されていない。
+Java エディタでは独自にこれらの実装クラス JavaElementProvider および
+JavaInformationProvider クラスを用意している。
+</P
+><P
+>&#13;IInformationPresenter インタフェイスは、テキストの内容種別に対して適切な
+IInformationProvider を提供するクラスである。
+このインタフェイスの役割は、その他の機能と同様に、内容種別文字列をキー
+とする HashMap のようなものである。
+IInformationPresenter のテンプレート実装が InformationPresenter クラスで
+ある。これもその他の機能と同様に、エディタ毎の実装はあまり必要はなく、
+Java エディタでも InformationPresenter がそのまま利用されている。
+</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="AEN467"
+>外部のドキュメント情報との連携</A
+></H3
+><P
+>&#13;外部のドキュメント情報との連携に関する機能は
+org.eclipse.jface.text プラグインの
+org.eclipse.jface.text.reconciler パッケージに用意されている。
+reconciler パッケージの主要クラスは下記のとおりである。
+</P
+><DIV
+CLASS="table"
+><A
+NAME="AEN470"
+></A
+><P
+><B
+>&#34920; 8. 外部のドキュメント情報との連携に関連したクラス</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>名称</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>種別</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>役割</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IReconcilingStrategy</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インタフェイス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;外部情報との連携処理を実行するクラスのインタフェイス。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IReconcilingStrategyExtension</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インタフェイス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;主に時間がかかる処理を対象とした拡張機能のインタフェイス。
+プログレスバーの表示に関するメソッドを持つ。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IReconciler</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>インタフェイス</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;IReconcilingStrategy を管理するクラスのインタフェイス。
+内容種別を与えると対応する IReconcilingStrategy を返す。
+</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>&#13;外部のドキュメント情報との連携処理に直接関与するものは、
+IReconcilingStrategy インタフェイスと IReconcilingStrategyExtension イン
+タフェイスである。
+IReconcilingStrategy インタフェイスには reconcile というメソッドがあり、
+このメソッド内にでドキュメントの変更に対する処理内容を記述する。
+reconcile メソッドは２つあるが、片方が変更範囲が明らかな場合に変更され
+ている範囲を付与できるのにたいし、もう片方は変更範囲は特定せずに再構成を
+行うメソッドである。
+IReconcilingStrategyExtension には setProgressMonitor というメソッドがあ
+り、進捗状況を表示するプログレスバーなどと連携ができるようになっている。
+これは、ドキュメント情報との整合性をとる処理には時間を要することが多いた
+めと思われる。
+</P
+><P
+>&#13;IReconciler インタフェイスは、テキストの内容種別に対して適切な
+IReconcilerStrategy を提供するクラスである。
+このインタフェイスの役割は、その他の機能と同様に内容種別文字列をキー
+とするハッシュマップのようなものである。
+IReconciler のテンプレート実装は用途に応じて複数用意されている。
+実装クラス一覧を<A
+HREF="#fig:ireconcilertree"
+>&#22259;10</A
+>に示す。
+Reconciler がフルスペックの実装であるのに対し、MonoReconciler では内容種
+別によらず同じ IReconcilingStrategy を返す。
+Java エディタでは後者の MonoReconicler を継承した JavaReconciler を実装
+している。
+</P
+><DIV
+CLASS="figure"
+><A
+NAME="fig:ireconcilertree"
+></A
+><P
+><IMG
+SRC="images/ClassTree-IReconciler.png"></P
+><P
+><B
+>&#22259; 10. IReconciler のクラス階層図</B
+></P
+></DIV
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H1
+CLASS="section"
+><A
+NAME="sec:javaeditor"
+>JDT の Java エディタ</A
+></H1
+><P
+>&#13;本節では Eclipse の JDT (Java Development Toolkit) が提供する Java ソー
+スコードエディタについて説明する。
+      </P
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN501"
+>Java エディタの概要</A
+></H2
+><P
+>&#13;	  Eclipse は Java ソースファイル編集用のエディタとして Java エ
+	  ディタを提供している。Java エディタは通常のエディタ機能に加え
+	  て、Java に特化した下記の機能を持っている。
+	  <P
+></P
+><UL
+><LI
+><P
+>予約語、コメント、文字列などの文字色やフォントの変更</P
+></LI
+><LI
+><P
+>自動インデント</P
+></LI
+><LI
+><P
+>ソースコードの補完候補提示機能</P
+></LI
+><LI
+><P
+>クラスやメソッドの説明のポップアップ表示</P
+></LI
+><LI
+><P
+>自動コンパイルとエラー表示</P
+></LI
+><LI
+><P
+>その他諸々</P
+></LI
+></UL
+>
+これらの Java エディタが提供する機能は、Eclipse ワークベンチのテキスト
+エディタフレームワークを用いて実現されている。
+        </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN517"
+>Java エディタの実体</A
+></H2
+><P
+>&#13;Java エディタの実体は org.eclipse.jdt.ui プラグインで定義されている。ソー
+スファイルは、org.eclipse.jdt.ui プラグインの中の
+ui/org/eclipse/jdt/internal/ui/javaeditor/JavaEditor.java である。この
+JavaEditor 自体は、Java のソースファイルの基本的な表示および編集機能を提
+供しているが、実装クラスではなく抽象クラスとなっている。実装クラスは、
+JavaEditor クラスを継承した ClassFileEditor クラスと
+CompilationUnitEditor クラスである。ファイルはいずれも JavaEditor クラス
+と同じディレクトリにある。 CompilationUnitEditor が Java ソースファイル
+(.java ファイル)を編集対象としているのに対して、ClassFileEditor クラスは、
+クラスファイル(.class ファイル)を対象としたものである。
+</P
+><P
+>&#13;org.eclipse.jdt.ui プラグインに含まれる Java エディタの中核クラスを
+<A
+HREF="#tab:javacoreclasses"
+>&#34920;9</A
+>に示す。
+</P
+><DIV
+CLASS="table"
+><A
+NAME="tab:javacoreclasses"
+></A
+><P
+><B
+>&#34920; 9. Java エディタの中核クラス</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>名称</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>パッケージ</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>説明</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JavaEditor</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.ui.javaeditor</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;Java エディタ本体。StatusTextEditor を継承したクラスで、Java エディタに
+関する機能はすべてこのクラスに集約されている。ただし、このクラスは抽象ク
+ラスであり、実装クラスは ClassFileEditor および CompilationUnitEditor の
+２つがある。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>ClassFileEditor</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.ui.javaeditor</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;Java エディタの実装クラス。JavaEditor を継承している。
+主に、コンパイル済みのクラスファイルに対する編集機能を提供する。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>ClassFileDocumentProvider</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.ui.javaeditor</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;IDocumentProvider の実装クラス。
+エディタとクラスファイルとの連携を図る。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>CompilationUnitEditor</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.ui.javaeditor</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;Java エディタの実装クラス。JavaEditor を継承している。
+主に、Java ソースファイルに対する編集機能を提供する。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>CompilationUnitDocumentProvider</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.ui.javaeditor</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;IDocumentProvider の実装クラス。
+エディタと Java ソースファイルとの連携を図る。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JavaSourceViewer</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.ui.javaeditor</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;SourceViewer を継承したクラス。Java プログラムに特化したテキスト表示機能
+を提供する。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JavaSourceViewerConfiguration</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.ui.text</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;SourceViewerConfiguration を継承したクラス。Java ソースに特化した
+SourceViewer の設定を保持する。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JavaTextTools</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.ui.text</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;パーティションスキャナ等のインスタンス等、
+Java プログラムの分析に関連したクラスを一括して管理する。
+このクラスはパーティションのスキャナだけではなく、Java のプログラムやコ
+メントなどの内部をスキャンするクラスも管理している。
+これらのクラスはフォントの装飾などで利用されている。
+</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN563"
+>Java エディタの諸機能の実装</A
+></H2
+><P
+>&#13;本項では Java エディタで実装されている様々な Java 独自の機能について、
+Eclipse ワークベンチのエディタフレームワークとの関連を踏まえて説明する。
+</P
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="sec:javapartition"
+>パーティション分割と内容種別の判定</A
+></H3
+><P
+>&#13;本項では JavaEditor のパーティション分割に関連するクラスを概観する。
+パーティション分割の詳細は、<A
+HREF="#sec:partition"
+><I
+>テキストのパーティション</I
+>&#38917;</A
+>を参照のこと。
+</P
+><P
+>&#13;Java エディタでは下記の 6 種類のパーティションを用意している。
+</P
+><DIV
+CLASS="table"
+><A
+NAME="AEN571"
+></A
+><P
+><B
+>&#34920; 10. Java エディタで定義されているパーティション</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>パーティション名</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>パーティションの内容</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JAVA_SINGLE_LINE_COMMENT</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;"//" で始まる１行コメント。行末までが対象。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JAVA_MULTI_LINE_COMMENT</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;"/*" と "*/" で囲まれた複数行にまたがるコメント。
+		  </TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JAVA_DOC</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;複数行コメントのうち "/**" と "*/" で囲まれた部分で、JavaDoc が記述され
+ているコメント。複数行にまたがることができる。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JAVA_STRING</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;" (ダブルクウォート)で囲まれた文字列。
+基本的に複数行にまたがることはできない。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JAVA_CHARACTER</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;' (シングルクウォート)で囲まれた文字。
+複数行にまたがることはできない。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>それ以外</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>Java のプログラム本文</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>&#13;これらのパーティションの内容種別は IJavaPartitions インタフェイスで管理
+している。
+</P
+><P
+>&#13;JavaEditor ではパーティションのスキャンには RuleBasedPartitionScanner な
+どは利用しておらず、独自にスキャナクラスを実装している。
+これは、ルールベースのスキャナでは十分な性能が確保できなかったためではな
+いかと想定される。
+なお、トークンについては JFace フレームワークの Token クラスをそのまま利
+用している。
+パーティションのスキャンに関するクラスは下記のとおりである。
+</P
+><DIV
+CLASS="table"
+><A
+NAME="tab:javascanners"
+></A
+><P
+><B
+>&#34920; 11. Java エディタのパーティションスキャナ関係</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>名称</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>パッケージ</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>説明</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>IJavaPartitions</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.ui.text</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;Java のパーティションの内容種別文字列を保持するインタフェイス。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>FastJavaPartitionScanner</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.ui.text</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;IPartitionTokenScanner の実装クラス。
+Java のソースファイルを解析してパーティションに分割する機能を提供する。
+</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="sec:javapresentation"
+>フォント装飾の実装</A
+></H3
+><P
+>&#13;本項では JavaEditor のフォント装飾の実装について概観する。
+フレームワークが提供する
+フォント装飾機能の詳細は、<A
+HREF="#sec:jfacepresentation"
+><I
+>フォントの装飾</I
+>&#38917;</A
+>を参照
+のこと。
+また、パーティション分割と内容種別については既に
+<A
+HREF="#sec:javapartition"
+><I
+>パーティション分割と内容種別の判定</I
+>&#38917;</A
+>で述べたとおりである。
+ここでは、パーティションごとの内容種別を決定した後の動作について説明する。
+</P
+><P
+>&#13;Java エディタでは、
+JFace フレームワークで用意されているテンプレート実装に対して特に拡張の実
+装は行なっておらず、そのまま利用している。
+IPresentationDamager および IPresentationRepairer は、
+DefaultDamagerRepairer を、また IPresentationReconciler は 
+PresentationReconciler をそれぞれ利用している。
+Java エディタ独自の実装としては、IPresentationDamager および
+IPresentationRepairer で利用する、パーティション内のトークン分析用のスキャ
+ナ群である。
+<A
+HREF="#tab:javapresentation"
+>&#34920;12</A
+> に Java エディタが用意しているパー
+ティション内のトークンのスキャナクラスを示す。
+</P
+><DIV
+CLASS="table"
+><A
+NAME="tab:javapresentation"
+></A
+><P
+><B
+>&#34920; 12. Java エディタの色づけ関係</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>名称</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>パッケージ</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>説明</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JavaCodeScanner</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.ui.text.java</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;Java プログラムの本文をスキャンし、予約語などに分割するスキャナ</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JavaCommentScanner</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.ui.text</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;Java の複数行コメントおよび１行コメント部分のためのスキャナ。
+特にたいした解析は行っていない。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JavaDocScanner</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.ui.text.javadoc</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;JavaDoc コメントに利用するためのスキャナ。
+JavaCommentScanner の機能に加えて、xml タグ情報の取り出しや、@ で始まる
+表記などを解析している。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>SingleTokenJavaScanner</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.ui.text</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;Java プログラム中の文字列定数や文字定数部分に対して利用するスキャナ。
+実装はほぼ皆無である。
+</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>&#13;Java エディタでは、これらのスキャナをそれぞれ DefaultDamageRepairer に与
+えることにより、Java プログラム本体や、コメント部分、JavaDoc などに特化
+した IPresentationDamager および IPresentationRepairer のインスタンスを
+作成している。
+Damager および Repairer のインスタンスの生成と、IPresentationReconciler
+への登録は、
+org.eclipse.jdt.ui.text パッケージの
+JavaSourceViewerConfiguration クラスの
+getPresentationReconciler メソッドで行われている。
+また、個々のスキャナのインスタンスは
+org.eclipse.jdt.ui.text パッケージの JavaTextTools クラスで一括管理され
+ている。
+</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="AEN649"
+>エラー表示機能の実装</A
+></H3
+><P
+>&#13;JDT のエラー表示はエディタとはかなり独立した機能として提供されている。
+Java ソースのコンパイル結果は org.eclipse.jdt.core プラグインの dom ディ
+レクトリ内の org.eclipse.jdt.core.dom パッケージによって解析され、
+エラーとして報告される。
+個々のエラー情報は IProblem クラスに格納され、IProblem の配列で管理され
+る。
+</P
+><P
+>&#13;JDT のユーザインタフェイス部分では、core extension ディレクトリの
+org.eclipse.jdt.internal.corext.dom パッケージ等を解して、dom が生成した
+エラー情報を取得する。
+これらのエラー情報は org.eclipse.jdt.internal.ui.text.correction パッケー
+ジでハンドリングされ、エディタの補完機能やマーカー表示などに反映される。
+</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="AEN653"
+>ソースコード整形機能の実装</A
+></H3
+><P
+>&#13;本項では JavaEditor のソースコード整形に関連するクラスを概観する。
+なおソースコード整形の詳細は、<A
+HREF="#sec:jfaceformatting"
+><I
+>テキストの整形に関するクラス</I
+>&#38917;</A
+>を参
+照のこと。
+</P
+><P
+>&#13;JFace が提供する整形機能のうち、主要なインタフェイスは
+IFormattingStrategy と IContentFormatter の２種である。
+このうち、IFormattingStrategy については
+<A
+HREF="#sec:jfaceformatting"
+><I
+>テキストの整形に関するクラス</I
+>&#38917;</A
+> で述べたようにテンプレートクラスが
+用意されていないため、Java エディタでは独自の実装クラス
+JavaFormattingStrategy を実装している。
+このクラスの実体は、org.eclipse.jdt.ui プラグインの
+org.eclipse.jdt.internal.text.java パッケージにある。
+なお、JavaFormattingStrategy の内部では JDT のコア部分が用意するコード整
+形クラスICodeFormatter のインスタンスを取得して、そちらに処理を依頼して
+いる。
+ICodeFormatter は org.eclipse.jdt.core プラグインに属しており、
+コア部分の保持している Java プログラムパーサを利用して整形を行っている。
+</P
+><P
+>&#13;なお、IContentFormatter については、JFace が用意したテンプレート実装をそ
+のまま利用している。
+IContentFormatter のインスタンスは JavaSourceViewerConfiguration が保持
+しており、getContentFormatter メソッドで取得できる。
+</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="AEN660"
+>補完候補提示機能の実装</A
+></H3
+><P
+>&#13;本項では JavaEditor の補完候補提示に関連するクラスを概観する。
+なお補完候補提示機能の詳細は、<A
+HREF="#sec:jfaceassist"
+><I
+>補完候補の表示</I
+>&#38917;</A
+>を参
+照のこと。
+</P
+><P
+>&#13;補完候補の提示には、IContentAssistProcessor, ICompletionProposal,
+IContextInformation, IContentAssistant の各インタフェイスを実装する必要
+がある。
+IContentAssistProcessor は独自の実装クラスとして
+JavaCompletionProcessor, JavaDocCompletionProcessor および
+JavaCorrectionProcessor を実装している。
+これらの詳細を<A
+HREF="#tab:javaassist"
+>&#34920;13</A
+>に示す。
+</P
+><DIV
+CLASS="table"
+><A
+NAME="tab:javaassist"
+></A
+><P
+><B
+>&#34920; 13. Java エディタのソースコード補完関係</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>名称</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>パッケージ</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>説明</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JavaCompletionProcessor</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.ui.text.java</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;IContentAssistProcessor の実装クラス。
+Javaプログラムの本文、文字列定数および一行コメントに対する補完候補を提示
+するクラス。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JavaDocCompletionProcessor</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.ui.text.javadoc</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;IContentAssistProcessor の実装クラス。
+JavaDoc コメントに対する補完候補を提示するクラス。</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JavaCorrectionProcessor</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.ui.text.correction</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;IContentAssistProcessor の実装クラス。
+エラー修正等に関する表示にも対応。
+</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>&#13;このほかに、ICompletionProposal の実装クラス
+(<A
+HREF="#fig:treeicp"
+>&#22259;11</A
+>)および
+IContextInformation の実装クラス
+(<A
+HREF="#fig:treeici"
+>&#22259;12</A
+>)
+が多数用意されている。
+これらは数が膨大なため詳細は割愛する。
+</P
+><DIV
+CLASS="figure"
+><A
+NAME="fig:treeicp"
+></A
+><P
+><IMG
+SRC="images/ClassTree-IJCP.png"></P
+><P
+><B
+>&#22259; 11. ICompletionProposal の実装クラス階層図</B
+></P
+></DIV
+><DIV
+CLASS="figure"
+><A
+NAME="fig:treeici"
+></A
+><P
+><IMG
+SRC="images/ClassTree-ICI.png"></P
+><P
+><B
+>&#22259; 12. IContextInformation の実装クラス階層図</B
+></P
+></DIV
+><P
+>&#13;IContentAssistant については、JavaEditor ではテンプレート実装の
+ContentAssistant クラスをそのまま利用している。
+しかし、JavaEditor の実装クラスである CompilationUnitEditor では、
+ContentAssistant クラスを継承した JavaCorrectionAssistant を利用している。
+</P
+><P
+>&#13;JavaEditor が利用している ContentAssistant は
+JavaSourceViewerConfiguration が保持しており、getContentAssistant メソッ
+ドで取得できる。
+一方で CompilationUnitEditor が利用する JavaCorrectionAssistant は
+CompletionUnitEditor の内部クラスの AdaptedSourceViewer で管理されてい
+る。
+</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="AEN700"
+>ソース説明のポップアップ表示機能の実装</A
+></H3
+><P
+>&#13;本項では JavaEditor のポップアップ表示機能に関連するクラスを概観する。
+なおポップアップ表示の詳細は、<A
+HREF="#sec:jfaceinfo"
+><I
+>ポップアップの表示</I
+>&#38917;</A
+>を参
+照のこと。
+</P
+><P
+>&#13;JFace が提供するポップアップ機能は
+IInformationProvide インタフェイスと
+IInformationPresenter インタフェイス
+を実装することで利用できる。
+このうち IInformationProvide については
+<A
+HREF="#sec:jfaceinfo"
+><I
+>ポップアップの表示</I
+>&#38917;</A
+>でも述べたように
+JFace フレームワークではテンプレート実装は提供されていない。
+そこで、Java エディタでは独自に JavaElementProvider および
+JavaInformationProvider の実装クラスを用意している。
+</P
+><DIV
+CLASS="table"
+><A
+NAME="tab:javainfo"
+></A
+><P
+><B
+>&#34920; 14. Java エディタのポップアップ表示関係</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>名称</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>パッケージ</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>説明</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JavaElementProvider</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.ui.text</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;IInformationProvider インタフェイスの実装クラス。
+基本機能のみを提供。プログラム本文および JavaDoc 部分のみに適用される。
+</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>JavaInformationProvider</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>org.eclipse.jdt.internal.ui.text.hover</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>&#13;IInformationProvider と IInformationProviderExtension の両方のインタフェ
+イスを実装したクラス。
+ソースコードの全ての部分に適用されている。
+</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>&#13;なお、IInformationPresenter については、JFace が用意したテンプレート実装
+をそのまま利用している。
+IInformationPresenter のインスタンスは JavaSourceViewerConfiguration が
+保持しており、getInformationPresenter および getOutlinePresneter メソッ
+ドで取得できる。
+getInformationPresenter は JavaSourceViewerConfiguration の親クラス
+SourceViewerConfiguration で定義されているメソッドであり、JFace の
+SourceViewer の設定に利用される。
+一方で getOutlinePresenter は JavaSourceViewerConfiguration の独自のメソッ
+ドであり、JFace フレームワークでは利用されない。
+このメソッドは JavaSourceViewer から呼ばれており、Java エディタ独自のポッ
+プアップ表示に利用されている。
+</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H1
+CLASS="section"
+><A
+NAME="sec:extendjavaeditor"
+>Java エディタの拡張</A
+></H1
+><P
+>&#13;本節では Java エディタの拡張について説明する。ここでは、以前実装を行った
+楽観的 try 文およびマップ初期化子に対する色づけを実装する。
+</P
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="buildAll"
+>Eclipse のビルド</A
+></H2
+><P
+>&#13;実装についての説明の前に、Eclipse のビルド方法につて説明する。
+本項では Eclipse 全体を一括でビルドする方法のほかに、特定のプラグイン
+のみをビルドする方法についても説明する。
+</P
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="AEN730"
+>Eclipse のフルビルド</A
+></H3
+><P
+>&#13;ここでは Eclipse のソース全体から Eclipse のバイトコードを生成する方
+法について述べる。ソースに改変を行った Eclipse のバイトコードを生成す
+るためには必ず一回はフルビルドを行う必要がある。
+</P
+><P
+>&#13;ソースツリーのフルビルドを行う際は、Eclipse ソースツリーのトップディレ
+クトリで下記のコマンドを実行する。
+</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;
+% cd ${eclipse}
+% build -os &#60;OS種別&#62; -ws &#60;ウィンドウシステム種別&#62; [ -bc &#60;rt.jarのパス&#62; ]</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;ここで、${eclipse} は Eclipse のソースツリーのトップディレクトリである。
+&#60;rt.jarのパス&#62;には Java のランタイムライブラリ(J2SDKに含まれる
+rt.jar)を指定する。なお、クロスコンパイルではない場合は、-bc オプション
+は不要である。
+また、&#60;OS種別&#62;および&#60;ウィンドウシステム種別&#62;に指定する値を
+<A
+HREF="#oswsoptions"
+>&#34920;15</A
+>に示す。
+</P
+><DIV
+CLASS="table"
+><A
+NAME="oswsoptions"
+></A
+><P
+><B
+>&#34920; 15. OSおよびウィンドウシステムの組み合わせ</B
+></P
+><TABLE
+BORDER="1"
+BGCOLOR="#E0E0E0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>OS種別</TH
+><TH
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>ウィンドウシステム種別</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>win32</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>win32</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>linux</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>motif</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>linux</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>gtk</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>solaris</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>motif</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>aix</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>motif</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>hpux</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>motif</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>qnx</TD
+><TD
+ALIGN="LEFT"
+VALIGN="MIDDLE"
+>photon</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>&#13;Eclipse のソースは全体で数十MByte に及ぶため、Eclipse 全体をビルドす
+ると処理系によっては１時間近くかかってしまい、極めて効率が悪い。
+そこで、フルビルドの必要がない場合は、可能な限り次項で述べるプラグインご
+とのビルドを行うことを推奨する。
+</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="AEN767"
+>プラグインごとのビルド</A
+></H3
+><P
+>&#13;ここでは特定のプラグインのみを単独でビルドする方法について説明する。
+原則的には、個々のプラグインはそれほど密な関係にはないため、外部から
+参照可能な API の仕様変更がない場合(プラグインの内部的な実装のみの変更の
+場合)は、たいてい変更を行ったプラグインのみの再構築で動作する。
+但し、この手順は全ての場合に適用可能できるわけではない。状況によってはプ
+ラグインのみのビルドでは適正に動作せず、全体をコンパイルし直す必要がある。
+</P
+><P
+>&#13;なお、本項で説明するのは厳密にはプラグイン単体でのビルドではなく、関連
+性のあるプラグイン集合のビルドである。
+</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;
+# cd ${ECLIPSE}/features/org.eclipse.jdt-feature/
+# ant clean
+# ant -buildfile build.xml -Dos=&#60;OS種別&#62; -Dws=&#60;ウィンドウシステム種別&#62; -Dbootclasspath=&#60;rt.jarのパス&#62;</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;&#60;OS種別&#62;、 &#60;ウィンドウシステム種別&#62;、&#60;rt.jarのパス&#62;に
+設定する値については前項と同じである(<A
+HREF="#oswsoptions"
+>&#34920;15<I
+>Eclipse のフルビルド</I
+>&#38917;</A
+>参照)。
+2 行目で clean を実行しているが、これは、clean をせずにビルドした場合に
+うまく動作しないことがあったためである。実際に詳細な条件については調査を
+行っていないが、改変内容によっては clean が必要となるようである。
+</P
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN774"
+>楽観的 try に関する拡張</A
+></H2
+><P
+>&#13;本項では楽観的 try 構文に対するコードの拡張について説明する。</P
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="AEN777"
+>楽観的 try 構文の概要</A
+></H3
+><P
+>&#13;まずは、楽観的 try 構文について簡単に説明する。
+なお、本節で対象とする楽観的 try 構文は前回の調査報告で実装を行ったもの
+と全く同じ仕様である。
+</P
+><P
+>&#13;楽観的 Try 構文は、API インタフェイス上は例外が発生し得るが、実際には例
+外が発生し得ない場合のコーディングを楽にするシンタックスシュガーである。
+</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;
+ByteArrayOutputStream os = new ByteArrayOutputStream();
+try __optimistic__ {
+	os.close();
+}
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;これは、意味的には下記のコードと等価である。
+</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;
+ByteArrayOutputStream os = new ByteArrayOutputStream();
+try  {
+	os.close();
+} catch (Throwable th) {
+}
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;つまり、__optimistic__を付加したtry文では、catch節やfinally節を省略する
+ことが可能である。
+</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="AEN785"
+>楽観的 try 構文の色付けの拡張</A
+></H3
+><P
+>&#13;ここでは楽観的 try 構文に対して色付けの拡張を行う方法について説明する。
+</P
+><DIV
+CLASS="section"
+><HR><H4
+CLASS="section"
+><A
+NAME="AEN788"
+>仕様</A
+></H4
+><P
+>&#13;ここで実装する楽観的 try 構文の色付けの仕様は下記のとおりである。
+</P
+><P
+></P
+><UL
+><LI
+><P
+>&#13;"__optimistic__" を他の予約語と同様の色およびフォントで表示する。</P
+></LI
+></UL
+><P
+>&#13;<A
+HREF="#fig:optimisticsample"
+>&#22259;13</A
+> にサンプルのエディタ画面を示す。
+このエディタでは、通常の Java エディタでは黒字で表示される
+__optimistic__ がその他の予約語と同じフォントで表示されている。
+</P
+><DIV
+CLASS="figure"
+><A
+NAME="fig:optimisticsample"
+></A
+><P
+><IMG
+SRC="images/optimistic-sample.png"></P
+><P
+><B
+>&#22259; 13. 楽観的 Try に対応したエディタのサンプル</B
+></P
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H4
+CLASS="section"
+><A
+NAME="AEN800"
+>実現方法</A
+></H4
+><P
+>&#13;__optimistic__ を予約語と同じフォントで表示するためには、
+Java のプログラム部分のフォント装飾を担当している
+JavaSourceViewerConfiguration の DefaultDamagerRepairer では
+JavaCodeScanner クラスを利用して予約語を判定している。
+そこで、JavaCodeScanner クラスの予約語判定部分で "__optimistic__" を予約
+語と判定するよう変更することで、 "__optimistic__" に色付けを行うことがで
+きる。
+</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H4
+CLASS="section"
+><A
+NAME="AEN803"
+>実装</A
+></H4
+><P
+>&#13;なお、今回対象となる Eclipse のソースツリーに対しては、前回の調査報告
+に記述した楽観的 try 構文に関するコンパイラ拡張が既に適用されているもの
+とする。 
+</P
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;変更が未適応でも楽観的 Try 構文の色づけ自体は行われるが、
+パースに失敗するためエラーなどのマーカーが表示される。
+</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>&#13;JavaCodeScanner は org.eclipse.jdt.ui プラグインの ui ディレクトリの
+org.eclipse.jdt.internal.ui.text.java パッケージにある。
+予約語の判定は createRules メソッド(139行目)の中でスタティックメンバの
+String[] fgKeywords (83行目) と比較することで行っている。
+従って、fgKeywords に "__optimistic__" を追加してやればよい。
+下記に変更したソースを示す。
+</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;...
+
+public final class JavaCodeScanner extends AbstractJavaScanner {
+
+	...
+
+	private static String[] fgKeywords= { 
+		"abstract", //$NON-NLS-1$
+		"break", //$NON-NLS-1$
+		"case", "catch", "class", "const", "continue", //$NON-NLS-5$ //$NON-NLS-4$ //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
+		"default", "do", //$NON-NLS-2$ //$NON-NLS-1$
+		"else", "extends", //$NON-NLS-2$ //$NON-NLS-1$
+		"final", "finally", "for", //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
+		"goto", //$NON-NLS-1$
+		"if", "implements", "import", "instanceof", "interface", //$NON-NLS-5$ //$NON-NLS-4$ //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
+		"native", "new", //$NON-NLS-2$ //$NON-NLS-1$
+		"package", "private", "protected", "public", //$NON-NLS-4$ //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
+		"return", //$NON-NLS-1$
+		"static", "super", "switch", "synchronized", //$NON-NLS-4$ //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
+		"this", "throw", "throws", "transient", "try", //$NON-NLS-5$ //$NON-NLS-4$ //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
+		"volatile", //$NON-NLS-1$
+		"while", //$NON-NLS-1$
+// ************** for optimistic try **************
+		"__optimistic__"
+// *************************************************
+	};
+
+	private static String[] fgNewKeywords= { "assert" }; //$NON-NLS-1$
+
+	...
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;以上の変更を適用した上で Eclipse を再構築することで、
+楽観的 Try に対応した Eclipse が生成される。
+</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H4
+CLASS="section"
+><A
+NAME="AEN811"
+>課題</A
+></H4
+><P
+>&#13;このように、予約語の追加だけであれば容易に対応できる。
+しかしながら、色付けに関連した文法規則がコンパイラとは独立して実装されて
+いるため、文法拡張と併用した場合に、拡張された文法とエディタ関係の拡
+張部分との対応関連をどのようにして管理するかが課題である。
+</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN814"
+>マップ初期化子に関する拡張</A
+></H2
+><P
+>&#13;本項ではマップ初期化子構文に関する Eclipse エディタの拡張について説明す
+る。</P
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="AEN817"
+>マップ初期化子の概要</A
+></H3
+><P
+>&#13;マップ初期化子は、既に値が登録された Map インスタンスを初期化する構文を
+提供するものである。
+</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;Map colors = %{
+	"red" =&#62; new Integer(0xff0000),
+	"green" =&#62; new Integer(0x00ff00),
+	"blue" =&#62; new Integer(0x0000ff)
+};
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;上記のように記述すると、下記のコードと同じ動作をする。
+</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;Map colors = new HashMap();
+colors.put("red", new Integer(0xff0000));
+colors.put("green", new Integer(0x00ff00));
+colors.put("blue", new Integer(0x0000ff));
+</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="section"
+><HR><H3
+CLASS="section"
+><A
+NAME="AEN823"
+>マップ初期化子の色付けの拡張</A
+></H3
+><P
+>&#13;ここではマップ初期化子部分についての色付けを行う。
+</P
+><DIV
+CLASS="section"
+><HR><H4
+CLASS="section"
+><A
+NAME="AEN826"
+>仕様</A
+></H4
+><P
+>&#13;ここで実装するマップ初期化子の色付けの仕様は下記のとおりである。
+</P
+><P
+></P
+><UL
+><LI
+><P
+>&#13;マップ初期化子の部分に対して複数行コメントと同様の色付けを行う。
+</P
+></LI
+><LI
+><P
+>&#13;マップ初期化子の範囲は %{ から、直近の } までの区間であるものとする。
+</P
+></LI
+></UL
+><P
+>&#13;<A
+HREF="#fig:mapinitsample"
+>&#22259;14</A
+> にサンプルのエディタ画面を示す。
+このエディタでは、%{ から } までの部分がコメントと同様の薄い茶色で表現さ
+れている。
+</P
+><DIV
+CLASS="figure"
+><A
+NAME="fig:mapinitsample"
+></A
+><P
+><IMG
+SRC="images/mapinit-sample.png"></P
+><P
+><B
+>&#22259; 14. マップ初期化子に対応したエディタのサンプル</B
+></P
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H4
+CLASS="section"
+><A
+NAME="AEN840"
+>実現方法</A
+></H4
+><P
+>&#13;ここでは、マップ初期化子部分を通常の Java プログラムとは異なる部分と見立
+てて、この部分を切り出す方法を採用する。
+つまり、マップ初期化子部分を切り出し、この部分を独立したパーティションと
+して新たな内容種別を付与する。
+</P
+><DIV
+CLASS="note"
+><P
+></P
+><TABLE
+CLASS="note"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="&#27880;&#24847;"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;マップ初期化子は Java のプログラムコードの一部であり、その間にコメ
+ント等が出現しうるので、ここで説明したような新たなパーティションとして切
+り出す手法は適切ではない。
+しかしながら、今回は pxml を実装した場合を想定し、新たなパーティションを
+追加する方法の事前調査という位置づけで、あえてマップ初期化子部分を
+Java プログラム本文とは異なるパーティションとして切り出す方法を選択した。
+</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>&#13;パーティションの範囲および内容種別の判定は JavaPartitionScanner が行って
+いる。今回はさらに IJavaPartitions にパーティションの内容種別を追加した。
+ただし、実際に内容種別を追加してしまうと、新たに追加されたパーティション
+種別に対して、フォント装飾等の動作クラスを実装しなければならず、影響範囲
+が大きいため、内容種別の定義文字列はコメントと同様のものを利用することと
+した。
+</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H4
+CLASS="section"
+><A
+NAME="AEN846"
+>実装</A
+></H4
+><P
+>&#13;今回対象となる Eclipse のソースツリーは、前回の調査報告
+に記述したマップ初期化子構文に関するコンパイラ拡張が既に適用されているも
+のとする。 
+</P
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;変更が未適応の場合でもマップ初期化子構文の色づけは行われるが、
+パースに失敗するためエラーなどのマーカーが表示される。
+</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>&#13;変更対象ファイルは、
+org.eclipse.jdt.ui プラグインの ui ディレクトリの
+org.eclipse.jdt.internal.ui.text パッケージにある、
+FastJavaPartitionScanner および IJavaPartitions である。
+</P
+><P
+>&#13;IJavaPartitions には新たなパーティション内容種別として
+JAVA_MAP_INITIALIZER を追加する。ただし、ここでは実体は
+JAVA_MULTI_LINE_COMMENT と同じ物を代入する。
+ソースは下記のとおりである。
+</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;...
+
+public interface IJavaPartitions {
+	public final static String JAVA_SINGLE_LINE_COMMENT= "__java_singleline_comment"; //$NON-NLS-1$
+	public final static String JAVA_MULTI_LINE_COMMENT= "__java_multiline_comment"; //$NON-NLS-1$
+	public final static String JAVA_DOC= "__java_javadoc"; //$NON-NLS-1$
+	public final static String JAVA_STRING= "__java_string"; //$NON-NLS-1$
+	public final static String JAVA_CHARACTER= "__java_character";  //$NON-NLS-1$
+// ************** for map initializer **************
+	public final static String JAVA_MAP_INITIALIZER= JAVA_MULTI_LINE_COMMENT ;
+// *************************************************
+}
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>&#13;続いて、実際にスキャンしている部分である FastJavaPartitionScanner を修正
+する。
+ここでの修正点は下記のとおりである。
+</P
+><P
+></P
+><UL
+><LI
+><P
+>スタティック変数の追加</P
+><P
+>クラス冒頭部分にスタティック変数を追記する。</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;...
+
+public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaPartitions {	
+
+	// states
+	private static final int JAVA= 0;	
+	private static final int SINGLE_LINE_COMMENT= 1;
+	private static final int MULTI_LINE_COMMENT= 2;
+	private static final int JAVADOC= 3;
+	private static final int CHARACTER= 4;
+	private static final int STRING= 5;
+// ************** for map initializer **************
+	private static final int MAP_INITIALIZER = 6;
+// *************************************************
+	
+	// beginning of prefixes and postfixes
+	private static final int NONE= 0;
+	private static final int BACKSLASH= 1; // postfix for STRING and CHARACTER
+	private static final int SLASH= 2; // prefix for SINGLE_LINE or MULTI_LINE or JAVADOC
+	private static final int SLASH_STAR= 3; // prefix for MULTI_LINE_COMMENT or JAVADOC
+	private static final int SLASH_STAR_STAR= 4; // prefix for MULTI_LINE_COMMENT or JAVADOC
+	private static final int STAR= 5; // postfix for MULTI_LINE_COMMENT or JAVADOC
+	private static final int CARRIAGE_RETURN=6; // postfix for STRING, CHARACTER and SINGLE_LINE_COMMENT
+// ************** for map initializer **************
+	private static final int PERCENT=7;
+	private static final int PLUS=8;
+// *************************************************
+
+	
+	/** The scanner. */
+	private final BufferedDocumentScanner fScanner= new BufferedDocumentScanner(1000);	// faster implementation
+
+	...
+</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></LI
+><LI
+><P
+>&#13;IToken[] fTokens (63行目) に上記で追加したスタティック変数を追加</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;	...
+	
+	private final IToken[] fTokens= new IToken[] {
+		new Token(null),
+		new Token(JAVA_SINGLE_LINE_COMMENT),
+		new Token(JAVA_MULTI_LINE_COMMENT),
+		new Token(JAVA_DOC),
+		new Token(JAVA_CHARACTER),
+		new Token(JAVA_STRING),
+// ************** for map initializer **************
+		new Token(JAVA_MAP_INITIALIZER)
+// *************************************************
+	};
+
+	...
+</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></LI
+><LI
+><P
+>&#13;nextToken メソッド(75行目) のキャラクタの判定部分にパーセントを判定する
+コードを追加(190行目近辺)</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;
+	...
+
+	public IToken nextToken() {
+
+		...
+
+		while (true) {
+
+			...
+
+	 		switch (ch) {
+
+			...
+
+			default:
+				if (!fgEmulate &#38;&#38; fLast == CARRIAGE_RETURN) {			
+					switch (fState) {
+					case SINGLE_LINE_COMMENT:
+					case CHARACTER:
+					case STRING:
+
+						int last;
+						int newState;
+						switch (ch) {
+						case '/':
+							last= SLASH;
+							newState= JAVA;
+							break;
+
+						case '*':
+							last= STAR;
+							newState= JAVA;
+							break;
+						
+						case '\'':
+							last= NONE;
+							newState= CHARACTER;
+							break;
+
+						case '"':
+							last= NONE;
+							newState= STRING;
+							break;
+
+			// ************** for map initializer **************
+						case '%':
+							last= PERCENT;
+							newState= JAVA;
+							break;
+			// *************************************************
+						case '\r':
+							last= CARRIAGE_RETURN;
+							newState= JAVA;
+							break;
+
+						case '\\':
+							last= BACKSLASH;
+							newState= JAVA;
+							break;
+
+						default:
+							last= NONE;
+							newState= JAVA;
+							break;
+						}
+						
+						fLast= NONE; // ignore fLast
+						return preFix(fState, newState, last, 1);
+
+					default:
+						break;
+					}
+				}
+			}
+
+			...
+</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></LI
+><LI
+><P
+>&#13;nextToken メソッド(75行目) の Java プログラム中に出現するパーティション
+開始位置の判定部分にコードを追加(252行目近辺)</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;			...
+
+			// states	 
+	 		switch (fState) {
+	 		case JAVA:
+				switch (ch) {
+				case '/':
+
+					...
+
+				case '*':
+					if (fLast == SLASH) {
+
+						...
+
+					} else {
+						consume();
+						break;
+					}
+					
+			// ************** for map initializer **************
+				case '%':
+					fTokenLength++;
+					fLast= PERCENT;
+					break;
+	
+				case '{':
+					if (fLast == PERCENT) {
+						if (fTokenLength - getLastLength(fLast) &#62; 0)
+							return preFix(JAVA, MAP_INITIALIZER, PLUS, 2);
+						else {
+							preFix(JAVA, MAP_INITIALIZER, PLUS, 2);
+							fTokenOffset += fTokenLength;
+							fTokenLength= fPrefixLength;
+							break;
+						}
+
+					} else {
+						consume();
+						break;
+					}
+			// *************************************************
+				case '\'':
+					fLast= NONE; // ignore fLast
+					if (fTokenLength &#62; 0)
+						return preFix(JAVA, CHARACTER, NONE, 1);
+					else {						
+						preFix(JAVA, CHARACTER, NONE, 1);
+						fTokenOffset += fTokenLength;
+						fTokenLength= fPrefixLength;
+						break;
+					}
+
+				case '"':
+
+					...
+	
+				default:
+					consume();
+					break;
+				}
+				break;
+
+	 		case SINGLE_LINE_COMMENT:
+				consume();
+				break;
+				
+	 		case JAVADOC:
+
+			...
+</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></LI
+><LI
+><P
+>&#13;nextToken メソッド(75行目) にマップ初期化子区間の終了判定の条件を追加
+(337行目近辺)
+</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;			...
+
+	 		case JAVADOC:
+
+				...
+
+	 		case MULTI_LINE_COMMENT:
+				switch (ch) {
+				case '*':
+					if (fLast == SLASH_STAR) {
+						fLast= SLASH_STAR_STAR;
+						fTokenLength++;
+						fState= JAVADOC;
+					} else {
+						fTokenLength++;
+						fLast= STAR;
+					}
+					break;
+	
+				case '/':
+					if (fLast == STAR) {
+						return postFix(MULTI_LINE_COMMENT);
+					} else {
+						consume();
+						break;
+					}
+				default:
+					consume();
+					break;
+				}
+				break;
+		// ************** for map initializer **************
+			case MAP_INITIALIZER:
+				switch (ch) {
+				case '}':
+					return postFix(MAP_INITIALIZER);
+	
+				default:
+					consume();
+					break;			
+				}
+				break;
+		// *************************************************
+				
+	 		case STRING:
+	 			switch (ch) {
+	 			case '\\':
+					fLast= (fLast == BACKSLASH) ? NONE : BACKSLASH;
+					fTokenLength++;
+					break;
+					
+				case '\"':	 			 			
+	 				if (fLast != BACKSLASH) {
+	 					return postFix(STRING);
+
+		 			} else {
+						consume();
+						break; 					
+	 				}
+		 		
+		 		default:
+					consume();
+	 				break;
+	 			}
+	 			break;
+
+	 		case CHARACTER:
+
+				...
+
+	 		}
+		} 
+ 	}		
+
+	...
+</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></LI
+><LI
+><P
+>&#13;getState メソッド(442行目) の内容種別判定部分にマップ初期化子に関するも
+のを追加(461行目近辺)。
+</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;	...
+
+	private static final int getLastLength(int last) {
+		switch (last) {
+		default:
+			return -1;
+
+		case NONE:
+			return 0;
+			
+		case CARRIAGE_RETURN:
+		case BACKSLASH:
+		case SLASH:
+		case STAR:
+	// ************** for map initializer **************
+		case PERCENT:
+	// *************************************************
+			return 1;
+
+		case SLASH_STAR:
+			return 2;
+
+		case SLASH_STAR_STAR:
+			return 3;
+		}	
+	}
+
+	...
+</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></LI
+></UL
+><P
+>&#13;以上の変更を適用した上で Eclipse を再構築することで、
+マップ初期化子に対応した Eclipse が生成される。
+なお詳細は、添付のソースを参照されたし。
+</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H4
+CLASS="section"
+><A
+NAME="AEN882"
+>課題</A
+></H4
+><P
+>&#13;今回の実装方法には下記のような問題点が存在する。
+</P
+><P
+></P
+><UL
+><LI
+><P
+>&#13;今回の方法では、パーティションの内容種別は追加したが、内容種別文字列は
+便宜のために複数行コメントと同じ JAVA_MULTI_LINE_COMMENT を利用している。
+この弊害として、外部から setPartitionRange メソッドを呼ばれた際に、
+指定された箇所がもともと複数行コメントとマップ初期化子の何れであったかが
+判別できず、無条件に複数行コメントと判断するようになっている
+(getState メソッドで JAVA_MAP_INITIALIZER と比較する部分を追加したが、実
+際にはここ以前の JAVA_MULTI_LINE_COMMENT と比較している部分でマッチして
+しまっている)。
+従って、マップ初期化子であるにもかかわらず複数行コメントと判定されてしま
+い、編集等を行った際に } 以降も複数行コメントの色で表示されるようになっ
+てしまうことがある。
+</P
+></LI
+><LI
+><P
+>&#13;ここでは、マップ初期化子に対して複数行コメントと同じ内容種別を割り当てる
+ことで、フォントの色付けを行っているが、先に述べたとおり、マップ初期化子
+の中にはコメントや JavaDoc なども登場しうる。
+しかしながら、今回の方法ではマップ初期化子全体をコメントと解釈してしまう
+ため、マップ初期化子中に現れるコメントや JavaDoc は適性には描画されなく
+なってしまう。
+</P
+></LI
+><LI
+><P
+>&#13;今回は、フォント装飾のみを対象としているが、変更を行った部分はパーティショ
+ンをスキャンする部分であり、ここへの変更はフォント装飾以外の JFace が
+提供する機能 (ポップアップ情報表示やコード補完) などにも適用される。
+つまり、この変更によりポップアップ表示などの動作も通常の Java プログラム
+部分ではなくコメント部分に対する動作が適用されてしまう。
+</P
+></LI
+><LI
+><P
+>&#13;この実装では、手間等の兼ね合いから新たな内容種別を加えることをせず、
+いわば既存の機能を間借りした状態での実装となっている。
+しかしながら、pxml など本格的に新たな内容種別を導入する場合、
+今回編集したクラスのほかに、実際の動作を定義する諸クラスを足す用意する必
+要がある。
+IJavaPartitions に内容種別を加えることからはじまり、
+新たに追加した内容種別に対応する IPresentationDamagerRepairer,
+IInformationProvider, IFormattingStrategy 等、沢山のクラスを作成もしくは
+修正する必要がある。
+</P
+></LI
+></UL
+></DIV
+></DIV
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="chapter"
+><HR><H1
+><A
+NAME="java2MJPorting"
+>JavaプログラムをMixJuiceに移植する</A
+></H1
+><P
+>大規模なJavaプログラムをMixJuiceに移植するのに備え、移植に必要な
+  作業を調査した。本章ではその調査結果やそこで得られたノウハウを述べる。
+ </P
+><DIV
+CLASS="section"
+><HR><H1
+CLASS="section"
+><A
+NAME="sample"
+>Javaのサンプルプログラム</A
+></H1
+><P
+>以下の4つのJavaプログラムをMixJuiceに移植する作業を通じて、移植に必要な作業を洗い出すこととする。
+  </P
+><DIV
+CLASS="example"
+><A
+NAME="org.IJavaTest"
+></A
+><P
+><B
+>&#20363; 1. src/IJavaTest.java</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;package src;
+
+import java.io.IOException;
+
+public interface IJavaTest {
+	final static int MIN = 0;
+	final static int MAX = 100;
+	final static int MID = (MAX + MIN) / 2;                       // <A
+NAME="staticRefersStatic"
+><B
+>(1)</B
+></A
+>
+	void doIO() throws IOException;
+	IJavaTest intern();
+	boolean equals(Object o);                                     // <A
+NAME="wellknownIF"
+><B
+>(2)</B
+></A
+>
+}
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#staticRefersStatic"
+><B
+>(1)</B
+></A
+></DT
+><DD
+>スタティックフィールドの初期化にスタティックフィールドを使用。</DD
+><DT
+><A
+HREF="#wellknownIF"
+><B
+>(2)</B
+></A
+></DT
+><DD
+>Objectクラスで実装されているメソッドを定義。</DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="example"
+><A
+NAME="src.IJavaTest2"
+></A
+><P
+><B
+>&#20363; 2. src/IJavaTest2.java</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;package src;
+
+public interface IJavaTest2 extends IJavaTest {
+	void foo();                                                   // <A
+NAME="addMethodToIF"
+><B
+>(1)</B
+></A
+>
+}
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#addMethodToIF"
+><B
+>(1)</B
+></A
+></DT
+><DD
+>インターフェイスにメソッドを追加。</DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="example"
+><A
+NAME="src.Other"
+></A
+><P
+><B
+>&#20363; 3. src/Other.java</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;package src;
+
+public class Other {
+	public String toString() {
+		return this.getClass().getName();
+	}
+}
+</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="example"
+><A
+NAME="src.JavaTest"
+></A
+><P
+><B
+>&#20363; 4. src/JavaTest.java</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>package src;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
+import other.Other;
+
+public class JavaTest implements IJavaTest2, Serializable {           // <A
+NAME="def.JavaTest"
+><B
+>(1)</B
+></A
+>
+	protected static int i = 0;                                   // <A
+NAME="def.staticField"
+><B
+>(2)</B
+></A
+>
+	private static final Other other = new Other();               // <A
+NAME="implRefersOtherPackage"
+><B
+>(3)</B
+></A
+>
+	private int x;
+	protected transient int xx;
+
+	public static class IOException extends java.io.IOException { // <A
+NAME="innerClass"
+><B
+>(4)</B
+></A
+>
+		int errorI = i;                                       // <A
+NAME="referOuterField"
+><B
+>(5)</B
+></A
+>
+		public String toString() {
+			return super.toString() + "errorI: " + errorI;
+		}
+	}
+	public static int getMax() {                                  // <A
+NAME="def.staticMethod"
+><B
+>(6)</B
+></A
+>
+		return MAX;
+	}
+	protected JavaTest() throws InternalError {                   // <A
+NAME="constructMayFail"
+><B
+>(7)</B
+></A
+>
+		x = i++;
+		xx = x * x;
+		if (x % 2 == 0)
+			throw new InternalError();
+	}
+	public static JavaTest getInstance()                          // <A
+NAME="factoryMethod"
+><B
+>(8)</B
+></A
+>
+		throws
+			InstantiationException,
+			IllegalAccessException {
+		return (JavaTest) JavaTestSub.class.newInstance();    // <A
+NAME="newInstance"
+><B
+>(9)</B
+></A
+>
+	}
+	public void finalize() throws Throwable {                     // <A
+NAME="finalize"
+><B
+>(10)</B
+></A
+>
+		super.finalize();
+		System.out.println("fin: " + x);
+	}
+	public IJavaTest intern() {
+		return this;
+	}
+	public void doIO() throws IOException {                       // <A
+NAME="throw.src.IOE"
+><B
+>(11)</B
+></A
+>
+		throw new IOException();
+	}
+	public void foo() {
+	}
+	private void writeObject(ObjectOutputStream s) throws java.io.IOException { // <A
+NAME="writeObject"
+><B
+>(12)</B
+></A
+>
+		s.defaultWriteObject();
+	}
+	private void readObject(ObjectInputStream s)                  // <A
+NAME="readObject"
+><B
+>(13)</B
+></A
+>
+		throws java.io.IOException, ClassNotFoundException {
+		s.defaultReadObject();
+		xx = x * x;
+	}
+	public String toString() {
+		return "x: " + x + ", xx: " + xx;
+	}
+	public static void main(String[] args) {
+		try {
+			test1(test0());
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		System.out.println(other);
+	}
+	public static JavaTest test0() {
+		JavaTest last = null;
+		for (int i = 0; i &#60; MID; i++) {
+			try {
+				IJavaTest j = getInstance().intern();
+				((IJavaTest2) j).foo();
+				JavaTest jt = (JavaTest) j;
+				jt.getMax();                          // <A
+NAME="staticMethodThrInstance"
+><B
+>(14)</B
+></A
+>
+				last = jt;
+			} catch (InternalError e) {
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+		try {
+			last.doIO();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.gc();
+		return last;
+	}
+	private static void test1(JavaTest corg) throws Exception {
+		final String file = "c:/removeMe.tmp";
+		try {
+			FileOutputStream fo = new FileOutputStream(file);
+			ObjectOutputStream so = new ObjectOutputStream(fo);
+			so.writeObject(corg);
+			so.flush();
+			so.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		System.out.println("original: " + corg);
+
+		JavaTest cnew;
+		try {
+			FileInputStream fi = new FileInputStream(file);
+			ObjectInputStream si = new ObjectInputStream(fi);
+			cnew = (JavaTest) si.readObject();
+			si.close();
+			System.out.println("new: " + cnew);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+}
+
+class JavaTestSub extends JavaTest {
+	private int x;                                                // <A
+NAME="sameWithSuper"
+><B
+>(15)</B
+></A
+>
+	JavaTestSub() {
+		x = xx / 2;
+	}
+	public String toString() {
+		return super.toString() + ", sub.x: " + x;
+	}
+}
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#def.JavaTest"
+><B
+>(1)</B
+></A
+></DT
+><DD
+>シリアライズ可能なクラス。</DD
+><DT
+><A
+HREF="#def.staticField"
+><B
+>(2)</B
+></A
+></DT
+><DD
+>スタティックなフィールドを定義。</DD
+><DT
+><A
+HREF="#implRefersOtherPackage"
+><B
+>(3)</B
+></A
+></DT
+><DD
+>(インタフェイスではなく)実装に必要な他のパッケージのクラスを参照。</DD
+><DT
+><A
+HREF="#innerClass"
+><B
+>(4)</B
+></A
+></DT
+><DD
+>内部クラスを定義。</DD
+><DT
+><A
+HREF="#referOuterField"
+><B
+>(5)</B
+></A
+></DT
+><DD
+>外部クラスのprotectedなフィールドを参照。</DD
+><DT
+><A
+HREF="#def.staticMethod"
+><B
+>(6)</B
+></A
+></DT
+><DD
+>スタティックメソッドを定義。</DD
+><DT
+><A
+HREF="#constructMayFail"
+><B
+>(7)</B
+></A
+></DT
+><DD
+>コンストラクトに失敗するかもしれないコンストラクタ。</DD
+><DT
+><A
+HREF="#factoryMethod"
+><B
+>(8)</B
+></A
+></DT
+><DD
+>ファクトリメソッド。</DD
+><DT
+><A
+HREF="#newInstance"
+><B
+>(9)</B
+></A
+></DT
+><DD
+>クラス名.classという構文を使用。Class.newInstance()メソッドでインスタンス生成。</DD
+><DT
+><A
+HREF="#finalize"
+><B
+>(10)</B
+></A
+></DT
+><DD
+>ファイナライザの定義。</DD
+><DT
+><A
+HREF="#throw.src.IOE"
+><B
+>(11)</B
+></A
+></DT
+><DD
+>src.IOExceptionをスロー。</DD
+><DT
+><A
+HREF="#writeObject"
+><B
+>(12)</B
+></A
+><A
+HREF="#readObject"
+><B
+>(13)</B
+></A
+></DT
+><DD
+>シリアライズ/デシリアライズの動作確認。</DD
+><DT
+><A
+HREF="#staticMethodThrInstance"
+><B
+>(14)</B
+></A
+></DT
+><DD
+>インスタンスを使用してスタティックを呼び出す。</DD
+><DT
+><A
+HREF="#sameWithSuper"
+><B
+>(15)</B
+></A
+></DT
+><DD
+>スーパークラスと同じフィールド名を使用。</DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="example"
+><A
+NAME="other.Other"
+></A
+><P
+><B
+>&#20363; 5. other/Other.java</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;package other;
+
+public class Other {                                                  // <A
+NAME="def.other.Other"
+><B
+>(1)</B
+></A
+>
+	public String toString() {
+		return this.getClass().getName();
+	}
+}
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#def.other.Other"
+><B
+>(1)</B
+></A
+></DT
+><DD
+>別パッケージに<A
+HREF="#src.Other"
+>&#20363;3</A
+>と同名クラスを定義。</DD
+></DL
+></DIV
+></DIV
+><P
+></P
+></DIV
+><DIV
+CLASS="section"
+><HR><H1
+CLASS="section"
+><A
+NAME="AEN988"
+>移植作業</A
+></H1
+><P
+>ここでは、実際にJavaのソースコードをMixJuiceに移植するのに必要な作業を列挙する。</P
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN991"
+>defineをつける</A
+></H2
+><P
+>MixJuiceに移植する際、クラス、インターフェイス、メソッドに適宜defineを付与する。スーパークラスのメソッドをオーバライドする際は、defineは不要である。</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN994"
+>メンバ名をFQNではなくシンプルネームで出力させる</A
+></H2
+><P
+>MixJuiceでは、クラスのメンバ名がモジュール間で重複しないように、FQNの「.」を「_」を置き換えたJava識別子に変換される(例:modモジュールで定義されたmというメンバであれば、mod_m)。しかし、MixJuiceで書かれたコードをJavaから参照することを考慮すると、クラスのメンバ名がJavaから見て単純名(モジュール名のプレフィックスが付かないもの)で参照できたほうがよい。mjcに「-J-Dmjc.noFQN=1」オプションを付けることにより、単純名でメンバ名を参照できるようになる。</P
+><P
+>ただし、上記のオプションを付けると、モジュールを複数組み合わせる際、メンバ名が衝突する可能性があるので注意が必要である。</P
+><P
+>またMixJuiceのエントリーポイントを提供するmj.lang.ss.SSクラスのinstanceフィールドは、上記のオプションをつけずにコンパイルしたものがjarファイルに収められているため、上記のオプションを付けてコンパイルしたプログラムからは通常の方法では参照できない。<A
+HREF="#referSS.instance"
+>&#20363;6</A
+>のようにリフレクションを利用して参照する。</P
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>mj.lang.ss.SS.instance初期化のタイミング</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>mj.lang.ss.SS.instanceはスタティック初期化子で初期化されるのではなく、public void main(String[])の実行が始まってから初期化される。したがって、<A
+HREF="#referSS.instance"
+>&#20363;6</A
+>のSS.init()メソッドをスタティック初期化子から呼び出してはならない。</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="example"
+><A
+NAME="referSS.instance"
+></A
+><P
+><B
+>&#20363; 6. mj.lang.ss.SS.instanceの参照方法</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>module mod {
+	class SS {
+		static SS singleton;
+		define void init() {
+			try {
+				java.lang.reflect.Field f = Class.forName("mj.lang.ss._Delta_mj_lang_ss_SS").getDeclaredField("mj_lang_ss_instance");
+				Object o = f.get(null);
+				singleton = (SS)o;
+			} catch (SecurityException e) {
+				e.printStackTrace();
+				assert false;
+			} catch (NoSuchFieldException e) {
+				e.printStackTrace();
+				assert false;
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+				assert false;
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+				assert false;
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+				assert false;
+			}
+		}
+		void main(String[] args) {
+			init();                                       // <A
+NAME="init.singleton"
+><B
+>(1)</B
+></A
+>
+			System.out.println(singleton);                // <A
+NAME="refer.singleton"
+><B
+>(2)</B
+></A
+>
+		}
+	}
+}
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#init.singleton"
+><B
+>(1)</B
+></A
+></DT
+><DD
+>singletonを、mj.lang.ss.SS.instanceを参照するように初期化する。</DD
+><DT
+><A
+HREF="#refer.singleton"
+><B
+>(2)</B
+></A
+></DT
+><DD
+>singletonフィールドにmj.lang.ss.SS.instanceインスタンスへの参照が入っているので、singletonを使用してアクセスする。</DD
+></DL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN1017"
+>パッケージをモジュールへ</A
+></H2
+><P
+>MixJuiceのモジュールはJavaのパッケージに変換されるので、JavaのコードをMixJuiceに移植する際、パッケージ名と同名のモジュールを用意し、そのモジュールの中にクラスやインタフェイスを入れる。Javaのpackage文は除去する。その際、複数のJavaソースファイルを一つのMixJuiceソースファイルにまとめる必要がある。</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN1020"
+>import文を除去</A
+></H2
+><P
+>MixJuiceではimport文が存在しないため、JavaのソースをMixJuiceのソースに移植する際、import文を除去しなければならない。しかし、MixJuiceの他のモジュールで書かれたクラス等を参照するには、必ずimports/usesを使用してインポートしなければならない(JavaのようにFQNで参照できない(Javaのクラスはimports/usesしなくてもFQNで参照できる))。</P
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>MixJuiceでは名前の衝突が起きやすい</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>MixJuiceでは、インポートした名前は、インポートしたモジュールのサブモジュールでも自動的にインポートされるため、名前の衝突が起きやすい。例えば、モジュールM1が実装のために(インタフェイスには使用しない)モジュールMXをインポートしたとする。M1のサブモジュールM2で、MX内で定義されたクラスなどと同じ名前の別クラスなどを、単純名で参照できなくなる(FQNを使えばよい)。</P
+><P
+>Javaのクラス等はインポートなしでもFQNで参照できるので、インタフェイスに現れない(実装に使用する)Javaのクラス等は、インポートしない方がよい。Eclipseを使用する場合、インポートして単純名でコーディングするのが普通なので、その場合、多くの単純名をFQNにしなければならない。</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN1027"
+>デフォルトのコンストラクタを追加</A
+></H2
+><P
+>MixJuiceではデフォルトのコンストラクタを自動生成しないので、Javaのデフォルトのコンストラクタ自動生成に依存したコードがある場合は、明示的にデフォルトコンストラクタを記述する。
+   </P
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN1030"
+>スタティックメソッドをインスタンスメソッドへ</A
+></H2
+><P
+>MixJuiceではスタティックメソッドを定義できない。インスタンスメソッドとして実装しなければならない。つまり、呼び出しにはインスタンスが必須となる。そこで、<A
+HREF="#staticMethod"
+>&#20363;7</A
+>のように補助クラス(StaticHolder)を使用し、唯一のインスタンス(StaticHolder.instance)をスタティックフィールドやスタティックメソッドのコンテナとして使用する。</P
+><P
+>スタティックメソッドの呼び出し部分は、ClassName.staticMethod()という構文だけではなく、instance.staticMethod()という構文でstaticメソッドを呼び出している部分も忘れずに変更しなければならない。</P
+><P
+>MixJuiceではスタティックメソッドを定義できないので、スタティックメソッドをインターフェイスとして提供するJavaパッケージを、そのパッケージを参照しているJavaコードの変更なしで、MixJuice化することはできない。</P
+><DIV
+CLASS="example"
+><A
+NAME="staticMethod"
+></A
+><P
+><B
+>&#20363; 7. スタティックメソッドの移植例</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>module mod {
+	define class StaticHolder {                                   // <A
+NAME="dontBeSerializable"
+><B
+>(1)</B
+></A
+>
+		int staticData = 1;
+
+		define StaticHolder() {}
+		define synchronized int get() {
+			return staticData;
+		}
+		define synchronized void incr() {
+			staticData += NonStatic.DELTA;                // <A
+NAME="qualifyClass"
+><B
+>(2)</B
+></A
+>
+		}
+	}
+	define class NonStatic {
+		static final int DELTA = 1;
+		static final StaticHolder staticHolder = new StaticHolder();
+		define NonStatic() {}
+		define int foo() {
+			return staticHolder.get() * 10;               // <A
+NAME="qualifyContainer"
+><B
+>(3)</B
+></A
+>
+		}
+	}
+	class SS {
+
+		void main(String[] args) {
+			System.out.println(new NonStatic().foo());
+			NonStatic.staticHolder.incr();
+			System.out.println(new NonStatic().foo());
+		}
+	}
+}
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#dontBeSerializable"
+><B
+>(1)</B
+></A
+></DT
+><DD
+>唯一のインスタンスでなければならないので、シリアライザブルなどにしてはならない。後述の理由で、private Object readResolve(Object)を定義できないので、シリアライザブルなどにすると唯一性を保証できない。</DD
+><DT
+><A
+HREF="#qualifyClass"
+><B
+>(2)</B
+></A
+></DT
+><DD
+>名前空間が変わるので、NonStaticクラス名で修飾しなければならない。</DD
+><DT
+><A
+HREF="#qualifyContainer"
+><B
+>(3)</B
+></A
+></DT
+><DD
+>スタティックフィールドやスタティックメソッドのコンテナインスタンスを指定しなければならない。</DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>スタティックフィールド/メソッドのコンテナは非シリアライザブルに</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>スタティックフィールド/メソッドのコンテナは、唯一のインスタンスでなければならないので、シリアライザブルなどにしてはならない。後述の理由で、private Object readResolve(Object)を定義できないので、シリアライザブルなどにすると唯一性を保証できない。読み込んだ際に、もう一つインスタンスができてしまう。</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>スタティックフィールド/メソッドのコンテナは排他の単位にもなる</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>MixJuiceではすべてのメソッドがpublicで参照関係の制約が無いため、スタティックフィールド/メソッドのコンテナは何個に分割してもいいし、全部一つにまとめてもいい。しかし、synchronizedなスタティックメソッドがあった場合、コンテナは排他制御の単位にもなるので、適切な粒度でコンテナを用意すべきである。もちろん、可読性も重要である。</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>スタティックフィールド/メソッドのコンテナはスタティックに初期化</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Javaのコードと同じ動作にするには、スタティックフィールド/メソッドのコンテナインスタンスをスタティックに初期化した方がよい。そのため例外が発生しないコンストラクタを用意するか、スタティック初期化子で初期化(例外をcatchする)しなければならない。コンテナインスタンスを参照するためのスタティックフィールドはfinalにする。mj.lang.ss.SS.instanceは初期化のタイミングが遅すぎるので、一般的には使わない方がよい。</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN1061"
+>リフレクションを使用してインスタンスを作る際、コンストラクタ呼び出しを追加する</A
+></H2
+><P
+>MixJuiceで記述したコンストラクタは、Javaに変換された際インスタンスメソッドに変換される。そのため、リフレクションを使用してインスタンスを作るようなJavaコードをMixJuiceに移植する際、インスタンス生成後明示的にMixJuiceのコンストラクタを呼び出す必要がある。MixJuiceのコンストラクタ名は、クラス名の前に「_init_」というプレフィックスをつけた名前のJavaインスタンスメソッドになる。</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN1064"
+>内部クラスの外部化</A
+></H2
+><P
+>MixJuiceでは内部クラスをサポートしていないので、内部クラスを外部に出さなければならない。それに伴い、内部クラスとそれを含んでいたクラス間の名前空間の関係がなくなるので、外部化された内部クラス内の、外部(outer)クラスに依存した参照を変更しなければならない。</P
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>親クラスのprotectedなメンバの参照</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>MixJuiceで定義するクラスMの親クラスJがJavaで実装されており、JがprotectedなメンバPMを持っている場合、Mの内部クラスIからはPMを参照できる。しかし、MixJuiceでは内部クラスを使用できないので、Iを外部化するとPMを参照できなくなる。実際には、MixJuiceコードのコンパイル時に、Javaコンパイラがエラーを出力する。<A
+HREF="#inner.javaImpl"
+>&#20363;8</A
+>と<A
+HREF="#inner.javaImpl2"
+>&#20363;9</A
+>のJavaコードの内、<A
+HREF="#inner.javaImpl2"
+>&#20363;9</A
+>だけMixJuice化すると<A
+HREF="#inner.mjImpl2"
+>&#20363;10</A
+>のようになる。</P
+><DIV
+CLASS="example"
+><A
+NAME="inner.javaImpl"
+></A
+><P
+><B
+>&#20363; 8. MixJuiceに移植するJavaコードが参照するMixJuice化しないJavaパッケージ</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>package javaImpl;
+
+public class InnerTest {
+	public final int ZERO = 0;
+	protected int i = ZERO;                                       // <A
+NAME="javaProtected1"
+><B
+>(1)</B
+></A
+>
+	protected void close() {                                      // <A
+NAME="javaProtected2"
+><B
+>(2)</B
+></A
+>
+	}
+}
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#javaProtected1"
+><B
+>(1)</B
+></A
+><A
+HREF="#javaProtected2"
+><B
+>(2)</B
+></A
+></DT
+><DD
+>protectedなメンバ</DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="example"
+><A
+NAME="inner.javaImpl2"
+></A
+><P
+><B
+>&#20363; 9. MixJuiceに移植するJavaコード</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>package src;
+
+import javaImpl.InnerTest;
+
+public class Outer extends InnerTest {
+	public static final int PI = 3;
+	public class Closer {
+		public void doClose() {
+			if (i == ZERO)                                // <A
+NAME="j.javaProtected1"
+><B
+>(1)</B
+></A
+>
+				System.out.println(ZERO + PI);
+			close(); // invoke Outer.close()              // <A
+NAME="j.javaProtected2"
+><B
+>(2)</B
+></A
+>
+		}
+		protected void finalize() throws Throwable {
+			super.finalize();
+			doClose();
+		}
+	}
+	public Closer getCloser() {
+		return new Closer();
+	}
+	public static void main(String[] args) {
+		Outer.Closer c = new Outer().getCloser();
+		c.doClose();
+	}
+}
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#j.javaProtected1"
+><B
+>(1)</B
+></A
+><A
+HREF="#j.javaProtected2"
+><B
+>(2)</B
+></A
+></DT
+><DD
+>Javaで実装されたメンバを参照。</DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="example"
+><A
+NAME="inner.mjImpl2"
+></A
+><P
+><B
+>&#20363; 10. MixJuiceに移植したコード</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>module src {
+	class SS {
+		public void main(String[] args) {
+			Closer c = new Outer().getCloser();
+			c.doClose();
+		}
+	}
+	define public class Outer extends javaImpl.InnerTest {
+		public static final int PI = 3;
+		define Outer() {}
+		define public Closer getCloser() {
+			return new Closer(this);
+		}
+		define int getI() {                                   // <A
+NAME="mj.javaProtected1"
+><B
+>(1)</B
+></A
+>
+			return i;
+		}
+		define void callClose() {                             // <A
+NAME="mj.javaProtected2"
+><B
+>(2)</B
+></A
+>
+			close();
+		}
+	}
+	define public class Closer {
+		Outer outer;
+		define Closer(Outer outerThis) {
+			super();
+			outer = outerThis;
+		}
+		define public void doClose() {
+			if (outer.getI() == outer.ZERO)
+				System.out.println(outer.ZERO + outer.PI);
+			outer.callClose();
+		}
+		protected void FQN[java::finalize]() throws Throwable {
+			original();
+			doClose();
+		}
+	}
+
+}
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#mj.javaProtected1"
+><B
+>(1)</B
+></A
+><A
+HREF="#mj.javaProtected2"
+><B
+>(2)</B
+></A
+></DT
+><DD
+>スーパークラスのprotectedなメンバを、外部化した元内部クラスから参照できるようにメソッドを追加。</DD
+></DL
+></DIV
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN1107"
+>superをoriginalに変更する</A
+></H2
+><P
+>親クラスのメソッドを参照するのに使用しているJavaの「super.メソッド名(引数リスト)」を、「original(引数リスト)」に書き換える。</P
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>Javaで実装された親クラスの引数付きコンストラクタを呼べない</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>MixJuiceでは、Javaで実装された親クラスの引数付きコンストラクタを呼び出せないので、
+    Javaで記述された<A
+HREF="#original.javaImpl"
+>&#20363;11</A
+>、<A
+HREF="#original.hardToPort"
+>&#20363;12</A
+>のうち、<A
+HREF="#original.hardToPort"
+>&#20363;12</A
+>のみMixJuiceに移植するのは難しい。</P
+><DIV
+CLASS="example"
+><A
+NAME="original.javaImpl"
+></A
+><P
+><B
+>&#20363; 11. MixJuiceに移植するJavaコードが参照するMixJuice化しないJavaパッケージ</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>package javaImpl;
+
+public class OriginalTest {
+	protected final int ZERO = 0;
+	protected int i = ZERO;
+	public OriginalTest(int x) {
+		i = x;
+	}
+	public int getI() {
+		return i;
+	}
+}
+</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="example"
+><A
+NAME="original.hardToPort"
+></A
+><P
+><B
+>&#20363; 12. MixJuiceに移植したいJavaコード</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>package src;
+
+import javaImpl.OriginalTest;
+
+public class SubClass extends OriginalTest {
+	protected final float ZERO = 0.0F;
+	public SubClass() {
+		super(10);                                            // <A
+NAME="ctorError"
+><B
+>(1)</B
+></A
+>
+	}
+	public int getI() {
+		if (ZERO == super.ZERO)
+			return 10;
+		else
+			return -10;
+	}
+	public int getOriginalI() {
+		return super.getI();                                  // <A
+NAME="methodError"
+><B
+>(2)</B
+></A
+>
+	}
+}
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#ctorError"
+><B
+>(1)</B
+></A
+></DT
+><DD
+>MixJuiceでは、スーパークラスの引数付きコンストラクタを呼べない。</DD
+><DT
+><A
+HREF="#methodError"
+><B
+>(2)</B
+></A
+></DT
+><DD
+>MixJuiceでは、親クラスの別のメソッドを呼び出せない。</DD
+></DL
+></DIV
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>親クラスの別のメソッドを呼び出せない</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>「super.メソッド名(引数リスト)」を「original(引数リスト)」に置き換えるということは、メソッド名を指定できないことを意味し、<A
+HREF="#original.hardToPort"
+>&#20363;12</A
+>の<A
+HREF="#methodError"
+><A
+HREF="#methodError"
+><B
+>(2)</B
+></A
+></A
+>に示したように、親クラスの別のメソッドを呼び出せない。</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="tip"
+><P
+></P
+><TABLE
+CLASS="tip"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="&#12486;&#12451;&#12483;&#12503;"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>同名フィールドを区別できない</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>同一モジュールで定義された継承関係を持つ二つのクラスで、同名のインスタンスフィールドがあった場合、それらのフィールドを参照し分けることができない。</P
+><DIV
+CLASS="example"
+><A
+NAME="original.hardToPort2"
+></A
+><P
+><B
+>&#20363; 13. 同名フィールドを区別できない</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>module src {
+	class SS {
+		public void main(String[] args) {
+			System.out.println(new SubClass().foo());
+		}
+	}
+	define class SuperClass {
+		int ZERO = 0;
+		define SuperClass() {}
+	}
+	define class SubClass extends SuperClass {
+		float ZERO = 1.0F;
+		define SubClass() {
+		}
+		define float foo() {
+			return FQN[src::ZERO];                        // <A
+NAME="amb.ID"
+><B
+>(1)</B
+></A
+>
+		}
+	}
+}
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#amb.ID"
+><B
+>(1)</B
+></A
+></DT
+><DD
+>どちらのZEROもFQN[src::ZERO]となり、SuperClass.ZEROとSubClass.ZEROを、自由に参照し分けることができない。</DD
+></DL
+></DIV
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN1150"
+>C.classをClass.forName("C")へ変更する</A
+></H2
+><P
+>MixJuiceでは「C.class」という構文をサポートしていないので、「Class.forName("C")」という書き方に変えなければならない。それに伴い、「java.lang.ClassNotFoundException」をハンドリングしなければならなくなる。クラス名を変更したり、ミスタイプすることもあるので、この例外を無視するのは好ましくない。</P
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN1153"
+>interfaceで定義したメソッドの実装</A
+></H2
+><P
+>MixJuiceのinterfaceで定義したメソッドは、それを実装するクラスのスーパークラスで同一シグネチャのメソッドが定義されていても、再度実装しなければならない。
+   例えば、<A
+HREF="#org.IJavaTest"
+>&#20363;1<I
+>Javaのサンプルプログラム</I
+>&#38917;</A
+>の<A
+HREF="#wellknownIF"
+><A
+HREF="#wellknownIF"
+><B
+>(2)</B
+></A
+></A
+>の例では、equalsメソッドはObject型で実装されているため、Javaでは、IJavaTestインタフェイスを実装するクラスでequalsメソッドを実装する必要はない。しかし、MixJuiceでは実装する必要がある。MixJuiceでinterface定義時に、「boolean FQN[java::equals](Object o);」と記述できれば、この問題は回避できるかもしれない。</P
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H1
+CLASS="section"
+><A
+NAME="AEN1158"
+>移植結果</A
+></H1
+><P
+><A
+HREF="#java2MJPorting"
+><I
+>JavaプログラムをMixJuiceに移植する</I
+>&#31456;</A
+>の冒頭で示した<A
+HREF="#org.IJavaTest"
+>&#20363;1<I
+>Javaのサンプルプログラム</I
+>&#38917;</A
+>、<A
+HREF="#src.IJavaTest2"
+>&#20363;2<I
+>Javaのサンプルプログラム</I
+>&#38917;</A
+>、<A
+HREF="#src.Other"
+>&#20363;3<I
+>Javaのサンプルプログラム</I
+>&#38917;</A
+>、<A
+HREF="#src.JavaTest"
+>&#20363;4<I
+>Javaのサンプルプログラム</I
+>&#38917;</A
+>、<A
+HREF="#other.Other"
+>&#20363;5<I
+>Javaのサンプルプログラム</I
+>&#38917;</A
+>のJavaプログラムをMixJuiceに移植した結果を<A
+HREF="#result"
+>&#20363;14</A
+>に示す。ただし、後述のように一部移植不可能な部分(シリアライズや他モジュールと同名のクラス定義など)があるため、オリジナルのJavaプログラムと同じ振る舞いにはなっていない。</P
+><DIV
+CLASS="example"
+><A
+NAME="result"
+></A
+><P
+><B
+>&#20363; 14. mj-port.java</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>&#13;module other {
+define public class Other {
+	define Other() {}
+	public String toString() {
+		return this.getClass().getName();
+	}
+}
+}
+
+module src uses other {
+/* 移植不可能
+define public class FQN[src::Other] {
+	define Other() {}
+	public String toString() {
+		return this.getClass().getName();
+	}
+}
+*/
+
+define public interface IJavaTest {
+	final static int MIN = 0;
+	final static int MAX = 100;
+	final static int MID = (MAX + MIN) / 2;
+	define void doIO() throws java.io.IOException;
+	define IJavaTest intern();
+	define boolean equals(Object o);
+}
+
+define public interface IJavaTest2 extends IJavaTest {
+	define void foo();
+}
+
+define public class IOException extends java.io.IOException {
+	int errorI = JavaTest.staticHolder.i;
+	define IOException() {}
+	public String toString() {
+		return original() + "errorI: " + errorI;
+	}
+}
+
+define class JavaTestStatic {
+	int i = 0;
+	/* 移植不可能
+	 * final other.Other other = new other.Other();
+	 */
+
+	define JavaTestStatic() {}
+	define public static int getMax() {
+		return JavaTest.MAX;
+	}
+	define public JavaTest getInstance()
+		throws
+			InstantiationException,
+			IllegalAccessException {
+		JavaTestSub jt = null;
+		try {
+			jt = (JavaTestSub)Class.forName("src.JavaTestSub").newInstance();
+		} catch (ClassNotFoundException e) {
+			assert false;
+		}
+		jt._init_JavaTestSub();
+		return jt;
+	}
+	define public JavaTest test0() {
+		JavaTest last = null;
+		for (int i = 0; i &#60; JavaTest.MID; i++) {
+			try {
+				IJavaTest j = getInstance().intern();
+				((IJavaTest2) j).foo();
+				JavaTest jt = (JavaTest) j;
+				getMax();
+				last = jt;
+			} catch (InternalError e) {
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+		try {
+			last.doIO();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.gc();
+		return last;
+	}
+	define private void test1(JavaTest corg) throws Exception {
+		final String file = "c:/removeMe.tmp";
+		try {
+			java.io.FileOutputStream fo = new java.io.FileOutputStream(file);
+			java.io.ObjectOutputStream so = new java.io.ObjectOutputStream(fo);
+			so.writeObject(corg);
+			so.flush();
+			so.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		System.out.println("original: " + corg);
+
+		JavaTest cnew;
+		try {
+			java.io.FileInputStream fi = new java.io.FileInputStream(file);
+			java.io.ObjectInputStream si = new java.io.ObjectInputStream(fi);
+			cnew = (JavaTest) si.readObject();
+			si.close();
+			System.out.println("new: " + cnew);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+}
+
+define public class JavaTest implements IJavaTest2, java.io.Serializable {
+	static final JavaTestStatic staticHolder = new JavaTestStatic();
+
+	private int x;
+	protected transient int xx;
+
+	define protected JavaTest() throws InternalError {
+		x = staticHolder.i++;
+		xx = x * x;
+		if (x % 2 == 0)
+			throw new InternalError();
+	}
+	boolean FQN[src::equals](Object o) {
+		return original(o);
+	}
+	public void finalize() throws Throwable {
+		original();
+		System.out.println("fin: " + x);
+	}
+	public IJavaTest intern() {
+		return this;
+	}
+	public void doIO() throws IOException {
+		throw new IOException();
+	}
+	public void foo() {
+	}
+	define private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
+		s.defaultWriteObject();
+	}
+	define private void readObject(java.io.ObjectInputStream s)
+		throws java.io.IOException, ClassNotFoundException {
+		s.defaultReadObject();
+		xx = x * x;
+	}
+	public String toString() {
+		return "x: " + x + ", xx: " + xx;
+	}
+}
+
+class SS {
+	public void main(String[] args) {
+		try {
+			JavaTest.staticHolder.test1(JavaTest.staticHolder.test0());
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		/* 移植不可能
+		 * System.out.println(JavaTest.staticHolder.other);
+		 */
+	}
+}
+
+define class JavaTestSub extends JavaTest {
+	private int sub_x;
+	define JavaTestSub() {
+		sub_x = xx / 2;
+	}
+	public String toString() {
+		return original() + ", sub.x: " + sub_x;
+	}
+}
+
+}
+</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H1
+CLASS="section"
+><A
+NAME="AEN1171"
+>移植上の問題点</A
+></H1
+><P
+>ここでは、前述したもの以外に、Javaで記述されたコードをMixJuiceに移植する際、問題となり得る事柄をいくつか説明する。</P
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN1174"
+>他モジュールの参照</A
+></H2
+><P
+>Javaで他のパッケージを参照することはよくあるが、
+   MixJuiceでは、次のようなコードのいずれも、コンパイルすることができなかった。</P
+><DIV
+CLASS="example"
+><A
+NAME="AEN1177"
+></A
+><P
+><B
+>&#20363; 15. 他モジュールの参照1</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>module other {
+	define public class Other {
+		define Other() {}
+		public String toString() {
+			return this.getClass().getName();
+		}
+	}
+}
+
+module src uses other {
+	define public class Other {                                   // <A
+NAME="other.amb"
+><B
+>(1)</B
+></A
+>
+		define Other() {}
+		public String toString() {
+			return this.getClass().getName();
+		}
+	}
+	class SS {
+		void main(String[] args) {
+			System.out.println(JavaTestStatic.other);
+		}
+	}
+	define class JavaTestStatic {
+		static final FQN[other::Other] other = new FQN[other::Other]();
+	}
+}
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#other.amb"
+><B
+>(1)</B
+></A
+></DT
+><DD
+>MJ: Ambiguous class name "Other" is used at module src</DD
+><DD
+><P
+>FQN[src::Other]と変更してもエラー</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="example"
+><A
+NAME="AEN1188"
+></A
+><P
+><B
+>&#20363; 16. 他モジュールの参照2</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>module other {
+	define public class Other {
+		define Other() {}
+		public String toString() {
+			return this.getClass().getName();
+		}
+	}
+}
+
+module src imports other {
+	define public class Other {
+		define Other() {}
+		public String toString() {
+			return this.getClass().getName();
+		}
+	}
+	class SS {
+		void main(String[] args) {
+			System.out.println(JavaTestStatic.other);
+		}
+	}
+	define class JavaTestStatic {
+		static final FQN[other::Other] other = new FQN[other::Other](); // <A
+NAME="other.undef"
+><B
+>(1)</B
+></A
+>
+	}
+}
+</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="calloutlist"
+><DL
+COMPACT="COMPACT"
+><DT
+><A
+HREF="#other.undef"
+><B
+>(1)</B
+></A
+></DT
+><DD
+>Undefined type name: other.Other</DD
+><DD
+><P
+>other.Otherと変更してもエラー</P
+></DD
+><DD
+><P
+>Otherにすると、src.Otherが参照される。</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="example"
+><A
+NAME="AEN1200"
+></A
+><P
+><B
+>&#20363; 17. 他モジュールの参照3(プリプロセス中にNullPointerExceptionでコンパイル停止)</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>module other {
+	define public class Other {
+		public String toString() {
+			return this.getClass().getName();
+		}
+	}
+}
+
+module src uses other {
+	define public class FQN[src::Other] {
+		public String toString() {
+			return this.getClass().getName();
+		}
+	}
+	class SS {
+		void main(String[] args) {
+			System.out.println(JavaTestStatic.other);
+		}
+	}
+	define class JavaTestStatic {
+		static final FQN[other::Other] other = new FQN[other::Other]();
+	}
+}
+
+</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN1203"
+>メンバがすべてpublicになる</A
+></H2
+><P
+>MixJuiceではメソッドがすべてpublicになってしまう。しかし、オブジェクトのシリアライズを行う際のreadObjectメソッドなどは、privateであることに意味がある。したがって、MixJuiceではオブジェクトのシリアライズなどに関して、独自の制御を行うことができない。</P
+><P
+>一部のツール(JUnitやGUIビルダなど)は、リフレクションを利用してpublicなメソッドを呼び出す。その際、本来publicな扱いではないメソッドも呼び出されるために不都合が生じることがある。</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>private void testFoo1() {...}
+private void testFoo2() {...}
+public void testBar() {testFoo1(); testFoo2();}
+</PRE
+></TD
+></TR
+></TABLE
+><P
+>例えば、上記のJUnit用のコードは下記のように書き換えなければならない。</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="programlisting"
+>define void privateTestFoo1() {...}
+define void privateTestFoo2() {...}
+define void testBar() {privateTestFoo1(); privateTestFoo2();}
+</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="section"
+><HR><H2
+CLASS="section"
+><A
+NAME="AEN1210"
+>ドキュメンテーションツールがない</A
+></H2
+><P
+>JavaDocに相当するドキュメンテーションツールが無いので、ブラックボックスとしてMixJuiceクラスを利用したい場合でも、ソースを見る必要がある。また、モージュールを拡張した場合に、ドキュメントの差分をどう表現するかの検討が必要である。</P
+></DIV
+></DIV
+></DIV
+></DIV
+></BODY
+></HTML
+>

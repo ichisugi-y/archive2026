@@ -1,0 +1,352 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=shift_jis">
+<title>Deep learning 用語集</title>
+</head>
+
+<body bgcolor="#ffffff">
+
+
+<table border="0" style="width:600px">
+<tr><td>
+<span style="font-size: small">
+&gt; <a href="http://www.aist.go.jp/">産業技術総合研究所</a>
+&gt; <a href="http://staff.aist.go.jp/y-ichisugi/j-index.html">一杉裕志</a>
+&gt; <a href="http://staff.aist.go.jp/y-ichisugi/rapid-memo/index.html">脳のアルゴリズムに関する取り急ぎメモ</a>
+&gt; .
+</span>
+</td><td style="font-size: small" align="right">
+
+（
+<!-- #BeginDate format:IS1 -->2013-07-05<!-- #EndDate --> 
+更新）
+</td></tr></table>
+
+<h1>Deep learning 用語集</h1>
+<pre>
+
+<a href="http://staff.aist.go.jp/y-ichisugi/besom/brain-memo.html#deep-learning">deep learning</a> とは、従来よりも多くの層を持ったニューラルネットを用いる
+機械学習技術です。
+deep learning は、画像認識、音声認識などの分野で、
+いろいろなベンチマークで従来技術を超える性能を出しており、
+注目を集めています。
+
+私自身も勉強不足ですが
+僭越ながら、 deep learning 関連用語について自分の理解で簡単にまとめました。
+（挙げてある原論文もちゃんと読んでません！
+間違いがあればぜひご指摘ください。）
+
+<a name="deep-learning"><h2>Deep Learning</h2></a>
+<a href=#auto-encoder>auto-encoder</a> または <a href=#RBM>RBM</a> などを積み重ねた深い構造を持つ機械学習器。
+
+従来は研究者が手作りしていた特徴抽出器を、
+代わりに大量のデータから学習させ自己組織化させるアプローチとも言える。
+deep learning を特徴抽出器として使い、
+識別器としては最上位層でＳＶＭなどを使うこともある。
+
+deep learning のさきがけとして
+<a href=#ConvolutionalNN>たたみ込みニューラルネットワーク(Convolutional Neural Networks)</a> があり、
+その要素技術は deep learning でも使われることがある。
+
+（ただ単に層を重ねるだけでは意味がなく、
+各ニューロンが<a href=#local-receptive-field>局所受容野</a>を持ち、
+上の層にいくほど広い受容野の情報を抽象化したものを表現するという構造が
+本質的に重要なのではないかと個人的には思っている。
+また、<a href=#RBM>RBM</a>、<a href=#DBN>DBN</a>、<a href=#CD>CD(Contrastive Divergence)法</a>といった技術は
+本来は deep learning の本質とは無関係だと思うのだが、
+現時点では少し知っておく必要がありそう。）
+
+
+<a name="Hinton"><h2>Hinton</h2></a>
+2006年の deep learning のブレークスルーを起こした機械学習理論研究者。
+
+以前から脳を意識した機械学習アルゴリズムを数多く提案。
+それらは認識・学習をニューロンごとに局所的に実行でき、
+学習アルゴリズムが睡眠（夢）を彷彿とさせるフェーズ
+(<a href=#negative-phase>negative phase</a> や sleep phase と呼ばれる)を持つ、という特徴があり興味深い。
+
+<a href="http://www.cs.toronto.edu/~hinton/">Home Page of Geoffrey Hinton</a>
+
+
+（なお、 Hinton の提案アルゴリズムは機械学習理論的には大変優れているが、
+それを脳が実行していることを支持する神経科学的な
+証拠はほとんどないと思う。
+<a href="http://staff.aist.go.jp/y-ichisugi/besom/j-index.html">大脳皮質ベイジアンネットモデル</a>の方が着実に神経科学的証拠を
+積み上げてきている。）
+
+<a name="Bengio"><h2>Bengio</h2></a>
+Deep learning 全般の第一人者。
+
+下記 Deep learning の詳しい解説の著者。
+Y. Bengio. Learning deep architectures for AI. 
+Foundations & Trends in Mach. Learn., 2(1):1--127, 2009.
+<a href="http://www.iro.umontreal.ca/~bengioy/papers/ftml.pdf">http://www.iro.umontreal.ca/~bengioy/papers/ftml.pdf</a>
+
+<a href="http://www.iro.umontreal.ca/~bengioy/yoshua_en/index.html">Yoshua Bengio</a>
+<a href="http://www.iro.umontreal.ca/~bengioy/talks/deep-learning-gss2012.html">deep-learning-tutorial-2012</a>
+
+<a name="sampling"><h2>サンプリング</h2></a>
+与えられた確率分布に従ってデータを生成すること。
+
+<a href=#Hinton>Hinton</a> らが提案する <a href=#RBM>RBM</a>, <a href=#DBN>DBN</a> の学習アルゴリズムでは、
+サンプリングが非常に重要な役割を果たす。
+
+簡単な例で説明すると、
+例えばサイコロを１回ふるということは
+	P(サイコロの目 = i)=1/6
+という確率分布に従ったサンプルを１つ生成することを意味する。
+
+データの構造と確率分布が複雑になると、サンプルを生成する計算量も多くなる。
+効率的にサンプルを生成する手法としてＭＣＭＣ（マルコフ連鎖モンテカルロ）があり、
+その中でもギブスサンプリングというアルゴリズムは
+比較的簡単でよく用いられる。
+
+参考：<a href="http://ibisforest.org/index.php?PRML">ＰＲＭＬ</a>（下）第１１章「サンプリング法」
+
+Hinton の研究を意識して、
+大脳皮質もサンプリングを行っている、とする仮説がある。
+J. Fiser, P. Berkes, G. Orban, M. Lengyel,
+ Statistically optimal perception and learning: from behavior to neural representations. Trends Cogn. Sci.14, 119 (2010).
+<a href="http://www.bio.brandeis.edu/fiserLab/data/papers/Fiser_probLearnRev_TICS10.pdf">http://www.bio.brandeis.edu/fiserLab/data/papers/Fiser_probLearnRev_TICS10.pdf</a>
+
+
+<a name="RBM"><h2>RBM(Restricted Boltzmann Machines)</h2></a>
+ボルツマンマシンを入力層と隠れ層の２層構造にしたもの。
+同一層内に結合がないのが特徴で、このおかげで<a href=#sampling>サンプリング</a>が
+効率よくできるようになる。
+
+学習に<a href=#CD>CD(Contrastive Divergence)法</a>が使われる。
+
+Hinton, G. E. (2002). 
+"Training Products of Experts by Minimizing Contrastive Divergence". 
+Neural Computation 14 (8): 1771--1800.
+<a href="http://www.cs.toronto.edu/~hinton/absps/nccd.pdf">http://www.cs.toronto.edu/~hinton/absps/nccd.pdf</a>
+
+
+<a name="DBN"><h2>DBN (Deep Belief Nets)</h2></a>
+<a href=#Hinton>Hinton</a> らによる deep learning の最初のアルゴリズム。
+最上位の２層の間が無向グラフ、それ以外は有向グラフになっている
+<a href="http://ibisforest.org/index.php?%E3%82%B0%E3%83%A9%E3%83%95%E3%82%A3%E3%82%AB%E3%83%AB%E3%83%A2%E3%83%87%E3%83%AB">グラフィカルモデル</a>を用いる。
+
+DBN での認識は最適化問題を厳密に解かずに１パスで動作するので効率がよいが、
+代わりに <a href=#explaining-away>explaining away</a> がない。
+
+学習は、
+<a href=#pre-training>pre-training</a> の時は各層を<a href=#RBM>RBM</a>と見なして下の層から順に教師なし学習する。
+fine-tuning の時は <a href=#wake-sleep>wake-sleep</a> アルゴリズムの変種が使われる。
+
+Hinton, G. E., Osindero, S. and Teh, Y. (2006)
+A fast learning algorithm for deep belief nets.
+Neural Computation, 18, pp 1527-1554.
+<a href="http://www.cs.toronto.edu/~hinton/absps/ncfast.pdf">http://www.cs.toronto.edu/~hinton/absps/ncfast.pdf</a>
+
+
+なお、この論文も同時期に出た有名なもの。
+深い教師なし学習のネットワークで次元削減をするというもの。
+これは <a href=#DBN>DBN</a> とも <a href=#DBM>DBM</a> とも違うみたい。
+"Deep Auto-Encoder" ？
+Hinton, G. E. and Salakhutdinov, R. R. (2006)
+Reducing the dimensionality of data with neural networks.
+Science, Vol. 313. no. 5786, pp. 504 - 507, 28 July 2006.
+<a href="http://www.cs.toronto.edu/~hinton/science.pdf">http://www.cs.toronto.edu/~hinton/science.pdf</a>
+
+
+<a name="DBM"><h2>DBM(Deep Boltzmann machines)</h2></a>
+<a href=#RBM>RBM</a> を複数積み上げたネットワーク。
+
+Salakhutdinov, R. R., & Hinton, G. E. (2009). Deep Boltzmann
+machines. Proceedings of the International Conference on Artificial
+Intelligence and Statistics.
+<a href="http://www.cs.utoronto.ca/~rsalakhu/papers/dbm.pdf">http://www.cs.utoronto.ca/~rsalakhu/papers/dbm.pdf</a>
+
+<a name="wake-sleep"><h2>wake-sleep アルゴリズム</h2></a>
+ <a href=#DBN>DBN</a> やヘルムホルツマシン(<a href="http://www.cs.utoronto.ca/~hinton/helmholtz.html">Helmholtz Machines</a>) の学習アルゴリズム。
+
+wake-phase ではボトムアップの結合（認識モデル）の重みを学習し、
+sleep-phase ではトップダウンの結合（生成モデル）の重みを学習する。
+
+その原理はボルツマンマシンの学習則の原理とは全く違う模様。
+
+参考：
+「神経回路網とEMアルゴリズム」
+村田昇，池田思朗
+<a href="http://www.ism.ac.jp/~shiro/papers/books/embook2000.pdf">http://www.ism.ac.jp/~shiro/papers/books/embook2000.pdf</a>
+「隠れ状態最尤推定と反復解法 -EM アルゴリズムとWake-Sleep アルゴリズム-」
+池田思朗
+<a href="http://www.ism.ac.jp/~shiro/papers/books/InfoBrain2002.pdf">http://www.ism.ac.jp/~shiro/papers/books/InfoBrain2002.pdf</a>
+
+（なお、  wake-phase, sleep-phase のそれぞれを
+さらに positive phase と <a href=#negative-phase>negative phase</a> に分けてもよいところを、
+分けずにすませてしまっているみたい。）
+
+（なお、脳のモデルとしてみた場合、ヘルムホルツマシンには、
+「トップダウンの注意や文脈の情報が認識に影響を与えるという事実を説明できない」、
+という大きな欠点がある。）
+
+<a name="negative-phase"><h2>negative phase</h2></a>
+ボルツマンマシンの学習則を勾配法で導出すると、
+ある条件下で同時に発火するニューロン間の結合を強める positive phase と、
+別の条件下で同時に発火するニューロン間の結合を弱める negative phase の
+２つの項が出てくる。
+
+<a href=#wake-sleep>wake-sleep</a> アルゴリズムの wake-phase, sleep-phase とは無関係。
+
+<a name="CD"><h2>CD(Contrastive Divergence)法</h2></a>
+<a href=#RBM>RBM</a> で使われる非常に計算量の少ない学習アルゴリズム。
+（私は理論的詳細は理解していませんが、下記文献等を参考にしました。
+「確率伝搬法を用いた統計的学習理論に関する研究」丹内隼也
+<a href="http://ir.library.tohoku.ac.jp/re/bitstream/10097/48218/1/Tannai-Junya-04-10-0015.pdf">http://ir.library.tohoku.ac.jp/re/bitstream/10097/48218/1/Tannai-Junya-04-10-0015.pdf</a>
+）
+
+従来のボルツマンマシンの学習アルゴリズムでは次のような目的関数が使われる。
+	KL(P_0 || P_∞)
+ただし P_0 は入力の分布、 P_∞はＭＣＭＣを無限ステップ実行したときの分布。
+しかし、これを偏微分して得られる勾配法の学習アルゴリズムには、
+<a href=#negative-phase>negative phase</a> の実行に非常に時間がかかかる、という問題がある。
+そこで、代わりに次のように目的関数（これを contrastive divergence と呼ぶ）を用いる。
+	KL(P_0 || P_∞) - KL(P_n || P_∞)
+ただし P_n はＭＣＭＣを n ステップ実行したときの分布。
+これを偏微分して（さらに少し近似して）得られる学習アルゴリズムでは、
+不思議なことに時間のかかる negative phase は消えてなくなり、
+代わりに短時間で実行できる negative phase が現れる。（ということらしい。）
+得られた学習則は、ニューロンが局所的に実行可能な、非常に簡単なものになる。
+
+（<s>上記目的関数の第２項は、「 n ステップの実行結果と無限ステップの実行結果の
+差が大きければペナルティを与える」と解釈できる。したがって、学習が進めば
+ＭＣＭＣを n ステップ実行するだけで、無限ステップ実行したものに近い
+サンプルが得られるようになると期待できる、のだと思う。</s>
+いや、符号が違いますね・・・。やっぱり contrastive divergence の
+目的関数の意味は私にはわかりません。）
+
+なお、経験上 n は小さな値（例えば n=1 ）でもうまく動くという。
+
+
+Hinton, G. E. (2002). 
+"Training Products of Experts by Minimizing Contrastive Divergence". 
+Neural Computation 14 (8): 1771--1800.
+<a href="http://www.cs.toronto.edu/~hinton/absps/nccd.pdf">http://www.cs.toronto.edu/~hinton/absps/nccd.pdf</a>
+
+
+<a name="explaining-away"><h2>explaining away</h2></a>
+ベイジアンネットを用いて結果から原因を推論するとき、
+複数考え得る「原因」による「結果」の解釈の取り合いが起きるという現象。
+
+原因と結果がたくさんあると、それぞれの最適な組み合わせ探索する
+問題を解くことになるので、計算量が多くなる。
+
+<a name="auto-encoder"><h2>auto-encoder</h2></a>
+入力層と出力層の２層構造をした教師なし学習器の一種。
+これを積み重ねたものも deep learning としてよく使われる。
+
+出力する表現からもとの入力を
+できるだけよく再構成できるように学習を進める。
+
+<a href="http://ja.wikipedia.org/wiki/%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90">主成分分析</a>（PCA, <a href="http://en.wikipedia.org/wiki/Principal_component_analysis">Principal component analysis</a>）はもっとも簡単な auto-encoder と言える。
+
+
+<a name="denoising-autoencoder"><h2>denoising autoencoders</h2></a>
+<a href=#auto-encoder>auto-encoder</a> の拡張の１つ。
+
+Extracting and composing robust features with denoising autoencoders
+by: P. Vincent, H. Larochelle, Y. Bengio, and P.-A. Manzagol 
+In: International Conference on Machine Learning proceedings (2008) . 
+<a href="http://www.iro.umontreal.ca/~vincentp/Publications/denoising_autoencoders_tr1316.pdf">http://www.iro.umontreal.ca/~vincentp/Publications/denoising_autoencoders_tr1316.pdf</a>
+
+
+<a name="sparse-coding"><h2>sparse-coding</h2></a>
+Olshausen が 1996 年に発表した大脳皮質一次視覚野のモデル。
+一次視覚野の単純型細胞と呼ばれるニューロンの、不思議な形をした受容野を
+単純なアルゴリズムで再現し、その後の視覚野の研究に大きな影響を与えた。
+deep learning にもいろいろ影響を与えている。
+
+Olshausen BA, Field DJ
+Emergence of simple-cell receptive field properties by learning a sparse code for natural images 
+NATURE 381 (6583): 607-609 JUN 13 1996 
+
+
+<a name="ConvolutionalNN"><h2>たたみ込みニューラルネットワーク(Convolutional Neural Networks)</h2></a>
+<a href=#neocognitron>ネオコグニトロン</a>の基本構造を踏襲しつつ、勾配法で学習するようにしたもの。
+手書き文字認識の標準的ベンチマーク <a href="http://yann.lecun.com/exdb/mnist/">MNIST</a> で最高性能を更新し続けている。
+
+「たたみ込み層」と「部分サンプリング層（pooling 層）」を交互に持つ。
+この構造は deep learning でもよく使われる。
+
+たたみ込み層では画像上の各位置ごとに特徴抽出が行われ、
+部分サンプリング層では局所的な平行移動に対して不変な出力がなされる。
+
+
+LeCun, Y., Bottou, L., Bengio, Y., and Haffner, P. (1998d). 
+Gradient-based learning applied to document recognition. 
+Proceedings of the IEEE, 86(11), 2278-2324.
+<a href="http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf">http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf</a>
+
+<a name="local-receptive-field"><h2>局所受容野</h2></a>
+ニューロンが、入力データのごく一部にのみ応答するという性質のこと。
+
+脳の視覚野がそのような構造を持つ。
+視覚野のニューロンは広い視野の中のごく狭い範囲の刺激にしか応答しない。
+その応答する範囲のことを受容野と呼ぶ。
+高い階層にあるニューロンほど広い受容野を持つ。
+<a href=#neocognitron>ネオコグニトロン</a>や<a name="ConvolutionalNN">たたみ込みニューラルネットワーク</a>も、
+視覚野のこの構造を模している。
+
+<a name="max-pooling"><h2>max-pooling</h2></a>
+<a name="ConvolutionalNN">たたみ込みニューラルネットワーク</a>の「部分サンプリング層（pooling 層）」に
+おいて、最近使われるようになった方法。
+
+（その起源は Poggio らの HMAX モデルだと思っていますが、
+合っていますでしょうか？
+
+M. Riesenhuber and T. Poggio. 
+"Hierarchical models of obeject recognition in cortex."
+ Nature Neuroscience 2, 1019-1025, 1999. 
+<a href="http://cbcl.mit.edu/publications/ps/nn99.pdf">http://cbcl.mit.edu/publications/ps/nn99.pdf</a>
+）
+
+<a name="neocognitron"></a><h2>ネオコグニトロン(<a href="http://en.wikipedia.org/wiki/Neocognitron">Neocognitron</a>)</h2>
+<a href="http://www4.ocn.ne.jp/~fuku_k/index.html">福島先生</a>による、脳の視覚野の神経回路モデル。
+deep learning の源流。
+変形に強い文字認識が可能。
+
+Fukushima, K. (1980). 
+Neocognitron: A self-organizing neural network model for a mechanism of pattern recognition unaffected by shift in position. 
+Biological Cybernetics, 36, 193-202.
+
+ネオコグニトロンのＳ層(simple cell を意識)、Ｃ層（complex cell を意識）は、
+それぞれたたみ込みニューラルネットのＣ(convolution layer)、Ｓ（subsampling layer）に対応。
+ＳとＣが逆なので注意。
+呼び方が違うだけで、
+	入力→たたみ込み→部分サンプリング→たたみ込み→部分サンプリング→
+という構造は同じ。
+
+<a name="pre-training"><h2>pre-training</h2></a>
+deep learning による学習を成功させるブレークスルーとなった技法。
+本格的に学習する前に、あらかじめ下の層から順に教師なし学習しておくフェーズのことをいう。
+pre-training のあと、勾配法などで普通に学習するフェーズを fine-tuning と呼ぶ。
+
+
+<a name="Theano"><h2>Theano</h2></a>
+Python で多次元配列を効率的に処理するためのライブラリ。
+GPU を使って高速処理してくれる。
+<a href="http://deeplearning.net/software/theano/">Welcome ? Theano v0.6rc1 documentation</a>
+
+Theano を使った Deep Learning の実装が公開されている。
+<a href="http://www.deeplearning.net/tutorial/">Deep Learning Tutorials ? DeepLearning v0.1 documentation</a>
+
+
+</pre>
+
+<hr>
+コメント、質問などお待ちしております。
+<img src="http://staff.aist.go.jp/y-ichisugi/ichisugi-mail.gif" width="160" height="21">
+<hr>
+<!--
+<a href="http://staff.aist.go.jp/y-ichisugi/besom/j-index.html">BESOM トップページ</a><br>
+-->
+<a href="http://staff.aist.go.jp/y-ichisugi/j-index.html">一杉裕志のページ</a><br>
+
+
+</body>
+</html>

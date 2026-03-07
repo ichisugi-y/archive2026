@@ -1,0 +1,12 @@
+#epp "PComp"
+
+class TestPComp {
+  public static void main(String[] argv){
+    int w = 0, x = 0, y = 1, z = 2;
+    System.out.println(w <= x);			// (0 <= 0)
+    System.out.println(w <= x < y);		// (0 <= 0 < 1)
+    System.out.println(w <= x < y < z);		// (0 <= 0 < 1 < 2)
+    System.out.println(w <= x++ < y < z);	// (0 <= 0 < 1 < 2)
+    System.out.println(! (w <= x < y < z));	// (0 <= 1 < 1 < 2)
+  }
+}

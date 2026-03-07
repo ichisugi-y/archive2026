@@ -1,0 +1,599 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<link rel="stylesheet" type="text/css" href="./style.css">
+<title> Collection plug-in </title>
+</head> <body>
+<div class="header-link">
+[<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
+[<a href="index.html">Document index</a>]
+</div>
+<h1>Collection plug-in</h1>
+<ul class="headers">
+<li><a href="#intro">はじめに</a>
+<li><a href="#basic">基本事項</a>
+<li><a href="#Vec">可変長配列 Vec&lt;T&gt;</a>
+<li><a href="#ifNull"> NullOr&lt;T&gt;型とnullチェック構文 ifNull</a>
+<li><a href="#Table">ハッシュ表 Table&lt;Key,Value&gt;</a>
+<li><a href="#Iter">イテレータ Iter&lt;T&gt;</a>
+<li><a href="#foreach">ループ構文 foreach</a>
+<li><a href="#wrap"> int 型の wrap/unwrap</a>
+<li><a href="#print">print メソッド</a>
+<li><a href="#feature">将来の課題</a>
+<li><a href="#syntax">文法</a>
+<li><a href="#reference">リファレンスマニュアル</a>
+</p></ul><p>
+</p><p>
+</p><h2><a name="intro">はじめに</a></h2><p>
+</p><p>
+Java 言語に足りないとよく言われる言語機能の１つに、
+parameterized class があります。
+GJ のように Java 言語に parameterized class の機能を追加する提案は
+いくつか存在しますが、標準仕様にはいまだ取り込まれていません。
+</p><p>
+GJ は非常にうまく設計されていると思いますが、
+Java プログラマーの視点から見ると、いくつか不満が残ります。
+例えばループ構文の拡張は行っていないため、
+コレクションの要素に対するループの記述の
+繁雑さは Java 言語からそのまま引き継いでいます。
+また、 int などの基本型を型パラメタに指定できません。
+STL と違い、
+ローカル変数を宣言して初期化する時に、
+長い型名を２度書かなければならないのもめんどうです。
+</p><p>
+</p><p>
+多くの人が parameterized class を必要としていますが、
+実は、そのうちのほとんどの人は、静的な型チェックを行ってくれる
+コレクションライブラリがあれば十分なのではないでしょうか？
+もともとJava 言語には <tt>T[]</tt> という組み込みの parameterized type が１つ
+ありますが、それプラス、よく使う parameterized type が
+数個あれば、実用上は十分だと思います。
+この方法ならば、 Java 言語の大きな特長である「シンプルさ」も、
+あまり損なわずにすみます。
+</p><p>
+このような設計方針のもとに、厳選した３つの parameterized type を
+言語の組み込み型として提供する
+Collection plug-in を設計・実装しました。
+Collection plug-in は、以下の特徴を持ちます。
+</p><p>
+<ul>
+<li>静的に型チェックされる可変長配列、ハッシュ表、イテレータを組み込み型として提供
+<li>便利なシンタックスシュガー: <tt>{}</tt>、<tt>foreach</tt>
+<li>返値のnullの値のチェックを強制する<tt>ifNull</tt>構文
+<li>int 型の自動 wrap/unwrap
+<li>デバッグに便利な print メソッド
+<li>シンプルな仕様と実装
+<li>EPP plug-in の形での composability の高い実装
+</ul>
+</p><p>
+</p><h2><a name="basic">基本事項</a></h2><p>
+</p><p>
+パラメタつきの型（Vec&lt;T&gt;、Table&lt;Key,Value&gt;、Iter&lt;T&gt;、
+NullOr&lt;T&gt;）は、
+型名が使える全ての場所で使うことができます。
+具体的には、ローカル変数宣言、フィールド宣言、
+メソッドの返値と引数の宣言などです。
+</p><p>
+型パラメタには、 int 型か参照型（ class, interface, T[] またはコレクション型）
+だけが許されます。
+</p><p>
+コレクションに対するメソッド呼び出しの引数と返値は、
+ちゃんとコンパイル時に型チェックされます。
+</p><p>
+型パラメタに int 型を指定した場合は、
+コレクションに対するメソッド呼び出しの引数と返値は、
+必要に応じて自動的に Integer 型に wrap/unwrap されます。
+</p><p>
+ なお、コレクション型をネストするときは、２つの "&gt;" の間に必ず
+スペースを入れてください。そうしないとコンパイラは構文解析できず、
+シンタックスエラーになります。
+</p><p>
+</p><p>
+</p><h2><a name="Vec">可変長配列 Vec&lt;T&gt;</a></h2><p>
+Vec&lt;T&gt; は、可変長配列です。
+特定のインデックスに対応する要素の代入・参照が
+ O(1) で行えます。
+再後尾の要素の追加・削除が行え、スタックとしても用いることができます。
+メソッド toArray() によって、
+T[] 型の配列に変換することもできます。
+</p><p>
+これは Vec&lt;T&gt; の使用例です。
+</p><p>
+<pre>
+{
+  Vec&lt;String&gt; vec = {};  // new Vec&lt;String&gt;() の値で初期化。
+  vec.push("aaa");
+  vec.push("bbb");
+  vec.push("ccc");
+  System.out.println(vec.get(2));  // ccc が出力される。
+  foreach (String s in vec){
+    // aaa, bbb, ccc が順に出力される。
+    System.out.println(s);
+  }
+  vec.put(2, "xxx");  // 要素の変更。
+  foreach (int index, String s in vec){  // ２変数 foreach
+    // 0:aaa, 1:bbb, 2:xxx が順に出力される。
+    System.out.println(index+ ":"+ s);
+  }
+  System.out.println(vec.size());  // 3 が出力される。
+  System.out.println(vec.pop());   // xxx が出力される。
+  System.out.println(vec.size());  // 2 が出力される。
+}
+</pre>
+</p><p>
+Vec&lt;T&gt; の初期化式として、 {} が使えます。
+これは、 new Vec&lt;T&gt;() 
+書いたのと同じ意味です。
+{} の中に要素を並べることもできます。
+</p><p>
+</p><p>
+Vec&lt;T&gt; の値に対する foreach は、効率を意識して実装されています。
+T[] に対する for ループとほとんど変わらない速度で
+ループすることができます。
+（まだ計測はしていません。）
+また、Vec&lt;T&gt; の値に対する foreach は、 heap を消費しません。
+</p><p>
+</p><p>
+</p><h2><a name="ifNull"> NullOr&lt;T&gt;型とnullチェック構文 ifNull</a></h2><p>
+「正常な値またはは null 」を返すようなメソッドは多くありますが、
+そのようなメソッドの返値のnullチェックをプログラマーに強制させるための型が
+NullOr&lt;T&gt;型です。
+</p><p>
+次のプログラムはこの型の使用例です。
+<pre>
+void test(){
+  String s = find("a") ifNull { s = "default"; };
+  ...
+}
+NullOr&lt;String&gt; find(String key){
+  if (...) {
+    ...
+    return str;
+  } else {
+    return null;
+  }
+}
+</pre>
+</p><p>
+</p><p>
+</p><p>
+ NullOr&lt;T&gt;型の値は、ifNull 構文を使って T 型に変換しないと、
+T 型の値として使えません。
+つまり、うっかり null かどうかのチェックを忘れると
+コンパイル時エラーになります。
+NullOr&lt;T&gt; 型の変数への代入、 return 、引数渡しはできます。
+</p><p>
+ NullOr&lt;T&gt; は Object 型の変数に代入できます。
+</p><p>
+ NullOr&lt;T&gt; 型の変数へは、 NullOr&lt;S&gt;, S, null 型の値を 代入できます。
+ただし S は T の subtype （か T 自身）です。
+</p><p>
+現在のところ型パラメタ T には、 reference 型と int のみが許されます。
+（int 型を用いた場合は、実装上は自動的に Integer 型に wrap されます。）
+</p><p>
+</p><p>
+ifNull 構文には２つのタイプがあり、それぞれ
+次のようにマクロ展開されます。
+<pre>
+        { T var = exp ifNull block; 後に続く文; }
+-&gt;
+        { T var;
+          T tmp = exp;
+          if (tmp != null)
+            var = tmp;
+          else
+            block
+          後に続く文;
+        }
+</pre>
+<pre>
+        var = exp ifNull block;
+-&gt;
+        { T tmp = exp;
+          if (tmp != null)
+            var = tmp;
+          else
+            block
+        }
+</pre>
+</p><p>
+つまり前者のタイプの場合、
+宣言された変数のスコープは、 ifNull のブロックの中および、
+ifNull の後に続く文にまで及びます。
+</p><p>
+ifNull 構文で宣言した変数のデフォルト値を Block の中で設定し忘れると、
+コンパイルエラーになります。
+例えば次のプログラムをコンパイルすると、
+<pre>
+ NullOr&lt;int&gt; x = 123;
+ int y = x ifNull { /* do nothing */ };
+ System.out.println(y);
+</pre>
+ javac のフェーズで次のような
+エラーメッセージが出ます。
+<pre>
+Test.java:19: Variable y may not have been initialized.
+      (System.out).println(y); 
+                           ^
+1 error
+</pre>
+</p><p>
+</p><p>
+</p><h2><a name="Table">ハッシュ表 Table&lt;Key,Value&gt;</a></h2><p>
+これは Table&lt;Key,Value&gt;の使用例です。
+</p><p>
+<pre>
+{
+  Table&lt;String,int&gt; table = {};
+  table.put("aaa", 111);
+  table.put("bbb", 222);
+  table.put("ccc", 333);
+  int x1 = table.get("aaa")
+        ifNull { throw new Error(); };
+  System.out.println(x1);  // 111 が出力される。
+  foreach (int val in table.valueIter()){
+    System.out.println(val);  // 111, 222, 333 が順に出力される。
+  }
+  table.put("aaa", 999);  // 要素の変更。
+  foreach (String key, int val in table){  // ２変数 foreach
+    // aaa:999, bbb:222, ccc:333 が順に出力される。
+    System.out.println(key+ ":"+ val);
+  }
+}
+</pre>
+</p><p>
+Table&lt;Key,Value&gt; の初期化式として、 {} が使えます。
+これは、 new Table&lt;Key,Value&gt;() と
+書いたのと同じ意味です。
+現在の実装では {} の中に要素を並べることはできません。
+</p><p>
+</p><p>
+table.put(key, value) で値を追加します。
+この時、 value が null であれば、このメソッドは NullPointerException を
+throw します。
+</p><p>
+table.get(key) で、値を参照します。
+このとき、もし key に対応するエントリがハッシュ表になければ、
+値 null が返されます。
+table.get(key) の返値の静的な型は NullOr&lt;Value&gt;であるため、
+返値を型Valueとして使うためには必ずifNull構文を使う必要があります。
+</p><p>
+</p><p>
+Java 2 collection library などでは
+ハッシュ表にエントリが存在しない場合の処理を忘れると、
+実行時に NullPointerException になってしまいやっかいです。
+この Table の場合は、null のチェックを忘れると
+コンパイル時に type error になるため、
+潜在的エラーを早期に発見することができます。
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="Iter">イテレータ Iter&lt;T&gt;</a></h2><p>
+Iter&lt;T&gt; は、 vec.iter() 、 table.keyIter() 、 table.valueIter() の
+返値です。
+現在のところ、これら以外には Iter&lt;T&gt; のインスタンスを
+作る方法はありません。
+</p><p>
+Iter&lt;T&gt; には次の２つのメソッドがあります。
+使い方は、 Java 2 collection library の
+Iterator と同じです。（もちろん明示的キャストは不要です。）
+</p><p>
+<pre>
+        boolean hasNext()
+        T next()
+</pre>
+</p><p>
+イテレータを使っている間は、もとになるコレクションの値を
+変更してはいけません。それを行った場合の動作は未定義とします。
+</p><p>
+</p><p>
+</p><h2><a name="foreach">ループ構文 foreach</a></h2><p>
+</p><p>
+</p><h3>１変数 foreach</h3><p>
+</p><p>
+<pre>
+foreach (Value val in exp) { ... }
+</pre>
+</p><p>
+exp の型は、int, T[], Vec&lt;T&gt;, Iter&lt;T&gt; 
+のいずれかでなければなりません。
+</p><p>
+<ul>
+<li> exp の型が int の場合は、 val には 0 から exp - 1 までの値が順に入ります。
+<br>（あまり使わないので、将来は仕様から外すかもしれません。）
+<li> exp の型が T[] の場合は、 val には exp[0] から exp[exp.length - 1] の
+値が順に入ります。
+<li> exp の型が Vec&lt;T&gt; の場合は、 val には exp.get(0) から
+exp.get(exp.size() - 1) の値が順に入ります。
+<li> exp の型が Iter&lt;T&gt; の場合は、 
+exp.hasNext() が false になるまで、 val には exp.next() の値が順に入ります。
+</ul>
+</p><p>
+exp は、ループに入る前に１度だけ評価されます。
+</p><p>
+</p><p>
+</p><h3>２変数 foreach</h3><p>
+</p><p>
+<pre>
+foreach (Key key, Value val in exp) { ... }
+</pre>
+</p><p>
+ exp の型は、 T[], Vec&lt;T&gt;, Table&lt;Key,Value&gt;
+のいずれかでなければなりません。
+</p><p>
+<ul>
+<li> exp の型が T[] の場合は、
+key には 0 から exp.length - 1 の値が、
+val には exp[0] から exp[exp.length - 1] の値が順に入ります。
+<li> exp の型が Vec&lt;T&gt; の場合は、
+key には 0 から exp.size() - 1 の値が、
+ val には exp.get(0) から exp.get(exp.size() - 1) の値が順に入ります。
+<li> exp の型が Table&lt;Key,Value&gt; の場合は、 
+key, value には、それぞれハッシュ表のキーと対応する値が順に入ります。
+</ul>
+</p><p>
+exp は、ループに入る前に１度だけ評価されます。
+</p><p>
+</p><p>
+</p><h3> break, continue </h3><p>
+foreach 内部での break 文、 continue 文は期待した通りに動きます。
+ラベル付き break も期待した通りに動きます。
+例：
+<pre>
+found:
+  foreach (Vec&lt;String&gt; vec in vecOfVec){
+    foreach (String s in vec){
+      if (s.equals(keyString)) break found;
+    }
+  }
+</pre>
+</p><p>
+現在の実装では、ラベル付き continue 文は期待した通りに動きません。
+（EPP を通したソースを javac するフェーズでコンパイルエラーになります。）
+これはバグです。将来直す予定です。
+</p><p>
+</p><h3>要素の変更</h3><p>
+ foreach でループしている間、
+以下の場合に限り、ループ対象のデータ構造の要素を変更することができます。
+<ul>
+<li>T[] に対してループしている時に、任意の配列の位置に代入してもかまいません。
+<li>Vec に対してループしている時に、
+任意の位置に vec.put(i, x) してもかまいません。
+（ push、 pop は、してはいけません。）
+</ul>
+</p><p>
+</p><p>
+これら以外の方法で、 foreach のループ対象の
+コレクションの要素を変更してはいけません。
+変更を行った場合の動作は、未定義とします。
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="wrap"> int 型の wrap/unwrap</a></h2><p>
+</p><p>
+型パラメタに int を指定することができます。
+</p><p>
+int 型は実装上は Integer に wrap/unwrap されますが、
+プログラマーからはそれは見えません。
+</p><p>
+-10 <= x < 1024 の間の x に対応する Integer はキャッシュされているので、
+wrap するときに heap からメモリを allocate することはありません。
+キャッシュされる範囲は、次のようにしてカスタマイズすることが可能です。
+<pre>
+jp.go.etl.epp.util.Wrapper.setCacheRange(min, max);
+</pre>
+</p><p>
+int 以外の基本型の wrap/unrwap は、現在のところ実装されていません。
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="print">print メソッド</a></h2><p>
+</p><p>
+Vec と Table は print(String) というメソッドを持っていて、
+デバッグ用に使えます。
+</p><p>
+<ul>
+<li>ネストした構造もインデントして出力してくれます。
+<li>print メソッドの呼び出しは自分自身を値として返すので、
+式の途中に ".print(str)" を埋め込むことができます。
+<li>String 型が要素である場合は、引用符と escape sequence を付けて出力してくれます。
+</ul>
+</p><p>
+具体例：
+<pre>
+Table&lt;String, Vec&lt;String&gt; &gt; table = {};
+Vec&lt;String&gt; vec1 = {"aaa", "bbb", "\n"};
+Vec&lt;String&gt; vec2 = {"\"\t\""};
+table.put("key1", vec1);
+table.put("key2", vec2);
+Vec&lt;String&gt; v = table.print("table:").get("key1")
+  ifNull{ throw new Error(); };
+</pre>
+</p><p>
+これを実行すると、次のような出力が標準エラー出力に出ます。
+<pre>
+table:
+{
+ {
+  "key2",
+  {
+    "\"\t\"",
+  }
+ }, {
+  "key1",
+  {
+    "aaa",
+    "bbb",
+    "\n",
+  }
+ }
+}
+</pre>
+</p><p>
+ユーザ定義のクラスが要素にある場合も見やすく
+ print するようにカスタマイズすることができます。<br>
+（方法については、チュートリアルプログラムの
+ lib/Tutorial.java の中の t.collection.printFunction を見てください。）
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="feature">将来の課題</a></h2><p>
+</p><p>
+</p><h3> Generics(GJ) との統合</h3><p>
+近いうちに Java 言語の標準機能に generics が入るようですが、
+将来的には Collection plug-in は generics の機能と統合したいと思います。
+</p><p>
+</p><p>
+</p><h3> &gt;&gt; の問題</h3><p>
+</p><p>
+現在の実装では、g++ と同様、パラメタ付きクラスがネストしたときは、
+Vec&lt;Vec&lt;T&gt;&gt; ではなく、
+ Vec&lt;Vec&lt;T&gt; &gt; のように２つの &gt;&gt; の間にスペースを
+入れなければなりません。
+generics の仕様ではスペースは不要であり、 Collection plug-in も
+それに合わせたいと思っています。
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="syntax">文法</a></h2><p>
+<pre>
+</p><p>
+Type
+        &lt;original alternatives&gt;
+        Vec &lt; Type &gt;
+        Table &lt; Type , Type &gt;
+        Iter &lt; Type &gt;
+        NullOr &lt; Type &gt;
+</p><p>
+Statement
+        &lt;original alternatives&gt;
+        foreach ( Type Identifier in Expression ) Block
+                # Expression の型は int, T[], Vec&lt;T&gt;, Iter&lt;T&gt;
+        foreach ( Type Identifier , Type Identifier in Expression ) Block
+                # Expression の型は、 T[], Vec&lt;T&gt;, Table&lt;Key,Value&gt;
+        Identifier = Expression ifNull Block ;
+        Type Identifier = Expression ifNull Block ;
+</p><p>
+</pre>
+</p><p>
+</p><p>
+</p><h2><a name="reference">リファレンスマニュアル</a></h2><p>
+</p><h3>主なコンストラクタとメソッド</h3><p>
+<pre>
+</p><p>
+Vec&lt;T&gt; のコンストラクタ
+        Vec&lt;T&gt;()
+        Vec&lt;T&gt;(Object[])
+        Vec&lt;T&gt;(Vector)
+</p><p>
+Vec&lt;T&gt; のメソッド
+        void push(T)
+        T pop()
+        T top()
+        void put(int, T)
+        T get(int)
+        int size()
+        T[] toArray()
+        Iter&lt;T&gt; iter()
+        Vec&lt;T&gt; print(String)
+</p><p>
+Table&lt;Key,Value&gt; のコンストラクタ
+        Table&lt;Key,Value&gt;()
+</p><p>
+Table&lt;Key,Value&gt; のメソッド
+        void put(Key, Value)    // ただし null は put できない。        
+        NullOr&lt;Value&gt; get(Key)
+        void remove(Key)
+        boolean containsKey(Key)
+        Iter&lt;Key&gt; keyIter()
+        Iter&lt;Value&gt; valueIter()
+        Table&lt;Key,Value&gt; print(String)
+</p><p>
+Iter&lt;T&gt; のメソッド
+        boolean hasNext()
+        T next()
+</pre>
+</p><h3>Vec のイディオム</h3><p>
+<pre>
+</p><p>
+// Vec の各要素に関数 f を適用して別の Vec を作る。
+Vec&lt;T&gt newVec = {};
+foreach (T x in oldVec) { newVec.push(f(x)); }
+</p><p>
+// vec1 のうしろに vec2 を追加
+foreach (T x in vec2) { vec1.push(x); }
+</p><p>
+// Vec の中から条件 p を満たす最初の要素を検索
+T val = null;
+foreach (T x in vec) {
+  if (p(x)) {
+    val = x;
+    break;
+  }
+}
+if (val == null) { ... } else { ... }
+</p><p>
+// Vec の中の条件 p を満たす要素 x を f(x) に置換
+foreach (int index, T x in vec) {
+  if (p(x)) { vec.put(index, f(x)); }
+}
+</p><p>
+</pre>
+</p><h3>Table のイディオム</h3><p>
+<pre>
+</p><p>
+// デフォルトの値
+Value val = table.get(key) ifNull { val = defaultValue; };
+</p><p>
+// デフォルトの値をテーブルに入れる
+Value val = table.get(key) ifNull {
+  val = defaultValue; 
+  table.put(key, val); // 忘れがち。注意！
+};
+</p><p>
+// 必ずエントリが存在する場合
+Value val = table.get(key) ifNull { throw new Error("fatal"); };
+</p><p>
+// エントリが存在する場合だけ何か処理
+Value val = table.get(key) ifNull { return; };
+...
+</p><p>
+// エントリが存在しない場合だけ何か処理
+if (! table.containsKey(key)) { ... }
+</p><p>
+// エントリが存在する場合と存在しない場合にそれぞれ何か処理
+Value val = table.get(key) ifNull { val = null; };
+if (val == null) { ... } else { ... }
+</p><p>
+// すべての key に対してループ
+foreach (Key x in table.keyIter()) { ... }
+</pre>
+</p><h3>Table&lt;Key,Vec&lt;Value&gt; &gt; のイディオム</h3><p>
+<pre>
+</p><p>
+// key に対応する Vec に値を追加
+Vec&lt;Value&gt; vec = table.get(key)
+  ifNull {
+    vec = new Vec&lt;Value&gt;();
+    table.put(key, vec); // 忘れがち。注意！
+  };
+vec.push(val);
+</pre>
+</p><hr>
+<table width="100%"> <tr><td>
+<img src="images/img002.gif" alt="mj-logo">
+</td><td>
+<div class="last-update"> Last updated: 
+ May 17 17:16:46 2002
+</div>
+<div class="header-link">
+[<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
+[<a href="index.html">Document index</a>]
+</div>
+</td></table>
+</body></html>

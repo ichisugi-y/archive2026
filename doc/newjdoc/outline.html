@@ -1,0 +1,248 @@
+<html>
+<head>
+<title> EPP アーキテクチャの概要</title>
+ <meta charset="UTF-8">
+</head>
+<body bgcolor="#FFFFFF">
+<a href="index.html"> Index </a>
+<hr>
+<img src="gif/epp-logo-small.gif" align=right><br>
+<h1>EPP 1.1.0 アーキテクチャの概要 </h1>
+<hr>
+
+<h2>予備知識</h2>
+ EPP のドキュメントを読むには、 Java 言語についての基礎知識に加えて、
+コンパイラに関する基礎知識を必要とします。
+具体的には以下の用語について知っている必要があります。
+<pre>
+	パス
+	再帰下降パーザ
+	トークン
+	リテラル
+	抽象構文木
+	非終端記号
+	bootstrap
+</pre>
+ ただし、あまり高度な専門知識は必要としません。
+
+<p>
+ また、 以下のような lisp プログラマーには馴染み深い概念が出てきます。
+<blockquote>
+	macro, 
+	immutable object, 
+	symbol, 
+	Ｓ式, 
+	backquote macro, 
+	動的変数
+</blockquote>
+ これらの概念については、
+できるだけ lisp の経験がない読者にもわかるように
+説明するつもりです。
+
+<hr>
+
+
+<h2> EPP 記述言語 Ld-2</h2>
+EPP のソースコードは、「EPP で拡張された Java 言語」で書かれています。
+具体的には、次の５つの plug-in を使っています。
+<ul>
+<li><a href="API/epp.Symbol.html">Symbol</a>
+<li><a href="SystemMixin.html"> SystemMixin</a>
+<li><a href="BackQuote.html">BackQuote</a>
+<li>AutoSplitFiles
+<li>EppMacros
+</ul>
+これらの５つの plug-in のソースコードもまた、これら５つの plug-in を使って
+書かれています。
+そしてそれとは別に、
+ Common Lisp で書かれた EPP 本体と５つの plug-in のソースコードがあり、
+これによって bootstrap することによって、 Java だけで EPP が
+動くようになっています。
+
+<p>
+５つの plug-in の中で、特に重要な役割を果たしているのが、 
+<a href="SystemMixin.html">SystemMixin</a>
+ plug-in です。
+SystemMixin plug-in は、 Java 言語の上に、 Java 言語とは別の
+オブジェクト指向言語 Ld-2 を実現するものです。
+
+
+<p>
+<center><table border>
+<tr> <th> (Application Programs) </th> </tr>
+<tr> <th> EPP Plug-ins </th> </tr>
+<tr> <th> EPP Core / Java Grammar definition </th> </tr>
+<tr> <th> Object-Oriented Language Ld-2 </th> </tr>
+<tr> <th> JavaVM </th> </tr>
+</table></center>
+
+
+<p>
+言語 Ld-2 は、 Java 言語とは違う特殊な継承機構を持っています。
+これは、１つのクラスを  mixin という複数の「部品」に分割して
+記述できるようにする機構です。
+mixin を複数組み合わせることによって、１つのクラスが構築されます。
+
+<center><img src="gif/img002.GIF"></center>
+
+<p>
+現在の実装では、 mixin を組み合わせて作る Ld-2 class と、
+普通の Java 言語の class とは互換性がなく、それぞれ異なった
+シンタックスで定義されます。メソッド呼び出しのシンタックスも異なっています。
+
+
+
+<hr>
+<h2>EPP main routine</h2>
+EPP が起動されると、まず
+<a href="API/epp.Epp.html">EPP main routine</a>
+と呼ぶプログラムが動きます。
+これは、
+<pre>      jp.go.etl.epp.epp.Epp </pre>
+という名前の Java クラスです。
+EPP main routine は、処理すべきファイル１つずつに対して、
+異なったコンフィギュレーションの
+EPP プリプロセッサを構築し、
+それを起動します。
+<p>
+EPP プリプロセッサは、
+複数の mixin をつなぎ合わせ作られる、１つの Ld-2 クラスです。
+ファイルの先頭で指定された plug-in の mixin と、
+「標準のプリプロセッサを定義する mixin 」をすべてつなぎ合わせて
+１つの Ld-2 クラスにすることによって、
+そのファイル専用のプリプロセッサが構築されます。
+
+<p>
+plug-in によって拡張できるのは、 EPP プリプロセッサの挙動だけで、
+EPP main routine の挙動は拡張できません。
+しかし、 Java クラス jp.go.etl.epp.epp.Epp のサブクラスを作ることで、
+カスタマイズされた EPP main routine を作ることはできます。
+
+<p>
+EPP はデフォルトではファイル単位で変換処理を行ないますが、
+-global オプションとともに起動された場合は、
+<a href="API/epp.Global.html">グローバル処理モード</a>となり、
+全ファイルを対象とする
+大域的な処理が可能となります。
+
+<center><img src="gif/img003.GIF"></center>
+
+
+<hr>
+<h2>EPP プリプロセッサ</h2>
+EPP main routine から
+EPP プリプロセッサが起動されると、まず
+<a href="API/epp.EppCore.html#initializationPass">初期化メソッド</a>
+が呼ばれます。
+そして、入力ファイルは、
+<a href="API/epp.Parser.html">構文解析パス</a>、
+<a href="API/epp.Macro.html">マクロ展開パス</a>、
+<a href="API/epp.TypeChecker.html">型チェックパス</a>、
+<a href="API/epp.Emitter.html">コード出力パス</a>
+の４つのパスによって、処理されます。
+
+<p>
+構文解析パスは、随時
+<a href="API/epp.Lex.html">字句解析ルーチン</a>
+を呼び出します。
+字句解析ルーチンは、 
+EPP 用の入力ストリームであるクラス
+<a href="API/epp.EppInputStream.html">EppInputStream</a>
+から１文字ずつ文字を読み込みます。
+
+
+<p>
+plug-in は、 EppInputStream、字句解析ルーチン、構文解析パス、
+マクロ展開パス、型チェックパス、コード出力パスのすべてを
+拡張することができます。
+<p>
+また、４つのパスの前後に
+新たなパスを追加することができます。
+その方法については、
+<a href="API/epp.EppCore.html"> EPP プリプロセッサのコア</a>の
+項目で説明しています。
+
+<center><img src="gif/img004.GIF"></center>
+
+
+<hr>
+<h2>データ構造</h2>
+プリプロセッサの内部では、
+<a href="API/epp.Token.html">トークン</a>、
+<a href="API/epp.Tree.html">抽象構文木</a>、
+<a href="API/epp.Type.html">型</a>
+を表現する３つのデータ構造が
+重要な働きをします。
+<p>
+ トークンは、字句解析ルーチンが返すデータ型です。
+<p>
+抽象構文木は、構文解析パスによって作られ、マクロ展開パス、型チェックパスで
+変換処理されてコード出力パスに渡され、そこで文字列に変換されて
+出力ファイルに出力されます。
+<p>
+抽象構文木のノードには、型情報の付いたノードと、付いていないノードがあります。
+型チェックパスでは、型情報の付いていない抽象構文木を
+型情報付き抽象構文木に変換します。
+
+<p>
+これら３つのデータ型はいずれも immutable object です。
+プログラム中から、内部状態を変更することはできません。
+
+<p>
+plug-in は、トークンや抽象構文木を表すクラスのサブクラスを
+定義することはできません。
+新しいサブクラスを追加しなくても、
+最初から新しいトークン、新しい構文が表現できるような、
+汎用性の高いデータ構造になっています。
+
+
+<hr>
+<h2>拡張可能パーザの原理</h2>
+パーザは、基本的には再帰下降スタイルで書かれています。
+mixin を追加して、パーザのメソッドを拡張することで、
+非終端記号に新たな選択肢を追加することができます。
+バックトラックや文脈依存処理を行なうことで、 LL(1) ではない
+文法も扱うことができます。
+また、左再帰ルールも扱うことができます。
+
+<p>
+詳しくはこの論文を見て下さい。<br>
+<a href="index.html#pro98-paper">「高いモジュラリティと拡張性を持つ構文解析器」</a><br>
+
+<hr>
+<h2>その他</h2>
+その他、 plug-in を書くために必要な処理として、以下の項目を
+参考にして下さい。
+<br>
+<a href="API/epp.EppUserError.html">エラー処理</a><br>
+<a href="API/epp.Dynamic.html">動的変数</a><br>
+<a href="API/epp..html"></a><br>
+<a href="API/epp..html"></a><br>
+
+
+
+<hr>
+<h2>各ソースファイルの役割</h2>
+配布パッケージの epp/src/level0/epp の下に、 EPP の本体のソースがあります。
+ 主なファイルの役割は、以下の通りです。
+
+<pre>
+Epp.java		EPP main routine の定義
+EppCore.java		EPP プリプロセッサの本体
+EppInputStream.java	EPP 用入力ストリーム
+Lex.java		字句解析ルーチン
+CompUnit.java		Java プログラムのトップレベルの文法定義
+TypeDecl.java		class, interface, method, field の文法定義
+Statement.java		文の文法定義
+ExpNonTerm.java		式に関係する non-terminal の定義
+Exp.java		式の文法定義
+TypeSystem.java		クラス Type の定義および型に関する意味の定義
+TypeCheck.java		標準の Java の型チェックオブジェクトの定義
+FileSig.java		クラス型の定義と分割コンパイル処理の定義
+</pre>
+
+<hr>
+<a href="index.html"> Index </a>
+<img src="gif/epp-logo-small.gif" align=right><br>
+</body>
+</html>

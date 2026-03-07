@@ -1,0 +1,34 @@
+/*
+ This is a test program of -comment-colon option.
+
+ This program can be compiled by normal Java compiler.
+
+ You can try EPP this file with the following options.
+	epp -f -comment-colon TestCommentColon.java
+	epp -f -comment-colon -Dfoo TestCommentColon.java
+	epp -f -comment-colon -Dbar TestCommentColon.java
+	epp -f -comment-colon -plug-in noassert TestCommentColon.java
+
+
+*/
+
+//:#epp "ifdef"
+//:#epp "assert"
+
+public class TestCommentColon {
+  public static void main(String[] argv){
+
+    //: #ifdef foo
+    //: System.out.println("foo!");
+    //: #endif
+
+    /*:
+#ifdef bar
+    System.out.println("bar");
+#endif
+    */
+
+    //: assert(1+1 == 2);
+    System.out.println("Fine!");
+  }
+}

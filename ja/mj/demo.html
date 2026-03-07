@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<link rel="stylesheet" type="text/css" href="./style.css">
+<title> MJ プログラムのデモ </title>
+</head> <body>
+<div class="header-link">
+[<a href="index.html">MJ Top page</a>]
+[<a href="site-map.html">Site map</a>]
+</div>
+<h1>MJ プログラムのデモ</h1>
+<ul class="headers">
+<li><a href="#draw">ドローツール</a>
+<li><a href="#coffee-cup">コーヒーカップ</a>
+</p></ul><p>
+</p><p>
+</p><p>
+</p><h2><a name="draw">ドローツール</a></h2><p>
+</p><h3>概要</h3><p>
+ドロー系お絵書きツールの簡易版です。
+「図形」と「操作」がそれぞれ MJ の module で記述されており、
+新たな図形、新たな操作を追加可能になっています。
+</p><p>
+下記のモジュールが選択可能です。
+</p><p>
+<ul>
+<li>base : フレームワーク
+<li>select extends base : 図形の選択
+<li>delete extends select : 選択した図形の削除
+<li>move extends select : 選択した図形の移動
+<li>dump extends base : 画面情報をテキスト形式で出力
+<li>area extends base : 全図形の面積（単位はピクセル）の合計を表示
+<li>line extends base : 直線
+<li>rect extends base : 長方形
+<li>elli extends base : 楕円
+<li>tri extends base : 三角形
+<li>oct extends base : 八角形
+</ul>
+</p><p>
+</p><p>
+</p><h3>スクリーンショット</h3><p>
+</p><p>
+全モジュールを選択した場合。
+<div align=center>
+<img src="images/DrawFrameMJT.gif">
+</div>
+</p><p>
+</p><p>
+</p><p>
+</p><h3>アプレット</h3><p>
+ base と select 以外の９個のモジュールは任意に選択可能で、
+それに { base, select } という組み合せを加えると
+全部で 2^9 + 1 通りのモジュールの組み合せ方があります。
+このうち、下記の組み合せをアプレットでお試しください。
+<br>（Netscape では最初に実行したアプレットがキャッシュされてしまうようです。
+その場合は Netscape を立ち上げ直してください。）
+<ol>
+<li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/DrawFrameMJ-f-base.html">{ base }</a><br>
+<li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/DrawFrameMJ-f-line.html">{ base, line }</a><br>
+<li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/DrawFrameMJ-f-fig.html">{ base, line, rect, elli, tri, oct }</a><br>
+<li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/DrawFrameMJ-f-select.html">{ base, line, rect, elli, tri, oct, select }</a><br>
+<li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/DrawFrameMJ-f-delete.html">{ base, line, rect, elli, tri, oct, select, delete }</a><br>
+<li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/DrawFrameMJ-f-move.html">{ base, line, rect, elli, tri, oct, select, move }</a><br>
+<li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/DrawFrameMJ-f-dump.html">{ base, line, rect, elli, tri, oct, dump }</a><br>
+<li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/DrawFrameMJ-f-area.html">{ base, line, rect, elli, tri, oct, area }</a><br>
+<li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/DrawFrameMJ-f.html">{ base, line, rect, elli, tri, oct, select, delete, move, dump, area }</a><br>
+</ol>
+使い方：<br>
+下のツールバーから、図形の形式のボタンを押してから<br>
+中央のキャンバスをドラッグして図形を描画して下さい。<br>
+</p><p>
+</p><p>
+</p><h3>ソースコード</h3><p>
+<a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/DrawFrameMJT.txt">DrawFrameMJT.txt</a><br>
+</p><p>
+</p><p>
+</p><p>
+</p><h3>補足</h3><p>
+</p><p>
+補完モジュールは、{dump, area} × {line, rect, elli, tri, oct} ＝
+ １０個定義されています。
+dump, area はそれぞれ、全ての図形のスーパークラスである DrawObject に
+abstract method を追加しています。
+補完モジュールは、個々の図形であるサブクラス側で、
+この method の実装を行うモジュールです。
+</p><p>
+select, delete, move と各図形の間には、補完モジュールは不要です。
+これらの機能はスーパークラス DrawObject に対する
+操作だけで実装されており、サブクラス側でメソッドを実装する必要がないからです。
+</p><p>
+この例で面白いのは、 delete と area の組み合せです。
+図形を delete すると面積の合計は減ると普通期待しますが、
+この実装では変化せず、次に画面をクリックしたときに正しい値に更新されます。
+モジュール area の実装が、 mouseReleased の直後にだけ
+値を更新するようになっているからです。
+モジュール area の仕様が「 mouseReleased の直後に値を更新する」であるならば、
+この delete と area の組み合せは、全く正しい動作であることになります。
+</p><p>
+では、モジュール area の仕様を「図形に対する操作を行った直後に面積を更新する」
+としたい場合はどう実装すればいいのでしょう？
+この仕様を厳密に満たす実装を行うためには、
+「図形に対するすべての操作」の直後に必ず呼ばれる hook が、
+あらかじめフレームワーク側で用意されている必要があります。
+このような hook がなければ、実装は不可能です。
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="coffee-cup">コーヒーカップ</a></h2><p>
+</p><h3>概要</h3><p>
+</p><p>
+iアプリおよびアプレットとして動作する、簡単なデモプログラムです。
+上下左右のキーで、コーヒーカップが動きます。
+iアプリ版は、 P503i, F503i, So503i で動作確認ずみです。
+</p><p>
+プログラムは、５つの module からなります。
+<ul>
+<li>base : フレームワーク
+<li>cup extends base : コーヒーカップを表示
+<li>multi extends cup : コーヒーカップの残像を表示
+<li>vapor extends cup : 湯気を表示
+<li>time extends cup : 時計を表示
+</ul>
+</p><p>
+</p><p>
+</p><h3>アプレット版</h3><p>
+multi, vapor, time を選択するかしないかで
+ 2^3 = 8 通りの組み合わせが可能ですが、下記の組み合せがアプレットとして
+用意されてます。
+<br>（Netscape では最初に実行したアプレットがキャッシュされてしまうようです。
+その場合は Netscape を立ち上げ直してください。）
+<ol>
+<li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/IMJdemo-cup.html">{ base, cup }</a>
+<li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/IMJdemo-multi.html">{ base, cup, multi }</a>
+<li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/IMJdemo-vapor.html">{ base, cup, vapor }</a>
+<li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/IMJdemo.html">{ base, cup, vapor, multi }</a>
+<li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/IMJClock.html">{ base, cup, vapor, multi, time }</a>
+</ol>
+※本アプレットは、福野氏によるiEmulator<a href="http://uni.himitsukichi.com/iap/">（http://uni.himitsukichi.com/iap/）</a><br>
+を使用して動作しています。
+</p><p>
+</p><p>
+</p><h3>iアプリ版</h3><p>
+iアプリで試してみたい方は、こちらの URL でダウンロードしてください。<br>
+<a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/i/index.html">http://staff.aist.go.jp/y-ichisugi/mj/demo/i/index.html</a>
+</p><p>
+</p><p>
+</p><h3>ソースコード</h3><p>
+<ul>
+<li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/IMJClockMJ.txt"> iアプリ用ソースコード</a>
+<li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/IMJdemoEmulator.txt">アプレット化用ソースコード</a>
+</ul>
+</p><p>
+</p><h3>補足</h3><p>
+</p><p>
+MJ の用途として、メモリの制約が厳しい携帯情報端末上の開発言語が
+適しているのではないかと思い、 iアプリを試してみましたが、
+プログラムサイズ 10KB の制約は厳しすぎ、実用的アプリケーションの開発は
+断念しました。
+</p><p>
+今の MJ の実装では、クラスを複数のモジュールに分割すると、
+その分 jar ファイル中のクラスの数が増えます。
+すると、主にクラスファイル中の constant pool のせいで、
+jar ファイルが大きくなってしまいます。
+コーヒーカップのような単純なプログラムでも、
+module を５つ作るのがサイズ的に限界だったそうです。
+</p><p>
+極端にメモリ制約が厳しい実行環境で MJ を使うためには、
+HP の ChaiFreezeDry のような、
+クラスファイル圧縮技術が必須なようです。
+</p><p>
+</p><p>
+</p><hr>
+<table width="100%"> <tr><td>
+<img src="images/img002.gif" alt="mj-logo">
+</td><td>
+<div class="last-update"> Last updated: 
+ May 14 19:07:35 2003
+</div>
+<div class="header-link">
+[<a href="index.html">MJ Top page</a>]
+[<a href="site-map.html">Site map</a>]
+</div>
+</td></table>
+</body></html>

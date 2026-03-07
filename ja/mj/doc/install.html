@@ -1,0 +1,389 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<link rel="stylesheet" type="text/css" href="./style.css">
+<title> インストールと実行方法 </title>
+</head> <body>
+<div class="header-link">
+[<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
+[<a href="index.html">Document index</a>]
+</div>
+<h1>インストールと実行方法</h1>
+<ul class="headers">
+<li><a href="#environment">実行環境</a>
+<li><a href="#install">インストール方法</a>
+<li><a href="#command">各シェルスクリプトの説明</a>
+<li><a href="#stack-trace">スタックトレースの見方</a>
+<li><a href="#how-to-read-log"> log の見方</a>
+</p></ul><p>
+</p><p>
+</p><h2><a name="environment">実行環境</a></h2><p>
+</p><p>
+開発・実行用シェルスクリプトは、以下の環境でテストを行っています。
+</p><p>
+<ul>
+<li>linux, IBM JDK1.1.8
+<li>Windows2000, cygwin 1.3.2, Sun JDK1.2.2
+<li>Windows98, cygwin 1.3.5, Sun JDK1.3.1_01
+</ul>
+</p><p>
+また、 dump ずみの class file の実行は、上記環境に加え、
+以下の実行環境でもテストを行っています。
+</p><p>
+</p><p>
+<ul>
+<li>Sun MIDP Emulator 1.0
+<li>i-mode Java F503i, P503i, So503i 実機
+</ul>
+</p><p>
+</p><p>
+</p><h2><a name="install">インストール方法</a></h2><p>
+MJ のホームページから最新版をダウンロードしてください。
+</p><p>
+ダウンロードした zip ファイルを展開すると、
+ mj というディレクトリができます。
+その下にあるディレクトリ bin を、 PATH に入れてください。
+</p><p>
+CLASSPATH の設定は不要です。
+</p><p>
+</p><h2><a name="command">各シェルスクリプトの説明</a></h2><p>
+</p><p>
+</p><h3>mjc [options] *.java</h3><p>
+</p><p>
+ mjc は、引数で指定されたソースファイルをコンパイルし、
+結果のクラスファイルを eppout の下に作ります。
+</p><p>
+mjc は、実行ログを MJ/MJC.log に出力します。
+</p><p>
+ javac のような「必要なソースファイルを自動的にコンパイルする」という
+機能は、 mjc にはありません。
+コンパイルしたいソースファイルは、すべて、
+mjc の引数に指定しなければなりません。
+</p><p>
+ mjc は、コンパイルしたソースファイル中に含まれる全てのモジュール名を、
+MJ/MJall.log に書き出します。
+このファイルは、 mjball コマンドで利用されます。
+</p><p>
+ option として、 -Jxxx と -Exxx が任意の個数、指定できます。<br>
+ -Jxxx は、 xxx を java のオプションとして渡します。<br>
+ -Exxx は、 xxx を epp のオプションとして渡します。<br>
+例：
+<pre>
+% mjc -J-mx512m -J-Ddebug=true -E-plug-in -Ejp.go.etl.epp.typeof *.java
+</pre>
+</p><p>
+ mjc -J-Dmj.emitToSingleFile=true *.java
+とやると、入力ファイルごとに、変換結果が
+１つの出力ファイルにまとめて出力されます。
+（このオプションをつけないと、クラスごとに別の出力ファイルに
+分けて出力されます。）
+mjc のプリプロセッサが出力する Java ソースコードを見てみたい場合に
+利用してください。
+なお、この出力ファイルは javac を通らないので、このコマンドは
+コンパイルエラーで終了します。
+</p><p>
+ mjc -h は、オプションの簡単な説明を表示します。
+</p><p>
+</p><p>
+注意 :
+クラスの数が多くなると、 cygwin ではコンパイルできなくなる
+かもしれないので、注意してください。（ javac に渡す引数が長くなるため。）
+</p><p>
+</p><p>
+</p><p>
+</p><h3>mj [option] module [args...]</h3><p>
+</p><p>
+ mj は、引数で指定された module （ "selected module" と呼びます）を
+ JavaVM に load して実行します。
+このときリンカーは、 selected module が依存するモジュールと、
+必要な補完モジュールを CLASSPATH から自動的に検索し、リンクします。
+</p><p>
+ mj は、 eppout というディレクトリがなくても実行することができます。
+</p><p>
+ option として、 -Jxxx 、 -Exxx 、-s m が任意の個数、指定できます。<br>
+ -Jxxx は、 xxx を java のオプションとして渡します。<br>
+ -Exxx は、 xxx を epp のオプションとして渡します。<br>
+ -s m は、 m を selected module のリストに加えます。<br>
+</p><p>
+ -log が指定されると、MJ/MJ.log にログを出力します。<br>
+ -h は、オプションの簡単な説明を表示します。<br>
+</p><p>
+ args... は、そのまま void main(String[] args) に渡されます。
+</p><p>
+selected module の指定の順序は、実行に影響を与えません。
+リンカーは、言語仕様によって決められたルールに従って
+全てのモジュールを linearize してから実行するからです。
+</p><p>
+</p><h3>mjb bottom m1 m2 ...</h3><p>
+</p><p>
+ mjb は、第二引数以降で指定された module すべてを extends するような
+module  （"bottom module" と呼びます）を、
+第一引数の名前で生成し、 eppout の下に出力します。
+</p><p>
+ 生成された bottom module は、ソースからコンパイルしたモジュールや、
+ CLASSPATH 中のモジュールと全く同様に扱うことができます。
+例：
+<pre>
+% mjb m1m2 m1 m2
+% mjb m1m2m3 m1m2 m3
+% mj m1m2m3
+...
+</pre>
+</p><p>
+ mjb は、補完モジュールの追加は行いません。
+</p><p>
+</p><p>
+</p><p>
+</p><h3>mjball all</h3><p>
+</p><p>
+ mjball は、直前に mjc した *.java に含まれる全ての module の
+bottom module を、第一引数の名前で生成し、 eppout の下に出力します。
+例：
+</p><p>
+<pre>
+        % mjc T1.java
+        % mjball all
+        % mj all
+</pre>
+</p><p>
+このコマンドは、 mjc コマンドが生成した MJ/MJall.log というファイルの
+中身を利用しています。
+</p><p>
+</p><p>
+</p><h3>mjdump [option] module</h3><p>
+</p><p>
+ mjdump は、引数で指定された selected module および、
+それが依存するモジュールと必要な補完モジュールをすべてリンクして、
+その結果できたクラスファイルを普通の Java アプリケーションの形で、
+ディレクトリ eppout/mjdump の下に出力します。
+dump されたアプリケーションは、 java mjc.Start とやって実行することができます。
+</p><p>
+使用例：
+</p><p>
+<pre>
+        % mjdump all
+        ...
+        % cd eppout/mjdump
+        % java mjc.Start
+</pre>
+</p><p>
+ mjc.Start には、引数を与えることもできます。
+引数は main(String[]) に渡されます。
+</p><p>
+ option として、 -Jxxx 、 -Exxx 、 -s m が任意の個数、指定できます。<br>
+意味は、 mj コマンドと全く同じです。
+</p><p>
+</p><p>
+</p><p>
+</p><h3>mjclear</h3><p>
+</p><p>
+ ディレクトリ eppout の下の *.java, *.class を消したいときは、
+ mjclear を用います。
+</p><p>
+<pre>
+        % mjclear
+        Checking files under "eppout"...
+        Start removing files under eppout...
+        Done.
+        No Java files were translated.
+        %
+</pre>
+</p><p>
+このコマンドは、 *.java ファイルが EPP によって自動生成されたものかどうかを、
+ファイルの先頭を読んで判定します。
+EPP が生成したものではない *.java ファイルや、
+*.java 、 *.class 以外のファイルが１つでも eppout の下にある場合は、
+mjclear はファイルを一切削除せずに、メッセージを出して終了します。
+<pre>
+</p><p>
+        % mjclear
+        Checking files under "eppout"...
+</p><p>
+        The followings are not generated files.
+        eppout/memo.txt
+</p><p>
+        No files were removed. Please remove them manually.
+</pre>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="stack-trace">スタックトレースの見方</a></h2><p>
+</p><p>
+・スタックトレースの例
+<pre>
+java.lang.Error: test!
+        at m3._Delta_ss_SS.m1_testA(_Delta_ss_SS.java:114)
+        at m1._Delta_ss_SS.main(_Delta_ss_SS.java:42)
+        at m2._Delta_ss_SS.main(_Delta_ss_SS.java:76)
+        at m3._Delta_ss_SS.main(_Delta_ss_SS.java:106)
+        at merge._Delta_ss_SS.main(_Delta_ss_SS.java:168)
+        at anonymousClass._Delta_ss_SS.main(_Delta_ss_SS.java:205)
+        at very.longlong.module.name._Delta_ss_SS.main(_Delta_ss_SS.java:249)
+        at very.longlong.another.module.name._Delta_ss_SS.main(_Delta_ss_SS.java:262)
+        at mjc.MJLinker.startMain(MJLinker.java:186)
+        at mjc.MJLinker.doLink(MJLinker.java:100)
+        at mjc.MJC_Epp_globalProcessAfterTypeCheckingPass.call(PlugIn.java:123)
+        at jp.go.etl.epp.epp.FileInfo.globalProcessAfterTypeCheckingPass(FileInfo.java:175)
+        at jp.go.etl.epp.epp.Epp.globalEpp(Epp.java:470)
+        at jp.go.etl.epp.epp.Epp.processFiles(Epp.java:339)
+        at jp.go.etl.epp.epp.Epp.processFilesAndCatchEppUserError(Epp.java:325)
+        at jp.go.etl.epp.epp.Epp.eppMain(Epp.java:55)
+        at jp.go.etl.epp.epp.Epp.main(Epp.java:22)
+test!
+java.lang.Error: Error during executing main.
+</pre>
+</p><p>
+・ (Compiled Code) と出て行番号が出ない場合は、 JIT を off にすれば
+出るようになります。
+例：
+<pre>
+        % ( setenv MJJAVA 'java -Djava.compiler=' ; mj all )
+</pre>
+</p><p>
+・ mjc.MJLinker.startMain(MJLinker.java:186) という行よりも上の部分が、
+アプリケーションの実行部分です。この行以下は無視してください。
+</p><p>
+・各行は、次のように読みます。
+<tt>
+<pre>
+        at m3._Delta_ss_SS.m1_testA(_Delta_ss_SS.java:114)
+           -- *1
+                     ----- *2
+                           -------- *3
+           --                              -------------- *4
+</p><p>
+ *1 は、モジュール m3 の中のメソッドを実行中であることを表す。
+ *2 は、クラス ss.SS のメソッドを実行中であることを表す。
+ *3 は、m1::tsetA という名前のメソッドを実行中であることを表す。
+ *4 は、モジュール m3 の中のクラス ss.SS の 114 行目を実行中であることを表す。
+</pre>
+</tt>
+</p><p>
+</p><h2><a name="how-to-read-log"> log の見方</a></h2><p>
+</p><p>
+</p><h3> log の場所と出力の仕方</h3><p>
+</p><p>
+mjc は、 MJ/MJC.log に log を出力します。
+</p><p>
+mj, mjdump は、デフォルトでは log を出力しません。
+オプションで -log を指定すれば、 MJ/MJ.log に log を出力します。
+</p><p>
+</p><p>
+以下の節で説明する log の内容は、 MJC.log と MJ.log で共通です。
+</p><p>
+</p><p>
+</p><p>
+</p><h3> MJClassInfo </h3><p>
+型チェックでエラーが出ると、
+「ある module から見て、クラス C がどのようなメソッドを持っているか」が
+知りたくなります。
+こういう場合は、 MJ/MJC.log または MJ/MJ.log の中から
+ MJClassInfo の出力結果を探してください。
+</p><p>
+そのためには、  log ファイルの中を、
+ "End initializing MJClassInfo of ClassFullName at ModuleName " 
+という文字列で検索します。
+</p><p>
+例： all というモジュールから見た、 merge0.C というクラスの MJClassInfo
+</p><p>
+<pre>
+End initializing MJClassInfo of merge0.C at all .
+MJClassInfo:
+class merge0.C extends java.lang.Object {
+  int merge1::x
+  int merge2::x
+  public final native void java::wait(long) throws java.lang.InterruptedExceptio
+n
+  public final void java::wait(long, int) throws java.lang.InterruptedException
+  public final void java::wait() throws java.lang.InterruptedException
+  protected void java::finalize() throws java.lang.Throwable
+  public native int java::hashCode()
+  public final native void java::notifyAll()
+  public final native void java::notify()
+  public final native java.lang.Class java::getClass()
+  int merge1::foo()
+  int merge2::foo()
+  protected native java.lang.Object java::clone() throws java.lang.CloneNotSuppo
+rtedException
+  public boolean java::equals(java.lang.Object)
+  public java.lang.String java::toString()
+  }
+</pre>
+</p><p>
+（ public、protected という modifier がついていますが、
+ MJ では無視されます。）
+</p><p>
+</p><p>
+</p><h3> override</h3><p>
+「ある module から見て、どのメソッドがどのメソッドを override しているか」が
+知りたくなることもあります。
+MJClassInfo を作る過程で、 override の処理をやっているはずなので、
+その処理の log 出力を見てください。
+</p><p>
+例： all というモジュールから見た mj.SubA というクラスのメソッドの
+  override の処理の過程
+</p><p>
+<pre>
+Start initializing MJClassInfo of m1.SubA at all .
+Start initializing MJClassInfo of m1.A at all .
+        m1.A#m1::a at m2
+                 overrides m1.A#m1::a at m1 .
+        m1.A#m1::a at m3
+                 overrides m1.A#m1::a at m2 .
+End initializing MJClassInfo of m1.A at all .
+MJClassInfo:
+（ mj.A の MJClassInfo の出力、省略。）
+        m1.SubA#m1::a at m1
+                 overrides m1.A#m1::a at m3 .
+        m1.SubA#m1::a at m2
+                 overrides m1.SubA#m1::a at m1 .
+        m1.SubA#m2::m2a at m2
+                 overrides m1.A#m2::m2a at m2 .
+        m1.SubA#m1::a at m3
+                 overrides m1.SubA#m1::a at m2 .
+        m1.SubA#m3::m3a at m3
+                 overrides m1.A#m3::m3a at m3 .
+End initializing MJClassInfo of m1.SubA at all .
+</pre>
+</p><p>
+この log を見れば、例えば m1::a というメソッドは次の順で
+override されていることが、一応わかります。
+</p><p>
+<pre>
+        m1.A#m1::a at m1
+        m1.A#m1::a at m2
+        m1.A#m1::a at m3
+        m1.SubA#m1::a at m1
+        m1.SubA#m1::a at m2
+        m1.SubA#m1::a at m3
+</pre>
+</p><p>
+</p><p>
+</p><h3> linearizedUsingModules</h3><p>
+</p><p>
+MJC.log か MJ.log を見れば、あるモジュールから見て、
+モジュールがどのように linearize されたかを見ることができます。
+log ファイルを "linearizedUsingModules for ModuleName" 
+という文字列で検索してください。
+</p><p>
+例： m2 から見たモジュールのリスト
+<pre>
+linearizedUsingModules for m2 :
+  mj.lang.ss
+  m1
+  m2
+</pre>
+</p><hr>
+<table width="100%"> <tr><td>
+<img src="images/img002.gif" alt="mj-logo">
+</td><td>
+<div class="last-update"> Last updated: 
+ Dec 03 11:17:12 2001
+</div>
+<div class="header-link">
+[<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
+[<a href="index.html">Document index</a>]
+</div>
+</td></table>
+</body></html>

@@ -1,0 +1,5 @@
+AppName = IMJdemoMJ-multi
+PackageURL = IMJdemoMJ-multi.jar
+AppSize = 7101
+AppClass = mj.demo.base.IMJdemo
+LastModified = Wed, 21 Feb 2001 20:00:43

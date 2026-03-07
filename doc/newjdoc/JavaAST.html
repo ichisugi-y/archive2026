@@ -1,0 +1,400 @@
+<html>
+<head>
+<title>標準／拡張 Java 抽象構文木フォーマット</title>
+ <meta charset="UTF-8">
+</head>
+<body bgcolor="#FFFFFF">
+<a href="index.html"> Index </a>
+<hr>
+<img src="gif/epp-logo-small.gif" align=right><br>
+<h1>標準／拡張 Java 抽象構文木フォーマット</h1>
+<hr>
+ 
+
+<h2>「標準 Java 抽象構文木」(standard Java AST)と
+「拡張 Java 抽象構文木」(extended Java AST)とは？</h2>
+
+
+ 抽象構文木を表現するクラス Tree は、非常に汎用性が高いため、
+例えば次のような無意味なものまで表現できてしまいます。
+<pre>
+ (foo (literalTree xyz "123") (bar (id X) (baz) (id "a b c")))
+</pre>
+ しかし、実際に Java のソースコードを構文解析して作られる抽象構文木は、
+非常に制限されたものになります。
+
+<p>
+ 例えば、 :class という tag を持った tree の subtree の個数は、必ず６です。
+また、その０番目の subtree の tag は :modifiers 、
+３番目の subtree は :extends 、といったふうに、
+subtree の種類が場所によって決まっています。
+
+<p>
+ このように EPP のパーザが作り得る抽象構文木のフォーマットを、
+「標準 Java 抽象構文木」と呼びます。
+
+<p>
+ Java 言語の抽象構文木を処理するプログラムは、
+抽象構文木が「標準 Java 抽象構文木」のフォーマットを満たしていると
+仮定してプログラミングしてかまいません。
+（そのような仮定を置かないと、クラスを処理するために、
+まず subtree の数が６であるかどうか調べ、次に０番目の subtree の tag が
+:modifiers かどうかを調べ・・・、といったふうに、非常に処理が
+わずらわしくなってしまいます。）
+
+
+<p>
+ plug-in は Java 言語の構文を拡張し、抽象構文木に新たな種類のノードを
+追加することができます。
+しかし、あまり自由な抽象構文木フォーマットの拡張を許すと、
+他の plug-in と組み合わせた時に、不都合が起きやすくなります。
+すなわち composability が悪くなります。
+
+<p>
+そこで、 plug-in が抽象構文木を拡張する際に奨励する枠組が、
+「拡張 Java 抽象構文木」です。
+
+<p>
+ plug-in は、抽象構文木を拡張して新たなノードを定義する際に、
+「拡張 Java 抽象構文木」の枠組の範囲に収まるように注意しなければなりません。
+そのかわり、 plug-in は、抽象構文木を処理する際に、
+抽象構文木が「拡張 Java 抽象構文木」フォーマットに従っていると
+仮定して処理を進めてかまいません。
+
+
+<p>
+ すべての plug-in は、 code-emitting pass に入るまでに、
+「拡張 Java 抽象構文木」を「標準 Java 抽象構文木」に変換しなければ
+なりません。
+ code-emitting pass では、「標準 Java 抽象構文木」の tree を
+文字列に変換することしか保証していません。
+フォーマットを満たしていない tree を code-emitting pass に渡すと、
+fatal error を出すか、 Java の言語仕様を満たさないコードを出力してしまいます。
+
+<p>
+ただし「標準 Java 抽象構文木」を文字列に変換したものが、正しい Java プログラム
+であるとは限りません。
+ javac がシンタックスエラーや型エラーを出す可能性もありますし、
+エラーを出さずに異なった意味に解釈する可能性もあります。
+例えば (id "a b c") は「標準 Java 抽象構文木」を満たしており
+code-emitting pass は文字列に変換してくれますが、
+結果を javac にかけるとシンタックスエラーになります。
+
+
+<p>
+ なお、「拡張 Java 抽象構文木」の枠組は絶対的なものではありません。
+例えば、 composability を犠牲にしてでも、あえて独自の抽象構文木の
+フォーマットを使いたい場合があり得ます。
+「拡張 Java 抽象構文木」の範囲内だけで表現できる言語は非常に限られるからです。
+composability とのトレードオフは plug-in の実装者が行なってかまいません。
+（ただし、その plug-in の作者は、 composability が低いことを
+ドキュメントに明示しなければなりません。）
+また、 plug-in のプロトタイピング時には、 composability を意識するよりも
+まず動くものを作ることが先決であるため、実装が簡単になるなら
+「拡張 Java 抽象構文木」のフォーマットを逸脱してもかまわないでしょう。
+
+
+
+<hr>
+<h2>標準／拡張 Java 抽象構文木のフォーマット</h2>
+<pre>
+
+・大文字で始まる記号は、非終端記号です。
+・非終端記号に * がついているものは、０個以上の繰り返しを表します。
+・ &lte&gt という選択肢は、空文字列を表します。
+・各非終端記号の選択肢は、原則として１行に１つ書かれていますが、
+  １行に入り切らないものは、複数行に分けて書いてあるものもあります。
+  かっこの対応で判断して下さい。
+・この章での「非終端記号」と、 Java 文法の章における「非終端記号」とは
+  無関係です。
+・ &ltextended alternatives&gt という選択肢がついているものは、
+ plug-in が拡張してもよい非終端記号です。
+ plug-in は、すでに使われている tag と重ならなければ、選択肢を追加できます。
+
+----
+
+CompilationUnit:
+	(compilationUnit
+		(packageDeclaration PackageName)
+		(imports ImportDeclaration*)
+		(typeDeclarations TypeDeclaration*))
+
+
+PackageName:
+	Name
+	&lte&gt
+
+
+ImportDeclaration:
+	(importSingle Name)
+	(importOnDemand Name)
+	&ltextended alternatives&gt
+
+TypeDeclaration:
+	Class
+	(emptyTypeDeclaration)
+	&ltextended alternatives&gt
+
+
+Class:
+	(class  (modifiers Modifier*)
+		ClassKeyword
+		Identifier
+		(extends Name*)
+		(implements Name*)
+		(classBody ClassBodyDeclaration*))
+
+
+ClassKeyword:
+	(id class)
+	(id interface)
+
+
+ClassBodyDeclaration:
+	(emptyClassBodyDeclaration)
+	VariableDeclaration
+	Class
+	(staticInitializer Block)
+	(instanceInitializer Block)
+	(constructor
+		(modifiers Modifier*)
+		(name (id void))
+		Identifier
+		(formalParameters FormalParameter*)
+		(throws Name*)
+		MethodBody)
+	(method 
+		(modifiers Modifier*)
+		Type
+		Identifier
+		(formalParameters FormalParameter*)
+		(throws Name*)
+		MethodBody)
+	&ltextended alternatives&gt
+
+
+FormalParameter:
+	(pdecl (modifiers Modifier*) Type VariableDeclaratorId)
+
+
+MethodBody:
+	(emptyStatement)
+	Block
+	&ltextended alternatives&gt
+
+
+Block:
+	(block Statement*)
+
+
+Statement:
+	VariableDeclaration
+	Block
+	Class
+	(emptyStatement)
+	(expressionStatement Expression)
+	(labeled Identifier Statement)
+	(switch Expression Block)
+	(case Expression)
+	(default)
+	(do Block Expression)
+	(break)
+	(breakWithLabel Identifier)
+	(continue)
+	(continueWithLabel Identifier)
+	(return)
+	(returnWithExp Expression)
+	(synchronized Expression Block)
+	(throw Expression)
+	(try Block (catch FormalParameter Block)*)
+	(try Block (catch FormalParameter Block)* (finally Block))
+	(if Expression Statement Statement)
+	(while Expression Statement)
+	(for VariableDeclaration ForArg ForArg Statement)
+	(for ForArg ForArg ForArg Statement)
+	&ltextended alternatives&gt
+
+
+VariableDeclaration:
+	(decl	(modifiers Modifier*)
+		Type
+		(vardecls VariableDeclarator*))
+
+
+VariableDeclarator:
+	VariableDeclaratorId
+	(varInit VariableDeclaratorId VariableInitializer)
+
+
+VariableDeclaratorId:
+	Identifier
+	(arrayVar VariableDeclaratorId)
+	&ltextended alternatives&gt
+
+
+VariableInitializer:
+	Expression
+	(arrayInitializer Expression*)
+	&ltextended alternatives&gt
+
+
+ForArg:
+	(forArg Expression*)
+
+
+Expression:
+	Identifier
+	(literalTree LiteralTag String)
+	InstanceCreation
+	(newEnclosingInstance Expression InstanceCreation)
+	(classLiteral Type)
+	(this)
+	(invokeThisConstructor ArgumentList)
+	(invokeSuperConstructor ArgumentList)
+	(fieldLong Name Identifier)
+	(fieldExp Expression Identifier)
+	(fieldStatic Name Identifier)
+	(fieldSuper Identifier ArgumentList)
+	(invoke1 Identifier ArgumentList)
+	(invokeLong Name Identifier ArgumentList)
+	(invokeExp Expression Identifier ArgumentList)
+	(invokeStatic Name Identifier ArgumentList)
+	(invokeSuper Identifier ArgumentList)
+	(cast Type Expression)
+	(paren Expression)
+	(anonymousClass Name ArgumentList (classBody ClassBodyDeclaration*))
+	(newArray NewArrayArg)
+	(anonymousArray Type (arrayInitializer Expression*))
+	(array Expression Expression)
+	(postInc Expression)
+	(postDec Expression)
+	(‾ Expression)
+	(! Expression)
+	(preInc Expression)
+	(preDec Expression)
+	(unaryPlus Expression)
+	(unaryMinus Expression)
+	(instanceof Expression Type)
+	(* Expression Expression)
+	(/ Expression Expression)
+	(% Expression Expression)
+	(+ Expression Expression)
+	(- Expression Expression)
+	(&lt&lt Expression Expression)
+	(&gt&gt Expression Expression)
+	(&gt&gt&gt Expression Expression)
+	(&lt Expression Expression)
+	(&gt Expression Expression)
+	(&lt= Expression Expression)
+	(&gt= Expression Expression)
+	(== Expression Expression)
+	(!= Expression Expression)
+	(& Expression Expression)
+	(^ Expression Expression)
+	(| Expression Expression)
+	(&& Expression Expression)
+	(|| Expression Expression)
+	(conditionalExpression Expression Expression Expression)
+	(= Expression Expression)
+	(*= Expression Expression)
+	(/= Expression Expression)
+	(%= Expression Expression)
+	(+= Expression Expression)
+	(-= Expression Expression)
+	(&lt&lt= Expression Expression)
+	(&gt&gt= Expression Expression)
+	(&gt&gt&gt= Expression Expression)
+	(&= Expression Expression)
+	(^= Expression Expression)
+	(|= Expression Expression)
+	&ltextended alternatives&gt
+
+
+LiteralTag:
+	long
+	char
+	float
+	double
+	string
+	&ltextended alternatives&gt
+
+
+InstanceCreation:
+	(new Type ArgumentList)
+
+
+ArgumentList:
+	(argumentList Expression*)
+
+
+NewArrayArg:
+	Type
+	(dimExpr NewArrayArg Expression)
+	&ltextended alternatives&gt
+
+
+Type:
+	Name
+	(arrayOf Type)
+	(innerClassExp Expression Identifier)        // Since epp1.1.0beta7
+	(innerClassStatic Type Identifier)           // Since epp1.1.0beta7
+	&ltextended alternatives&gt
+
+
+Modifier:
+	Identifier
+	&ltextended alternatives&gt
+
+
+Name:
+	(name Identifier Identifier*)
+
+
+Identifier:
+	(id Symbol)
+	(id String)
+
+
+Symbol: Java 言語の識別子
+
+
+String: Java 言語の文字列リテラル
+
+</pre>
+
+<hr>
+<h2>注</h2>
+将来的には、抽象構文木が「拡張／標準 Java 抽象構文木」フォーマットを
+満たしているかどうかを機械的にチェックするライブラリ関数を
+用意する予定です。
+ また、 plug-in のデバッグモードでは、この関数が自動的に呼ばれるようにし、
+フォーマットからの逸脱を発見した場合は、その原因となった plug-in と
+メソッド名を特定できるようにする予定です。
+
+
+<hr>
+<h2>参考：抽象構文木の一般的なフォーマット</h2>
+クラス Tree で表現できる抽象構文木は、
+一般には以下のように定義できます。
+「標準／拡張 Java 抽象構文木」フォーマットは、これの subset になります。
+
+<pre>
+Tree :
+	LiteralTree
+	Identifier
+	(Symbol Tree*)
+
+LiteralTree :
+	(literalTree Symbol String)
+
+Identifier :
+	(id Symbol)
+	(id String)
+
+</pre>
+
+<hr>
+<a href="index.html"> Index </a>
+<img src="gif/epp-logo-small.gif" align=right><br>
+</body>
+</html>

@@ -1,0 +1,13 @@
+#epp "EmbedCopyright"
+
+class TestEmbedCopyright {
+  int x;
+
+  public static void main(String argv[]){
+    System.out.println(true);
+  }
+}
+
+class Foo extends TestEmbedCopyright {
+  int x;
+}
