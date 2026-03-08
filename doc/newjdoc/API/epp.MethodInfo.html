@@ -27,7 +27,7 @@ java.lang.Object
   <dt> public class <b>MethodInfo</b>
   <dt> extends <a href="epp.MemberInfo.html#_top_">MemberInfo</a>
 </dl>
-$B%/%i%9(B MethodInfo $B$O!"%/%i%9$N%3%s%9%H%i%/%?$*$h$S%a%=%C%I$K4X$9$k>pJs$rJ];}$7$^$9!#(B.
+クラス MethodInfo は、クラスのコンストラクタおよびメソッドに関する情報を保持します。.
 <p>
 <dl>
     <dt> <b>See Also:</b>
@@ -49,16 +49,16 @@ java.lang.Object
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getExceptionTypes()"><b>getExceptionTypes</b></a>()
-  <dd> $B$3$N%a%=%C%I$G(B throws $B@k8@$5$l$?7?$rJV$7$^$9!#(B.
+  <dd> このメソッドで throws 宣言された型を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getParameterTypes()"><b>getParameterTypes</b></a>()
-  <dd> $B$3$N%a%=%C%I$N%Q%i%a!<%?$N7?$rJV$7$^$9!#(B.
+  <dd> このメソッドのパラメータの型を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getReturnType()"><b>getReturnType</b></a>()
-  <dd> $B$3$N%a%=%C%I$NJVCM$N7?$rJV$7$^$9!#(B.
+  <dd> このメソッドの返値の型を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#toString()"><b>toString</b></a>()
-  <dd> $B$3$N(B MethodInfo $B$r!"?M4V$,FI$_$d$9$$J8;zNs$KJQ49$7$^$9!#(B.
+  <dd> この MethodInfo を、人間が読みやすい文字列に変換します。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -84,8 +84,8 @@ java.lang.Object
  public <a href="epp.Type.html#_top_">Type</a> getReturnType()
 </pre>
 <dl>
-  <dd> $B$3$N%a%=%C%I$NJVCM$N7?$rJV$7$^$9!#(B.
-$B$3$N(B MethodInfo $B$,%3%s%9%H%i%/%?$rI=$9>l9g$NF0:n$O!"L$Dj5A$G$9!#(B
+  <dd> このメソッドの返値の型を返します。.
+この MethodInfo がコンストラクタを表す場合の動作は、未定義です。
 <p>
 </dl>
 <a name="getParameterTypes()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -94,7 +94,7 @@ java.lang.Object
  public <a href="epp.Type.html#_top_">Type</a>[] getParameterTypes()
 </pre>
 <dl>
-  <dd> $B$3$N%a%=%C%I$N%Q%i%a!<%?$N7?$rJV$7$^$9!#(B.
+  <dd> このメソッドのパラメータの型を返します。.
 <p>
 </dl>
 <a name="getExceptionTypes()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -103,7 +103,7 @@ java.lang.Object
  public <a href="epp.Type.html#_top_">Type</a>[] getExceptionTypes()
 </pre>
 <dl>
-  <dd> $B$3$N%a%=%C%I$G(B throws $B@k8@$5$l$?7?$rJV$7$^$9!#(B.
+  <dd> このメソッドで throws 宣言された型を返します。.
 <p>
 </dl>
 <a name="toString()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -112,8 +112,8 @@ java.lang.Object
  public String toString()
 </pre>
 <dl>
-  <dd> $B$3$N(B MethodInfo $B$r!"?M4V$,FI$_$d$9$$J8;zNs$KJQ49$7$^$9!#(B.
-$B%G%P%C%0MQ$N%a%=%C%I$G$9!#(B
+  <dd> この MethodInfo を、人間が読みやすい文字列に変換します。.
+デバッグ用のメソッドです。
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>

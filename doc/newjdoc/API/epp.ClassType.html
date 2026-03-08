@@ -27,24 +27,24 @@ java.lang.Object
   <dt> public class <b>ClassType</b>
   <dt> extends <a href="epp.Type.html#_top_">Type</a>
 </dl>
-$B%/%i%9(B ClassType $B$O!"(B :class $B7?$rI=$9(B Type $B$G$9!#(B.
+クラス ClassType は、 :class 型を表す Type です。.
 <p>
-ClassType $B$N%$%s%9%?%s%9$O!"DL>o(B ClassTypeTable $B$+$i$N$_@8@.$5$l$^$9!#(B
-plug-in $B%W%m%0%i%^!<$O!"(B new $B$r;H$C$FD>@\(B ClassType $B$N%$%s%9%?%s%9$r(B
-$B@8@.$7$h$&$H$7$F$O$$$1$^$;$s!#(B
-$B$b$7$=$l$r9T$J$&$H!"%U%!%$%k4V$N0MB84X78$N=hM}$,!"(B
-$B@5$7$/9T$J$o$l$J$/2DG=@-$,$"$j$^$9!#(B
+ClassType のインスタンスは、通常 ClassTypeTable からのみ生成されます。
+plug-in プログラマーは、 new を使って直接 ClassType のインスタンスを
+生成しようとしてはいけません。
+もしそれを行なうと、ファイル間の依存関係の処理が、
+正しく行なわれなく可能性があります。
 <p>
-ClassType $B$O!"(B ClassInfo $B$N%$%s%9%?%s%9$r#1$DJ];}$7$^$9!#(B
-$B%/%i%9$K4X$9$k>\$7$$>pJs$O!"(B ClassInfo $B$KF~$C$F$$$^$9!#(B
-$B$3$N(B ClassInfo $B$N%$%s%9%?%s%9$O!"(B classInfo $B%a%=%C%I$,:G=i$K8F$P$l$?;~$K(B
-lazy $B$K@8@.$5$l$^$9!#(B
-$B$3$N%a%+%K%:%`$N$*$+$2$G!"%/%i%94V$NAj8_0MB8$r07$&$3$H$,2DG=$K$J$C$F$$$^$9!#(B
+ClassType は、 ClassInfo のインスタンスを１つ保持します。
+クラスに関する詳しい情報は、 ClassInfo に入っています。
+この ClassInfo のインスタンスは、 classInfo メソッドが最初に呼ばれた時に
+lazy に生成されます。
+このメカニズムのおかげで、クラス間の相互依存を扱うことが可能になっています。
 <p>
-$B$b$7!"(B ClassInfo $B$,40A4$K@8@.$5$l$kA0$K!"$=$N(B ClassInfo $B<+?H$,I,MW$K$J$C$?$i!"(B
-EppUserError $B$,(B throw $B$5$l$^$9!#(B
-$BNc$($P!"(B super class $B$K<+J,<+?H$r;XDj$7$?%/%i%9$r(B
-$B=hM}$7$h$&$H$9$k$H!"$3$N%(%i!<$,5/$-$^$9!#(B
+もし、 ClassInfo が完全に生成される前に、その ClassInfo 自身が必要になったら、
+EppUserError が throw されます。
+例えば、 super class に自分自身を指定したクラスを
+処理しようとすると、このエラーが起きます。
 <p>
 <dl>
     <dt> <b>See Also:</b>
@@ -66,13 +66,13 @@ EppUserError $B$,(B throw $B$5$l$^$9!#(B
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#classInfo()"><b>classInfo</b></a>()
-  <dd> $B$3$N7?$,$b$7(B :class $B7?$J$i$P!"(B ClassInfo $B$rJV$7$^$9!#(B.
+  <dd> この型がもし :class 型ならば、 ClassInfo を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#toString()"><b>toString</b></a>()
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#toTree()"><b>toTree</b></a>()
-  <dd> $B$3$N7?$r%W%m%0%i%`Cf$GI=8=$9$k(B tree $B$rJV$7$^$9!#(B.
+  <dd> この型をプログラム中で表現する tree を返します。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -94,7 +94,7 @@ EppUserError $B$,(B throw $B$5$l$^$9!#(B
  public <a href="epp.ClassInfo.html#_top_">ClassInfo</a> classInfo()
 </pre>
 <dl>
-  <dd> $B$3$N7?$,$b$7(B :class $B7?$J$i$P!"(B ClassInfo $B$rJV$7$^$9!#(B.
+  <dd> この型がもし :class 型ならば、 ClassInfo を返します。.
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>
@@ -107,7 +107,7 @@ EppUserError $B$,(B throw $B$5$l$^$9!#(B
  public <a href="epp.Tree.html#_top_">Tree</a> toTree()
 </pre>
 <dl>
-  <dd> $B$3$N7?$r%W%m%0%i%`Cf$GI=8=$9$k(B tree $B$rJV$7$^$9!#(B.
+  <dd> この型をプログラム中で表現する tree を返します。.
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>

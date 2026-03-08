@@ -25,13 +25,13 @@ java.lang.Object
   <dt> public class <b>TypeCheck</b>
   <dt> extends Object
 </dl>
-EPP $B%W%j%W%m%;%C%5$,;}$D%a%=%C%I$N$&$A(B
-$B%U%!%$%k(B TypeCheck.java $B$GDj5A$5$l$k%a%=%C%I$O!"(B
-$B7?%A%'%C%/%Q%9$N9|AH$_$r(B
-$BDj5A$9$k$b$N$G$9!#(B.
+EPP プリプロセッサが持つメソッドのうち
+ファイル TypeCheck.java で定義されるメソッドは、
+型チェックパスの骨組みを
+定義するものです。.
 <p>
-<b> $BCm0U!'(B $B$3$N%/%i%9$O!"(B javadoc $B$r:n$k$?$a$NJX59E*$J%/%i%9$G$9!#(B
-$B<B:]$N(B EPP $B$N%=!<%9%3!<%ICf$K$OB8:_$7$^$;$s!#(B </b>
+<b> 注意： このクラスは、 javadoc を作るための便宜的なクラスです。
+実際の EPP のソースコード中には存在しません。 </b>
 <p>
 <dl>
     <dt> <b>See Also:</b>
@@ -53,43 +53,43 @@ EPP $B%W%j%W%m%;%C%5$,;}$D%a%=%C%I$N$&$A(B
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#afterTypeCheckingPass()"><b>afterTypeCheckingPass</b></a>()
-  <dd> $B7?%A%'%C%/%Q%9$NK\BN$r<B9T$7$?8e$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B
+  <dd> 型チェックパスの本体を実行した後に呼び出されるメソッドです。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#beforeTypeCheckingPass()"><b>beforeTypeCheckingPass</b></a>()
-  <dd> $B7?%A%'%C%/%Q%9$NK\BN$r<B9T$9$kA0$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B.
+  <dd> 型チェックパスの本体を実行する前に呼び出されるメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#defaultVarEnv()"><b>defaultVarEnv</b></a>()
-  <dd> $B%H%C%W%l%Y%k$K$*$1$kJQ?t4D6-$r:n$C$FJV$7$^$9!#(B
+  <dd> トップレベルにおける変数環境を作って返します。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#defineTypeChecker(epp.Symbol, epp.TypeChecker)"><b>defineTypeChecker</b></a>(Symbol, TypeChecker)
-  <dd> TypeChecker $B$N%F!<%V%k$K!"(B TypeChecker $B%*%V%8%'%/%H$rEPO?$9$k(B
-$B%a%=%C%I$G$9!#(B.
+  <dd> TypeChecker のテーブルに、 TypeChecker オブジェクトを登録する
+メソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#defineTypeNameChecker(epp.Symbol, epp.TypeNameChecker)"><b>defineTypeNameChecker</b></a>(Symbol, TypeNameChecker)
-  <dd> TypeNameChecker $B$N%F!<%V%k$K!"(B TypeNameChecker $B%*%V%8%'%/%H$rEPO?$9$k(B
-$B%a%=%C%I$G$9!#(B.
+  <dd> TypeNameChecker のテーブルに、 TypeNameChecker オブジェクトを登録する
+メソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#extendTypeChecker(epp.Symbol, epp.TypeChecker)"><b>extendTypeChecker</b></a>(Symbol, TypeChecker)
-  <dd> $BEPO?$5$l$F$$$k(B TypeChecker $B%*%V%8%'%/%H$r(B decorator pattern $B$K$h$C$F(B
-$B3HD%$9$k$?$a$N%a%=%C%I$G$9!#(B.
+  <dd> 登録されている TypeChecker オブジェクトを decorator pattern によって
+拡張するためのメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#extendTypeNameChecker(epp.Symbol, epp.TypeNameChecker)"><b>extendTypeNameChecker</b></a>(Symbol, TypeNameChecker)
-  <dd> $BEPO?$5$l$F$$$k(B TypeNameChecker $B%*%V%8%'%/%H$r(B decorator pattern $B$K$h$C$F(B
-$B3HD%$9$k$?$a$N%a%=%C%I$G$9!#(B.
+  <dd> 登録されている TypeNameChecker オブジェクトを decorator pattern によって
+拡張するためのメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#generateTypeNameTable()"><b>generateTypeNameTable</b></a>()
-  <dd> TypeNameTable $B$r@8@.$9$k(B factory method $B$G$9!#(B.
+  <dd> TypeNameTable を生成する factory method です。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#initTypeCheckerTable()"><b>initTypeCheckerTable</b></a>()
-  <dd> TypeChecker $B$N%F!<%V%k$r=i4|2=$9$k%a%=%C%I$G$9!#(B.
+  <dd> TypeChecker のテーブルを初期化するメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#initTypeNameCheckerTable()"><b>initTypeNameCheckerTable</b></a>()
-  <dd> TypeNameChecker $B$N%F!<%V%k$r=i4|2=$9$k%a%=%C%I$G$9!#(B.
+  <dd> TypeNameChecker のテーブルを初期化するメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#typeCheckingPass()"><b>typeCheckingPass</b></a>()
-  <dd> $B7?%A%'%C%/%Q%9$NK\BN$G$9!#(B.
+  <dd> 型チェックパスの本体です。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -111,10 +111,10 @@ EPP $B%W%j%W%m%;%C%5$,;}$D%a%=%C%I$N$&$A(B
  public void initTypeCheckerTable()
 </pre>
 <dl>
-  <dd> TypeChecker $B$N%F!<%V%k$r=i4|2=$9$k%a%=%C%I$G$9!#(B.
-plug-in $B$O$3$N%a%=%C%I$r3HD%$7!"(B defineTypeChecker $B$d(B
-extendTypeChecker $B$r8F$S=P$9$3$H$K$h$C$F!"(B
-$B%F!<%V%k$KEPO?$5$l$k7?%A%'%C%/%*%V%8%'%/%H$rDI2C!&3HD%$G$-$^$9!#(B
+  <dd> TypeChecker のテーブルを初期化するメソッドです。.
+plug-in はこのメソッドを拡張し、 defineTypeChecker や
+extendTypeChecker を呼び出すことによって、
+テーブルに登録される型チェックオブジェクトを追加・拡張できます。
 <p>
 </dl>
 <a name="defineTypeChecker(epp.Symbol, epp.TypeChecker)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -124,8 +124,8 @@ extendTypeChecker $B$r8F$S=P$9$3$H$K$h$C$F!"(B
                                <a href="epp.TypeChecker.html#_top_">TypeChecker</a> func)
 </pre>
 <dl>
-  <dd> TypeChecker $B$N%F!<%V%k$K!"(B TypeChecker $B%*%V%8%'%/%H$rEPO?$9$k(B
-$B%a%=%C%I$G$9!#(B.
+  <dd> TypeChecker のテーブルに、 TypeChecker オブジェクトを登録する
+メソッドです。.
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -139,8 +139,8 @@ extendTypeChecker $B$r8F$S=P$9$3$H$K$h$C$F!"(B
                                <a href="epp.TypeChecker.html#_top_">TypeChecker</a> func)
 </pre>
 <dl>
-  <dd> $BEPO?$5$l$F$$$k(B TypeChecker $B%*%V%8%'%/%H$r(B decorator pattern $B$K$h$C$F(B
-$B3HD%$9$k$?$a$N%a%=%C%I$G$9!#(B.
+  <dd> 登録されている TypeChecker オブジェクトを decorator pattern によって
+拡張するためのメソッドです。.
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -153,7 +153,7 @@ extendTypeChecker $B$r8F$S=P$9$3$H$K$h$C$F!"(B
  public void initTypeNameCheckerTable()
 </pre>
 <dl>
-  <dd> TypeNameChecker $B$N%F!<%V%k$r=i4|2=$9$k%a%=%C%I$G$9!#(B.
+  <dd> TypeNameChecker のテーブルを初期化するメソッドです。.
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -167,8 +167,8 @@ extendTypeChecker $B$r8F$S=P$9$3$H$K$h$C$F!"(B
                                    <a href="epp.TypeNameChecker.html#_top_">TypeNameChecker</a> func)
 </pre>
 <dl>
-  <dd> TypeNameChecker $B$N%F!<%V%k$K!"(B TypeNameChecker $B%*%V%8%'%/%H$rEPO?$9$k(B
-$B%a%=%C%I$G$9!#(B.
+  <dd> TypeNameChecker のテーブルに、 TypeNameChecker オブジェクトを登録する
+メソッドです。.
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -182,8 +182,8 @@ extendTypeChecker $B$r8F$S=P$9$3$H$K$h$C$F!"(B
                                    <a href="epp.TypeNameChecker.html#_top_">TypeNameChecker</a> func)
 </pre>
 <dl>
-  <dd> $BEPO?$5$l$F$$$k(B TypeNameChecker $B%*%V%8%'%/%H$r(B decorator pattern $B$K$h$C$F(B
-$B3HD%$9$k$?$a$N%a%=%C%I$G$9!#(B.
+  <dd> 登録されている TypeNameChecker オブジェクトを decorator pattern によって
+拡張するためのメソッドです。.
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -196,18 +196,13 @@ extendTypeChecker $B$r8F$S=P$9$3$H$K$h$C$F!"(B
  public void beforeTypeCheckingPass()
 </pre>
 <dl>
-  <dd> $B7?%A%'%C%/%Q%9$NK\BN$r<B9T$9$kA0$K8F$S=P$5$l$k%a%=%C%I$G$9!#.
-<p>
-</dl>
-<a name="typeCheckingPass()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
-<a name="typeCheckingPass"><b>typeCheckingPass</b></a>
-<pre>
- public void typeCheckingPass()
-</pre>
-<dl>
-  <dd> $B7?%A%'%C%/%Q%9$NK\BN$G$9!#(B.
-plug-in $B$O!"$3$N%Q%9<B9TCf$N(B
-$BF0E*JQ?t$N4D6-$r:n$k;~$J$I$K!"$3$N%a%=%C%I$r3HD%$7$^$9!#(B
+  <dd> 型チェックパスの本体を実行する前に呼び出されるメソッドです。腫鹿粲釈 釶辣就鞳宙繝謇鈑倚齠┤⊂守辯 齟秉∫轣艱鶩鱚筬矚跛㍾蜀糘莉渦 蒹蜃蔗襲瘡⊂鹿畩
+釈 釶辣就鞳宙繝謇鈑倚齠⊂錫浄岦綯蒹站蜴與癈鷦昭腫鱚 頤碎蜒 蜆 鞳宙繝謇鈑倚齠┤
+鹿頏緇
+寂貍
+  寂箴 型チェックパスの本体です。.
+plug-in は、このパス実行中の
+動的変数の環境を作る時などに、このメソッドを拡張します。
 <p>
 </dl>
 <a name="generateTypeNameTable()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -216,7 +211,7 @@ plug-in $B$O!"$3$N%Q%9<B9TCf$N(B
  public <a href="epp.TypeNameTable.html#_top_">TypeNameTable</a> generateTypeNameTable()
 </pre>
 <dl>
-  <dd> TypeNameTable $B$r@8@.$9$k(B factory method $B$G$9!#(B.
+  <dd> TypeNameTable を生成する factory method です。.
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -229,7 +224,7 @@ plug-in $B$O!"$3$N%Q%9<B9TCf$N(B
  public void afterTypeCheckingPass()
 </pre>
 <dl>
-  <dd> $B7?%A%'%C%/%Q%9$NK\BN$r<B9T$7$?8e$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B
+  <dd> 型チェックパスの本体を実行した後に呼び出されるメソッドです。
 <p>
 </dl>
 <a name="defaultVarEnv()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -238,7 +233,7 @@ plug-in $B$O!"$3$N%Q%9<B9TCf$N(B
  public <a href="epp.VarEnv.html#_top_">VarEnv</a> defaultVarEnv()
 </pre>
 <dl>
-  <dd> $B%H%C%W%l%Y%k$K$*$1$kJQ?t4D6-$r:n$C$FJV$7$^$9!#(B
+  <dd> トップレベルにおける変数環境を作って返します。
 <p>
 </dl>
 <hr>

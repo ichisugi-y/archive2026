@@ -1,104 +1,104 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="./style.css">
-<title> MJ $B$K$h$k%W%m%0%i%_%s%0(B </title>
+<title> MJ によるプログラミング </title>
 </head> <body>
 <div class="header-link">
 [<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
 [<a href="index.html">Document index</a>]
 </div>
-<h1> MJ $B$K$h$k%W%m%0%i%_%s%0(B</h1>
+<h1> MJ によるプログラミング</h1>
 <ul class="headers">
-<li><a href="#programming-style">MJ $B$K$*$1$k%W%m%0%i%`$N@_7W(B</a>
-<li><a href="#design-by-contract">MJ $B$K$*$1$k(B design by contract</a>
-<li><a href="#design-pattern"> MJ $B$K$*$1$k%G%6%$%s%Q%?!<%s(B</a>
-<li><a href="#from-java">Java $B8@8l$G=q$+$l$?%"%W%j%1!<%7%g%s$r(B MJ $B$K=q$-D>$9<j=g(B</a>
+<li><a href="#programming-style">MJ におけるプログラムの設計</a>
+<li><a href="#design-by-contract">MJ における design by contract</a>
+<li><a href="#design-pattern"> MJ におけるデザインパターン</a>
+<li><a href="#from-java">Java 言語で書かれたアプリケーションを MJ に書き直す手順</a>
 </p></ul><p>
 </p><p>
-</p><h2><a name="programming-style">MJ $B$K$*$1$k%W%m%0%i%`$N@_7W(B</a></h2><p>
+</p><h2><a name="programming-style">MJ におけるプログラムの設計</a></h2><p>
 </p><p>
 Under construction.
 </p><p>
-</p><h2><a name="design-by-contract">MJ $B$K$*$1$k(B design by contract</a></h2><p>
+</p><h2><a name="design-by-contract">MJ における design by contract</a></h2><p>
 Under construction.
 </p><p>
-$BJ#?t$N(B module $B$r<+M3$KAH$_9g$o$;$F$b%W%m%0%i%`$,@5$7$/F0:n$9$k$3$H$r(B
-$BJ]>Z$9$k$?$a$K$O!"!V7@Ls$K$h$k@_7W!W$,IT2D7g$G$9!#(B
+複数の module を自由に組み合わせてもプログラムが正しく動作することを
+保証するためには、「契約による設計」が不可欠です。
 </p><p>
 </p><p>
-</p><h2><a name="design-pattern"> MJ $B$K$*$1$k%G%6%$%s%Q%?!<%s(B</a></h2><p>
+</p><h2><a name="design-pattern"> MJ におけるデザインパターン</a></h2><p>
 </p><p>
 Under construction.
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="from-java">Java $B8@8l$G=q$+$l$?%"%W%j%1!<%7%g%s$r(B MJ $B$K=q$-D>$9<j=g(B</a></h2><p>
+</p><h2><a name="from-java">Java 言語で書かれたアプリケーションを MJ に書き直す手順</a></h2><p>
 </p><p>
-$B$$$-$J$j%b%8%e!<%kJ,$1$7$h$&$H$;$:$K!"(B
-$B$^$:$O#1$D$NBg$-$J%b%8%e!<%k$GA4BN$r0O$_!"(B
-$B$=$3$+$i>/$7$E$D%b%8%e!<%k$r@Z$j=P$7$F9T$/J}K!$,$h$$$H;W$$$^$9!#(B
-$B6qBNE*$K$O0J2<$N$h$&$J<j=g$r$*4+$a$7$^$9!#(B
+いきなりモジュール分けしようとせずに、
+まずは１つの大きなモジュールで全体を囲み、
+そこから少しづつモジュールを切り出して行く方法がよいと思います。
+具体的には以下のような手順をお勧めします。
 </p><p>
 </p><p>
 <ol>
 <li>
 </p><p>
-MJ $B2=$7$h$&$H$9$k(B Java $B$N%=!<%9%3!<%I$O!"(B
-$B==J,$-$l$$$K%j%U%!%/%?%j%s%0$5$l$F$$$F!"(B
-$B5!G=E*$K$b==J,$K0BDj$7$F$$$k$b$N$H2>Dj$9$k!#(B
-$B!J$=$&$7$J$$$H!"$"$H$G%"%W%j%1!<%7%g%s$=$N$b$N$N%P%0$J$N$+!"(B
-MJ $B2=$K$h$k%P%0$J$N$+!"(BMJ $B8@8l=hM}7O$N%P%0$J$N$+$GG:$`$3$H$K$J$k!#!K(B
+MJ 化しようとする Java のソースコードは、
+十分きれいにリファクタリングされていて、
+機能的にも十分に安定しているものと仮定する。
+（そうしないと、あとでアプリケーションそのもののバグなのか、
+MJ 化によるバグなのか、MJ 言語処理系のバグなのかで悩むことになる。）
 </p><p>
-MJ $B2=$K$"$?$C$F$O!"%"%W%j%1!<%7%g%s$N9=B$$O$$$8$i$J$$!#(B
-$B%j%s%/8e$N%$%a!<%8$O!"85$N(B Java $B$N%=!<%9$H40A4$KEy2A$K$J$k$h$&$K=q$-49$($k!#(B
-$B!J(B enbug $B$7$F$7$^$&$N$rHr$1$k$?$a!#!K(B
-</p><p>
-<li>
-</p><p>
-$B$^$:!"(B $B%=!<%9%3!<%I$r$h$/FI$s$G!"9=B$$rM}2r$9$k!#(B
-$BH4$-=P$;$=$&$J(B crosscutting concerns $B$r$G$-$k$@$1GD0.$7$F$*$/!#(B
-MJ $B$G$O<u$1IU$1$J$$%3!<%G%#%s%0!J(Binner class $B$J$I!K$,$"$k$+$I$&$+$b(B
-$BCm0U$7$F8+$F$*$/!#(B
-$BFC$K!"(B MJ $B$G$O%5%]!<%H$7$F$$$J$$5!G=!J(B super constructor $B8F$S=P$7$H$+!"(B
-syncronized class $B$H$+!)!K$,$"$k$H(B
-$BCWL?E*$J$N$G!"Aa$$$&$A$K8+$D$1$F!"BP:v$r9M$($kI,MW$,$"$k!#(B
+MJ 化にあたっては、アプリケーションの構造はいじらない。
+リンク後のイメージは、元の Java のソースと完全に等価になるように書き換える。
+（ enbug してしまうのを避けるため。）
 </p><p>
 <li>
 </p><p>
-$B%"%W%j%1!<%7%g%s$NA45!G=$r%F%9%H$9$k%F%9%H%W%m%0%i%`$r=q$/!#(B
-$B!J$3$l$r;H$C$FKh2s%F%9%H$7$F!"?5=E$K%=!<%9$r=q$-49$($F$$$/!#!K(B
+まず、 ソースコードをよく読んで、構造を理解する。
+抜き出せそうな crosscutting concerns をできるだけ把握しておく。
+MJ では受け付けないコーディング（inner class など）があるかどうかも
+注意して見ておく。
+特に、 MJ ではサポートしていない機能（ super constructor 呼び出しとか、
+syncronized class とか？）があると
+致命的なので、早いうちに見つけて、対策を考える必要がある。
 </p><p>
 <li>
 </p><p>
- MJ $B2=$9$kA0$K!"(B Java $B8@8l$NHO0O$G$G$-$k$@$1%=!<%9$r=q$-49$($F$*$/!#(B
-$BNc$($P(B inner class $B$OIaDL$N%/%i%9$K=q$-49$($k!#(B
-anonymous class $B$NFbIt$+$i$N(B field $B$N%"%/%;%9$r$J$/$9!#(B
-$B$"$^$j%=!<%9$N%5%$%:$,Bg$-$/$J$$$J$i!"%U%!%$%k#1$D$K$^$H$a$F$*$/!#(B
+アプリケーションの全機能をテストするテストプログラムを書く。
+（これを使って毎回テストして、慎重にソースを書き換えていく。）
 </p><p>
 <li>
 </p><p>
- MJ $B2=$9$k!#$3$3$,0lHV%j%9%/$,9b$$:n6H!#(B
-$B%W%m%0%i%`A4BN$r#1$D$N%b%8%e!<%k$G0O$`!#(B
-define $B$r$D$1$k!#(B
-static method $B$O%/%i%9(B SS $B$N%a%=%C%I$K$9$k!#(B
-public/protected/private $B$O(B mjc $B$OL5;k$9$k$N$G!"$[$*$C$F$*$/!#(B
-</p><p>
-$B$3$N;~!"L@$i$+$KB>$HAj8_0MB8$7$F$$$J$$%/%i%9$,$"$k$J$i$P!"(B
-$BJL$N%b%8%e!<%k$KJ,$1$F$*$$$F$b$h$$!#(B
-$B$3$N8e$N:n6H$G$O(B turn around time $B$ND9$5$,LdBj$H$J$k$N$G(B
-$B!J$h$&$9$k$K(B mjc $B$,CY$$!K!"(B
-$BJ,3d%3%s%Q%$%k2DG=$J%b%8%e!<%k$O!"$G$-$l$PJ,$1$F$*$/!#(B
-</p><p>
-</p><p>
-$B%3%s%Q%$%i$rDL$C$F!"%F%9%H$bDL$l$P!"$[$\@.8y!#(B
+ MJ 化する前に、 Java 言語の範囲でできるだけソースを書き換えておく。
+例えば inner class は普通のクラスに書き換える。
+anonymous class の内部からの field のアクセスをなくす。
+あまりソースのサイズが大きくないなら、ファイル１つにまとめておく。
 </p><p>
 <li>
 </p><p>
-$B$"$H$O!"?5=E$K(B "crosscutting concern" $B$rH4$-=P$7$F!"(B
-$BJL$N%b%8%e!<%k$KJ,$1$F$$$/!#(B
-$BI,MW0J>e$K:Y$+$/%b%8%e!<%kJ,$1$7$h$&$H;W$o$J$$J}$,$h$$!#(B
+ MJ 化する。ここが一番リスクが高い作業。
+プログラム全体を１つのモジュールで囲む。
+define をつける。
+static method はクラス SS のメソッドにする。
+public/protected/private は mjc は無視するので、ほおっておく。
+</p><p>
+この時、明らかに他と相互依存していないクラスがあるならば、
+別のモジュールに分けておいてもよい。
+この後の作業では turn around time の長さが問題となるので
+（ようするに mjc が遅い）、
+分割コンパイル可能なモジュールは、できれば分けておく。
+</p><p>
+</p><p>
+コンパイラを通って、テストも通れば、ほぼ成功。
+</p><p>
+<li>
+</p><p>
+あとは、慎重に "crosscutting concern" を抜き出して、
+別のモジュールに分けていく。
+必要以上に細かくモジュール分けしようと思わない方がよい。
 </p><p>
 </ol>
 </p><hr>

@@ -27,12 +27,12 @@ java.lang.Object
   <dt> public class <b>Symbol</b>
   <dt> extends <a href="epp.Token.html#_top_">Token</a>
 </dl>
-$B%/%i%9(B Symbol $B$O!"(B lisp $B$J$I$N8@8l$N(B symbol $B$r(B Java $B$G;H$($k$h$&$K(B
-$B$7$?$b$N$G$9!#(B.
-$B$3$l$r;H$&$K$O!"(B Symbol plug-in $B$,I,MW$K$J$j$^$9!#(B
+クラス Symbol は、 lisp などの言語の symbol を Java で使えるように
+したものです。.
+これを使うには、 Symbol plug-in が必要になります。
 <p>
-Symbol $B$O!"(B EPP $B$NCf$GMM!9$JMQES$G;H$o$l$k!"=EMW$J%G!<%?7?$G$9!#(B
-$B$3$l$O!"(B Symbol $B$N;HMQNc$G$9!#(B
+Symbol は、 EPP の中で様々な用途で使われる、重要なデータ型です。
+これは、 Symbol の使用例です。
 <pre>
 	Symbol x = :foo;
 	Symbol y = :"foo";
@@ -42,26 +42,26 @@ Symbol $B$O!"(B EPP $B$NCf$GMM!9$JMQES$G;H$o$l$k!"=EMW$J%G!<%?7?$G$9!#(B
 	System.out.println(z == :foo);	// true
 </pre>
 <p>
-Symbol $B$O!"<0$NCf$G(B :foo $B$N$h$&$K%3%m%s$H<1JL;R$rB3$1$F=q$$$FI=8=$7$^$9!#(B
-$B%3%m%s$K$D$E$/ItJ,$r!"!V(BSymbol $B$NL>A0!W$H8F$S$^$9!#(B
-$BL>A0$,5-9f$d%9%Z!<%9$r4^$`>l9g$G$b!"(B :"." $B$d(B :"long name" $B$N$h$&$K(B
-Symbol $B$NL>A0$r%@%V%k%/%)!<%H$G0O$s$GI=8=$9$k$3$H$,$G$-$^$9!#(B
+Symbol は、式の中で :foo のようにコロンと識別子を続けて書いて表現します。
+コロンにつづく部分を、「Symbol の名前」と呼びます。
+名前が記号やスペースを含む場合でも、 :"." や :"long name" のように
+Symbol の名前をダブルクォートで囲んで表現することができます。
 <p>
-Symbol $BF1;N$O!"1i;;;R(B == $B$GHf3S$9$k$3$H$,$G$-$^$9!#(B
-$B7k2L$O#2$D$N(B Symbol $B$,F1$8L>A0$r;}$D;~$K8B$j(B true $B$K$J$j$^$9!#(B
+Symbol 同士は、演算子 == で比較することができます。
+結果は２つの Symbol が同じ名前を持つ時に限り true になります。
 <p>
-Symbol $B$O!"(B java.util.Hashtable $B$N(B key $B$H$7$F$b;H$&$3$H$,$G$-$^$9!#(B
-$BJ8;zNs$r(B key $B$H$7$F;H$&$h$j$b9bB.$G$9!#(B
+Symbol は、 java.util.Hashtable の key としても使うことができます。
+文字列を key として使うよりも高速です。
 <p>
-$B%/%i%9(B Symbol $B$O!"<B$O%/%i%9(B Token $B$N%5%V%/%i%9$G!"(B
-$B;z6g2r@O%k!<%A%s$,JV$9CM$H$7$F$b;H$o$l$^$9!#(B
+クラス Symbol は、実はクラス Token のサブクラスで、
+字句解析ルーチンが返す値としても使われます。
 <p>
-Symbol $B$O!"(B EPP $B$N%=!<%9%3!<%ICf$G!"0J2<$N$h$&$KMM!9$JMQES$K;H$o$l$F$$$^$9!#(B
+Symbol は、 EPP のソースコード中で、以下のように様々な用途に使われています。
 <ul>
-<li> $B<1JL;R$d5-9f$rI=$9%H!<%/%s(B
-<li> $BCj>]9=J8LZ$N%N!<%I$N<oN`$rI=$9%?%0(B
-<li> MacroTable $B$d(B EmitterTable $B$J$I$N%O%C%7%eI=$N%-!<(B
-<li> $BF0E*JQ?t$NJQ?tL>(B
+<li> 識別子や記号を表すトークン
+<li> 抽象構文木のノードの種類を表すタグ
+<li> MacroTable や EmitterTable などのハッシュ表のキー
+<li> 動的変数の変数名
 </ul>
 <p>
 <dl>
@@ -84,10 +84,10 @@ Symbol $B$O!"(B EPP $B$N%=!<%9%3!<%ICf$G!"0J2<$N$h$&$KMM!9$JMQES$K;H$o$l$F$$$
 <dl>
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#intern(java.lang.String)"><b>intern</b></a>(String)
-  <dd> $BJ8;zNs$r(B Symbol $B$KJQ49$7$^$9!#(B.
+  <dd> 文字列を Symbol に変換します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#isSymbol()"><b>isSymbol</b></a>()
-  <dd> $B$3$N%H!<%/%s$,(B Symbol $B$G$"$l$P(B true $B!"$=$&$G$J$1$l$P!"(B false $B$rJV$7$^$9!#(B.
+  <dd> このトークンが Symbol であれば true 、そうでなければ、 false を返します。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#main(java.lang.String[])"><b>main</b></a>(String[])
   <dd> 
@@ -99,7 +99,7 @@ Symbol $B$O!"(B EPP $B$N%=!<%9%3!<%ICf$G!"0J2<$N$h$&$KMM!9$JMQES$K;H$o$l$F$$$
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#toString()"><b>toString</b></a>()
-  <dd> Symbol $B$rJ8;zNs$KJQ49$7$^$9!#(B
+  <dd> Symbol を文字列に変換します。
 
 </dl>
 <a name="constructors"></a>
@@ -122,7 +122,7 @@ Symbol $B$O!"(B EPP $B$N%=!<%9%3!<%ICf$G!"0J2<$N$h$&$KMM!9$JMQES$K;H$o$l$F$$$
  public static <a href="#_top_">Symbol</a> intern(String name)
 </pre>
 <dl>
-  <dd> $BJ8;zNs$r(B Symbol $B$KJQ49$7$^$9!#(B.
+  <dd> 文字列を Symbol に変換します。.
 <p>
 </dl>
 <a name="toString()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -131,7 +131,7 @@ Symbol $B$O!"(B EPP $B$N%=!<%9%3!<%ICf$G!"0J2<$N$h$&$KMM!9$JMQES$K;H$o$l$F$$$
  public String toString()
 </pre>
 <dl>
-  <dd> Symbol $B$rJ8;zNs$KJQ49$7$^$9!#(B
+  <dd> Symbol を文字列に変換します。
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>
@@ -144,7 +144,7 @@ Symbol $B$O!"(B EPP $B$N%=!<%9%3!<%ICf$G!"0J2<$N$h$&$KMM!9$JMQES$K;H$o$l$F$$$
  public boolean isSymbol()
 </pre>
 <dl>
-  <dd> $B$3$N%H!<%/%s$,(B Symbol $B$G$"$l$P(B true $B!"$=$&$G$J$1$l$P!"(B false $B$rJV$7$^$9!#(B.
+  <dd> このトークンが Symbol であれば true 、そうでなければ、 false を返します。.
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>

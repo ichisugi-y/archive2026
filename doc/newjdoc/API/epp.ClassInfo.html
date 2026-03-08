@@ -27,15 +27,15 @@ java.lang.Object
   <dt> public abstract class <b>ClassInfo</b>
   <dt> extends <a href="epp.MemberInfo.html#_top_">MemberInfo</a>
 </dl>
-$B%/%i%9(B ClassInfo $B$O!"(B :class $B7?$N>\$7$$>pJs$rJ];}$9$k%G!<%?9=B$$G$9!#(B.
+クラス ClassInfo は、 :class 型の詳しい情報を保持するデータ構造です。.
 <p>
-ClassInfo $B$O!"(B :class $B$H$$$&%?%0$r$b$D(B Type $B$KBP$7$F(B
-classInfo() $B$H$$$&%a%=%C%I$r8F$S=P$9$3$H$G<hF@$G$-$^$9!#(B
+ClassInfo は、 :class というタグをもつ Type に対して
+classInfo() というメソッドを呼び出すことで取得できます。
 <p>
-$B$3$N(B ClassInfo $B$O!"(B treeToClassInfo $B$^$?$O(B classToClassInfo $B$H$$$&(B
-$B%a%=%C%I$G@8@.$5$l$^$9!#(B
-plug-in $B$O!"$3$N%a%=%C%I$r3HD%$7!"(B ClassInfo $B$NFH<+$N%5%V%/%i%9$r(B
-$B:n$k$3$H$G!"!V3HD%$5$l$?%/%i%9!W$r<BAu$9$k$3$H$,$G$-$^$9!#(B
+この ClassInfo は、 treeToClassInfo または classToClassInfo という
+メソッドで生成されます。
+plug-in は、このメソッドを拡張し、 ClassInfo の独自のサブクラスを
+作ることで、「拡張されたクラス」を実装することができます。
 <p>
 <p>
 <dl>
@@ -58,36 +58,36 @@ plug-in $B$O!"$3$N%a%=%C%I$r3HD%$7!"(B ClassInfo $B$NFH<+$N%5%V%/%i%9$r(B
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getClasses()"><b>getClasses</b></a>()
-  <dd> $B%a%s%P!<$H$7$F;}$DA4$F$N(B inner class $B$rJV$7$^$9!#(B.
+  <dd> メンバーとして持つ全ての inner class を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getConstructors()"><b>getConstructors</b></a>()
-  <dd> $BA4$F$N%3%s%9%H%i%/%?$rJV$7$^$9!#(B.
+  <dd> 全てのコンストラクタを返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getField(epp.Symbol)"><b>getField</b></a>(Symbol)
-  <dd> $BL>A0(B sym $B$r;}$D%U%#!<%k%I$rJV$7$^$9!#(B.
+  <dd> 名前 sym を持つフィールドを返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getFields()"><b>getFields</b></a>()
-  <dd> $BA4$F$N%U%#!<%k%I$rJV$7$^$9!#(B.
+  <dd> 全てのフィールドを返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getInterfaces()"><b>getInterfaces</b></a>()
-  <dd> $B$3$N%/%i%9$,(B implement $B$7$F$$$k(B interface $B$+!"(B
-$B$3$N(B interface $B$,(B extends $B$7$F$$$k(B interface $B$rJV$7$^$9!#(B.
+  <dd> このクラスが implement している interface か、
+この interface が extends している interface を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getMethods()"><b>getMethods</b></a>()
-  <dd> $BA4$F$N%a%=%C%I$rJV$7$^$9!#(B.
+  <dd> 全てのメソッドを返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getOverloadedMethods(epp.Symbol)"><b>getOverloadedMethods</b></a>(Symbol)
-  <dd> $BL>A0(B sym $B$r;}$D$9$Y$F$N%a%=%C%I$rJV$7$^$9!#(B.
+  <dd> 名前 sym を持つすべてのメソッドを返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getSuperclass()"><b>getSuperclass</b></a>()
-  <dd> superclass $B$rJV$7$^$9!#(B.
+  <dd> superclass を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#isInterface()"><b>isInterface</b></a>()
-  <dd> $B$3$N(B ClassInfo $B$,(B interface $B$J$i$P(B true $B!"(B
-$B%/%i%9$J$i$P(B false $B$rJV$7$^$9!#(B.
+  <dd> この ClassInfo が interface ならば true 、
+クラスならば false を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#toString()"><b>toString</b></a>()
-  <dd> $B$3$N(B ClassInfo $B$r!"?M4V$,FI$_$d$9$$J8;zNs$KJQ49$7$^$9!#(B.
+  <dd> この ClassInfo を、人間が読みやすい文字列に変換します。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -110,7 +110,7 @@ plug-in $B$O!"$3$N%a%=%C%I$r3HD%$7!"(B ClassInfo $B$NFH<+$N%5%V%/%i%9$r(B
  public abstract <a href="epp.MethodInfo.html#_top_">MethodInfo</a>[] getConstructors()
 </pre>
 <dl>
-  <dd> $BA4$F$N%3%s%9%H%i%/%?$rJV$7$^$9!#(B.
+  <dd> 全てのコンストラクタを返します。.
 <p>
 </dl>
 <a name="getFields()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -119,7 +119,7 @@ plug-in $B$O!"$3$N%a%=%C%I$r3HD%$7!"(B ClassInfo $B$NFH<+$N%5%V%/%i%9$r(B
  public abstract <a href="epp.FieldInfo.html#_top_">FieldInfo</a>[] getFields()
 </pre>
 <dl>
-  <dd> $BA4$F$N%U%#!<%k%I$rJV$7$^$9!#(B.
+  <dd> 全てのフィールドを返します。.
 <p>
 </dl>
 <a name="getMethods()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -128,7 +128,7 @@ plug-in $B$O!"$3$N%a%=%C%I$r3HD%$7!"(B ClassInfo $B$NFH<+$N%5%V%/%i%9$r(B
  public abstract <a href="epp.MethodInfo.html#_top_">MethodInfo</a>[] getMethods()
 </pre>
 <dl>
-  <dd> $BA4$F$N%a%=%C%I$rJV$7$^$9!#(B.
+  <dd> 全てのメソッドを返します。.
 <p>
 </dl>
 <a name="getClasses()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -137,7 +137,7 @@ plug-in $B$O!"$3$N%a%=%C%I$r3HD%$7!"(B ClassInfo $B$NFH<+$N%5%V%/%i%9$r(B
  public abstract <a href="#_top_">ClassInfo</a>[] getClasses()
 </pre>
 <dl>
-  <dd> $B%a%s%P!<$H$7$F;}$DA4$F$N(B inner class $B$rJV$7$^$9!#(B.
+  <dd> メンバーとして持つ全ての inner class を返します。.
 <p>
 </dl>
 <a name="getField(epp.Symbol)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -146,11 +146,11 @@ plug-in $B$O!"$3$N%a%=%C%I$r3HD%$7!"(B ClassInfo $B$NFH<+$N%5%V%/%i%9$r(B
  public abstract <a href="epp.FieldInfo.html#_top_">FieldInfo</a> getField(<a href="epp.Symbol.html#_top_">Symbol</a> sym) throws <a href="epp.NotFound.html#_top_">NotFound</a>
 </pre>
 <dl>
-  <dd> $BL>A0(B sym $B$r;}$D%U%#!<%k%I$rJV$7$^$9!#(B.
+  <dd> 名前 sym を持つフィールドを返します。.
 <p>
   <dd><dl>
     <dt> <b>Throws:</b> <a href="epp.NotFound.html#_top_">NotFound</a>
-    <dd> $B8+$D$+$i$J$+$C$?>l9g!#(B
+    <dd> 見つからなかった場合。
   </dl></dd>
 </dl>
 <a name="getOverloadedMethods(epp.Symbol)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -159,11 +159,11 @@ plug-in $B$O!"$3$N%a%=%C%I$r3HD%$7!"(B ClassInfo $B$NFH<+$N%5%V%/%i%9$r(B
  public abstract <a href="epp.MethodInfo.html#_top_">MethodInfo</a>[] getOverloadedMethods(<a href="epp.Symbol.html#_top_">Symbol</a> sym) throws <a href="epp.NotFound.html#_top_">NotFound</a>
 </pre>
 <dl>
-  <dd> $BL>A0(B sym $B$r;}$D$9$Y$F$N%a%=%C%I$rJV$7$^$9!#(B.
+  <dd> 名前 sym を持つすべてのメソッドを返します。.
 <p>
   <dd><dl>
     <dt> <b>Throws:</b> <a href="epp.NotFound.html#_top_">NotFound</a>
-    <dd> $B8+$D$+$i$J$+$C$?>l9g!#(B
+    <dd> 見つからなかった場合。
   </dl></dd>
 </dl>
 <a name="getSuperclass()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -172,13 +172,13 @@ plug-in $B$O!"$3$N%a%=%C%I$r3HD%$7!"(B ClassInfo $B$NFH<+$N%5%V%/%i%9$r(B
  public abstract <a href="epp.Type.html#_top_">Type</a> getSuperclass()
 </pre>
 <dl>
-  <dd> superclass $B$rJV$7$^$9!#(B.
-$B$b$7(B superclass $B$,$J$1$l$P!"(B null $B$rJV$7$^$9!#(B
+  <dd> superclass を返します。.
+もし superclass がなければ、 null を返します。
 <p>
-$B%/%i%9(B java.lang.Object $B$H!"$9$Y$F$N(B interface $B$O!"(B
-superclass $B$r;}$A$^$;$s!#(B
-$BIaDL$N%/%i%9$O!"Nc$(%=!<%9%3!<%I>e$G;XDj$5$l$F$$$J$/$F$b!"(B
-$B%G%U%)%k%H$N(B superclass $B$G$"$k(B java.lang.Object $B$r;}$A$^$9!#(B
+クラス java.lang.Object と、すべての interface は、
+superclass を持ちません。
+普通のクラスは、例えソースコード上で指定されていなくても、
+デフォルトの superclass である java.lang.Object を持ちます。
 <p>
 </dl>
 <a name="getInterfaces()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -187,8 +187,8 @@ superclass $B$r;}$A$^$;$s!#(B
  public abstract <a href="epp.Type.html#_top_">Type</a>[] getInterfaces()
 </pre>
 <dl>
-  <dd> $B$3$N%/%i%9$,(B implement $B$7$F$$$k(B interface $B$+!"(B
-$B$3$N(B interface $B$,(B extends $B$7$F$$$k(B interface $B$rJV$7$^$9!#(B.
+  <dd> このクラスが implement している interface か、
+この interface が extends している interface を返します。.
 <p>
 </dl>
 <a name="isInterface()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -197,8 +197,8 @@ superclass $B$r;}$A$^$;$s!#(B
  public abstract boolean isInterface()
 </pre>
 <dl>
-  <dd> $B$3$N(B ClassInfo $B$,(B interface $B$J$i$P(B true $B!"(B
-$B%/%i%9$J$i$P(B false $B$rJV$7$^$9!#(B.
+  <dd> この ClassInfo が interface ならば true 、
+クラスならば false を返します。.
 <p>
 </dl>
 <a name="toString()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -207,8 +207,8 @@ superclass $B$r;}$A$^$;$s!#(B
  public String toString()
 </pre>
 <dl>
-  <dd> $B$3$N(B ClassInfo $B$r!"?M4V$,FI$_$d$9$$J8;zNs$KJQ49$7$^$9!#(B.
-$B%G%P%C%0MQ$N%a%=%C%I$G$9!#(B
+  <dd> この ClassInfo を、人間が読みやすい文字列に変換します。.
+デバッグ用のメソッドです。
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>

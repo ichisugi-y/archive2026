@@ -25,37 +25,37 @@ java.lang.Object
   <dt> public class <b>Global</b>
   <dt> extends Object
 </dl>
-EPP $B%W%j%W%m%;%C%5$,;}$D%a%=%C%I$N$&$A(B
-$B%U%!%$%k(B Global.java $B$GDj5A$5$l$k%a%=%C%I$O!"(B
-EPP $B$,%0%m!<%P%k=hM}%b!<%I$G5/F0$5$l$?;~$K!"(B
-EPP main routine $B$+$i8F$S=P$5$l$k%0%m!<%P%k=hM}%a%=%C%I$G$9!#(B.
+EPP プリプロセッサが持つメソッドのうち
+ファイル Global.java で定義されるメソッドは、
+EPP がグローバル処理モードで起動された時に、
+EPP main routine から呼び出されるグローバル処理メソッドです。.
 <p>
-<b> $BCm0U!'(B $B$3$N%/%i%9$O!"(B javadoc $B$r:n$k$?$a$NJX59E*$J%/%i%9$G$9!#(B
-$B<B:]$N(B EPP $B$N%=!<%9%3!<%ICf$K$OB8:_$7$^$;$s!#(B </b>
+<b> 注意： このクラスは、 javadoc を作るための便宜的なクラスです。
+実際の EPP のソースコード中には存在しません。 </b>
 <p>
-epp $B%3%^%s%I$N%G%U%)%k%H$NF0:n$O!VJ,3d=hM}%b!<%I!W$G$9$,!"(B
--global $B%*%W%7%g%s$,;XDj$5$l$F$$$k$H!"!V%0%m!<%P%k=hM}%b!<%I!W$G(B
-$BF0:n$7$^$9!#(B
-$B%0%m!<%P%k=hM}%b!<%I$G$O!"%=!<%9%U%!%$%k$N(B time stamp $B$O8+$:$K!"(B
-$B;XDj$5$l$?$9$Y$F$N%U%!%$%k$r0l3g$7$F=hM}$7$^$9!#(B
-$BNc$($P!"%U%!%$%k(BF1,F2,F3$B$,=hM}$NBP>]$@$H$9$k$H!"(B
-$B$^$:(BF1,F2,F3$B$N9=J82r@O%Q%9$,9T$J$o$l!"$D$.$K(BF1,F2,F3$B$N(B
-$B%^%/%mE83+%Q%9!"<!$K(BF1,F2,F3$B$N7?%A%'%C%/%Q%9!"$H$$$&$U$&$K=hM}$,?J$_$^$9!#(B
-$B$^$?!"$=$l$>$l$N%Q%9$N=*N;D>8e$K!"(B
-$B$3$3$GDj5A$5$l$k!V%0%m!<%P%k=hM}%a%=%C%I!W$,8F$P$l$^$9!#(B
+epp コマンドのデフォルトの動作は「分割処理モード」ですが、
+-global オプションが指定されていると、「グローバル処理モード」で
+動作します。
+グローバル処理モードでは、ソースファイルの time stamp は見ずに、
+指定されたすべてのファイルを一括して処理します。
+例えば、ファイルF1,F2,F3が処理の対象だとすると、
+まずF1,F2,F3の構文解析パスが行なわれ、つぎにF1,F2,F3の
+マクロ展開パス、次にF1,F2,F3の型チェックパス、というふうに処理が進みます。
+また、それぞれのパスの終了直後に、
+ここで定義される「グローバル処理メソッド」が呼ばれます。
 <p>
-EPP $B$,J,3d=hM}%b!<%I$G5/F0$5$l$?>l9g$O!"%0%m!<%P%k=hM}%a%=%C%I$O!"(B
-$B8F$P$l$^$;$s!#(B
-$B$^$?!"$3$l$i$N%a%=%C%I$,8F$P$l$k$N$O!"%0%m!<%P%k=hM}$r9T$J$&$?$a$@$1$K(B
-$B%$%s%9%?%s%9@8@.$5$l$k!"!V(BEPP $B%0%m!<%P%k%W%m%;%C%5!W$@$1$G$9!#(B
-$B8DJL$N%U%!%$%k$r=hM}$9$k(B EPP $B%W%j%W%m%;%C%5$KBP$7$F$O!"(B
-$B8F$S=P$5$l$k$3$H$O$"$j$^$;$s!#(B
+EPP が分割処理モードで起動された場合は、グローバル処理メソッドは、
+呼ばれません。
+また、これらのメソッドが呼ばれるのは、グローバル処理を行なうためだけに
+インスタンス生成される、「EPP グローバルプロセッサ」だけです。
+個別のファイルを処理する EPP プリプロセッサに対しては、
+呼び出されることはありません。
 <p>
-$B$3$l$i$N%0%m!<%P%k=hM}%a%=%C%I$G$O!"%$%s%9%?%s%9JQ?t(B self!allFileInfo $B$K(B
-$B%"%/%;%9$7$?$j!"CM$r99?7$9$k$3$H$K$h$C$F!"0z?t$KM?$($i$l$?A4$F$N%U%!%$%k$K(B
-$BBP$7$FBg0hE*$J=hM}$r9T$J$&$3$H$,$G$-$^$9!#(B
-$BNc$($P!"%/%i%97Q>5LZ$N:n@.$d!"%0%m!<%P%k$J:GE,2=%D!<%k$J$I$r(B
-$B<B8=$9$k$3$H$,$G$-$^$9!#(B
+これらのグローバル処理メソッドでは、インスタンス変数 self!allFileInfo に
+アクセスしたり、値を更新することによって、引数に与えられた全てのファイルに
+対して大域的な処理を行なうことができます。
+例えば、クラス継承木の作成や、グローバルな最適化ツールなどを
+実現することができます。
 <p>
 <dl>
     <dt> <b>See Also:</b>
@@ -77,16 +77,16 @@ EPP $B$,J,3d=hM}%b!<%I$G5/F0$5$l$?>l9g$O!"%0%m!<%P%k=hM}%a%=%C%I$O!"(B
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#globalProcessAfterMacroExpansionPass()"><b>globalProcessAfterMacroExpansionPass</b></a>()
-  <dd> $B%^%/%mE83+%Q%9$,=*$C$?8e$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B.
+  <dd> マクロ展開パスが終った後に呼び出されるメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#globalProcessAfterParsingPass()"><b>globalProcessAfterParsingPass</b></a>()
-  <dd> $B9=J82r@O%Q%9$,=*$C$?8e$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B.
+  <dd> 構文解析パスが終った後に呼び出されるメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#globalProcessAfterTypeCheckingPass()"><b>globalProcessAfterTypeCheckingPass</b></a>()
-  <dd> $B7?%A%'%C%/%Q%9$,=*$C$?8e$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B.
+  <dd> 型チェックパスが終った後に呼び出されるメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#initGlobalProcessor()"><b>initGlobalProcessor</b></a>()
-  <dd> $B=i4|2=%Q%9$,=*$C$?8e$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B.
+  <dd> 初期化パスが終った後に呼び出されるメソッドです。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -108,7 +108,7 @@ EPP $B$,J,3d=hM}%b!<%I$G5/F0$5$l$?>l9g$O!"%0%m!<%P%k=hM}%a%=%C%I$O!"(B
  public void initGlobalProcessor()
 </pre>
 <dl>
-  <dd> $B=i4|2=%Q%9$,=*$C$?8e$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B.
+  <dd> 初期化パスが終った後に呼び出されるメソッドです。.
 <p>
 </dl>
 <a name="globalProcessAfterParsingPass()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -117,7 +117,7 @@ EPP $B$,J,3d=hM}%b!<%I$G5/F0$5$l$?>l9g$O!"%0%m!<%P%k=hM}%a%=%C%I$O!"(B
  public void globalProcessAfterParsingPass()
 </pre>
 <dl>
-  <dd> $B9=J82r@O%Q%9$,=*$C$?8e$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B.
+  <dd> 構文解析パスが終った後に呼び出されるメソッドです。.
 <p>
 </dl>
 <a name="globalProcessAfterMacroExpansionPass()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -126,7 +126,7 @@ EPP $B$,J,3d=hM}%b!<%I$G5/F0$5$l$?>l9g$O!"%0%m!<%P%k=hM}%a%=%C%I$O!"(B
  public void globalProcessAfterMacroExpansionPass()
 </pre>
 <dl>
-  <dd> $B%^%/%mE83+%Q%9$,=*$C$?8e$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B.
+  <dd> マクロ展開パスが終った後に呼び出されるメソッドです。.
 <p>
 </dl>
 <a name="globalProcessAfterTypeCheckingPass()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -135,7 +135,7 @@ EPP $B$,J,3d=hM}%b!<%I$G5/F0$5$l$?>l9g$O!"%0%m!<%P%k=hM}%a%=%C%I$O!"(B
  public void globalProcessAfterTypeCheckingPass()
 </pre>
 <dl>
-  <dd> $B7?%A%'%C%/%Q%9$,=*$C$?8e$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B.
+  <dd> 型チェックパスが終った後に呼び出されるメソッドです。.
 <p>
 </dl>
 <hr>

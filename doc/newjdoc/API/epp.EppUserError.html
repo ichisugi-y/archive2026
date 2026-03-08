@@ -29,16 +29,16 @@ java.lang.Object
   <dt> public class <b>EppUserError</b>
   <dt> extends Error
 </dl>
-$B%/%i%9(B EppUserError $B$O!"(B EPP $B$,=hM}$9$kF~NO%W%m%0%i%`$K%(%i!<$,$"$C$?>l9g$K(B
-throw $B$9$kNc30$G$9!#(B.
+クラス EppUserError は、 EPP が処理する入力プログラムにエラーがあった場合に
+throw する例外です。.
 <p>
-plug-in $B%W%m%0%i%^!<$OIaDL!"$3$N%/%i%9$rD>@\(B new $B$7$J$$$G!"(B
-$B<!$N$h$&$K!"%a%=%C%I(B error $B$r8F$S=P$7$F$=$NJVCM$r(B throw $B$7$^$9!#(B
+plug-in プログラマーは普通、このクラスを直接 new しないで、
+次のように、メソッド error を呼び出してその返値を throw します。
 <pre>
  throw error("message");
 </pre>
-$B$^$?!"%a%=%C%I(B error $B$,8F$S=P$;$J$$>u67$N>l9g$O!"(B
-$B<!$N$h$&$K%/%i%9(B Epp $B$N(B static method $B$r8F$S=P$7$^$9!#(B
+また、メソッド error が呼び出せない状況の場合は、
+次のようにクラス Epp の static method を呼び出します。
 <pre>
  throw Epp.error("message");
 </pre>

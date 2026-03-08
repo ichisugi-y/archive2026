@@ -1,60 +1,60 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="./style.css">
-<title> MJ $B%W%m%0%i%`$N%G%b(B </title>
+<title> MJ プログラムのデモ </title>
 </head> <body>
 <div class="header-link">
 [<a href="index.html">MJ Top page</a>]
 [<a href="site-map.html">Site map</a>]
 </div>
-<h1>MJ $B%W%m%0%i%`$N%G%b(B</h1>
+<h1>MJ プログラムのデモ</h1>
 <ul class="headers">
-<li><a href="#draw">$B%I%m!<%D!<%k(B</a>
-<li><a href="#coffee-cup">$B%3!<%R!<%+%C%W(B</a>
+<li><a href="#draw">ドローツール</a>
+<li><a href="#coffee-cup">コーヒーカップ</a>
 </p></ul><p>
 </p><p>
 </p><p>
-</p><h2><a name="draw">$B%I%m!<%D!<%k(B</a></h2><p>
-</p><h3>$B35MW(B</h3><p>
-$B%I%m!<7O$*3(=q$-%D!<%k$N4J0WHG$G$9!#(B
-$B!V?^7A!W$H!VA`:n!W$,$=$l$>$l(B MJ $B$N(B module $B$G5-=R$5$l$F$*$j!"(B
-$B?7$?$J?^7A!"?7$?$JA`:n$rDI2C2DG=$K$J$C$F$$$^$9!#(B
+</p><h2><a name="draw">ドローツール</a></h2><p>
+</p><h3>概要</h3><p>
+ドロー系お絵書きツールの簡易版です。
+「図形」と「操作」がそれぞれ MJ の module で記述されており、
+新たな図形、新たな操作を追加可能になっています。
 </p><p>
-$B2<5-$N%b%8%e!<%k$,A*Br2DG=$G$9!#(B
+下記のモジュールが選択可能です。
 </p><p>
 <ul>
-<li>base : $B%U%l!<%`%o!<%/(B
-<li>select extends base : $B?^7A$NA*Br(B
-<li>delete extends select : $BA*Br$7$??^7A$N:o=|(B
-<li>move extends select : $BA*Br$7$??^7A$N0\F0(B
-<li>dump extends base : $B2hLL>pJs$r%F%-%9%H7A<0$G=PNO(B
-<li>area extends base : $BA4?^7A$NLL@Q!JC10L$O%T%/%;%k!K$N9g7W$rI=<((B
-<li>line extends base : $BD>@~(B
-<li>rect extends base : $BD9J}7A(B
-<li>elli extends base : $BBJ1_(B
-<li>tri extends base : $B;03Q7A(B
-<li>oct extends base : $BH,3Q7A(B
+<li>base : フレームワーク
+<li>select extends base : 図形の選択
+<li>delete extends select : 選択した図形の削除
+<li>move extends select : 選択した図形の移動
+<li>dump extends base : 画面情報をテキスト形式で出力
+<li>area extends base : 全図形の面積（単位はピクセル）の合計を表示
+<li>line extends base : 直線
+<li>rect extends base : 長方形
+<li>elli extends base : 楕円
+<li>tri extends base : 三角形
+<li>oct extends base : 八角形
 </ul>
 </p><p>
 </p><p>
-</p><h3>$B%9%/%j!<%s%7%g%C%H(B</h3><p>
+</p><h3>スクリーンショット</h3><p>
 </p><p>
-$BA4%b%8%e!<%k$rA*Br$7$?>l9g!#(B
+全モジュールを選択した場合。
 <div align=center>
 <img src="images/DrawFrameMJT.gif">
 </div>
 </p><p>
 </p><p>
 </p><p>
-</p><h3>$B%"%W%l%C%H(B</h3><p>
- base $B$H(B select $B0J30$N#98D$N%b%8%e!<%k$OG$0U$KA*Br2DG=$G!"(B
-$B$=$l$K(B { base, select } $B$H$$$&AH$_9g$;$r2C$($k$H(B
-$BA4It$G(B 2^9 + 1 $BDL$j$N%b%8%e!<%k$NAH$_9g$;J}$,$"$j$^$9!#(B
-$B$3$N$&$A!"2<5-$NAH$_9g$;$r%"%W%l%C%H$G$*;n$7$/$@$5$$!#(B
-<br>$B!J(BNetscape $B$G$O:G=i$K<B9T$7$?%"%W%l%C%H$,%-%c%C%7%e$5$l$F$7$^$&$h$&$G$9!#(B
-$B$=$N>l9g$O(B Netscape $B$rN)$A>e$2D>$7$F$/$@$5$$!#!K(B
+</p><h3>アプレット</h3><p>
+ base と select 以外の９個のモジュールは任意に選択可能で、
+それに { base, select } という組み合せを加えると
+全部で 2^9 + 1 通りのモジュールの組み合せ方があります。
+このうち、下記の組み合せをアプレットでお試しください。
+<br>（Netscape では最初に実行したアプレットがキャッシュされてしまうようです。
+その場合は Netscape を立ち上げ直してください。）
 <ol>
 <li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/DrawFrameMJ-f-base.html">{ base }</a><br>
 <li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/DrawFrameMJ-f-line.html">{ base, line }</a><br>
@@ -66,70 +66,70 @@
 <li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/DrawFrameMJ-f-area.html">{ base, line, rect, elli, tri, oct, area }</a><br>
 <li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/DrawFrameMJ-f.html">{ base, line, rect, elli, tri, oct, select, delete, move, dump, area }</a><br>
 </ol>
-$B;H$$J}!'(B<br>
-$B2<$N%D!<%k%P!<$+$i!"?^7A$N7A<0$N%\%?%s$r2!$7$F$+$i(B<br>
-$BCf1{$N%-%c%s%P%9$r%I%i%C%0$7$F?^7A$rIA2h$7$F2<$5$$!#(B<br>
+使い方：<br>
+下のツールバーから、図形の形式のボタンを押してから<br>
+中央のキャンバスをドラッグして図形を描画して下さい。<br>
 </p><p>
 </p><p>
-</p><h3>$B%=!<%9%3!<%I(B</h3><p>
+</p><h3>ソースコード</h3><p>
 <a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/DrawFrameMJT.txt">DrawFrameMJT.txt</a><br>
 </p><p>
 </p><p>
 </p><p>
-</p><h3>$BJdB-(B</h3><p>
+</p><h3>補足</h3><p>
 </p><p>
-$BJd40%b%8%e!<%k$O!"(B{dump, area} $B!_(B {line, rect, elli, tri, oct} $B!a(B
- $B#1#08DDj5A$5$l$F$$$^$9!#(B
-dump, area $B$O$=$l$>$l!"A4$F$N?^7A$N%9!<%Q!<%/%i%9$G$"$k(B DrawObject $B$K(B
-abstract method $B$rDI2C$7$F$$$^$9!#(B
-$BJd40%b%8%e!<%k$O!"8D!9$N?^7A$G$"$k%5%V%/%i%9B&$G!"(B
-$B$3$N(B method $B$N<BAu$r9T$&%b%8%e!<%k$G$9!#(B
+補完モジュールは、{dump, area} × {line, rect, elli, tri, oct} ＝
+ １０個定義されています。
+dump, area はそれぞれ、全ての図形のスーパークラスである DrawObject に
+abstract method を追加しています。
+補完モジュールは、個々の図形であるサブクラス側で、
+この method の実装を行うモジュールです。
 </p><p>
-select, delete, move $B$H3F?^7A$N4V$K$O!"Jd40%b%8%e!<%k$OITMW$G$9!#(B
-$B$3$l$i$N5!G=$O%9!<%Q!<%/%i%9(B DrawObject $B$KBP$9$k(B
-$BA`:n$@$1$G<BAu$5$l$F$*$j!"%5%V%/%i%9B&$G%a%=%C%I$r<BAu$9$kI,MW$,$J$$$+$i$G$9!#(B
+select, delete, move と各図形の間には、補完モジュールは不要です。
+これらの機能はスーパークラス DrawObject に対する
+操作だけで実装されており、サブクラス側でメソッドを実装する必要がないからです。
 </p><p>
-$B$3$NNc$GLLGr$$$N$O!"(B delete $B$H(B area $B$NAH$_9g$;$G$9!#(B
-$B?^7A$r(B delete $B$9$k$HLL@Q$N9g7W$O8:$k$HIaDL4|BT$7$^$9$,!"(B
-$B$3$N<BAu$G$OJQ2=$;$:!"<!$K2hLL$r%/%j%C%/$7$?$H$-$K@5$7$$CM$K99?7$5$l$^$9!#(B
-$B%b%8%e!<%k(B area $B$N<BAu$,!"(B mouseReleased $B$ND>8e$K$@$1(B
-$BCM$r99?7$9$k$h$&$K$J$C$F$$$k$+$i$G$9!#(B
-$B%b%8%e!<%k(B area $B$N;EMM$,!V(B mouseReleased $B$ND>8e$KCM$r99?7$9$k!W$G$"$k$J$i$P!"(B
-$B$3$N(B delete $B$H(B area $B$NAH$_9g$;$O!"A4$/@5$7$$F0:n$G$"$k$3$H$K$J$j$^$9!#(B
+この例で面白いのは、 delete と area の組み合せです。
+図形を delete すると面積の合計は減ると普通期待しますが、
+この実装では変化せず、次に画面をクリックしたときに正しい値に更新されます。
+モジュール area の実装が、 mouseReleased の直後にだけ
+値を更新するようになっているからです。
+モジュール area の仕様が「 mouseReleased の直後に値を更新する」であるならば、
+この delete と area の組み合せは、全く正しい動作であることになります。
 </p><p>
-$B$G$O!"%b%8%e!<%k(B area $B$N;EMM$r!V?^7A$KBP$9$kA`:n$r9T$C$?D>8e$KLL@Q$r99?7$9$k!W(B
-$B$H$7$?$$>l9g$O$I$&<BAu$9$l$P$$$$$N$G$7$g$&!)(B
-$B$3$N;EMM$r87L)$KK~$?$9<BAu$r9T$&$?$a$K$O!"(B
-$B!V?^7A$KBP$9$k$9$Y$F$NA`:n!W$ND>8e$KI,$:8F$P$l$k(B hook $B$,!"(B
-$B$"$i$+$8$a%U%l!<%`%o!<%/B&$GMQ0U$5$l$F$$$kI,MW$,$"$j$^$9!#(B
-$B$3$N$h$&$J(B hook $B$,$J$1$l$P!"<BAu$OIT2DG=$G$9!#(B
-</p><p>
-</p><p>
+では、モジュール area の仕様を「図形に対する操作を行った直後に面積を更新する」
+としたい場合はどう実装すればいいのでしょう？
+この仕様を厳密に満たす実装を行うためには、
+「図形に対するすべての操作」の直後に必ず呼ばれる hook が、
+あらかじめフレームワーク側で用意されている必要があります。
+このような hook がなければ、実装は不可能です。
 </p><p>
 </p><p>
-</p><h2><a name="coffee-cup">$B%3!<%R!<%+%C%W(B</a></h2><p>
-</p><h3>$B35MW(B</h3><p>
 </p><p>
-i$B%"%W%j$*$h$S%"%W%l%C%H$H$7$FF0:n$9$k!"4JC1$J%G%b%W%m%0%i%`$G$9!#(B
-$B>e2<:81&$N%-!<$G!"%3!<%R!<%+%C%W$,F0$-$^$9!#(B
-i$B%"%W%jHG$O!"(B P503i, F503i, So503i $B$GF0:n3NG'$:$_$G$9!#(B
 </p><p>
-$B%W%m%0%i%`$O!"#5$D$N(B module $B$+$i$J$j$^$9!#(B
+</p><h2><a name="coffee-cup">コーヒーカップ</a></h2><p>
+</p><h3>概要</h3><p>
+</p><p>
+iアプリおよびアプレットとして動作する、簡単なデモプログラムです。
+上下左右のキーで、コーヒーカップが動きます。
+iアプリ版は、 P503i, F503i, So503i で動作確認ずみです。
+</p><p>
+プログラムは、５つの module からなります。
 <ul>
-<li>base : $B%U%l!<%`%o!<%/(B
-<li>cup extends base : $B%3!<%R!<%+%C%W$rI=<((B
-<li>multi extends cup : $B%3!<%R!<%+%C%W$N;DA|$rI=<((B
-<li>vapor extends cup : $BEr5$$rI=<((B
-<li>time extends cup : $B;~7W$rI=<((B
+<li>base : フレームワーク
+<li>cup extends base : コーヒーカップを表示
+<li>multi extends cup : コーヒーカップの残像を表示
+<li>vapor extends cup : 湯気を表示
+<li>time extends cup : 時計を表示
 </ul>
 </p><p>
 </p><p>
-</p><h3>$B%"%W%l%C%HHG(B</h3><p>
-multi, vapor, time $B$rA*Br$9$k$+$7$J$$$+$G(B
- 2^3 = 8 $BDL$j$NAH$_9g$o$;$,2DG=$G$9$,!"2<5-$NAH$_9g$;$,%"%W%l%C%H$H$7$F(B
-$BMQ0U$5$l$F$^$9!#(B
-<br>$B!J(BNetscape $B$G$O:G=i$K<B9T$7$?%"%W%l%C%H$,%-%c%C%7%e$5$l$F$7$^$&$h$&$G$9!#(B
-$B$=$N>l9g$O(B Netscape $B$rN)$A>e$2D>$7$F$/$@$5$$!#!K(B
+</p><h3>アプレット版</h3><p>
+multi, vapor, time を選択するかしないかで
+ 2^3 = 8 通りの組み合わせが可能ですが、下記の組み合せがアプレットとして
+用意されてます。
+<br>（Netscape では最初に実行したアプレットがキャッシュされてしまうようです。
+その場合は Netscape を立ち上げ直してください。）
 <ol>
 <li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/IMJdemo-cup.html">{ base, cup }</a>
 <li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/IMJdemo-multi.html">{ base, cup, multi }</a>
@@ -137,38 +137,38 @@ multi, vapor, time $B$rA*Br$9$k$+$7$J$$$+$G(B
 <li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/IMJdemo.html">{ base, cup, vapor, multi }</a>
 <li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/IMJClock.html">{ base, cup, vapor, multi, time }</a>
 </ol>
-$B"(K\%"%W%l%C%H$O!"J!Ln;a$K$h$k(BiEmulator<a href="http://uni.himitsukichi.com/iap/">$B!J(Bhttp://uni.himitsukichi.com/iap/$B!K(B</a><br>
-$B$r;HMQ$7$FF0:n$7$F$$$^$9!#(B
+※本アプレットは、福野氏によるiEmulator<a href="http://uni.himitsukichi.com/iap/">（http://uni.himitsukichi.com/iap/）</a><br>
+を使用して動作しています。
 </p><p>
 </p><p>
-</p><h3>i$B%"%W%jHG(B</h3><p>
-i$B%"%W%j$G;n$7$F$_$?$$J}$O!"$3$A$i$N(B URL $B$G%@%&%s%m!<%I$7$F$/$@$5$$!#(B<br>
+</p><h3>iアプリ版</h3><p>
+iアプリで試してみたい方は、こちらの URL でダウンロードしてください。<br>
 <a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/i/index.html">http://staff.aist.go.jp/y-ichisugi/mj/demo/i/index.html</a>
 </p><p>
 </p><p>
-</p><h3>$B%=!<%9%3!<%I(B</h3><p>
+</p><h3>ソースコード</h3><p>
 <ul>
-<li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/IMJClockMJ.txt"> i$B%"%W%jMQ%=!<%9%3!<%I(B</a>
-<li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/IMJdemoEmulator.txt">$B%"%W%l%C%H2=MQ%=!<%9%3!<%I(B</a>
+<li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/IMJClockMJ.txt"> iアプリ用ソースコード</a>
+<li><a href="http://staff.aist.go.jp/y-ichisugi/mj/demo/m/IMJdemoEmulator.txt">アプレット化用ソースコード</a>
 </ul>
 </p><p>
-</p><h3>$BJdB-(B</h3><p>
+</p><h3>補足</h3><p>
 </p><p>
-MJ $B$NMQES$H$7$F!"%a%b%j$N@)Ls$,87$7$$7HBS>pJsC<Kv>e$N3+H/8@8l$,(B
-$BE,$7$F$$$k$N$G$O$J$$$+$H;W$$!"(B i$B%"%W%j$r;n$7$F$_$^$7$?$,!"(B
-$B%W%m%0%i%`%5%$%:(B 10KB $B$N@)Ls$O87$7$9$.!"<BMQE*%"%W%j%1!<%7%g%s$N3+H/$O(B
-$BCGG0$7$^$7$?!#(B
+MJ の用途として、メモリの制約が厳しい携帯情報端末上の開発言語が
+適しているのではないかと思い、 iアプリを試してみましたが、
+プログラムサイズ 10KB の制約は厳しすぎ、実用的アプリケーションの開発は
+断念しました。
 </p><p>
-$B:#$N(B MJ $B$N<BAu$G$O!"%/%i%9$rJ#?t$N%b%8%e!<%k$KJ,3d$9$k$H!"(B
-$B$=$NJ,(B jar $B%U%!%$%kCf$N%/%i%9$N?t$,A}$($^$9!#(B
-$B$9$k$H!"<g$K%/%i%9%U%!%$%kCf$N(B constant pool $B$N$;$$$G!"(B
-jar $B%U%!%$%k$,Bg$-$/$J$C$F$7$^$$$^$9!#(B
-$B%3!<%R!<%+%C%W$N$h$&$JC1=c$J%W%m%0%i%`$G$b!"(B
-module $B$r#5$D:n$k$N$,%5%$%:E*$K8B3&$@$C$?$=$&$G$9!#(B
+今の MJ の実装では、クラスを複数のモジュールに分割すると、
+その分 jar ファイル中のクラスの数が増えます。
+すると、主にクラスファイル中の constant pool のせいで、
+jar ファイルが大きくなってしまいます。
+コーヒーカップのような単純なプログラムでも、
+module を５つ作るのがサイズ的に限界だったそうです。
 </p><p>
-$B6KC<$K%a%b%j@)Ls$,87$7$$<B9T4D6-$G(B MJ $B$r;H$&$?$a$K$O!"(B
-HP $B$N(B ChaiFreezeDry $B$N$h$&$J!"(B
-$B%/%i%9%U%!%$%k05=L5;=Q$,I,?\$J$h$&$G$9!#(B
+極端にメモリ制約が厳しい実行環境で MJ を使うためには、
+HP の ChaiFreezeDry のような、
+クラスファイル圧縮技術が必須なようです。
 </p><p>
 </p><p>
 </p><hr>

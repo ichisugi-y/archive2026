@@ -25,12 +25,12 @@ java.lang.Object
   <dt> public class <b>ClassTypeTable</b>
   <dt> extends Object
 </dl>
-$B%/%i%9(B ClassTypeTable $B$O!"%/%i%9L>$N40A48BDjL>$+$i(B ClassType $B$X$N(B
-$BJQ49$r9T$J$&%F!<%V%k$G$9!#(B.
+クラス ClassTypeTable は、クラス名の完全限定名から ClassType への
+変換を行なうテーブルです。.
 <p>
-$B$3$N%/%i%9$N%$%s%9%?%s%9$O!"F0E*JQ?t(B :classTypeTable $B$KF~$l$i$l$F$$$^$9!#(B
-$B$=$7$F!"(B EPP $B$N#1%;%C%7%g%sFb$N$9$Y$F$N(B EPP $B%W%j%W%m%;%C%5$K$h$C$F(B
-$B6&M-$5$l$^$9!#(B
+このクラスのインスタンスは、動的変数 :classTypeTable に入れられています。
+そして、 EPP の１セッション内のすべての EPP プリプロセッサによって
+共有されます。
 <p>
 <dl>
     <dt> <b>See Also:</b>
@@ -55,7 +55,7 @@ java.lang.Object
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#classToClassInfo(java.lang.Class)"><b>classToClassInfo</b></a>(Class)
-  <dd> Java $B$N(B Class $B$r!"(B Reflection API $B$r;H$C$F(B ClassInfo $B$KJQ49$7$^$9!#(B.
+  <dd> Java の Class を、 Reflection API を使って ClassInfo に変換します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#classToType(java.lang.Class)"><b>classToType</b></a>(Class)
   <dd> 
@@ -67,11 +67,11 @@ java.lang.Object
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#get(epp.Symbol)"><b>get</b></a>(Symbol)
-  <dd> $B%/%i%9L>$+%$%s%?!<%U%'!<%9L>$rI=$940A48BDjL>%7%s%\%k$+$i!"(B
-$B$=$l$KBP1~$9$k(B Type $B$r8!:w$7$FJV$7$^$9!#(B.
+  <dd> クラス名かインターフェース名を表す完全限定名シンボルから、
+それに対応する Type を検索して返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getArrayClassInfo()"><b>getArrayClassInfo</b></a>()
-  <dd> :arrayOf $B7?$?$a$NJX59E*$J(B ClassInfo $B$rJV$7$^$9!#(B.
+  <dd> :arrayOf 型ための便宜的な ClassInfo を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#methodToMethodInfo(java.lang.reflect.Method)"><b>methodToMethodInfo</b></a>(Method)
   <dd> 
@@ -99,8 +99,8 @@ java.lang.Object
  public <a href="epp.Type.html#_top_">Type</a> get(<a href="epp.Symbol.html#_top_">Symbol</a> fullName)
 </pre>
 <dl>
-  <dd> $B%/%i%9L>$+%$%s%?!<%U%'!<%9L>$rI=$940A48BDjL>%7%s%\%k$+$i!"(B
-$B$=$l$KBP1~$9$k(B Type $B$r8!:w$7$FJV$7$^$9!#(B.
+  <dd> クラス名かインターフェース名を表す完全限定名シンボルから、
+それに対応する Type を検索して返します。.
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -113,10 +113,10 @@ java.lang.Object
  public <a href="epp.ClassInfo.html#_top_">ClassInfo</a> getArrayClassInfo()
 </pre>
 <dl>
-  <dd> :arrayOf $B7?$?$a$NJX59E*$J(B ClassInfo $B$rJV$7$^$9!#(B.
-:arrayOf $B7?$O(B length $B%U%#!<%k%I$d(B clone $B%a%=%C%I$r;}$A!"(B
-:class $B7?$NMM$K?6Iq$&>l9g$,$"$j$^$9$,!"(B
-$B$=$l$r=hM}$9$k;~$KI,MW$H$J$j$^$9!#(B
+  <dd> :arrayOf 型ための便宜的な ClassInfo を返します。.
+:arrayOf 型は length フィールドや clone メソッドを持ち、
+:class 型の様に振舞う場合がありますが、
+それを処理する時に必要となります。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -129,7 +129,7 @@ java.lang.Object
  public <a href="epp.ClassInfo.html#_top_">ClassInfo</a> classToClassInfo(Class obj)
 </pre>
 <dl>
-  <dd> Java $B$N(B Class $B$r!"(B Reflection API $B$r;H$C$F(B ClassInfo $B$KJQ49$7$^$9!#(B.
+  <dd> Java の Class を、 Reflection API を使って ClassInfo に変換します。.
 <p>
 </dl>
 <a name="fieldToFieldInfo(java.lang.reflect.Field)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>

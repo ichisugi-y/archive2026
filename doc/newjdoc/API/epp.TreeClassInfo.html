@@ -29,7 +29,7 @@ java.lang.Object
   <dt> public class <b>TreeClassInfo</b>
   <dt> extends <a href="epp.ClassInfo.html#_top_">ClassInfo</a>
 </dl>
-$B%/%i%9(B TreeClassInfo $B$O!"(B ClassSignatureTree $B$+$i:n$i$l$k(B ClassInfo $B$G$9!#(B.
+クラス TreeClassInfo は、 ClassSignatureTree から作られる ClassInfo です。.
 <p>
 <dl>
     <dt> <b>See Also:</b>
@@ -51,33 +51,33 @@ java.lang.Object
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getClasses()"><b>getClasses</b></a>()
-  <dd> $B%a%s%P!<$H$7$F;}$DA4$F$N(B inner class $B$rJV$7$^$9!#(B.
+  <dd> メンバーとして持つ全ての inner class を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getConstructors()"><b>getConstructors</b></a>()
-  <dd> $BA4$F$N%3%s%9%H%i%/%?$rJV$7$^$9!#(B.
+  <dd> 全てのコンストラクタを返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getField(epp.Symbol)"><b>getField</b></a>(Symbol)
-  <dd> $BL>A0(B sym $B$r;}$D%U%#!<%k%I$rJV$7$^$9!#(B.
+  <dd> 名前 sym を持つフィールドを返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getFields()"><b>getFields</b></a>()
-  <dd> $BA4$F$N%U%#!<%k%I$rJV$7$^$9!#(B.
+  <dd> 全てのフィールドを返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getInterfaces()"><b>getInterfaces</b></a>()
-  <dd> $B$3$N%/%i%9$,(B implement $B$7$F$$$k(B interface $B$+!"(B
-$B$3$N(B interface $B$,(B extends $B$7$F$$$k(B interface $B$rJV$7$^$9!#(B.
+  <dd> このクラスが implement している interface か、
+この interface が extends している interface を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getMethods()"><b>getMethods</b></a>()
-  <dd> $BA4$F$N%a%=%C%I$rJV$7$^$9!#(B.
+  <dd> 全てのメソッドを返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getOverloadedMethods(epp.Symbol)"><b>getOverloadedMethods</b></a>(Symbol)
-  <dd> $BL>A0(B sym $B$r;}$D$9$Y$F$N%a%=%C%I$rJV$7$^$9!#(B.
+  <dd> 名前 sym を持つすべてのメソッドを返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getSuperclass()"><b>getSuperclass</b></a>()
-  <dd> superclass $B$rJV$7$^$9!#(B.
+  <dd> superclass を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#isInterface()"><b>isInterface</b></a>()
-  <dd> $B$3$N(B ClassInfo $B$,(B interface $B$J$i$P(B true $B!"(B
-$B%/%i%9$J$i$P(B false $B$rJV$7$^$9!#(B.
+  <dd> この ClassInfo が interface ならば true 、
+クラスならば false を返します。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -107,7 +107,7 @@ java.lang.Object
  public <a href="epp.MethodInfo.html#_top_">MethodInfo</a>[] getConstructors()
 </pre>
 <dl>
-  <dd> $BA4$F$N%3%s%9%H%i%/%?$rJV$7$^$9!#(B.
+  <dd> 全てのコンストラクタを返します。.
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>
@@ -120,7 +120,7 @@ java.lang.Object
  public <a href="epp.FieldInfo.html#_top_">FieldInfo</a>[] getFields()
 </pre>
 <dl>
-  <dd> $BA4$F$N%U%#!<%k%I$rJV$7$^$9!#(B.
+  <dd> 全てのフィールドを返します。.
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>
@@ -133,7 +133,7 @@ java.lang.Object
  public <a href="epp.MethodInfo.html#_top_">MethodInfo</a>[] getMethods()
 </pre>
 <dl>
-  <dd> $BA4$F$N%a%=%C%I$rJV$7$^$9!#(B.
+  <dd> 全てのメソッドを返します。.
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>
@@ -146,7 +146,7 @@ java.lang.Object
  public <a href="epp.ClassInfo.html#_top_">ClassInfo</a>[] getClasses()
 </pre>
 <dl>
-  <dd> $B%a%s%P!<$H$7$F;}$DA4$F$N(B inner class $B$rJV$7$^$9!#(B.
+  <dd> メンバーとして持つ全ての inner class を返します。.
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>
@@ -159,7 +159,7 @@ java.lang.Object
  public <a href="epp.FieldInfo.html#_top_">FieldInfo</a> getField(<a href="epp.Symbol.html#_top_">Symbol</a> sym) throws <a href="epp.NotFound.html#_top_">NotFound</a>
 </pre>
 <dl>
-  <dd> $BL>A0(B sym $B$r;}$D%U%#!<%k%I$rJV$7$^$9!#(B.
+  <dd> 名前 sym を持つフィールドを返します。.
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>
@@ -172,7 +172,7 @@ java.lang.Object
  public <a href="epp.MethodInfo.html#_top_">MethodInfo</a>[] getOverloadedMethods(<a href="epp.Symbol.html#_top_">Symbol</a> sym) throws <a href="epp.NotFound.html#_top_">NotFound</a>
 </pre>
 <dl>
-  <dd> $BL>A0(B sym $B$r;}$D$9$Y$F$N%a%=%C%I$rJV$7$^$9!#(B.
+  <dd> 名前 sym を持つすべてのメソッドを返します。.
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>
@@ -185,7 +185,7 @@ java.lang.Object
  public <a href="epp.Type.html#_top_">Type</a> getSuperclass()
 </pre>
 <dl>
-  <dd> superclass $B$rJV$7$^$9!#(B.
+  <dd> superclass を返します。.
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>
@@ -198,8 +198,8 @@ java.lang.Object
  public <a href="epp.Type.html#_top_">Type</a>[] getInterfaces()
 </pre>
 <dl>
-  <dd> $B$3$N%/%i%9$,(B implement $B$7$F$$$k(B interface $B$+!"(B
-$B$3$N(B interface $B$,(B extends $B$7$F$$$k(B interface $B$rJV$7$^$9!#(B.
+  <dd> このクラスが implement している interface か、
+この interface が extends している interface を返します。.
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>
@@ -212,8 +212,8 @@ java.lang.Object
  public boolean isInterface()
 </pre>
 <dl>
-  <dd> $B$3$N(B ClassInfo $B$,(B interface $B$J$i$P(B true $B!"(B
-$B%/%i%9$J$i$P(B false $B$rJV$7$^$9!#(B.
+  <dd> この ClassInfo が interface ならば true 、
+クラスならば false を返します。.
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>

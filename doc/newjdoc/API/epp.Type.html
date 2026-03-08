@@ -26,38 +26,38 @@ java.lang.Object
   <dt> extends Object
   <dt> implements Cloneable
 </dl>
-$B%/%i%9(B Type $B$O!"Cj>]9=J8LZ$N%N!<%I$KIU$1$i$l$k7?>pJs$G$9!#(B.
+クラス Type は、抽象構文木のノードに付けられる型情報です。.
 <p>
-$B7?%A%'%C%/%Q%9$K$*$$$F!"(BTypeChecker $B$,(B Tree $B$N3F%N!<%I$r(B
-$B7?>pJsIU$-$N(B Tree $B$KJQ49$7$^$9!#(B
-$B7?>pJsIU$-$N(B Tree $B$+$i$O!"(B tree.type() $B$H$$$&%a%=%C%I$G(B
-$B7?>pJs$r<hF@$G$-$^$9!#(B
+型チェックパスにおいて、TypeChecker が Tree の各ノードを
+型情報付きの Tree に変換します。
+型情報付きの Tree からは、 tree.type() というメソッドで
+型情報を取得できます。
 <p>
-type.tag() $B$H$$$&%a%=%C%I8F$S=P$7$G!"7?$N<oN`$rF@$k$3$H$,$G$-$^$9!#(B
-$BI8=`$N(B Java $B$N7?$rI=$97?$N%?%0$K$O!"0J2<$N$b$N$,$"$j$^$9!#(B
+type.tag() というメソッド呼び出しで、型の種類を得ることができます。
+標準の Java の型を表す型のタグには、以下のものがあります。
 <pre>
 :void, :char, :byte, :short, :int, :long, :float, :double, :boolean,
 :null
 :class
 :arrayOf
 </pre>
-$B$3$l$i$N7?$O!"%/%i%9(B Type $B$N%5%V%/%i%9!"(B
-PrimitiveType, NullType, ClassType, ArrayType $B$GI=8=$5$l$^$9!#(B
-ClassType, ArrayType $B$NFbIt$K%"%/%;%9$9$kJ}K!$K$D$$$F$O!"(B
-$B$=$l$>$l$N%/%i%9$N@bL@$r;2>H$7$F2<$5$$!#(B
-PrimitiveType, NullType $B$O!"FbIt9=B$$r;}$A$^$;$s!#(B
+これらの型は、クラス Type のサブクラス、
+PrimitiveType, NullType, ClassType, ArrayType で表現されます。
+ClassType, ArrayType の内部にアクセスする方法については、
+それぞれのクラスの説明を参照して下さい。
+PrimitiveType, NullType は、内部構造を持ちません。
 <p>
-plug-in $B$O!"%/%i%9(B Type $B$N%5%V%/%i%9$rDj5A$7!"?7$?$J(B tag $B$r;}$?$;$k$3$H$G!"(B
-Java $B8@8l$K?7$?$J7?$rF3F~$9$k$3$H$,$G$-$^$9!#(B
-$B$7$+$7!"?7$?$J(B primitive $B7?$rDI2C$9$k$3$H$O$G$-$^$;$s!#(B
+plug-in は、クラス Type のサブクラスを定義し、新たな tag を持たせることで、
+Java 言語に新たな型を導入することができます。
+しかし、新たな primitive 型を追加することはできません。
 <p>
-$B%/%i%9(B Type $B$O!"7?$rI=8=$9$k$?$a$KI,MW$J>pJs$rJ];}$9$k$@$1$G!"(B
-$B!V7?$N0UL#!W$O0l@ZDj5A$7$^$;$s!#(B
-$B7?$N0UL#$O!"(B TypeSystem $B$rDj5A$9$k%a%=%C%I72$d!"(B TypeChecker $B%*%V%8%'%/%H$K(B
-$B$h$C$FDj5A$5$l$^$9!#(B
+クラス Type は、型を表現するために必要な情報を保持するだけで、
+「型の意味」は一切定義しません。
+型の意味は、 TypeSystem を定義するメソッド群や、 TypeChecker オブジェクトに
+よって定義されます。
 <p>
-$B$3$N(B javadoc $B$K$O4^$^$l$F$$$^$;$s$,!"(B
-$BAH$_9~$_7?$N%$%s%9%?%s%9$rJ];}$9$k0J2<$N(B static variable $B$,Dj5A$5$l$F$$$^$9!#(B
+この javadoc には含まれていませんが、
+組み込み型のインスタンスを保持する以下の static variable が定義されています。
 <pre>
 Type.Tnull
 Type.Tvoid
@@ -94,7 +94,7 @@ Type.TClass	// java.lang.Class
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#classInfo()"><b>classInfo</b></a>()
-  <dd> $B$3$N7?$,$b$7(B :class $B7?$J$i$P!"(B ClassInfo $B$rJV$7$^$9!#(B.
+  <dd> この型がもし :class 型ならば、 ClassInfo を返します。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#coerce(epp.Type, epp.Tree)"><b>coerce</b></a>(Type, Tree)
   <dd> 
@@ -106,22 +106,22 @@ Type.TClass	// java.lang.Class
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#isPrimitiveType()"><b>isPrimitiveType</b></a>()
-  <dd> $B$3$N7?$,(B primitive $B7?$J$i$P(B true $B!"$=$&$G$J$$$J$i(B false $B$rJV$7$^$9!#(B.
+  <dd> この型が primitive 型ならば true 、そうでないなら false を返します。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#isSuperType(epp.Type, epp.Type)"><b>isSuperType</b></a>(Type, Type)
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#print()"><b>print</b></a>()
-  <dd> Opts.out $B$K!"?M4V$K8+$d$9$$$h$&$KCf?H$r=PNO$9$k%G%P%C%0MQ%a%=%C%I$G$9!#(B.
+  <dd> Opts.out に、人間に見やすいように中身を出力するデバッグ用メソッドです。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#selectField(epp.Type, epp.Symbol)"><b>selectField</b></a>(Type, Symbol)
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#tag()"><b>tag</b></a>()
-  <dd> $B$3$N7?$N%?%0$rJV$7$^$9!#(B.
+  <dd> この型のタグを返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#toTree()"><b>toTree</b></a>()
-  <dd> $B$3$N7?$r%W%m%0%i%`Cf$GI=8=$9$k(B tree $B$rJV$7$^$9!#(B.
+  <dd> この型をプログラム中で表現する tree を返します。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#typeCheckAndSelectMethod(epp.Type, epp.Symbol, epp.Tree)"><b>typeCheckAndSelectMethod</b></a>(Type, Symbol, Tree)
   <dd> 
@@ -228,14 +228,14 @@ Type.TClass	// java.lang.Class
  public boolean isPrimitiveType()
 </pre>
 <dl>
-  <dd> $B$3$N7?$,(B primitive $B7?$J$i$P(B true $B!"$=$&$G$J$$$J$i(B false $B$rJV$7$^$9!#(B.
-primitive $B7?$O!"(B
-:void, :char, :byte, :short, :int, :long, :float, :double, :boolean $B$G$9!#(B
-$B!J(Bvoid $B$O(B The Java Language Specification $B$G$O7?$G$O$"$j$^$;$s$,!"(B
-EPP $B$G$OJX59E*$K(B
-primitive $B7?$H$7$F07$$$^$9!#!K(B
+  <dd> この型が primitive 型ならば true 、そうでないなら false を返します。.
+primitive 型は、
+:void, :char, :byte, :short, :int, :long, :float, :double, :boolean です。
+（void は The Java Language Specification では型ではありませんが、
+EPP では便宜的に
+primitive 型として扱います。）
 <p>
-:null, :class, :arrayOf $B$O(B primitive $B7?$G$O$"$j$^$;$s!#(B
+:null, :class, :arrayOf は primitive 型ではありません。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -248,7 +248,7 @@ primitive $B7?$H$7$F07$$$^$9!#!K(B
  public <a href="epp.Symbol.html#_top_">Symbol</a> tag()
 </pre>
 <dl>
-  <dd> $B$3$N7?$N%?%0$rJV$7$^$9!#(B.
+  <dd> この型のタグを返します。.
 <p>
 </dl>
 <a name="classInfo()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -257,8 +257,8 @@ primitive $B7?$H$7$F07$$$^$9!#!K(B
  public <a href="epp.ClassInfo.html#_top_">ClassInfo</a> classInfo()
 </pre>
 <dl>
-  <dd> $B$3$N7?$,$b$7(B :class $B7?$J$i$P!"(B ClassInfo $B$rJV$7$^$9!#(B.
-:class $B7?$G$J$$$J$i!"(B fatal error $B$G$9!#(B
+  <dd> この型がもし :class 型ならば、 ClassInfo を返します。.
+:class 型でないなら、 fatal error です。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -271,9 +271,9 @@ primitive $B7?$H$7$F07$$$^$9!#!K(B
  public abstract <a href="epp.Tree.html#_top_">Tree</a> toTree()
 </pre>
 <dl>
-  <dd> $B$3$N7?$r%W%m%0%i%`Cf$GI=8=$9$k(B tree $B$rJV$7$^$9!#(B.
-$B%W%m%0%i%`Cf$GI=8=IT2DG=$J7?!JNc$($P(B null $B7?!K$KBP$7$F$3$N%a%=%C%I$,(B
-$B8F$P$l$?$i!"(B EppUserError $B$r(B throw $B$7$^$9!#(B
+  <dd> この型をプログラム中で表現する tree を返します。.
+プログラム中で表現不可能な型（例えば null 型）に対してこのメソッドが
+呼ばれたら、 EppUserError を throw します。
 <p>
 </dl>
 <a name="print()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -282,8 +282,8 @@ primitive $B7?$H$7$F07$$$^$9!#!K(B
  public <a href="#_top_">Type</a> print()
 </pre>
 <dl>
-  <dd> Opts.out $B$K!"?M4V$K8+$d$9$$$h$&$KCf?H$r=PNO$9$k%G%P%C%0MQ%a%=%C%I$G$9!#(B.
-$B$3$N%a%=%C%I$OJVCM$H$7$F!"<+J,<+?H$rJV$7$^$9!#(B
+  <dd> Opts.out に、人間に見やすいように中身を出力するデバッグ用メソッドです。.
+このメソッドは返値として、自分自身を返します。
 <p>
 </dl>
 <hr>

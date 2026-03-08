@@ -25,25 +25,25 @@ java.lang.Object
   <dt> public abstract class <b>Dynamic</b>
   <dt> extends Object
 </dl>
-$B%/%i%9(B Dynamic $B$O!"(Blisp $B$NF0E*JQ?t$HF1$8%a%+%K%:%`$rDs6!$7$^$9!#(B.
+クラス Dynamic は、lisp の動的変数と同じメカニズムを提供します。.
 <p>
-$BF0E*JQ?t$O!"Bg0hJQ?t$H;w$F$$$^$9$,!"F0E*$J%9%3!<%W$r;}$A$^$9!#(B
+動的変数は、大域変数と似ていますが、動的なスコープを持ちます。
 <p>
-$B%a%=%C%I(B bind $B$O!"8E$$CM$r%9%?%C%/$KB`Hr$7$F$+$iCM$rJQ99$7$^$9!#(B
-$B%a%=%C%I(B unbind $B$O!"%9%?%C%/$+$iCM$r<h$j=P$7$F!":G8e$K(B bind $B$5$l$?(B
-$BJQ?t$NCM$r$b$H$KLa$7$^$9!#(B
+メソッド bind は、古い値をスタックに退避してから値を変更します。
+メソッド unbind は、スタックから値を取り出して、最後に bind された
+変数の値をもとに戻します。
 <p>
-$BF0E*JQ?t$KBeF~$G$-$kCM$O(B Object $B7?$N%5%V%/%i%9$@$1$G$9!#(B
-$BF0E*JQ?t$O!"=i4|>uBV$G$O(B unbound $B$H$$$&>uBV$K$"$j$^$9!#(B
-$B$3$N>uBV$GCM$r(B set/get $B$7$h$&$H$9$k$H!"(B
-UnboundDynamicVariableAccessException $B$,(B throw $B$5$l$^$9!#(B
+動的変数に代入できる値は Object 型のサブクラスだけです。
+動的変数は、初期状態では unbound という状態にあります。
+この状態で値を set/get しようとすると、
+UnboundDynamicVariableAccessException が throw されます。
 <p>
-int $B7?$r%/%i%9(B Integer $B$K(B wrap $B$7$FF0E*JQ?t$KF~$l$?$$>l9g$,(B
-$B$h$/$"$k$N$G!"$=$N$?$a$N%a%=%C%I(B bindInt, getInt, setInt $B$,MQ0U$5$l$F$$$^$9!#(B
-$B$3$l$i$N%a%=%C%I$r;H$&$H!"(B
-$B0z?t$dJVCM$O!"<+F0E*$K%/%i%9(B Integer $B$K(B wrap/unwrap $B$5$l$^$9!#(B
-$B!J>-Mh$N%P!<%8%g%s$G$O!"(B int $B7?$H(B Object $B7?$NCM$O!"(B
-$BJL$N>l=j$KJ]B8$5$l$k$h$&$K$J$j$^$9!#!K(B
+int 型をクラス Integer に wrap して動的変数に入れたい場合が
+よくあるので、そのためのメソッド bindInt, getInt, setInt が用意されています。
+これらのメソッドを使うと、
+引数や返値は、自動的にクラス Integer に wrap/unwrap されます。
+（将来のバージョンでは、 int 型と Object 型の値は、
+別の場所に保存されるようになります。）
 <p>
 <pre>
 Example
@@ -88,25 +88,25 @@ void bar(){
 <dl>
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#bind(epp.Symbol, java.lang.Object)"><b>bind</b></a>(Symbol, Object)
-  <dd> $BF0E*JQ?t(B var $B$rCM(B val $B$K(B bind $B$7$^$9!#(B.
+  <dd> 動的変数 var を値 val に bind します。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#bindInt(epp.Symbol, int)"><b>bindInt</b></a>(Symbol, int)
-  <dd> $BF0E*JQ?t(B var $B$rCM(B new Integer(val) $B$K(B bind $B$7$^$9!#(B.
+  <dd> 動的変数 var を値 new Integer(val) に bind します。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#get(epp.Symbol)"><b>get</b></a>(Symbol)
-  <dd> $BF0E*JQ?t(B var $B$N8=:_$NCM$r<h$j=P$7$^$9!#(B.
+  <dd> 動的変数 var の現在の値を取り出します。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getInt(epp.Symbol)"><b>getInt</b></a>(Symbol)
-  <dd> $BF0E*JQ?t(B var $B$NCM$+$i(B int $B7?$NCM$r<h$j=P$7$^$9!#(B.
+  <dd> 動的変数 var の値から int 型の値を取り出します。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#set(epp.Symbol, java.lang.Object)"><b>set</b></a>(Symbol, Object)
-  <dd> $BF0E*JQ?t(B var $B$NCM$r(B val $B$KJQ99$7$^$9!#(B.
+  <dd> 動的変数 var の値を val に変更します。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#setInt(epp.Symbol, int)"><b>setInt</b></a>(Symbol, int)
-  <dd> $BF0E*JQ?t(B var $B$NCM$r(B new Integer(val) $B$KJQ99$7$^$9!#(B.
+  <dd> 動的変数 var の値を new Integer(val) に変更します。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#unbind()"><b>unbind</b></a>()
-  <dd> $B%a%=%C%I(B bind $B$K$h$C$FB`Hr$5$l$?F0E*JQ?t$NCM$r85$KLa$7$^$9!#(B.
+  <dd> メソッド bind によって退避された動的変数の値を元に戻します。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -129,8 +129,8 @@ void bar(){
                          Object val)
 </pre>
 <dl>
-  <dd> $BF0E*JQ?t(B var $B$rCM(B val $B$K(B bind $B$7$^$9!#(B.
-$BF0E*JQ?t(B var $B$N8E$$CM$O!"JL$N>l=j$KB`Hr$5$l$^$9!#(B
+  <dd> 動的変数 var を値 val に bind します。.
+動的変数 var の古い値は、別の場所に退避されます。
 <p>
 </dl>
 <a name="bindInt(epp.Symbol, int)"><img src="images/green-ball.gif" width=12 height=12 alt=" o "></a>
@@ -140,8 +140,8 @@ void bar(){
                             int val)
 </pre>
 <dl>
-  <dd> $BF0E*JQ?t(B var $B$rCM(B new Integer(val) $B$K(B bind $B$7$^$9!#(B.
-$BF0E*JQ?t(B var $B$N8E$$CM$O!"JL$N>l=j$KB`Hr$5$l$^$9!#(B
+  <dd> 動的変数 var を値 new Integer(val) に bind します。.
+動的変数 var の古い値は、別の場所に退避されます。
 <p>
 </dl>
 <a name="unbind()"><img src="images/green-ball.gif" width=12 height=12 alt=" o "></a>
@@ -150,7 +150,7 @@ void bar(){
  public static void unbind()
 </pre>
 <dl>
-  <dd> $B%a%=%C%I(B bind $B$K$h$C$FB`Hr$5$l$?F0E*JQ?t$NCM$r85$KLa$7$^$9!#(B.
+  <dd> メソッド bind によって退避された動的変数の値を元に戻します。.
 <p>
 </dl>
 <a name="get(epp.Symbol)"><img src="images/green-ball.gif" width=12 height=12 alt=" o "></a>
@@ -159,7 +159,7 @@ void bar(){
  public static Object get(<a href="epp.Symbol.html#_top_">Symbol</a> var)
 </pre>
 <dl>
-  <dd> $BF0E*JQ?t(B var $B$N8=:_$NCM$r<h$j=P$7$^$9!#(B.
+  <dd> 動的変数 var の現在の値を取り出します。.
 <p>
 </dl>
 <a name="getInt(epp.Symbol)"><img src="images/green-ball.gif" width=12 height=12 alt=" o "></a>
@@ -168,8 +168,8 @@ void bar(){
  public static int getInt(<a href="epp.Symbol.html#_top_">Symbol</a> var)
 </pre>
 <dl>
-  <dd> $BF0E*JQ?t(B var $B$NCM$+$i(B int $B7?$NCM$r<h$j=P$7$^$9!#(B.
-$B@53N$K$O!"$3$N%a%=%C%I$NF0:n$O!"<!$N$b$N$HF1$8$G$9!#(B
+  <dd> 動的変数 var の値から int 型の値を取り出します。.
+正確には、このメソッドの動作は、次のものと同じです。
 <pre>
    ((Integer)Dynamic.get(var)).intValue()
 </pre>
@@ -182,8 +182,8 @@ void bar(){
                         Object val)
 </pre>
 <dl>
-  <dd> $BF0E*JQ?t(B var $B$NCM$r(B val $B$KJQ99$7$^$9!#(B.
-$B%a%=%C%I(B bind $B$H$O0c$$!"8E$$CM$OB`Hr$5$l$^$;$s!#(B
+  <dd> 動的変数 var の値を val に変更します。.
+メソッド bind とは違い、古い値は退避されません。
 <p>
 </dl>
 <a name="setInt(epp.Symbol, int)"><img src="images/green-ball.gif" width=12 height=12 alt=" o "></a>
@@ -193,8 +193,8 @@ void bar(){
                            int val)
 </pre>
 <dl>
-  <dd> $BF0E*JQ?t(B var $B$NCM$r(B new Integer(val) $B$KJQ99$7$^$9!#(B.
-$B%a%=%C%I(B bindInt $B$H$O0c$$!"8E$$CM$OB`Hr$5$l$^$;$s!#(B
+  <dd> 動的変数 var の値を new Integer(val) に変更します。.
+メソッド bindInt とは違い、古い値は退避されません。
 <p>
 </dl>
 <hr>

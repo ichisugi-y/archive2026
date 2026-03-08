@@ -1,88 +1,88 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="./style.css">
-<title> MJ $B%A%e!<%H%j%"%k(B </title>
+<title> MJ チュートリアル </title>
 </head> <body>
 <div class="header-link">
 [<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
 [<a href="index.html">Document index</a>]
 </div>
-<h1>MJ $B%A%e!<%H%j%"%k(B</h1>
+<h1>MJ チュートリアル</h1>
 <ul class="headers">
-<li><a href="#intro">$B$O$8$a$K(B</a>
-<li><a href="#preparation">$B=`Hw(B</a>
-<li><a href="#run">$B%3%s%Q%$%k$:$_%b%8%e!<%k$N<B9T(B : mj $B%3%^%s%I(B</a>
-<li><a href="#module">$B%b%8%e!<%k$NDj5A(B</a>
-<li><a href="#multiple-inheritance">$B%b%8%e!<%k$NB?=E7Q>5(B</a>
-<li><a href="#multiple-selected-modules">$BJ#?t$N:9J,$NDI2C(B: mj $B%3%^%s%I$N(B -s $B%*%W%7%g%s(B</a>
-<li><a href="#compile">$B%3%s%Q%$%k(B : mjc $B%3%^%s%I(B</a>
-<li><a href="#configuration">$B%b%8%e!<%k$N%0%k!<%W2=(B : mjb, mjball $B%3%^%s%I(B</a>
-<li><a href="#dump">$B%j%s%/$7$?%"%W%j%1!<%7%g%s$N%@%s%W(B : mjdump $B%3%^%s%I(B</a>
-<li><a href="#ss">$B%b%8%e!<%k(B <tt>mj.lang.ss</tt> $B$H(B $B%/%i%9(B SS</a>
-<li><a href="#constructor">$B%3%s%9%H%i%/%?(B</a>
+<li><a href="#intro">はじめに</a>
+<li><a href="#preparation">準備</a>
+<li><a href="#run">コンパイルずみモジュールの実行 : mj コマンド</a>
+<li><a href="#module">モジュールの定義</a>
+<li><a href="#multiple-inheritance">モジュールの多重継承</a>
+<li><a href="#multiple-selected-modules">複数の差分の追加: mj コマンドの -s オプション</a>
+<li><a href="#compile">コンパイル : mjc コマンド</a>
+<li><a href="#configuration">モジュールのグループ化 : mjb, mjball コマンド</a>
+<li><a href="#dump">リンクしたアプリケーションのダンプ : mjdump コマンド</a>
+<li><a href="#ss">モジュール <tt>mj.lang.ss</tt> と クラス SS</a>
+<li><a href="#constructor">コンストラクタ</a>
 <li><a href="#abstract-method">abstract method</a>
-<li><a href="#scope">$BL>A06u4V(B</a>
-<li><a href="#Java">Java $B8@8l$N%/%i%9%i%$%V%i%j$NMxMQ(B</a>
+<li><a href="#scope">名前空間</a>
+<li><a href="#Java">Java 言語のクラスライブラリの利用</a>
 <li><a href="#SharpPlus"> #+comment</a>
-<li><a href="#uses"> uses $B@k8@(B</a>
+<li><a href="#uses"> uses 宣言</a>
 <li><a href="#dynamic-loading">Dynamic loading</a>
-<li><a href="#fqn">$B40A48BDjL>(B(Fully-Qualified-Name, FQN)</a>
-<li><a href="#complementary">$BJd40%b%8%e!<%k(B</a>
+<li><a href="#fqn">完全限定名(Fully-Qualified-Name, FQN)</a>
+<li><a href="#complementary">補完モジュール</a>
 </p></ul><p>
 </p><p>
 </p><p>
-</p><h2><a name="intro">$B$O$8$a$K(B</a></h2><p>
+</p><h2><a name="intro">はじめに</a></h2><p>
 </p><p>
-$B$3$N%I%-%e%a%s%H$G$O!"(B MJ $B$N<B9T4D6-$H8@8l;EMM$K$D$$$F!"(B
-$B$R$H$H$*$j4JC1$K@bL@$7$^$9!#(B
-$BM=HwCN<1$O!"(B Java $B8@8l$NCN<10J30$OI,MW$"$j$^$;$s!#(B
+このドキュメントでは、 MJ の実行環境と言語仕様について、
+ひととおり簡単に説明します。
+予備知識は、 Java 言語の知識以外は必要ありません。
 </p><p>
-$B$3$N%A%e!<%H%j%"%k$K=P$F$/$kA4$F$N%W%m%0%i%`$O!"(B
-$B$9$G$K%3%s%Q%$%k$7$FG[I[%Q%C%1!<%8$N(B mj.jar $B$NCf$KF~$C$F$$$^$9!#(B
-<a href="install.html">$B!V%$%s%9%H!<%k$H<B9TJ}K!!W(B</a>$B$K=>$C$F(B
-mj $B$r%$%s%9%H!<%k$9$l$P!"<B:]$K<B9T$7$F$_$k$3$H$,$G$-$^$9!#(B
-$B$^$?!"%=!<%9%3!<%I$O!"(B
-$BG[I[%Q%C%1!<%8$N(B lib/Tutorial.java $B$NCf$K$"$j$^$9!#(B
+このチュートリアルに出てくる全てのプログラムは、
+すでにコンパイルして配布パッケージの mj.jar の中に入っています。
+<a href="install.html">「インストールと実行方法」</a>に従って
+mj をインストールすれば、実際に実行してみることができます。
+また、ソースコードは、
+配布パッケージの lib/Tutorial.java の中にあります。
 </p><p>
-$B$3$N%A%e!<%H%j%"%k$G$O!"(B <a href="collection.html">Collection plug-in</a>$B!"(B
-<a href="assert.html">assert2 plug-in</a>$B!"(B
-$B$K$D$$$F$O(B
-$B?($l$^$;$s!#$=$l$>$l$N%I%-%e%a%s%H$r;2>H$7$F$/$@$5$$!#(B
+このチュートリアルでは、 <a href="collection.html">Collection plug-in</a>、
+<a href="assert.html">assert2 plug-in</a>、
+については
+触れません。それぞれのドキュメントを参照してください。
 </p><p>
-$B$J$*!"(B MJ $B$K$*$1$k%W%m%0%i%_%s%0%9%?%$%k$d@_7WJ}K!O@$K$D$$$F$O!"(B
-$B$3$N%I%-%e%a%s%H$O@bL@$NBP>]$H$7$^$;$s!#(B
+なお、 MJ におけるプログラミングスタイルや設計方法論については、
+このドキュメントは説明の対象としません。
 </p><p>
-MJ $B$N8@8l;EMM$N>\:Y$K$D$$$F$O!"(B<a href="spec.html">$B!V(BMJ$B8@8l;EMM%a%b!W(B</a>$B$r(B
-$B;2>H$7$F$/$@$5$$!#(B
-$B$=$3$G$O!"(B<a href="spec.html#syntax">BNF $B$K$h$kJ8K!(B</a>
-$B$N5-=R$b$"$j$^$9!#(B
+MJ の言語仕様の詳細については、<a href="spec.html">「MJ言語仕様メモ」</a>を
+参照してください。
+そこでは、<a href="spec.html#syntax">BNF による文法</a>
+の記述もあります。
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="preparation">$B=`Hw(B</a></h2><p>
+</p><h2><a name="preparation">準備</a></h2><p>
 </p><p>
-$B$^$:$O6u$N:n6H%G%#%l%/%H%j$r:n$C$F!"$=$3$G<B9T$r$O$8$a$k$H$h$$$H;W$$$^$9!#(B
-$B:n6H%G%#%l%/%H%j$K$O!"(B
-eppout $B$H$$$&%G%#%l%/%H%j$r:n$C$F$*$/I,MW$,$"$j$^$9!#(B
+まずは空の作業ディレクトリを作って、そこで実行をはじめるとよいと思います。
+作業ディレクトリには、
+eppout というディレクトリを作っておく必要があります。
 <pre>
 % mkdir eppout
 </pre>
 </p><p>
-$B%G%#%l%/%H%j(B eppout $B$N2<$K$O!"%W%j%W%m%;%C%5$,=PNO$9$k(B
-java $B%U%!%$%k$H!"%3%s%Q%$%k7k2L$N%/%i%9%U%!%$%k$,CV$+$l$^$9!#(B
+ディレクトリ eppout の下には、プリプロセッサが出力する
+java ファイルと、コンパイル結果のクラスファイルが置かれます。
 </p><p>
 </p><p>
-</p><h2><a name="run">$B%3%s%Q%$%k$:$_%b%8%e!<%k$N<B9T(B : mj $B%3%^%s%I(B</a></h2><p>
+</p><h2><a name="run">コンパイルずみモジュールの実行 : mj コマンド</a></h2><p>
 </p><p>
-$B%=!<%9%3!<%I$N%3%s%Q%$%k$N@bL@$r$9$kA0$K!"(B
-$B$^$:<B9T$N;EJ}$+$i@bL@$7$^$9!#(B
+ソースコードのコンパイルの説明をする前に、
+まず実行の仕方から説明します。
 </p><p>
-mj.jar $B$NCf$K$O(B <tt>t.m1</tt> $B$H$$$&%b%8%e!<%k$,4^$^$l$F$$$^$9!#(B
-$B$3$N%W%m%0%i%`$N%=!<%9$O!"(B Java $B$G8@$($P!"<!$N$b$N$KAjEv$7$^$9!#(B
-$B!J(BMJ $B$G=q$+$l$?K\Ev$N%=!<%9$O!"$"$H$G$*8+$;$7$^$9!#!K(B
-$B$3$l$O!"%/%i%9(B C $B$H$=$N%5%V%/%i%9(B SubC $B$rDj5A$9$k!"4JC1$J%W%m%0%i%`$G$9!#(B
+mj.jar の中には <tt>t.m1</tt> というモジュールが含まれています。
+このプログラムのソースは、 Java で言えば、次のものに相当します。
+（MJ で書かれた本当のソースは、あとでお見せします。）
+これは、クラス C とそのサブクラス SubC を定義する、簡単なプログラムです。
 <pre>
 class C  {
   void m() { System.out.println("m1:C#m()"); }
@@ -102,10 +102,10 @@ class SS {
 }
 </pre>
 </p><p>
-$B%b%8%e!<%k(B<tt>t.m1</tt>$B$O<B9T2DG=$G$9!#(B
-$B$3$l$r<B9T$7$F$_$^$7$g$&!#(B
-MJ $B$G=q$+$l$?%W%m%0%i%`$r<B9T$9$k$K$O!"(B<em>mj $B%3%^%s%I(B</em>$B$r;H$$$^$9!#(B
-mj $B%3%^%s%I$O!"%b%8%e!<%kL>$r#1$D0z?t$K<h$j$^$9!#(B
+モジュール<tt>t.m1</tt>は実行可能です。
+これを実行してみましょう。
+MJ で書かれたプログラムを実行するには、<em>mj コマンド</em>を使います。
+mj コマンドは、モジュール名を１つ引数に取ります。
 </p><p>
 <pre>
 % mj t.m1
@@ -116,24 +116,24 @@ m1:C#m()
 + m1:SubC#m()
 </pre>
 </p><p>
-$B$3$N$h$&$K<B9T$5$l$^$9!#(B
+このように実行されます。
 </p><p>
-$BF1MM$K!"(B <tt>t.m2</tt> $B$H$$$&%b%8%e!<%k$b(B mj.jar $B$NCf$KF~$C$F$$$^$9!#(B
-<tt>t.m2</tt> $B$O!"(B <tt>t.m1</tt> $B$K:9J,$rDI2C$7$?%W%m%0%i%`$G$9!#(B
-<tt>t.m2</tt> $B$O!"(B Java $B$G=q$1$P<!$N$h$&$K$J$j$^$9!#(B
-$B$D$^$j!"(B <tt>t.m1</tt> $B$N%=!<%9$K#29TDI2C$7$?%W%m%0%i%`$G$9!#(B
+同様に、 <tt>t.m2</tt> というモジュールも mj.jar の中に入っています。
+<tt>t.m2</tt> は、 <tt>t.m1</tt> に差分を追加したプログラムです。
+<tt>t.m2</tt> は、 Java で書けば次のようになります。
+つまり、 <tt>t.m1</tt> のソースに２行追加したプログラムです。
 <pre>
 class C  {
   void m() {
     System.out.println("m1:C#m()"); 
-    System.out.println("+ m2:C#m()");  // $BDI2C(B
+    System.out.println("+ m2:C#m()");  // 追加
   }
 }
 class SubC extends C {
   void m() { 
     super.m();
     System.out.println("+ m1:SubC#m()"); 
-    System.out.println("+ m2:SubC#m()");  // $BDI2C(B
+    System.out.println("+ m2:SubC#m()");  // 追加
   }
 }
 class SS {
@@ -148,7 +148,7 @@ class SS {
 }
 </pre>
 </p><p>
-<tt>t.m2</tt> $B$r<B9T$7$F$_$^$7$g$&!#(B
+<tt>t.m2</tt> を実行してみましょう。
 <pre>
 % mj t.m2
 ----- invoke C#m();
@@ -161,27 +161,27 @@ m1:C#m()
 + m2:SubC#m()
 </pre>
 </p><p>
-$B$3$N$h$&$K<B9T$5$l$^$9!#(B
+このように実行されます。
 </p><p>
 </p><p>
-<tt>t.m2</tt> $B$N$h$&$K!"%*%j%8%J%k$N%7%9%F%`$K>/$7:9J,$rDI2C$9$k%W%m%0%i%`$r!"(B
-$BJL$N%b%8%e!<%k$H$7$FJ,N%$7$F=q$1$k$3$H$,(B MJ $B$NFCD'$G$9!#(B
-$B=>Mh$N%*%V%8%'%/%H;X8~8@8l$N%/%i%97Q>5$N5!9=$H;w$F$$$^$9$,!"(B
-superclass C $B$N%a%=%C%I$=$N$b$N$r3HD%$G$-$kE@$,0c$$$^$9!#(B
-$B%/%i%97Q>5$G$O!"(B superclass $B$N%a%=%C%I$N5!G=$r3HD%$9$k$K$O!"(B
-$BJL$N(B subclass $B$r:n$kI,MW$,$"$j$^$9!#(B
-subclass $B$rDj5A$7$F$b!"(B superclass $B$N%a%=%C%I$O3HD%$5$l$kA0$N$^$^$G$9!#(B
-$B$H$3$m$,(B MJ $B$G$O!"(B superclass $B$N%a%=%C%I$r!"JL$N(B subclass $B$rDj5A$9$k$3$H$J$7$K(B
-$B3HD%$9$k$3$H$,$G$-$^$9!#(B
+<tt>t.m2</tt> のように、オリジナルのシステムに少し差分を追加するプログラムを、
+別のモジュールとして分離して書けることが MJ の特徴です。
+従来のオブジェクト指向言語のクラス継承の機構と似ていますが、
+superclass C のメソッドそのものを拡張できる点が違います。
+クラス継承では、 superclass のメソッドの機能を拡張するには、
+別の subclass を作る必要があります。
+subclass を定義しても、 superclass のメソッドは拡張される前のままです。
+ところが MJ では、 superclass のメソッドを、別の subclass を定義することなしに
+拡張することができます。
 </p><p>
 </p><p>
-</p><h2><a name="module">$B%b%8%e!<%k$NDj5A(B</a></h2><p>
-</p><h3> <tt>t.m1</tt> $B$N%=!<%9%3!<%I(B</h3><p>
+</p><h2><a name="module">モジュールの定義</a></h2><p>
+</p><h3> <tt>t.m1</tt> のソースコード</h3><p>
 </p><p>
 </p><p>
-$B6qBNE*$K!"(B MJ $B$G%b%8%e!<%k$r$I$N$h$&$K5-=R$9$k$+$r0J2<$K@bL@$7$^$9!#(B
+具体的に、 MJ でモジュールをどのように記述するかを以下に説明します。
 </p><p>
-$B$^$:(B <tt>t.m1</tt> $B$N(B MJ $B$G=q$+$l$?%=!<%9$r8+$F$_$^$7$g$&!#(B
+まず <tt>t.m1</tt> の MJ で書かれたソースを見てみましょう。
 <pre>
 module t.m1 {
   define class C {
@@ -205,56 +205,56 @@ module t.m1 {
 }
 </pre>
 </p><p>
-Java $B8@8l$K$h$k5-=R$H$^$:0c$&$N$,!"(B <em>"module"</em> $B$H$$$&9=J8$G$9!#(B
-$B$3$l$O(B Java $B8@8l$K$*$1$k(B package $B$K$[$\AjEv$7!"(B
-$B$3$N9=J8$NCf$K%/%i%9Dj5A$r=q$-$^$9!#(B
+Java 言語による記述とまず違うのが、 <em>"module"</em> という構文です。
+これは Java 言語における package にほぼ相当し、
+この構文の中にクラス定義を書きます。
 </p><p>
-$B%b%8%e!<%kFbIt$N5-=R$G$O!"(B
-<em>"define"</em> $B$H$$$&%-!<%o!<%I$NB8:_$,!"(B
- Java $B$HHf$Y$?$H$-$NBg$-$J0c$$$G$9!#(B
-$B%/%i%9L>$d%a%=%C%I%;%l%/%?$r:G=i$KDj5A$9$k$H$-$K$O!"(B
-$B$3$N(B "define" $B$r;XDj$9$kI,MW$,$"$j$^$9!#(B
-superclass $B$N%a%=%C%I$r7Q>5$7$F(B override $B$9$k>l9g$O!"(B
-"define" $B$O$D$1$^$;$s!#(B
-MJ $B$G$N%W%m%0%i%_%s%0$G$O!"(B
-$BDj5A$H3HD%$N6hJL$r%W%m%0%i%^!<$,0U<1$9$k$3$H$,=EMW$J$?$a!"(B
-$B$3$N%-!<%o!<%I$,F3F~$5$l$^$7$?!#(B
-Java $B$d(B C++ $B$G$O!"!V(B superclass $B$N%a%=%C%I$r(B override $B$7$?$D$b$j$,!"(B
-$B%a%=%C%IL>$N%9%Z%k%_%9$N$;$$$G!"JL$N%a%=%C%I$rDj5A$7$F$$$?!W$H$$$&(B
-$B%_%9$,;~!95/$3$j$^$9!#$3$N%_%9$O!"%3%s%Q%$%k%(%i!<$K$O$J$i$J$$$?$a!"(B
-$B8+$D$1$k$N$K<j4V<h$k>l9g$,$"$j$^$9!#(B
-"define" $B%-!<%o!<%I$N;XDj$O!"$3$N<o$N%(%i!<$r%3%s%Q%$%k;~$K8!=P$9$k$?$a$K$b(B
-$BLrN)$A$^$9!#(B
-$B$J$*!"(B "define" $B%-!<%o!<%I$O!"(B field $B$NDj5A$K$OI,MW$"$j$^$;$s!#(B
-field $B$K$O!V3HD%!W$H$$$&35G0$,$J$/!"Dj5A$7$+$"$j$($J$$$+$i$G$9!#(B
-field $BDj5A$K(B "define" $B%-!<%o!<%I;XDj$7$F$bL5;k$5$l$^$9!#(B
-</p><p>
-</p><p>
-main $B$N=q$-J}$b(B Java $B$H$O0c$$$^$9!#(B
-$B8=:_$N(B MJ $B$O(B static method $B$r%5%]!<%H$7$F$$$^$;$s!#(B
-$BBe$o$j$K!"(B <em>SS</em> $B$H$$$&L>A0$N%/%i%9$,FCJL$JLr3d$r2L$?$7$^$9!#(B
-SS $B$O!"(B Startup-Singleton $B$NN,$G$9!#(B
-MJ $B$N%"%W%j%1!<%7%g%s$,5/F0$9$k$H!"%/%i%9(B SS $B$N%$%s%9%?%s%9$,#1$D@8@.$5$l!"(B
-$B$=$N%a%=%C%I(B main(String[]) $B$,8F$S=P$5$l$^$9!#(B
-class SS $B$K$O(B "define" $B$,$D$$$F$$$^$;$s!#(B
-$B$3$NM}M3$O(B<a href="#ss">$B!V%b%8%e!<%k(B mj.lang.ss $B$H(B $B%/%i%9(B SS$B!W(B</a>
-$B$N>O$G@bL@$7$^$9!#(B
+モジュール内部の記述では、
+<em>"define"</em> というキーワードの存在が、
+ Java と比べたときの大きな違いです。
+クラス名やメソッドセレクタを最初に定義するときには、
+この "define" を指定する必要があります。
+superclass のメソッドを継承して override する場合は、
+"define" はつけません。
+MJ でのプログラミングでは、
+定義と拡張の区別をプログラマーが意識することが重要なため、
+このキーワードが導入されました。
+Java や C++ では、「 superclass のメソッドを override したつもりが、
+メソッド名のスペルミスのせいで、別のメソッドを定義していた」という
+ミスが時々起こります。このミスは、コンパイルエラーにはならないため、
+見つけるのに手間取る場合があります。
+"define" キーワードの指定は、この種のエラーをコンパイル時に検出するためにも
+役立ちます。
+なお、 "define" キーワードは、 field の定義には必要ありません。
+field には「拡張」という概念がなく、定義しかありえないからです。
+field 定義に "define" キーワード指定しても無視されます。
 </p><p>
 </p><p>
-MJ $B$G$O!"(B super class $B$N%a%=%C%I$r8F$S=P$9$K$O!"(B <tt>super.m()</tt> $B$G$O$J$/(B
-<tt>original()</tt> $B$H=q$-$^$9!#(B
-$B$3$N%W%m%0%i%`Nc$G$O!"(B  class SubC $B$N%a%=%C%I(B m $B$G!"(B
-original $B8F$S=P$7$r9T$C$F$$$^$9!#$3$l$O!"(B class C $B$N%a%=%C%I(B m $B$r(B
-$B8F$S=P$7$^$9!#(B
+main の書き方も Java とは違います。
+現在の MJ は static method をサポートしていません。
+代わりに、 <em>SS</em> という名前のクラスが特別な役割を果たします。
+SS は、 Startup-Singleton の略です。
+MJ のアプリケーションが起動すると、クラス SS のインスタンスが１つ生成され、
+そのメソッド main(String[]) が呼び出されます。
+class SS には "define" がついていません。
+この理由は<a href="#ss">「モジュール mj.lang.ss と クラス SS」</a>
+の章で説明します。
 </p><p>
 </p><p>
-public/protected/private $B$H$$$&%-!<%o!<%I$O!"(B MJ $B$G$O;H$$$^$;$s!#(B
-$B;XDj$7$F$bL5;k$5$l$^$9!#(B
+MJ では、 super class のメソッドを呼び出すには、 <tt>super.m()</tt> ではなく
+<tt>original()</tt> と書きます。
+このプログラム例では、  class SubC のメソッド m で、
+original 呼び出しを行っています。これは、 class C のメソッド m を
+呼び出します。
 </p><p>
 </p><p>
-</p><h3> <tt>t.m2</tt> $B$N%=!<%9%3!<%I(B</h3><p>
+public/protected/private というキーワードは、 MJ では使いません。
+指定しても無視されます。
 </p><p>
-$B<!$K(B <tt>t.m2</tt> $B$N(B MJ $B$G=q$+$l$?%=!<%9$r8+$F$_$^$7$g$&!#(B
+</p><p>
+</p><h3> <tt>t.m2</tt> のソースコード</h3><p>
+</p><p>
+次に <tt>t.m2</tt> の MJ で書かれたソースを見てみましょう。
 <pre>
 module t.m2 extends t.m1 {
   class C {
@@ -266,32 +266,32 @@ module t.m2 extends t.m1 {
 }
 </pre>
 </p><p>
-<tt>t.m2</tt> $B$O!"(B <tt>t.m1</tt> $B$KBP$9$k:9J,$@$1$r5-=R$9$k%b%8%e!<%k$G$9!#(B
-$B@hF,$N(B "<tt>module t.m2 extends t.m1</tt>" $B$H$$$&ItJ,$,$=$l$rI=$7$F$$$^$9!#(B
- <tt>t.m1</tt> $B$O(B <tt>t.m2</tt> $B$N(B <em>super-module</em> $B!"(B
-<tt>t.m2</tt> $B$O(B <tt>t.m1</tt> $B$N(B <em>sub-module</em> $B!"$H8F$S$^$9!#(B
+<tt>t.m2</tt> は、 <tt>t.m1</tt> に対する差分だけを記述するモジュールです。
+先頭の "<tt>module t.m2 extends t.m1</tt>" という部分がそれを表しています。
+ <tt>t.m1</tt> は <tt>t.m2</tt> の <em>super-module</em> 、
+<tt>t.m2</tt> は <tt>t.m1</tt> の <em>sub-module</em> 、と呼びます。
 </p><p>
-$B%b%8%e!<%kK\BN$G$O!"%*%j%8%J%k$N%W%m%0%i%`!J$9$J$o$A(B super-module$B!K(B
-$B$KBP$9$k:9J,$r5-=R$7$^$9!#(B
-$B%/%i%9(B C $B$*$h$S%/%i%9(B SubC $B$N@k8@$K(B "define" $B$,$"$j$^$;$s$,!"(B
-$B$3$l$O!"(B super-module $B$GDj5A$5$l$?%/%i%9$KBP$9$k:9J,$rDj5A$9$k$3$H$r(B
-$B0UL#$7$^$9!#(B
-$B%/%i%9(B C $B$*$h$S(B $B%/%i%9(B SubC $B$N%a%=%C%I(B m() $B$K$b(B "define" $B$,$"$j$^$;$s$,!"(B
-$B$3$l$b!"%*%j%8%J%k$N%a%=%C%I$KBP$9$k:9J,$rDj5A$7$F$$$k$3$H$r0UL#$7$^$9!#(B
+モジュール本体では、オリジナルのプログラム（すなわち super-module）
+に対する差分を記述します。
+クラス C およびクラス SubC の宣言に "define" がありませんが、
+これは、 super-module で定義されたクラスに対する差分を定義することを
+意味します。
+クラス C および クラス SubC のメソッド m() にも "define" がありませんが、
+これも、オリジナルのメソッドに対する差分を定義していることを意味します。
 </p><p>
 </p><p>
-$B$=$l$>$l$N%a%=%C%I(B m() $B$NK\BN$K$O!"(B
-<tt>original();</tt> $B$H$$$&9=J8$,$"$j$^$9!#(B
-$B$3$l$O!"!V(B super-module $B$K$*$1$k%*%j%8%J%k$N%a%=%C%I!W$X$N8F$S=P$7$r(B
-$B0UL#$7$^$9!#(B
+それぞれのメソッド m() の本体には、
+<tt>original();</tt> という構文があります。
+これは、「 super-module におけるオリジナルのメソッド」への呼び出しを
+意味します。
 </p><p>
-$B%a%=%C%I$NDj5A$d:9J,$r!"!V(B<em>$B%a%=%C%ICGJR(B</em>$B!W$H$b8F$V$3$H$,$"$j$^$9!#(B
-$BNc$($P(B <tt>t.m2</tt> $B$K$*$1$k(B SubC $B$N%a%=%C%ICGJR(B m() $B$NDj5A$r!"(B
- <tt>SubC#m()@t.m2</tt> $B$H(B
-$BI=5-$9$k$3$H$K$7$^$9!#(B
+メソッドの定義や差分を、「<em>メソッド断片</em>」とも呼ぶことがあります。
+例えば <tt>t.m2</tt> における SubC のメソッド断片 m() の定義を、
+ <tt>SubC#m()@t.m2</tt> と
+表記することにします。
 </p><p>
-<tt>t.m1</tt> $B$H(B <tt>t.m2</tt> $B$K4^$^$l$k#4$D$N%a%=%C%ICGJR$N4X78$r?^$GI=$9$H!"(B
-$B<!$N$h$&$K$J$j$^$9!#(B
+<tt>t.m1</tt> と <tt>t.m2</tt> に含まれる４つのメソッド断片の関係を図で表すと、
+次のようになります。
 </p><p>
 <pre>
   module t.m2                     module t.m1
@@ -306,49 +306,49 @@ module t.m2 extends t.m1 {
   +-------------+                 +-------------+
 </pre>
 </p><p>
-$B?^Cf$N(B1:$B!A(B4:$B$N?t;z$O!"(B original $B8F$S=P$7$G8F$S=P$5$l$k%a%=%C%ICGJR$N(B
-$B=g=x$rI=$7$^$9!#(B
-$B$^$:%/%i%9(B  SubC $B$N%$%s%9%?%s%9$KBP$7$F%a%=%C%I(B
-  <tt>m()</tt>  $B$,8F$S=P$5$l$k$H!"(B
-$B#1HVL\$N%a%=%C%ICGJR(B  <tt>SubC#m()@t.m2</tt>  $B$,$^$:<B9T$5$l$^$9!#(B
-$B$3$N%a%=%C%ICGJR(B  <tt>SubC#m()@t.m2</tt>  $B$N<B9TCf$K!"(B
-$B$b$7(B original $B8F$S=P$7$,<B9T$5$l$k$H!"(B
-$B#2HVL\$N%a%=%C%ICGJR(B  <tt>SubC#m()@t.m1</tt>  $B$,8F$S=P$5$l$^$9!#(B
-$B0J8eF1MM$K!"(B <tt>C#m()@t.m2</tt> $B!"(B <tt>C#m()@t.m1</tt> $B$,8F$S=P$5$l$^$9!#(B
-MJ $B$K$*$1$k:9J,$NDI2C$H$O!"(B
-$B%*%j%8%J%k$N%W%m%0%i%`$K$*$1$k(B superclass $B!"(B subclass $B$N(B
-$B$=$l$>$l$N%a%=%C%IDj5A$r(B override $B$9$k$3$H$G$"$k$H9M$($l$P!"(B
-$B$3$NF0:n$O<+A3$KM}2r$G$-$k$H;W$$$^$9!#(B
+図中の1:〜4:の数字は、 original 呼び出しで呼び出されるメソッド断片の
+順序を表します。
+まずクラス  SubC のインスタンスに対してメソッド
+  <tt>m()</tt>  が呼び出されると、
+１番目のメソッド断片  <tt>SubC#m()@t.m2</tt>  がまず実行されます。
+このメソッド断片  <tt>SubC#m()@t.m2</tt>  の実行中に、
+もし original 呼び出しが実行されると、
+２番目のメソッド断片  <tt>SubC#m()@t.m1</tt>  が呼び出されます。
+以後同様に、 <tt>C#m()@t.m2</tt> 、 <tt>C#m()@t.m1</tt> が呼び出されます。
+MJ における差分の追加とは、
+オリジナルのプログラムにおける superclass 、 subclass の
+それぞれのメソッド定義を override することであると考えれば、
+この動作は自然に理解できると思います。
 </p><p>
 </p><p>
 </p><p>
-</p><h3> super-module $B$N<+F0%m!<%I(B</h3><p>
+</p><h3> super-module の自動ロード</h3><p>
 </p><p>
-<tt>t.m2</tt> $B$r<B9T$9$k:]$K!"(B
- mj $B%3%^%s%I$N0z?t$K$O%b%8%e!<%kL>(B <tt>t.m2</tt> $B$N$_$r;XDj$7$^$9!#(B
-<tt>t.m1</tt> $B$NL>A0$O;XDj$9$kI,MW$O$"$j$^$;$s!#(B
-mj $B%3%^%s%I$O!"0z?t$G;XDj$5$l$?%b%8%e!<%k$r(B
-$B$^$:(B load $B$7!"$=$N<B9T$KI,MW$J%b%8%e!<%k!"$9$J$o$A(B super-module $B$b(B
- load $B$7$^$9!#F1MM$K!"$9$Y$F$N@hAD%b%8%e!<%k$b(B load $B$7$^$9!#(B
-$B$3$N>l9g$O!"(B <tt>t.m2</tt> $B$r;XDj$9$l$P!"(B mj $B%3%^%s%I$,<+F0E*$K$=$N(B 
-super-module $B$G$"$k(B <tt>t.m1</tt> $B$b(B load $B$7$^$9!#(B
+<tt>t.m2</tt> を実行する際に、
+ mj コマンドの引数にはモジュール名 <tt>t.m2</tt> のみを指定します。
+<tt>t.m1</tt> の名前は指定する必要はありません。
+mj コマンドは、引数で指定されたモジュールを
+まず load し、その実行に必要なモジュール、すなわち super-module も
+ load します。同様に、すべての先祖モジュールも load します。
+この場合は、 <tt>t.m2</tt> を指定すれば、 mj コマンドが自動的にその 
+super-module である <tt>t.m1</tt> も load します。
 </p><p>
-$B$3$N5!G=$O!"(B Emacs Lisp, Common Lisp $B$J$I$N%7%9%F%`$K$*$1$k(B
-require $B@k8@$N5!G=$K;w$F$$$^$9!#(B
-$B$3$l$i$N%7%9%F%`$G$O!"(B
-$B$"$k%Q%C%1!<%8$,I,MW$H$9$kB>$N%Q%C%1!<%8$r(B "require" $B$H$$$&9=J8$G(B
-$B@k8@$7$^$9!#$"$k%Q%C%1!<%8$r%7%9%F%`$K(B load $B$9$k$H(B
-$B$=$N%Q%C%1!<%8$,(B require $B$9$k%Q%C%1!<%8$b<+F0E*$K(B load $B$5$l$^$9!#(B
-MJ $B$K$*$1$k(B extends $B@k8@$O!"$3$N(B require $B@k8@$N5!G=$b7s$M$F$$$k$N$G$9!#(B
-</p><p>
-</p><p>
+この機能は、 Emacs Lisp, Common Lisp などのシステムにおける
+require 宣言の機能に似ています。
+これらのシステムでは、
+あるパッケージが必要とする他のパッケージを "require" という構文で
+宣言します。あるパッケージをシステムに load すると
+そのパッケージが require するパッケージも自動的に load されます。
+MJ における extends 宣言は、この require 宣言の機能も兼ねているのです。
 </p><p>
 </p><p>
-</p><h2><a name="multiple-inheritance">$B%b%8%e!<%k$NB?=E7Q>5(B</a></h2><p>
 </p><p>
-$B%b%8%e!<%k$rDj5A$9$k$H$-!"(B super-module $B$rJ#?t;XDj$9$k$3$H$,$G$-$^$9!#(B
 </p><p>
-$B$^$:!"(B <tt>t.m2</tt> $B$H$[$\F1MM$N%W%m%0%i%`(B <tt>t.m3</tt> $B$,$"$k$H$7$^$9!#(B
+</p><h2><a name="multiple-inheritance">モジュールの多重継承</a></h2><p>
+</p><p>
+モジュールを定義するとき、 super-module を複数指定することができます。
+</p><p>
+まず、 <tt>t.m2</tt> とほぼ同様のプログラム <tt>t.m3</tt> があるとします。
 <pre>
 module t.m3 extends t.m1 {
   class C {
@@ -360,7 +360,7 @@ module t.m3 extends t.m1 {
 }
 </pre>
 </p><p>
-<tt>t.m3</tt> $B$r<B9T$9$k$H<!$N$h$&$K$J$j$^$9!#(B
+<tt>t.m3</tt> を実行すると次のようになります。
 <pre>
 % mj t.m3
 ----- invoke C#m();
@@ -374,8 +374,8 @@ m1:C#m()
 </pre>
 </p><p>
 </p><p>
-$B$=$7$F!"(B <tt>t.m2</tt> $B$H(B <tt>t.m3</tt> $B$NN>J}$r7Q>5$9$k%b%8%e!<%k(B
- <tt>t.m4</tt> $B$r!"<!$N$h$&$KDj5A$G$-$^$9!#(B
+そして、 <tt>t.m2</tt> と <tt>t.m3</tt> の両方を継承するモジュール
+ <tt>t.m4</tt> を、次のように定義できます。
 <pre>
 module t.m4 extends t.m2, t.m3 {
   class C {
@@ -387,24 +387,24 @@ module t.m4 extends t.m2, t.m3 {
 }
 </pre>
 </p><p>
-$B$3$3$G!"(B <tt>t.m2</tt> $B$H(B <tt>t.m3</tt> $B$O6&$K(B 
-<tt>t.m1</tt> $B$r(B super-module $B$K;}$D$N$G!"(B
-$B$$$o$f$k%@%$%"%b%s%I7Q>5$N7A$K$J$j$^$9!#(B
-MJ $B$G$O!"(B CLOS $B$J$I$N8@8l$HF1MM$K!"(B topological sort $B$K$h$C$F(B
-$B%b%8%e!<%k$N(B <em>linearize</em> $B!J#1Ns$KJB$Y$k$3$H!K$r$7$^$9!#(B
+ここで、 <tt>t.m2</tt> と <tt>t.m3</tt> は共に 
+<tt>t.m1</tt> を super-module に持つので、
+いわゆるダイアモンド継承の形になります。
+MJ では、 CLOS などの言語と同様に、 topological sort によって
+モジュールの <em>linearize</em> （１列に並べること）をします。
 </p><p>
-$BNc$($P!"(B <tt>t.m4</tt> $B$N<B9T$O!"<!$N$h$&$K9T$o$l$^$9!#(B
-$B$^$:!"(B <tt>t.m4</tt> $B$H$=$N@hAD%b%8%e!<%k$N=89g$r5a$a$^$9!#(B
-$B$=$l$O(B <tt>{t.m1, t.m2, t.m3, t.m4}</tt>  $B$G$9!#(B
-$B$=$7$F!"$3$N=89g$r(B super-module/sub-module $B$N>e2<4X78$rJ]B8$9$k$h$&$K(B 
-topological sort $B$9$k$3$H$K$h$C$F(B linearize $B$7$^$9!#(B
-linearize $B$7$?7k2L$r!"(B <em>linearized list</em> $B$H8F$S$^$9!#(B
-$B$3$N>l9g!"(B linearized list $B$O(B <tt>(t.m1 t.m2 t.m3 t.m4)</tt> $B$K$J$j$^$9!#(B
-$B$=$7$F!"(B linearized list $B$N:G=i$NJ}$+$i=g$K:9J,$rDI2C$7$F$$$-!"(B
-$B$G$-$"$,$C$?%W%m%0%i%`$r<B9T$7$^$9!#(B
-$B$D$^$j!"%W%m%0%i%`(B a $B$KBP$7$F:9J,(B b $B$rDI2C$7$?7k2L$r(B a &lt;- b $B$HI=5-$9$k$J$i!"(B
-<tt>(((t.m1 &lt;- t.m2) &lt;- t.m3) &lt;- t.m4)</tt> $B$r<B9T$7$^$9!#(B
-$B$7$?$,$C$F!"(B <tt>t.m4</tt> $B$N<B9T7k2L$O!"<!$N$h$&$K$J$j$^$9!#(B
+例えば、 <tt>t.m4</tt> の実行は、次のように行われます。
+まず、 <tt>t.m4</tt> とその先祖モジュールの集合を求めます。
+それは <tt>{t.m1, t.m2, t.m3, t.m4}</tt>  です。
+そして、この集合を super-module/sub-module の上下関係を保存するように 
+topological sort することによって linearize します。
+linearize した結果を、 <em>linearized list</em> と呼びます。
+この場合、 linearized list は <tt>(t.m1 t.m2 t.m3 t.m4)</tt> になります。
+そして、 linearized list の最初の方から順に差分を追加していき、
+できあがったプログラムを実行します。
+つまり、プログラム a に対して差分 b を追加した結果を a &lt;- b と表記するなら、
+<tt>(((t.m1 &lt;- t.m2) &lt;- t.m3) &lt;- t.m4)</tt> を実行します。
+したがって、 <tt>t.m4</tt> の実行結果は、次のようになります。
 <pre>
 % mj t.m4
 ----- invoke C#m();
@@ -423,51 +423,51 @@ m1:C#m()
 + m4:SubC#m()
 </pre>
 </p><p>
-$B$3$3$G!"(B linearize $B$9$k$H$-$K!"(B
-$B>e2<4X78$,Dj5A$5$l$F$$$J$$(B <tt>t.m2</tt> $B$H(B <tt>t.m3</tt> $B$N(B
-$B=g=x$r$I$&$9$k$+!"$H$$$&LdBj$,$"$j$^$9!#(B
-MJ $B$O!"(B <tt>t.m4</tt> $B$N(B super-module $B@k8@$K$*$1$k=g=x$O!"L5;k$7$^$9!#(B
-$B$D$^$j!"<!$N$$$:$l$N=q$-J}$r$7$F$b!"F0:n$K1F6A$OM?$($^$;$s!#(B
+ここで、 linearize するときに、
+上下関係が定義されていない <tt>t.m2</tt> と <tt>t.m3</tt> の
+順序をどうするか、という問題があります。
+MJ は、 <tt>t.m4</tt> の super-module 宣言における順序は、無視します。
+つまり、次のいずれの書き方をしても、動作に影響は与えません。
 <pre>
 module t.m4 extends t.m2, t.m3 {...}
 module t.m4 extends t.m3, t.m2 {...}
 </pre>
 </p><p>
-MJ $B$N8@8l=hM}7O$O!"8@8l;EMM$K$h$C$F7h$a$i$l$?%"%k%4%j%:%`$K$h$j!"(B
-<tt>t.m2</tt> $B$H(B <tt>t.m3</tt> $B$N4V$N=g=x$r7h$a$^$9!#(B
-$B!J8=:_$N$H$3$m!"%b%8%e!<%k$NL>A0$N>pJs$r;H$C$F!"(B
-"monotonic" $B$J(B linearize $B$r9T$&%"%k%4%j%:%`$r:NMQ$7$F$$$^$9!#!K(B
-$B%W%m%0%i%^!<$,(B <tt>t.m2</tt> $B$H(B
- <tt>t.m3</tt> $B$N4V$N=g=x$r@)8f$9$kJ}K!$O$"$j$^$;$s!#(B
-$B$^$?!"%W%m%0%i%^!<$O!"(B <tt>t.m2</tt> $B$H(B <tt>t.m3</tt>
- $B$N4V$N=g=x$r2>Dj$7$F%W%m%0%i%`$r=q$$$F$O$$$1$^$;$s!#(B
+MJ の言語処理系は、言語仕様によって決められたアルゴリズムにより、
+<tt>t.m2</tt> と <tt>t.m3</tt> の間の順序を決めます。
+（現在のところ、モジュールの名前の情報を使って、
+"monotonic" な linearize を行うアルゴリズムを採用しています。）
+プログラマーが <tt>t.m2</tt> と
+ <tt>t.m3</tt> の間の順序を制御する方法はありません。
+また、プログラマーは、 <tt>t.m2</tt> と <tt>t.m3</tt>
+ の間の順序を仮定してプログラムを書いてはいけません。
 </p><p>
- MJ $B$H$O0c$$!"(B CLOS $B$J$I$N8@8l$G$O!"(B
- superclass $B$NJB$YJ}$,M%@hEY$K1F6A$rM?$($^$9!#(B
-$B$3$l$r(B local precedence order $B$H8F$S$^$9!#(B
-MJ $B$G$b$3$N5!G=$rF~$l$k$3$H$O2DG=$G$9$,!"(B
-$B8=:_$OF~$l$F$$$^$;$s!J(B<a href="faq-spec.html#local-precedence-order">FAQ $B;2>H(B</a>$B!K!#(B
-</p><p>
-</p><p>
-</p><p>
-C++ $B$J$I$N8@8l$K$*$1$kB?=E7Q>5$N:GBg$NLdBjE@$O!"(B
-$BL>A0$N>WFM$G$9!#(B MJ $B$G$O$3$NLdBj$O40A4$K2r7h$5$l$F$$$^$9!#(B
-$B$3$l$K$D$$$F$O(B <a href="#fqn">$B!V40A48BDjL>!W(B</a>$B$N>O$G@bL@$7$^$9!#(B
+ MJ とは違い、 CLOS などの言語では、
+ superclass の並べ方が優先度に影響を与えます。
+これを local precedence order と呼びます。
+MJ でもこの機能を入れることは可能ですが、
+現在は入れていません（<a href="faq-spec.html#local-precedence-order">FAQ 参照</a>）。
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="multiple-selected-modules">$BJ#?t$N:9J,$NDI2C(B: mj $B%3%^%s%I$N(B -s $B%*%W%7%g%s(B</a></h2><p>
+C++ などの言語における多重継承の最大の問題点は、
+名前の衝突です。 MJ ではこの問題は完全に解決されています。
+これについては <a href="#fqn">「完全限定名」</a>の章で説明します。
 </p><p>
-$B%"%W%j%1!<%7%g%s$N%(%s%I%f!<%6$O!"(B
-$BFHN)$K3+H/$5$l$?J#?t$N:9J,$r!"(B
-$B%3!<%I$r#19T$b=q$+$:$KAH$_9g$o$;$F;H$&$3$H$,$G$-$^$9!#(B
-$B!J(BMJ $B$N%b%8%e!<%k$N$3$N@-<A$r!"(B <em>plug-and-play module</em>
- $B$H8F$s$G$$$^$9!#!K(B
 </p><p>
-$BNc$($P(B <tt>t.m2</tt> $B$H(B <tt>t.m3</tt> $B$O(B <tt>t.m1</tt> $B$KBP$9$kA4$/FHN)$7$?:9J,$G$9$,!"(B
-$B%(%s%I%f!<%6$,!"(B
-$B#2$D$N:9J,$rN>J}$rF1;~$K(B <tt>t.m1</tt> $B$KDI2C$9$k$3$H$,$G$-$^$9!#(B
-$B$=$l$K$O!"(B mj $B%3%^%s%I$N(B -s $B%*%W%7%g%s$r;H$$!"J#?t$N%b%8%e!<%k$rA*Br$7$^$9!#(B
+</p><p>
+</p><h2><a name="multiple-selected-modules">複数の差分の追加: mj コマンドの -s オプション</a></h2><p>
+</p><p>
+アプリケーションのエンドユーザは、
+独立に開発された複数の差分を、
+コードを１行も書かずに組み合わせて使うことができます。
+（MJ のモジュールのこの性質を、 <em>plug-and-play module</em>
+ と呼んでいます。）
+</p><p>
+例えば <tt>t.m2</tt> と <tt>t.m3</tt> は <tt>t.m1</tt> に対する全く独立した差分ですが、
+エンドユーザが、
+２つの差分を両方を同時に <tt>t.m1</tt> に追加することができます。
+それには、 mj コマンドの -s オプションを使い、複数のモジュールを選択します。
 <pre>
 % mj -s t.m3 t.m2
 ----- invoke C#m();
@@ -483,47 +483,47 @@ m1:C#m()
 + m3:SubC#m()
 </pre>
 </p><p>
-mj $B%3%^%s%I$N0z?t$K;XDj$5$l$?%b%8%e!<%k$N=89g(B
- <tt>{t.m2, t.m3}</tt> $B$NMWAG$r!"(B <em>selected module</em> $B$H8F$S$^$9!#(B
+mj コマンドの引数に指定されたモジュールの集合
+ <tt>{t.m2, t.m3}</tt> の要素を、 <em>selected module</em> と呼びます。
 </p><p>
 </p><p>
--s $B%*%W%7%g%s$K$h$C$F!"(B selected module $B$,J#?t;XDj$5$l$?>l9g$N(B
-mj $B%3%^%s%I$NF0:n$O!"<!$N$h$&$K$J$j$^$9!#(B
-$B>e$NNc$N$h$&$K(B selected module $B$N=89g$,(B <tt>{ t.m2, t.m3 }</tt>
- $B$@$C$?$H$7$^$9!#(B
-mj $B%3%^%s%I$O!"A4$F$N(B selected module $B$r(B extends $B$9$k2>A[E*$J%b%8%e!<%k$r!"(B
-"_bottom" $B$H$$$&L>A0$G:n$j$^$9!#$3$N%b%8%e!<%k$r(B <em>bottom module</em>
- $B$H8F$S$^$9!#(B
-$B$D$^$j!"$3$N>l9g!"<!$N$h$&$J%b%8%e!<%k$r:n$j$^$9!#(B
+-s オプションによって、 selected module が複数指定された場合の
+mj コマンドの動作は、次のようになります。
+上の例のように selected module の集合が <tt>{ t.m2, t.m3 }</tt>
+ だったとします。
+mj コマンドは、全ての selected module を extends する仮想的なモジュールを、
+"_bottom" という名前で作ります。このモジュールを <em>bottom module</em>
+ と呼びます。
+つまり、この場合、次のようなモジュールを作ります。
 <pre>
 module _bottom extends t.m2, t.m3 {}
 </pre>
 </p><p>
-$B$=$7$F!"$"$?$+$b(B "mj _bottom" $B$H$$$&%3%^%s%I$,<B9T$5$l$?$+$N$h$&$K(B
-$B=hM}$7$^$9!#(B
-$B$D$^$j!"(B _bottom $B$H$=$N@hAD%b%8%e!<%k$N=89g$r5a$a!"(B
-$B$=$l$r(B super-module/sub-module $B$N4X78$rJ]B8$9$k$h$&$K(B linearize $B$7$F(B
-linearized list $B$r:n$j!"(B
-linearized list $B$N>e$+$i=g$K:9J,$rDI2C$7$F9T$-!"(B
-$B$G$-$"$,$C$?%"%W%j%1!<%7%g%s$r<B9T$7$^$9!#(B
-$B:#$NNc$N>l9g!"(B linearized list $B$O(B
- <tt>(t.m1 t.m2 t.m3 _bottom)</tt> $B$H$J$j$^$9!#(B
+そして、あたかも "mj _bottom" というコマンドが実行されたかのように
+処理します。
+つまり、 _bottom とその先祖モジュールの集合を求め、
+それを super-module/sub-module の関係を保存するように linearize して
+linearized list を作り、
+linearized list の上から順に差分を追加して行き、
+できあがったアプリケーションを実行します。
+今の例の場合、 linearized list は
+ <tt>(t.m1 t.m2 t.m3 _bottom)</tt> となります。
 </p><p>
 </p><p>
-extends $B@k8@$G$N%b%8%e!<%k$NJB$YJ}$,<B9T$K1F6A$rM?$($J$$$N$HF1MM$K!"(B
--s $B%*%W%7%g%s$K$h$k(B selected module $B$NJB$YJ}$b!"<B9T$K1F6A$rM?$($^$;$s!#(B
-$BNc$($P!"<!$N$I$NJ}K!$G<B9T$7$F$b(B
-$B7k2L$OJQ$o$j$^$;$s!#(B
+extends 宣言でのモジュールの並べ方が実行に影響を与えないのと同様に、
+-s オプションによる selected module の並べ方も、実行に影響を与えません。
+例えば、次のどの方法で実行しても
+結果は変わりません。
 <pre>
 % mj -s t.m2 t.m3
 % mj -s t.m3 t.m2
 </pre>
 </p><p>
 </p><p>
-$B#1$D$N:9J,$rF1;~$K2?EY$bDI2C$9$k$3$H$O!J8=:_$N(B MJ $B$G$O!K$G$-$^$;$s!#(B
-$BF1$8%b%8%e!<%kL>$r(B -s $B%*%W%7%g%s$GJ#?t2s;XDj$7$F$b!"(B
-$B#1$D;XDj$7$?>l9g$H8z2L$OJQ$o$j$^$;$s!#(B
-$BNc$($P!"<!$NNc$O!"$$$:$l$bF1$8F0:n$r$7$^$9!#(B
+１つの差分を同時に何度も追加することは（現在の MJ では）できません。
+同じモジュール名を -s オプションで複数回指定しても、
+１つ指定した場合と効果は変わりません。
+例えば、次の例は、いずれも同じ動作をします。
 <pre>
 % mj -s t.m2 t.m3
 % mj -s t.m2 -s t.m2 t.m3
@@ -531,9 +531,9 @@ extends $B@k8@$G$N%b%8%e!<%k$NJB$YJ}$,<B9T$K1F6A$rM?$($J$$$N$HF1MM$K!"(B
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="compile">$B%3%s%Q%$%k(B : mjc $B%3%^%s%I(B</a></h2><p>
-$B$5$F!"$3$3$G$h$&$d$/%3%s%Q%$%k$N;EJ}$N@bL@$KF~$j$^$9!#(B
-$B$3$l$O!"%b%8%e!<%k#2$D$+$i@.$k(B Hello World $B%W%m%0%i%`$N%=!<%9%3!<%I$G$9!#(B
+</p><h2><a name="compile">コンパイル : mjc コマンド</a></h2><p>
+さて、ここでようやくコンパイルの仕方の説明に入ります。
+これは、モジュール２つから成る Hello World プログラムのソースコードです。
 <pre>
 module t.hello {
   class SS {
@@ -553,37 +553,37 @@ module t.world extends t.hello {
 }
 </pre>
 </p><p>
-$B#2$D$N%b%8%e!<%k$O!"#2$D$N%U%!%$%k$KJ,$1$F$b$$$$$7!"(B
-$B#1$D$N%U%!%$%k$K=q$$$F$b$+$^$$$^$;$s!#(B
-$B%=!<%9%U%!%$%k$O!"(B ".java" $B$G=*$o$i$J$1$l$P$J$j$^$;$s!#(B
-$B$=$NE@0J30$O!"%U%!%$%kL>$H%U%!%$%k$NCV$->l=j$K$O@)8B$O$"$j$^$;$s!#(B
-$B!J#1$D$N%b%8%e!<%k$rJ#?t$N%U%!%$%k$KJ,$1$F=q$/$3$H$O$G$-$^$;$s!#!K(B
+２つのモジュールは、２つのファイルに分けてもいいし、
+１つのファイルに書いてもかまいません。
+ソースファイルは、 ".java" で終わらなければなりません。
+その点以外は、ファイル名とファイルの置き場所には制限はありません。
+（１つのモジュールを複数のファイルに分けて書くことはできません。）
 </p><p>
-$B#1$D$N%=!<%9%U%!%$%kCf$KJ#?t$N%b%8%e!<%k$r=q$/>l9g!"(B
-$B%=!<%9%U%!%$%kCf$N%b%8%e!<%k$N=g=x$O%W%m%0%i%`$N0UL#$K1F6A$rM?$($^$;$s!#(B
+１つのソースファイル中に複数のモジュールを書く場合、
+ソースファイル中のモジュールの順序はプログラムの意味に影響を与えません。
 </p><p>
-$B%=!<%9%U%!%$%k$r%3%s%Q%$%k$9$k$K$O!"(B <em>mjc $B%3%^%s%I(B</em> $B$rMQ$$$^$9!#(B
-$B2>$K$=$l$>$l$N%b%8%e!<%k$r(B Hello.java, World.java $B$K=q$$$?$H$7$^$9!#(B
-$B$3$N#2$D$N%b%8%e!<%k$r%3%s%Q%$%k$9$k$K$O!"0J2<$NJ}K!$,$"$j$^$9!#(B
+ソースファイルをコンパイルするには、 <em>mjc コマンド</em> を用います。
+仮にそれぞれのモジュールを Hello.java, World.java に書いたとします。
+この２つのモジュールをコンパイルするには、以下の方法があります。
 <pre>
 % mjc Hello.java World.java
-$B$^$?$O(B
+または
 % mjc World.java Hello.java 
-$B$^$?$O(B
+または
 % mjc Hello.java; mjc World.java
 </pre>
 </p><p>
-$B<!$N$h$&$K(B World.java $B$@$1$r;XDj$7$?>l9g$O!"(B
-$B%b%8%e!<%k(B world $B$,0MB8$7$F$$$k%U%!%$%k(B Hello.java $B$O(B
-$B%3%s%Q%$%k$5$l$J$$$N$G!"Cm0U$7$F$/$@$5$$!#(B
+次のように World.java だけを指定した場合は、
+モジュール world が依存しているファイル Hello.java は
+コンパイルされないので、注意してください。
 <pre>
 % mjc World.java
 </pre>
 </p><p>
 </p><p>
-mjc $B$N=hM}$O!"(B EPP $B$K$h$k(B preprocess $B$H!"(B javac $B$K$h$k(B compile $B$N(B
-$B#2$D$N%U%'!<%:$+$i@.$j$^$9!#(B
-$B%3%s%Q%$%k$,@5>o$K=*N;$9$k$H!"%a%C%;!<%8$N=PNO$O<!$N$h$&$K$J$j$^$9!#(B
+mjc の処理は、 EPP による preprocess と、 javac による compile の
+２つのフェーズから成ります。
+コンパイルが正常に終了すると、メッセージの出力は次のようになります。
 <pre>
 % mjc Hello.java World.java
 Preprocessing phase.
@@ -591,25 +591,25 @@ Compiling phase.
 Done.
 </pre>
 </p><p>
-$B$[$H$s$I$N%3%s%Q%$%k%(%i!<$O!"(B Preprocessing phase $B$G=P$k$O$:$G$9!#(B
-$B$"$k<o$N%(%i!<$O!"(B Compiling phase $B$G=P$^$9!#(B
+ほとんどのコンパイルエラーは、 Preprocessing phase で出るはずです。
+ある種のエラーは、 Compiling phase で出ます。
 </p><p>
 </p><p>
 </p><p>
-$B%3%s%Q%$%k$:$_$N%b%8%e!<%k$N%/%i%9%U%!%$%k$NCV$->l=j$,(B CLASSPATH $B$NCf$K(B
-$BF~$C$F$$$k$J$i!"(B
-$B$=$N%b%8%e!<%k$r%=!<%9%3!<%I$NCf$+$i;2>H$9$k$3$H$,$G$-$^$9!#(B
+コンパイルずみのモジュールのクラスファイルの置き場所が CLASSPATH の中に
+入っているなら、
+そのモジュールをソースコードの中から参照することができます。
 </p><p>
-$B%3%s%Q%$%k8e$N%/%i%9%U%!%$%k$O(B eppout $B$N2<$K$G$-$k$N$GCm0U$7$F$/$@$5$$!#(B
- /a/b/c $B$H$$$&%G%#%l%/%H%j$G(B mjc $B%3%^%s%I$r<B9T$7$?$J$i!"(B
-$B$=$N;~$G$-$?%/%i%9%U%!%$%k$r;2>H$9$k$K$O!"(B /a/b/c/eppout $B$r(B
-CLASSPATH $B$K4^$a$kI,MW$,$"$j$^$9!#(B
-$B!J(Bmj $B%3%^%s%I!"(B mjc $B%3%^%s%I$O!"(B eppout $B$r<+F0E*$K(B CLASSPATH $B$K4^$a$k$?$a!"(B
-$BC10l$N%G%#%l%/%H%j$G:n6H$7$F$$$k8B$j$O!"$3$N$3$H$r0U<1$9$kI,MW$O$"$j$^$;$s!#!K(B
+コンパイル後のクラスファイルは eppout の下にできるので注意してください。
+ /a/b/c というディレクトリで mjc コマンドを実行したなら、
+その時できたクラスファイルを参照するには、 /a/b/c/eppout を
+CLASSPATH に含める必要があります。
+（mj コマンド、 mjc コマンドは、 eppout を自動的に CLASSPATH に含めるため、
+単一のディレクトリで作業している限りは、このことを意識する必要はありません。）
 </p><p>
-$B<!$N$h$&$K$7$F(B eppout $B$N2<$N%/%i%9%U%!%$%k$r(B jar $B$K$^$H$a$k$3$H$b$G$-$^$9!#(B
-$B!J(B <em>mjclear $B%3%^%s%I(B</em> $B$O!"(B
- eppout $B$N2<$N%/%i%9%U%!%$%k$r:o=|$9$k%3%^%s%I$G$9!#!K(B
+次のようにして eppout の下のクラスファイルを jar にまとめることもできます。
+（ <em>mjclear コマンド</em> は、
+ eppout の下のクラスファイルを削除するコマンドです。）
 <pre>
 % mjclear
 % mjc Hello.java
@@ -620,8 +620,8 @@ Done.
 % jar cvf0 ../hello.jar .
 </pre>
 </p><p>
-$B$3$N(B jar $B%U%!%$%k$r(B CLASSPATH $B$G;XDj$9$k$3$H$G!"(B
-$B%i%$%V%i%j$H$7$F!"(B mjc $B%3%^%s%I$J$I$+$i;2>H$9$k$3$H$,$G$-$^$9!#(B
+この jar ファイルを CLASSPATH で指定することで、
+ライブラリとして、 mjc コマンドなどから参照することができます。
 <pre>
 % setenv CLASSPATH hello.jar:$CLASSPATH
 % mjclear
@@ -637,49 +637,49 @@ World.
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="configuration">$B%b%8%e!<%k$N%0%k!<%W2=(B : mjb, mjball $B%3%^%s%I(B</a></h2><p>
-</p><h3>mjb $B%3%^%s%I(B</h3><p>
+</p><h2><a name="configuration">モジュールのグループ化 : mjb, mjball コマンド</a></h2><p>
+</p><h3>mjb コマンド</h3><p>
 </p><p>
-$B:Y$+$$%b%8%e!<%k$,$?$/$5$s$"$k$H!"(B
-$B$=$l$i$r#1$D$K$^$H$a$?J}$,JXMx$J>l9g$,$"$j$^$9!#(B
-$B$=$l$r9T$&$N$,(B <em>mjb $B%3%^%s%I(B</em>$B$G$9!#(B
-mjb $B%3%^%s%I$O!"<!$N$h$&$J7A<0$G<B9T$7$^$9!#(B
+細かいモジュールがたくさんあると、
+それらを１つにまとめた方が便利な場合があります。
+それを行うのが <em>mjb コマンド</em>です。
+mjb コマンドは、次のような形式で実行します。
 <pre>
 % mjb bottom m1 m2 m3 ...
 </pre>
 </p><p>
-mjb $B%3%^%s%I$O!"BhFs0z?t0J9_$G;XDj$5$l$?$9$Y$F$N%b%8%e!<%k$r(B
-extends $B$9$k(B module $B$r!"Bh0l0z?t$G;XDj$5$l$?L>A0$G@8@.$7$^$9!#(B
+mjb コマンドは、第二引数以降で指定されたすべてのモジュールを
+extends する module を、第一引数で指定された名前で生成します。
 </p><p>
-$BNc$($P!"(B
+例えば、
 <pre>
 % mj -s t.m2 t.m3
 </pre>
 </p><p>
-$B$O!"<!$N<B9T$HF1$87k2L$K$J$j$^$9!#(B
+は、次の実行と同じ結果になります。
 <pre>
 % mjb m2m3 t.m2 t.m3
 % mj m2m3
 </pre>
 </p><p>
-$B$3$N(B "<tt>mjb m2m3 t.m2 t.m3</tt>" $B$N<B9T$O!"(B
-$B<!$N%W%m%0%i%`$r%3%s%Q%$%k$7$?$3$H$HEy2A$G$9!#(B
+この "<tt>mjb m2m3 t.m2 t.m3</tt>" の実行は、
+次のプログラムをコンパイルしたことと等価です。
 <pre>
 module m2m3 extends t.m2, t.m3 {}
 </pre>
 </p><p>
 </p><p>
-</p><h3>mjball $B%3%^%s%I(B</h3><p>
+</p><h3>mjball コマンド</h3><p>
 </p><p>
-$B%=!<%9%U%!%$%k$NCf$K:Y$+$$%b%8%e!<%k$,$?$/$5$s$"$k$H!"(B
-$B$=$l$i$r$9$Y$F(B extends $B$9$k(B bottom module $B$rDj5A$7$?$/$J$j$^$9!#(B
-$B$=$N$h$&$J$H$-$KMQ$$$k$N$,(B <em>mjball $B%3%^%s%I(B</em>$B$G$9!#(B
-mjball $B%3%^%s%I$O!"!VD>A0$N(B mjc $B%3%^%s%I$,%3%s%Q%$%k$7$?$9$Y$F$N%b%8%e!<%k!W$r(B
-extends $B$9$k%b%8%e!<%k$r@8@.$7$^$9!#(B
+ソースファイルの中に細かいモジュールがたくさんあると、
+それらをすべて extends する bottom module を定義したくなります。
+そのようなときに用いるのが <em>mjball コマンド</em>です。
+mjball コマンドは、「直前の mjc コマンドがコンパイルしたすべてのモジュール」を
+extends するモジュールを生成します。
 </p><p>
-$BNc$($P!"(B A.java, B.java, C.java $B$K(B a, b, c $B$H$$$&#3$D$N%b%8%e!<%k$,(B
-$BDj5A$5$l$F$$$k$H$7$^$9!#(B
-$B<!$N#3DL$j$NJ}K!$O!"$$$:$l$b$3$N#3$D$N%b%8%e!<%k$rAH$_9g$o$;$F<B9T$7$^$9!#(B
+例えば、 A.java, B.java, C.java に a, b, c という３つのモジュールが
+定義されているとします。
+次の３通りの方法は、いずれもこの３つのモジュールを組み合わせて実行します。
 <pre>
 % mjc A.java B.java C.java
 % mj -s a -s b c
@@ -699,28 +699,28 @@ extends $B$9$k%b%8%e!<%k$r@8@.$7$^$9!#(B
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="dump">$B%j%s%/$7$?%"%W%j%1!<%7%g%s$N%@%s%W(B : mjdump $B%3%^%s%I(B</a></h2><p>
-<em>mjdump $B%3%^%s%I(B</em>$B$O!"(B
-ClassLoader $B$,;H$($J$$4D6-$G(B MJ $B$N%"%W%j%1!<%7%g%s$r<B9T$7$?$$>l9g$J$I$K(B
-$B;H$&%3%^%s%I$G$9!#(B
+</p><h2><a name="dump">リンクしたアプリケーションのダンプ : mjdump コマンド</a></h2><p>
+<em>mjdump コマンド</em>は、
+ClassLoader が使えない環境で MJ のアプリケーションを実行したい場合などに
+使うコマンドです。
 </p><p>
-mj $B%3%^%s%I$NF0:n$O!"<!$N#2$D$NItJ,$KJ,$+$l$^$9!#(B
+mj コマンドの動作は、次の２つの部分に分かれます。
 <ol>
-<li>$B%b%8%e!<%k$N%/%i%9%U%!%$%k$r(B
- CLASSPATH $B$NCf$+$iC5$7$F%P%$%HNs$H$7$FFI$_9~$_!"(B
-$B%P%$%H%3!<%IJT=8$K$h$C$F(B JavaVM $B$,(B load $B2DG=$J7A$KJQ49$9$k!#(B
-<li>$BJQ49$5$l$?%/%i%9%U%!%$%k$rFH<+$N(B ClassLoader $B$K$h$C$F(B JavaVM $B$K(B load $B$7$F!"(B
-$B5/F0$9$k!#(B
+<li>モジュールのクラスファイルを
+ CLASSPATH の中から探してバイト列として読み込み、
+バイトコード編集によって JavaVM が load 可能な形に変換する。
+<li>変換されたクラスファイルを独自の ClassLoader によって JavaVM に load して、
+起動する。
 </ol>
 </p><p>
-$B$7$?$,$C$F!"(B applet $B$J$I(B ClassLoader $B$,;H$($J$$>u67$G$O!"(B
-mj $B%3%^%s%I$K$h$k<B9T$O$G$-$^$;$s!#(B
+したがって、 applet など ClassLoader が使えない状況では、
+mj コマンドによる実行はできません。
 </p><p>
-mjdump $B%3%^%s%I$O!"%P%$%H%3!<%IJT=8$5$l$?%/%i%9%U%!%$%k$r(B
-JavaVM $B$K(B load $B$;$:$K!"%U%!%$%k%7%9%F%`$K=PNO$9$k%3%^%s%I$G$9!#(B
+mjdump コマンドは、バイトコード編集されたクラスファイルを
+JavaVM に load せずに、ファイルシステムに出力するコマンドです。
 </p><p>
 </p><p>
-mjdump $B$N<B9TNc!'(B
+mjdump の実行例：
 <pre>
 % mjdump -s t.m2 t.m3
 Dump class : eppout/mjdump/mjc/Start.class
@@ -742,11 +742,11 @@ Dump class : eppout/mjdump/mj/lang/ss/SS.class
 </p><p>
 </p><p>
 </p><p>
-$B=PNO7k2L$O(B eppout/mjdump $B$N2<$K$"$j$^$9!#(B
-$B$3$N2<$K=PNO$5$l$?%/%i%9%U%!%$%k$O!"IaDL$N(B Java $B$N%/%i%9%U%!%$%k$H(B
-$BA4$/F1$8$h$&$K<B9T$9$k$3$H$,$G$-$^$9!#(B
-main $B%a%=%C%I$O!"(B mjc.Start $B$H$$$&%/%i%9$K$"$j$^$9!#(B
-$B<B9T$O<!$N$h$&$K9T$$$^$9!#(B
+出力結果は eppout/mjdump の下にあります。
+この下に出力されたクラスファイルは、普通の Java のクラスファイルと
+全く同じように実行することができます。
+main メソッドは、 mjc.Start というクラスにあります。
+実行は次のように行います。
 <pre>
 % cd eppout/mjdump
 % java mjc.Start
@@ -763,24 +763,24 @@ m1:C#m()
 + m3:SubC#m()
 </pre>
 </p><p>
-mjdump $B$G=PNO$7$?%/%i%9%U%!%$%k$O(B
-ClassLoader $B$r;H$o$J$$IaDL$N(B Java $B%W%m%0%i%`$J$N$G!"(B
- applet $B$d(B MIDlet $B$H$7$F;H$&$3$H$b$G$-$^$9!#(B
+mjdump で出力したクラスファイルは
+ClassLoader を使わない普通の Java プログラムなので、
+ applet や MIDlet として使うこともできます。
 </p><p>
 </p><p>
 </p><p>
-mj $B%3%^%s%I$K$O5/F0$,CY$$!J#1!A#2IC$[$I!K$H$$$&LdBj$,$"$j$^$9$,!"(B
-mjdump $B%3%^%s%I$r;H$C$F=PNO$7$?%/%i%9%U%!%$%k$O!"(B
-$BIaDL$N(B Java $B%"%W%j%1!<%7%g%s$HF1MM!"=V;~$K<B9T$G$-$^$9!#(B
+mj コマンドには起動が遅い（１〜２秒ほど）という問題がありますが、
+mjdump コマンドを使って出力したクラスファイルは、
+普通の Java アプリケーションと同様、瞬時に実行できます。
 </p><p>
 </p><p>
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="ss">$B%b%8%e!<%k(B <tt>mj.lang.ss</tt> $B$H(B $B%/%i%9(B SS</a></h2><p>
+</p><h2><a name="ss">モジュール <tt>mj.lang.ss</tt> と クラス SS</a></h2><p>
 </p><h3> <tt>mj.lang.ss</tt></h3><p>
-class SS $B$O!"<B$O!"(B <tt>mj.lang.ss</tt> $B$H$$$&%b%8%e!<%k$G!"(B
-$B$[$\<!$N$h$&$KDj5A$5$l$F$$$^$9!#(B
+class SS は、実は、 <tt>mj.lang.ss</tt> というモジュールで、
+ほぼ次のように定義されています。
 <pre>
 module mj.lang.ss
 {
@@ -792,35 +792,35 @@ module mj.lang.ss
 } 
 </pre>
 </p><p>
-<tt>t.m1</tt> $B$O!"(B class SS $B$r;2>H$7$F$$$^$9!#(B
-$B$D$^$j!"(B <tt>t.m1</tt> $B$O(B <tt>mj.lang.ss</tt> $B$KBP$9$k:9J,$NDI2C$G$"$j!"(B
-$BK\Mh$J$i<!$N$h$&$K@k8@$9$Y$-$G$9!#(B
+<tt>t.m1</tt> は、 class SS を参照しています。
+つまり、 <tt>t.m1</tt> は <tt>mj.lang.ss</tt> に対する差分の追加であり、
+本来なら次のように宣言すべきです。
 <pre>
 module t.m1 extends mj.lang.ss {...} 
 </pre>
 </p><p>
-$B$7$+$7!"(B <tt>mj.lang.ss</tt> $B$O$[$H$s$I$9$Y$F$N%b%8%e!<%k$,(B extends $B$9$Y$-(B
-$B%b%8%e!<%k$J$N$G!"%W%m%0%i%^!<$NJX59$r?^$k$?$a!"(B
-$B%3%s%Q%$%i$,<+F0E*$K(B <tt>extends mj.lang.ss</tt> $B$rA^F~$7$F(B
-$B%3%s%Q%$%k$9$k$7$+$1$K$J$C$F$$$^$9!#(B
+しかし、 <tt>mj.lang.ss</tt> はほとんどすべてのモジュールが extends すべき
+モジュールなので、プログラマーの便宜を図るため、
+コンパイラが自動的に <tt>extends mj.lang.ss</tt> を挿入して
+コンパイルするしかけになっています。
 </p><p>
-$B8=:_$N$H$3$m!"<+F0E*$K(B extends $B$5$l$k%b%8%e!<%k$O!"(B
-<tt>mj.lang.ss</tt> $B$@$1$G$9!#(B
+現在のところ、自動的に extends されるモジュールは、
+<tt>mj.lang.ss</tt> だけです。
 </p><p>
 </p><p>
 </p><p>
-</p><h3> $B%/%i%9(B SS $B$N%$%s%9%?%s%9(B</h3><p>
- $B8=:_$N(BMJ $B$O(B static method $B$NDj5A$r%5%]!<%H$7$F$$$J$$$?$a!"(B
-$BBe$o$j$K(B singleton object $B$N%a%=%C%I$r;H$&I,MW$,$"$j$^$9!#(B
+</p><h3> クラス SS のインスタンス</h3><p>
+ 現在のMJ は static method の定義をサポートしていないため、
+代わりに singleton object のメソッドを使う必要があります。
 </p><p>
-mj $B%3%^%s%I$O!"%"%W%j%1!<%7%g%s$N5/F0;~$K$^$:%/%i%9(B SS $B$N%$%s%9%?%s%9$r@8@.$7!"(B
-$B%/%i%9(B SS $B$N(B static field $B$G$"$k(B SS.instance $B$KBeF~$7$^$9!#(B
-$B$=$N8e!"%/%i%9(B SS $B$N(B void main(String[]) $B$r<B9T$7$^$9!#(B
+mj コマンドは、アプリケーションの起動時にまずクラス SS のインスタンスを生成し、
+クラス SS の static field である SS.instance に代入します。
+その後、クラス SS の void main(String[]) を実行します。
 </p><p>
-$B%/%i%9(B SS $B$N%a%=%C%I$O!"(B SS.instance $B$KF~$l$i$l$F$$$k(Bsingleton object $B$rDL$7$F(B
-$B8F$S=P$9$3$H$,$G$-$^$9!#(B
+クラス SS のメソッドは、 SS.instance に入れられているsingleton object を通して
+呼び出すことができます。
 </p><p>
-$BNc!'(B
+例：
 <pre>
 module t.ss.method {
   class SS {
@@ -843,28 +843,28 @@ module t.ss.method {
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="constructor">$B%3%s%9%H%i%/%?(B</a></h2><p>
-</p><h3>$B%3%s%9%H%i%/%?$N;EMM(B</h3><p>
-MJ $B$G$O(B Java $B8@8l$HF1MM$K%3%s%9%H%i%/%?$rDj5A$G$-$^$9!#(B
-$B$?$@$7!"(BJava $B8@8l$HHf$Y$F0J2<$N0c$$$,$"$j$^$9!#(B
+</p><h2><a name="constructor">コンストラクタ</a></h2><p>
+</p><h3>コンストラクタの仕様</h3><p>
+MJ では Java 言語と同様にコンストラクタを定義できます。
+ただし、Java 言語と比べて以下の違いがあります。
 <ul>
-<li>$B$9$Y$F$N%/%i%9$O!"%3%s%9%H%i%/%?$,$I$3$+$G>/$J$/$H$b#1$DDj5A$5$l$F$$$k(B
-$BI,MW$,$"$j$^$9!#(B
-$B!J(BJava $B$H0c$$!"%3%s%9%H%i%/%?$,#1$D$bDj5A$5$l$F$$$J$$>l9g$K(B
-$B!V%G%U%)%k%H%3%s%9%H%i%/%?!W$,<+F0E*$KDI2C$5$l$k$3$H$O$"$j$^$;$s!#!K(B
-<li>$B%3%s%9%H%i%/%?$K$b!VDj5A!W$H!V3HD%!W$,$"$j$^$9!#(B
-$BDj5A$NA0$K$O(B "define" $B$rIU$1$kI,MW$,$"$j$^$9!#(B
-<li>$B%3%s%9%H%i%/%?K\BN$N@hF,$O(B Java $BF1MM!"FCJL07$$$5$l$^$9!#(B
-$B@hF,$K(B super(...), this(...), original(...) $B$N$$$:$l$b$J$1$l$P!"(B
-$B@hF,$K<+F0E*$K(B super() $B$,DI2C$5$l$^$9!#(B
-$B!J(B original(...) $B$N=q$-K:$l$O%A%'%C%/$5$l$J$$$N$GCm0U$7$F$/$@$5$$!#!K(B
-<li> super(...) $B!J0z?t$r;}$C$?(B super class $B$N%3%s%9%H%i%/%?8F$S=P$7!K$O!"(B
- super class $B$,(B Java $B8@8l$N(B class $B$G$"$k>l9g$O%5%]!<%H$5$l$F$$$^$;$s!#(B
-$B%3%s%Q%$%k%(%i!<$K$J$j$^$9!#(B
-$B$?$@$7!"0z?t$,$J$$(B super() $B$O5v$5$l$^$9!#(B
+<li>すべてのクラスは、コンストラクタがどこかで少なくとも１つ定義されている
+必要があります。
+（Java と違い、コンストラクタが１つも定義されていない場合に
+「デフォルトコンストラクタ」が自動的に追加されることはありません。）
+<li>コンストラクタにも「定義」と「拡張」があります。
+定義の前には "define" を付ける必要があります。
+<li>コンストラクタ本体の先頭は Java 同様、特別扱いされます。
+先頭に super(...), this(...), original(...) のいずれもなければ、
+先頭に自動的に super() が追加されます。
+（ original(...) の書き忘れはチェックされないので注意してください。）
+<li> super(...) （引数を持った super class のコンストラクタ呼び出し）は、
+ super class が Java 言語の class である場合はサポートされていません。
+コンパイルエラーになります。
+ただし、引数がない super() は許されます。
 </ul>
 </p><p>
-$B$3$l$O!"%3%s%9%H%i%/%?$r;}$D%/%i%9(B Point $B$NNc$G$9!#(B
+これは、コンストラクタを持つクラス Point の例です。
 </p><p>
 <pre>
 module t.point.m {
@@ -891,15 +891,15 @@ module t.point.m {
 </pre>
 </p><p>
 </p><p>
-</p><h3>$B%3%s%9%H%i%/%?$N<B8=J}K!(B</h3><p>
-$B8=:_$N%P!<%8%g%s$N(BMJ $B%3%s%Q%$%i$K$h$k!"%3%s%9%H%i%/%?$N(B
-$B<B8=J}K!$K$D$$$F2r@b$7$^$9!#(B
+</p><h3>コンストラクタの実現方法</h3><p>
+現在のバージョンのMJ コンパイラによる、コンストラクタの
+実現方法について解説します。
 </p><p>
- new C(...) $B$H$$$&%3%s%9%H%i%/%?8F$S=P$7$O!"(B
-<tt>new C()._call_init_C(...)</tt> $B$K%^%/%mE83+$5$l$^$9!#(B
+ new C(...) というコンストラクタ呼び出しは、
+<tt>new C()._call_init_C(...)</tt> にマクロ展開されます。
 </p><p>
- define C(...){...} $B$H$$$&%3%s%9%H%i%/%?Dj5A$O!"(B
-$B<!$N$h$&$K#2$D$N%a%=%C%IDj5A$K%^%/%mE83+$5$l$^$9!#(B
+ define C(...){...} というコンストラクタ定義は、
+次のように２つのメソッド定義にマクロ展開されます。
 </p><p>
 <pre>
 define C _call_init_C(...){
@@ -909,8 +909,8 @@ define C _call_init_C(...){
 define void _init_C(...){...}
 </pre>
 </p><p>
- define abstract C(...); $B$H$$$&(B "abstract constructor" $B$O!"(B
-$B<!$N$h$&$K#2$D$N%a%=%C%I$K%^%/%mE83+$5$l$^$9!#(B
+ define abstract C(...); という "abstract constructor" は、
+次のように２つのメソッドにマクロ展開されます。
 </p><p>
 <pre>
 define C _call_init_C(...){
@@ -920,36 +920,36 @@ define C _call_init_C(...){
 define abstract void _init_C(...);
 </pre>
 </p><p>
- C(...){...} $B$H$$$&!V%3%s%9%H%i%/%?$N3HD%!W$O!"<!$N$h$&$K%^%/%mE83+$5$l$^$9!#(B
+ C(...){...} という「コンストラクタの拡張」は、次のようにマクロ展開されます。
 </p><p>
 <pre>
  void _init_C(...){...}
 </pre>
 </p><p>
-$B%3%s%9%H%i%/%?$N@hF,$K$O!"(B super(...), this(...) $B$,=q$1$^$9!#(B
-super(...) $B$,$"$l$P!"$=$l$O(B  _init_S(...) $B$K%^%/%mE83+$5$l$^$9!#(B
-this(...) $B$,$"$l$P!"$=$l$O(B _init_C(...) $B$K%^%/%mE83+$5$l$^$9!#(B
+コンストラクタの先頭には、 super(...), this(...) が書けます。
+super(...) があれば、それは  _init_S(...) にマクロ展開されます。
+this(...) があれば、それは _init_C(...) にマクロ展開されます。
 </p><p>
 </p><p>
-$BK\Mh$O(B _call_init_C $B$d(B _init_C $B$H$$$&%a%=%C%I$O%f!<%6$+$i$O8+$($J$$$h$&$K(B
-$B<BAu$9$Y$-$G$9$,!"8=:_$N<BAu$G$OC1$J$k%^%/%m$J$N$G!"(B
-$B%f!<%6$+$i$b8+$($F$7$^$$$^$9!#(B
-$B%3%s%Q%$%k%(%i!<$N%a%C%;!<%8$d%9%?%C%/%H%l!<%9$K$b$3$l$i$NL>A0$,=P$F$/$k$N$G!"(B
-$BCm0U$7$F$/$@$5$$!#(B
+本来は _call_init_C や _init_C というメソッドはユーザからは見えないように
+実装すべきですが、現在の実装では単なるマクロなので、
+ユーザからも見えてしまいます。
+コンパイルエラーのメッセージやスタックトレースにもこれらの名前が出てくるので、
+注意してください。
 </p><p>
 </p><p>
 </p><h2><a name="abstract-method">abstract method</a></h2><p>
 </p><p>
-</p><h3>abstract method $B$N%j%s%/;~%A%'%C%/(B</h3><p>
+</p><h3>abstract method のリンク時チェック</h3><p>
 </p><p>
-$B%/%i%9L>$rDj5A$9$k$H$-$K(B abstract $B$H$$$&(B modifier $B$rIU$1$k$H!"(B
-$B$=$N%/%i%9$O(B abstract class $B$K$J$j$^$9!#(B
-abstract $B$G$J$$%/%i%9$O!"%j%s%/;~$K(B abstract method $B$r;}$C$F$$$k$H(B
-$B%(%i!<$K$J$j$^$9!#!J(BJava $B$H$O0c$$!"%3%s%Q%$%k;~$K$O%(%i!<$K$J$j$^$;$s!#!K(B
-abstract class $B$O!"(B abstract method $B$,;D$C$F$$$F$b(B
-$B%j%s%/;~%(%i!<$K$O$J$j$^$;$s!#(B
+クラス名を定義するときに abstract という modifier を付けると、
+そのクラスは abstract class になります。
+abstract でないクラスは、リンク時に abstract method を持っていると
+エラーになります。（Java とは違い、コンパイル時にはエラーになりません。）
+abstract class は、 abstract method が残っていても
+リンク時エラーにはなりません。
 </p><p>
-$B$3$l$O(B abstract $B$J(B class C $B$H(B abstract $B$G$J$$(B class SubC $B$rDj5A$9$kNc$G$9!#(B
+これは abstract な class C と abstract でない class SubC を定義する例です。
 </p><p>
 <pre>
 module t.abst.m1 {
@@ -978,7 +978,7 @@ module t.abst.m2 extends t.abst.m1 {
 }
 </pre>
 </p><p>
-<tt>t.abst.m1</tt> $B$H(B <tt>t.abst.m2</tt> $B$r<B9T$9$k$H!"<!$N$h$&$J7k2L$K$J$j$^$9!#(B
+<tt>t.abst.m1</tt> と <tt>t.abst.m2</tt> を実行すると、次のような結果になります。
 <pre>
 % mj t.abst.m1
 MJLinker: non-abstract class t.abst.m1.SubC has an abstract method
@@ -992,10 +992,10 @@ MJLinker: non-abstract class t.abst.m1.SubC has an abstract method
 </pre>
 </p><p>
 </p><h3>interface</h3><p>
-interface $B$b!"(B Java $B8@8l$HF1MM$K;H$($^$9!#(B
-$B%a%=%C%I$rDj5A$9$k$H$-$O!"$d$O$j(B "define" $B$rIU$1$kI,MW$,$"$j$^$9!#(B
-interface $B$N%a%=%C%I$r(B "implements" $B$9$k%/%i%9B&$G$O!"(B
- "define" $B$rIU$1$kI,MW$O$"$j$^$;$s!#Nc!'(B
+interface も、 Java 言語と同様に使えます。
+メソッドを定義するときは、やはり "define" を付ける必要があります。
+interface のメソッドを "implements" するクラス側では、
+ "define" を付ける必要はありません。例：
 </p><p>
 </p><p>
 <pre>
@@ -1023,20 +1023,20 @@ module t.color {
 </pre>
 </p><p>
 </p><p>
-interface $B$KBP$9$k:9J,$NDI2C$O!"8=:_$O40A4$K$O<BAu$5$l$F$$$J$$$N$G!"(B
-$BCm0U$7$F$/$@$5$$!#(B
-field $B!JDj?t!K$NDI2C$N$_$,@5$7$/F0:n$7$^$9!#(B
+interface に対する差分の追加は、現在は完全には実装されていないので、
+注意してください。
+field （定数）の追加のみが正しく動作します。
 </p><p>
 </p><p>
-</p><h3>$B;EMM%b%8%e!<%k$H<BAu%b%8%e!<%k(B</h3><p>
+</p><h3>仕様モジュールと実装モジュール</h3><p>
 </p><p>
-abstract method $B$r;H$C$F!"#1$D$N%/%i%9$r!"(B
-$B30It%$%s%?!<%U%'!<%9$N$_$rDj5A$9$k%b%8%e!<%k(B
-$B!J(B<em>$B;EMM%b%8%e!<%k(B</em>$B$H8F$S$^$9!K$H!"(B
-$B<BAu$N$_$rDj5A$9$k%b%8%e!<%k!J(B<em>$B<BAu%b%8%e!<%k(B</em>$B$H8F$S$^$9!K$K(B
-$BJ,N%$9$k$3$H$,$G$-$^$9!#(B
-$BNc$($P!"A0@a$N%b%8%e!<%k(B <tt>t.point.m</tt> $B$O!"<!$N$h$&$K#3$D$N(B
-$B%b%8%e!<%k$KJ,$1$k$3$H$,$G$-$^$9!#(B
+abstract method を使って、１つのクラスを、
+外部インターフェースのみを定義するモジュール
+（<em>仕様モジュール</em>と呼びます）と、
+実装のみを定義するモジュール（<em>実装モジュール</em>と呼びます）に
+分離することができます。
+例えば、前節のモジュール <tt>t.point.m</tt> は、次のように３つの
+モジュールに分けることができます。
 <pre>
 module t.point {
   define class Point {
@@ -1071,22 +1071,22 @@ module t.point.test extends t.point {
 }
 </pre>
 </p><p>
-$B%/%i%9(B Point $B$N30It%$%s%?!<%U%'!<%9$rDj5A$9$k%b%8%e!<%k$,!"(B <tt>t.point</tt> $B!"(B
-$BFbIt<BAu$rDj5A$9$k%b%8%e!<%k$,(B <tt>t.point.implementation</tt> $B$G$9!#(B
-$B%b%8%e!<%k(B <tt>t.point.test</tt>$B$O(B <tt>t.point</tt> $B$K$N$_0MB8$7!"(B
-<tt>t.point.implementation</tt> $B$K$O0MB8$7$F$$$J$$E@$KCm0U$7$F$/$@$5$$!#(B
+クラス Point の外部インターフェースを定義するモジュールが、 <tt>t.point</tt> 、
+内部実装を定義するモジュールが <tt>t.point.implementation</tt> です。
+モジュール <tt>t.point.test</tt>は <tt>t.point</tt> にのみ依存し、
+<tt>t.point.implementation</tt> には依存していない点に注意してください。
 </p><p>
-$B$3$N%W%m%0%i%`$r<B9T$9$k$K$OCm0U$,I,MW$G$9!#(B
-<tt>t.point.test</tt> $B$@$1$r(B selected module $B$H$7$F;XDj$9$k$H<!$N$h$&$K(B
-$B%(%i!<$K$J$j$^$9!#(B
+このプログラムを実行するには注意が必要です。
+<tt>t.point.test</tt> だけを selected module として指定すると次のように
+エラーになります。
 <pre>
 % mj t.point.test
 MJLinker: non-abstract class t.point.Point has an abstract method
  : abstract int t.point::getY()
 </pre>
 </p><p>
-$B<!$N$h$&$K<BAu%b%8%e!<%k$b(B selected module $B$K2C$($k$+!"(B
-mjball $B%3%^%s%I$r;H$C$F$9$Y$F$N%b%8%e!<%k$r$R$H$^$H$a$K$7$F$*$/I,MW$,$"$j$^$9!#(B
+次のように実装モジュールも selected module に加えるか、
+mjball コマンドを使ってすべてのモジュールをひとまとめにしておく必要があります。
 </p><p>
 <pre>
 % mj -s t.point.implementation t.point.test
@@ -1096,11 +1096,11 @@ mjball $B%3%^%s%I$r;H$C$F$9$Y$F$N%b%8%e!<%k$r$R$H$^$H$a$K$7$F$*$/I,MW$,$"$j$^$9
 </p><p>
 </p><p>
 </p><p>
-</p><h3>$B%3%i%\%l!<%7%g%s%Y!<%9$N%b%8%e!<%k2=(B</h3><p>
+</p><h3>コラボレーションベースのモジュール化</h3><p>
 </p><p>
-$B:9J,%Y!<%9%b%8%e!<%k$r;H$C$F!"J#?t$N%/%i%9$r$^$?$,$k%3%i%\%l!<%7%g%s$r!"(B
-$BJL$N%b%8%e!<%k$KJ,N%$9$k$3$H$,2DG=$G$9!#(B
-$B<!$N$h$&$J(B Java $B$G=q$+$l$?%W%m%0%i%`$r9M$($^$9!#(B
+差分ベースモジュールを使って、複数のクラスをまたがるコラボレーションを、
+別のモジュールに分離することが可能です。
+次のような Java で書かれたプログラムを考えます。
 </p><p>
 <pre>
 class A {  // class A uses class B
@@ -1113,11 +1113,11 @@ class B {  // class B uses class A
 }
 </pre>
 </p><p>
-$B$3$N%W%m%0%i%`$O!"%/%i%9(B A $B$H%/%i%9(B B $B$,$=$l$>$lAj8_$K0MB8$7$F$$$k$?$a!"(B
-$B%b%8%e%i%j%F%#$N0-$$9=B$$r$7$F$$$^$9!#(B
-$B$7$+$7#2$D$N%/%i%9$O!"<B<AE*$K$O!"(B
-$BFHN)$7$?#2$D$N%3%i%\%l!<%7%g%s$r4^$s$G$$$^$9!#(B
-$B$3$N%W%m%0%i%`$O!"(B MJ $B$G$O<!$N$h$&$K%b%8%e!<%kJ,3d$9$k$3$H$,$G$-$^$9!#(B
+このプログラムは、クラス A とクラス B がそれぞれ相互に依存しているため、
+モジュラリティの悪い構造をしています。
+しかし２つのクラスは、実質的には、
+独立した２つのコラボレーションを含んでいます。
+このプログラムは、 MJ では次のようにモジュール分割することができます。
 </p><p>
 <pre>
 module A_B {
@@ -1142,36 +1142,36 @@ module collaboration_m2_m4 extends A_B {
 }
 </pre>
 </p><p>
-$B$3$N$h$&$K%3%i%\%l!<%7%g%s$rJL$N%b%8%e!<%k$KJ,N%$9$k$3$H$G!"(B
-$B0J2<$N%a%j%C%H$,@8$8$^$9!#(B
+このようにコラボレーションを別のモジュールに分離することで、
+以下のメリットが生じます。
 </p><p>
 <ul>
-<li> $B$=$l$>$l$N%b%8%e!<%k$,0MB8$9$k%=!<%9%3!<%I$N%5%$%:$,8:$j$^$9!#(B
-$B$3$l$O0lHL$K$O!"J]<i@-$,8~>e$9$k$3$H$r0UL#$7$^$9!#(B
-<li> collaboration_m1_m3 $B$H(B collaboration_m2_m4 $B$O(B
-$BAj8_$KA4$/0MB8$7$F$$$J$$$?$a!"(B
-$BB>J}$,B8:_$7$F$$$J$/$F$b!"0lJ}$r%3%s%Q%$%k!&<B9T$9$k$3$H$,2DG=$G$9!#(B
-$B$3$N$?$a!"JL!9$N%W%m%0%i%^!<$K$h$k3+H/!&%F%9%H$,2DG=$K$J$j$^$9!#(B
-<li> $B$=$l$>$l$N%3%i%\%l!<%7%g%s$H$O(B
-$B0c$&%P!<%8%g%s$N%b%8%e!<%k$r<BAu$9$k$3$H$K$h$j!"(B
-$B0[$J$k%3%s%U%#%.%e%l!<%7%g%s$N%"%W%j%1!<%7%g%s$r9=C[$G$-$k$h$&$K$J$j$^$9!#(B
-$BNc$($P!"(B collaboration_m1_m3 $B$NBe$o$j$K!"(B my_collaboration $B$H$$$&(B
-$B%b%8%e!<%k$r<BAu$7$FMQ$$$k$3$H$,2DG=$K$J$j$^$9!#(B
-$B$3$N;~!"B>$N%b%8%e!<%k$N:F%3%s%Q%$%k$OI,MW$"$j$^$;$s!#(B
+<li> それぞれのモジュールが依存するソースコードのサイズが減ります。
+これは一般には、保守性が向上することを意味します。
+<li> collaboration_m1_m3 と collaboration_m2_m4 は
+相互に全く依存していないため、
+他方が存在していなくても、一方をコンパイル・実行することが可能です。
+このため、別々のプログラマーによる開発・テストが可能になります。
+<li> それぞれのコラボレーションとは
+違うバージョンのモジュールを実装することにより、
+異なるコンフィギュレーションのアプリケーションを構築できるようになります。
+例えば、 collaboration_m1_m3 の代わりに、 my_collaboration という
+モジュールを実装して用いることが可能になります。
+この時、他のモジュールの再コンパイルは必要ありません。
 </ul>
 </p><p>
 </p><p>
-</p><h2><a name="scope">$BL>A06u4V(B</a></h2><p>
-</p><h3>$BL>A06u4V$N7Q>5(B</h3><p>
-$B%b%8%e!<%k$N7Q>5$O!":9J,$NDI2C$NB>$K!"(B
-$BL>A06u4V$N7Q>5$b0UL#$7$^$9!#(B
+</p><h2><a name="scope">名前空間</a></h2><p>
+</p><h3>名前空間の継承</h3><p>
+モジュールの継承は、差分の追加の他に、
+名前空間の継承も意味します。
 </p><p>
-$B%3%s%Q%$%i$O!"$"$k%b%8%e!<%k$r%3%s%Q%$%k$9$k:]!"(B
-$B$=$N%b%8%e!<%k$,(B extends $B$7$F$$$J$$%b%8%e!<%k$OB8:_$7$J$$$b$N$H$7$F(B
-$B=hM}$7$^$9!#(B
-$BNc$($P!"<!$N%W%m%0%i%`$O!"%3%s%Q%$%k%(%i!<$K$J$j$^$9!#(B
-m2 $B$,(B extends m1 $B$H$$$&@k8@$r$7$F$$$J$$$N$G!"(B m2 $B$+$i$O(B m1 $B$NCf$N%/%i%9(B A $B$,(B
-$B8+$($J$$$+$i$G$9!#(B
+コンパイラは、あるモジュールをコンパイルする際、
+そのモジュールが extends していないモジュールは存在しないものとして
+処理します。
+例えば、次のプログラムは、コンパイルエラーになります。
+m2 が extends m1 という宣言をしていないので、 m2 からは m1 の中のクラス A が
+見えないからです。
 <pre>
 module m1 {
   define class A {}
@@ -1188,12 +1188,12 @@ module m2 {
 </p><p>
 </p><p>
 </p><p>
-</p><h3>$BL>A06u4V$N%M%9%H$NI=8=J}K!(B</h3><p>
+</p><h3>名前空間のネストの表現方法</h3><p>
 </p><p>
-Java $B8@8l$G$O!"(B package $B$H(B
- nested class $B$rMQ$$$FL>A06u4V$N%M%9%H$rI=8=$G$-$^$9!#(B
-MJ $B$G$O!"L>A06u4V$N%M%9%H$O!"%b%8%e!<%k$N7Q>5$K$h$C$FI=8=$7$^$9!#(B
-$BNc$($P<!$N$h$&$J(B Java $B$N%W%m%0%i%`$r9M$($^$9!#(B
+Java 言語では、 package と
+ nested class を用いて名前空間のネストを表現できます。
+MJ では、名前空間のネストは、モジュールの継承によって表現します。
+例えば次のような Java のプログラムを考えます。
 <pre>
 public class A {
   protected static int x = 123;
@@ -1206,7 +1206,7 @@ public class A {
 }
 </pre>
 </p><p>
-$B$3$l$HF1MM$N%W%m%0%i%`$r(B MJ $B$G$O<!$N$h$&$KI=8=$7$^$9!#(B
+これと同様のプログラムを MJ では次のように表現します。
 <pre>
 module t.nest.interface_A_B {
   define class A { }
@@ -1234,74 +1234,74 @@ module t.nest.test extends t.nest.interface_A_B {
 }
 </pre>
 </p><p>
-$B$3$N%W%m%0%i%`$r<B9T$9$k$H!"<!$N$h$&$K$J$j$^$9!#(B
+このプログラムを実行すると、次のようになります。
 <pre>
 % mj -s t.nest.implementation_A_B t.nest.test
 123
 </pre>
 </p><p>
-$B%b%8%e!<%k(B interface_A_B $B$O%/%i%9(B A, B $B$N(B public $B$JL>A0$rDj5A$7!"(B
-$B%b%8%e!<%k(B implementation_A_B $B$O%/%i%9(B A, B $B$N<BAu$H(B protected $B$JL>A0$r(B
-$BDj5A$7$F$$$^$9!#(B
+モジュール interface_A_B はクラス A, B の public な名前を定義し、
+モジュール implementation_A_B はクラス A, B の実装と protected な名前を
+定義しています。
 </p><p>
-$B$3$NNc$G$O!"%/%i%9(B B $B$NCf$+$i%/%i%9(B A $B$N(B static field $B$KBP$7!"(B
- <tt>A.x</tt> $B$H=q$$$FD>@\%"%/%;%9$7$F$$$^$9!#(B
-$B$3$N$h$&$K!"(B MJ $B$G$O!"(B field $B$K8B$i$:!"$9$Y$F$NL>A0$O!"(B
-$BF10l%b%8%e!<%k$"$k$$$O;RB9%b%8%e!<%k$+$i(B
-$BD>@\%"%/%;%9$9$k$3$H$,$G$-$^$9!#(B
-$B$3$N%7%s%W%k$J%k!<%k$@$1$G!"=>Mh$N%*%V%8%'%/%H;X8~8@8l$N(B
-public/protected, nested class $B$N5!G=$r$9$Y$FI=8=$7$^$9(B
-$B!J(B<a href="faq-spec.html#encapsulation">FAQ $B;2>H(B</a>$B!K!#(B
+この例では、クラス B の中からクラス A の static field に対し、
+ <tt>A.x</tt> と書いて直接アクセスしています。
+このように、 MJ では、 field に限らず、すべての名前は、
+同一モジュールあるいは子孫モジュールから
+直接アクセスすることができます。
+このシンプルなルールだけで、従来のオブジェクト指向言語の
+public/protected, nested class の機能をすべて表現します
+（<a href="faq-spec.html#encapsulation">FAQ 参照</a>）。
 </p><p>
-Java $B$G$O(B protected member $B$O(B subclass $B$+$i%"%/%;%9$G$-$^$9$,!"(B
-MJ $B$G$O!"L>A0$N;2>H2DG=@-$K4X$7$F(B subclass $B$OFCJL07$$$5$l$^$;$s!#(B
-$B$7$?$,$C$F!">e$NNc$N(B Java $B$G$NI=8=$H(B MJ $B$G$NI=8=$O!"(B
-$BCf?H$,40A4$KF10l$H$$$&$o$1$G$O$"$j$^$;$s!#(B
-MJ $B$N$3$N;EMM$,2?$+ITET9g$r0z$-5/$3$7F@$k$N$+$I$&$+$O!"(B
-$B8=;~E@$G$O$o$+$j$^$;$s!#(B
-$B:#$N$H$3$m$O!"(B MJ $B$G$OL>A0$N;2>H2DG=@-$K4X$7$F(B subclass $B$NFCJL07$$$O(B
-$BITMW$@$H9M$($F$$$^$9!#(B
-</p><p>
-</p><p>
-</p><h3>$BL>A06u4V$NB?=E7Q>5(B</h3><p>
-nested class $B$G$O!"F~$l;R>u$NL>A06u4V$7$+I=8=$G$-$^$;$s$,!"(B
-MJ $B$G$O%b%8%e!<%k$NB?=E7Q>5$,2DG=$J$?$a!"(B
-$B=E$J$j$,$"$k$h$&$J!"$h$j0lHLE*$JL>A06u4V$rI=8=$G$-$^$9!#(B
+Java では protected member は subclass からアクセスできますが、
+MJ では、名前の参照可能性に関して subclass は特別扱いされません。
+したがって、上の例の Java での表現と MJ での表現は、
+中身が完全に同一というわけではありません。
+MJ のこの仕様が何か不都合を引き起こし得るのかどうかは、
+現時点ではわかりません。
+今のところは、 MJ では名前の参照可能性に関して subclass の特別扱いは
+不要だと考えています。
 </p><p>
 </p><p>
+</p><h3>名前空間の多重継承</h3><p>
+nested class では、入れ子状の名前空間しか表現できませんが、
+MJ ではモジュールの多重継承が可能なため、
+重なりがあるような、より一般的な名前空間を表現できます。
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="Java">Java $B8@8l$N%/%i%9%i%$%V%i%j$NMxMQ(B</a></h2><p>
-</p><p>
-MJ $B$+$i$O!"(B  CLASSPATH $B$KF~$C$F$$$k(B Java $B8@8l$N%/%i%9%i%$%V%i%j$,MxMQ$G$-$^$9!#(B
-</p><p>
-MJ $B$N%/%i%9$O!"(B Java $B$N%/%i%9$r7Q>5$7$?$j(B
-Java $B$N%$%s%?!<%U%'!<%9$r(B implements $B$9$k$3$H$,$G$-$^$9!#(B
-$B$3$N$H$-!"8=:_$N<BAu$G$O$$$/$D$+@)Ls$,$"$j$^$9!#!J>\$7$/$O(B
-<a href="spec.html#java-class-inheritance">$B8@8l;EMM%a%b(B</a>$B;2>H!#!K(B
 </p><p>
 </p><p>
-$B7Q>5$K4X$9$k@)Ls0J30$O!"@)Ls$O!J$?$V$s!KA4$/$"$j$^$;$s!#(B
-$B$9$Y$F$N%/%i%9%i%$%V%i%j$O!"(B Java $B8@8l$+$iMxMQ$9$k$N$H(B
-$BA4$/F1$8$h$&$K(B MJ $B$+$iMxMQ$G$-$^$9!#(B
+</p><h2><a name="Java">Java 言語のクラスライブラリの利用</a></h2><p>
 </p><p>
-MJ $B$GDj5A$7$?%/%i%9$O!"$=$N%b%8%e!<%k$r(B extends $B$7$J$$$H;2>H$G$-$^$;$s$,!"(B
-Java $B$N%/%i%9$O!"40A48BDjL>$r;XDj$9$l$P;2>H$G$-$^$9!#(B
+MJ からは、  CLASSPATH に入っている Java 言語のクラスライブラリが利用できます。
 </p><p>
-Java $B$N(B import $B@k8@$NBe$o$j$K$J$k$b$N$H$7$F!"(B
-MJ $B$K$O(B <em>imports $B@k8@(B</em>$B!JKvHx$N(B s $B$KCm0U!K$,$"$j$^$9!#(B
-module $BDj5A$N@hF,$G(B imports $B@k8@$7$F$*$/$3$H$G!"(B
-Java $B8@8l$HF1MM!"%/%i%9$rC1=cL>$G;2>H$G$-$k$h$&$K$J$j$^$9!#(B
-</p><p>
-imports $B@k8@$N8z2L$O!"(B sub-module $B$K7Q>5$5$l$^$9!#(B
-$B!J7P83>e$3$N;EMM$NJ}$,JXMx$G$9!#!K(B
-$BL>A06u4V$r1x@w$7$J$$$h$&$K!"(B imports $B@k8@$O$G$-$k$@$1(B
-$B%b%8%e!<%k7Q>5%0%i%U$N2<B&!J(B sub-module $BB&!K$G9T$C$?J}$,$h$$$G$7$g$&!#(B
+MJ のクラスは、 Java のクラスを継承したり
+Java のインターフェースを implements することができます。
+このとき、現在の実装ではいくつか制約があります。（詳しくは
+<a href="spec.html#java-class-inheritance">言語仕様メモ</a>参照。）
 </p><p>
 </p><p>
-$B$3$l$O!"(B imports $B@k8@$r;H$C$?%W%m%0%i%`Nc$G$9!#(B
-imports $B@k8@$N:G8e$K(B "<tt>;</tt>" $B$O=q$+$J$$E@$KCm0U$7$F$/$@$5$$!#(B
+継承に関する制約以外は、制約は（たぶん）全くありません。
+すべてのクラスライブラリは、 Java 言語から利用するのと
+全く同じように MJ から利用できます。
+</p><p>
+MJ で定義したクラスは、そのモジュールを extends しないと参照できませんが、
+Java のクラスは、完全限定名を指定すれば参照できます。
+</p><p>
+Java の import 宣言の代わりになるものとして、
+MJ には <em>imports 宣言</em>（末尾の s に注意）があります。
+module 定義の先頭で imports 宣言しておくことで、
+Java 言語と同様、クラスを単純名で参照できるようになります。
+</p><p>
+imports 宣言の効果は、 sub-module に継承されます。
+（経験上この仕様の方が便利です。）
+名前空間を汚染しないように、 imports 宣言はできるだけ
+モジュール継承グラフの下側（ sub-module 側）で行った方がよいでしょう。
+</p><p>
+</p><p>
+これは、 imports 宣言を使ったプログラム例です。
+imports 宣言の最後に "<tt>;</tt>" は書かない点に注意してください。
 <pre>
 module t.javalib.m1
 imports java.io.*
@@ -1323,29 +1323,29 @@ module t.javalib.m2 extends t.javalib.m1 {
 </p><p>
 </p><h2><a name="SharpPlus"> #+comment</a></h2><p>
 </p><p>
-MJ $B$G$O!"(B Java $B$HF1MM$N(B <tt>//</tt> $B!"(B <tt>/*...*/</tt>
-$B$H$$$&%3%a%s%H$,;H$($^$9!#(B
-$B$=$l$K2C$(!"(B <em>#+identifier &lt;$B9=J8(B&gt;</em> $B$H$$$&7A<0$N%3%a%s%H%"%&%H$N(B
-$BJ}K!$,$"$j$^$9!#(B
-$BNc$($P!"(B #+comment $B$H=q$/$H!"$=$ND>8e$N9=J8#1$D$,%3%a%s%H%"%&%H$5$l$^$9!#(B
-$B$?$@$7$=$N9=J8$K%7%s%?%C%/%9%(%i!<$,$"$C$F$O$$$1$^$;$s!#(B
+MJ では、 Java と同様の <tt>//</tt> 、 <tt>/*...*/</tt>
+というコメントが使えます。
+それに加え、 <em>#+identifier &lt;構文&gt;</em> という形式のコメントアウトの
+方法があります。
+例えば、 #+comment と書くと、その直後の構文１つがコメントアウトされます。
+ただしその構文にシンタックスエラーがあってはいけません。
 </p><p>
- #+identifier $B$N8e$m$K=q$1$k9=J8$O!"(B
- module $BDj5A!"%/%i%9!&%$%s%?!<%U%'!<%9Dj5A!"(B
-$B%a%s%PDj5A$^$?$O%9%F!<%H%a%s%H$K8B$i$l$^$9!#(B
+ #+identifier の後ろに書ける構文は、
+ module 定義、クラス・インターフェース定義、
+メンバ定義またはステートメントに限られます。
 </p><p>
- #+ $B$O%M%9%H$9$k$3$H$b2DG=$G$9!#(B
+ #+ はネストすることも可能です。
 </p><p>
-$BJ#?t$N%b%8%e!<%k$r0lEY$K%3%a%s%H%"%&%H$7$?$$;~$N$?$a$K!"(B
-module $B$r(B { } $B$G0O$a$k$h$&$K$J$C$F$$$^$9!#(B
-$BJ#?t$N%b%8%e!<%k$r(B { } $B$G0O$s$G$b!"%W%m%0%i%`$H$7$F$N0UL#$OJQ$o$j$^$;$s!#(B
-$B!J%9%3!<%W$r@)8B$7$?$j%b%8%e!<%k$r%0%k!<%W2=$7$?$j$9$k8z2L$O0l@Z$J$$$N$G(B
-$BCm0U$7$F$/$@$5$$!#!K(B
+複数のモジュールを一度にコメントアウトしたい時のために、
+module を { } で囲めるようになっています。
+複数のモジュールを { } で囲んでも、プログラムとしての意味は変わりません。
+（スコープを制限したりモジュールをグループ化したりする効果は一切ないので
+注意してください。）
 </p><p>
- #+ $B$O!"(B // $B$rA0$K=q$/$3$H$G!"L58z$K$9$k$3$H$,$G$-$^$9!#(B
-$B0l;~E*$K%3%a%s%H%"%&%H$N8z2L$r$O$:$9;~$KJXMx$G$9!#(B
+ #+ は、 // を前に書くことで、無効にすることができます。
+一時的にコメントアウトの効果をはずす時に便利です。
 </p><p>
-$B$3$l$O!"(B #+comment $B$r;H$C$?%W%m%0%i%`Nc$G$9!#(B
+これは、 #+comment を使ったプログラム例です。
 </p><p>
 <pre>
 module t.sharpPlus.m1 {
@@ -1374,7 +1374,7 @@ module t.sharpPlus.m1 {
 }
 </pre>
 </p><p>
-$B>e$N%W%m%0%i%`$O!"7k6I!"<!$N%W%m%0%i%`$HEy2A$G$9!#(B
+上のプログラムは、結局、次のプログラムと等価です。
 <pre>
 module t.sharpPlus.m1 {
   class SS {
@@ -1390,37 +1390,37 @@ module t.sharpPlus.m1 {
 </pre>
 </p><p>
 </p><p>
-$B<BAu$NET9g>e!"(B #+comment &lt;Statement&gt; $B$O!"(B
- ";" $B!J$9$J$o$A6uJ8!K$KJQ49$5$l$^$9!#(B
-return $BJ8$J$I$N8e$m$K$3$l$r=q$/$H!"(B
-jikes $B%3%s%Q%$%i$G$O!"(B "This statement is unreachable." $B$H$J$k$N$G(B
-$BCm0U$7$F$/$@$5$$!#(B
+実装の都合上、 #+comment &lt;Statement&gt; は、
+ ";" （すなわち空文）に変換されます。
+return 文などの後ろにこれを書くと、
+jikes コンパイラでは、 "This statement is unreachable." となるので
+注意してください。
 </p><p>
- #+ $B9=J8$O!"(B C $B8@8l$N(B#ifdef $B$N$h$&$J>r7o%3%s%Q%$%k$N5!9=$H$7$F$b;H$($^$9!#(B
+ #+ 構文は、 C 言語の#ifdef のような条件コンパイルの機構としても使えます。
 <pre>
 mjc -J-Ddebug=true 
 </pre>
-$B$H$$$&%*%W%7%g%s$rIU$1$k$3$H$G!"(B
- #+debug $B0J9_$N9=J8$OM-8z$K!"(B #-debug $B0J9_$N9=J8$OL58z$K$J$j$^$9!#(B
+というオプションを付けることで、
+ #+debug 以降の構文は有効に、 #-debug 以降の構文は無効になります。
 </p><p>
 </p><p>
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="uses"> uses $B@k8@(B</a></h2><p>
+</p><h2><a name="uses"> uses 宣言</a></h2><p>
 </p><p>
-$B%b%8%e!<%k4V$N!V(Bextends $B$9$k!W$H$$$&4X78$K$O%5%$%/%k$,5v$5$l$^$;$s!#(B
-$B$7$+$7!"FC$K%W%m%0%i%`3+H/$N=i4|$NCJ3,$G$O$I$&$7$F$b!"(B
-$B%b%8%e!<%k4V$NAj8_0MB8$,@8$8$^$9!#(B
-$B$=$3$GF3F~$5$l$?$N$,(B <em>uses $B@k8@(B</em>$B$G$9!#(B
+モジュール間の「extends する」という関係にはサイクルが許されません。
+しかし、特にプログラム開発の初期の段階ではどうしても、
+モジュール間の相互依存が生じます。
+そこで導入されたのが <em>uses 宣言</em>です。
 </p><p>
 </p><p>
-uses $B@k8@$O!"(B extends $B@k8@$HF1MM$K!"L>A06u4V$N7Q>5$r9T$$$^$9$,!"(B
-$B;2>H4X78$N%5%$%/%k$,5v$5$l$^$9!#(B
+uses 宣言は、 extends 宣言と同様に、名前空間の継承を行いますが、
+参照関係のサイクルが許されます。
 </p><p>
-$B$=$NBe$o$j!"(B uses $B@k8@$r;H$&$HJ,3d%3%s%Q%$%k$O$G$-$J$/$J$j$^$9!#(B
-$BNc$($P!"<!$N%W%m%0%i%`Nc$G!"#2$D$N%b%8%e!<%k$,$=$l$>$l(B
- A.java, B.java $B$H$$$&%U%!%$%k$K=q$+$l$F$$$k$H$7$^$9!#(B
+その代わり、 uses 宣言を使うと分割コンパイルはできなくなります。
+例えば、次のプログラム例で、２つのモジュールがそれぞれ
+ A.java, B.java というファイルに書かれているとします。
 </p><p>
 <pre>
 module t.uses.a uses t.uses.b {
@@ -1437,32 +1437,32 @@ module t.uses.b uses t.uses.a {
 }
 </pre>
 </p><p>
-$B$3$N%W%m%0%i%`$r%3%s%Q%$%k$9$k$K$O!"(B A.java, B.java $B$r!"(B
-mjc $B$N0z?t$KF1;~$KM?$($J$1$l$P$J$j$^$;$s!#(B
-$B!J$=$&$7$J$$$H%3%s%Q%$%k%(%i!<$K$J$k$+!"8E$$%3%s%Q%$%k7k2L$r(B
-$B;2>H$7$F%3%s%Q%$%k$9$k$3$H$K$J$j$^$9!#!K(B
+このプログラムをコンパイルするには、 A.java, B.java を、
+mjc の引数に同時に与えなければなりません。
+（そうしないとコンパイルエラーになるか、古いコンパイル結果を
+参照してコンパイルすることになります。）
 </p><p>
 </p><p>
 </p><p>
-extends $B@k8@$O!"%b%8%e!<%k$r(B linearize $B$9$k$H$-$N>e2<4X78$N@)Ls$rM?$($^$9$,!"(B
-uses $B@k8@$O!"M?$($^$;$s!#(B
-extends $B@k8@$H(B uses $B@k8@$N0c$$$O!"$3$l$@$1$G$9!#(B
+extends 宣言は、モジュールを linearize するときの上下関係の制約を与えますが、
+uses 宣言は、与えません。
+extends 宣言と uses 宣言の違いは、これだけです。
 </p><p>
-$B%b%8%e!<%k(B a $B$GDj5A$5$l$?L>A0!J%/%i%9!&%$%s%?!<%U%'!<%9$^$?$O%a%=%C%I!K$r(B
-$B%b%8%e!<%k(B b $B$G3HD%$9$k>l9g$O!"(B linearized list $B$G(B 
-b $B$O(B a $B$h$j$b2<$KMh$J$$$H!"@5$7$$%W%m%0%i%`$K$O$J$j$^$;$s!#(B
-$B$7$?$,$C$F!"$3$N>l9g$O(B b uses a $B$G$O$J$/!"(B
-b extends a $B$H@k8@$7$J$1$l$P$J$j$^$;$s!#(B
+モジュール a で定義された名前（クラス・インターフェースまたはメソッド）を
+モジュール b で拡張する場合は、 linearized list で 
+b は a よりも下に来ないと、正しいプログラムにはなりません。
+したがって、この場合は b uses a ではなく、
+b extends a と宣言しなければなりません。
 </p><p>
-$B$=$l0J30$N>l9g!"$D$^$j(B a $B$GDj5A$5$l$?L>A0$r(B b $B$GMxMQ$7$F$$$k$@$1$J$i$P!"(B
-b uses a $B$H@k8@$7$F$b$+$^$$$^$;$s!#(B
+それ以外の場合、つまり a で定義された名前を b で利用しているだけならば、
+b uses a と宣言してもかまいません。
 </p><p>
 </p><p>
 </p><p>
 </p><p>
 </p><h2><a name="dynamic-loading">Dynamic loading</a></h2><p>
-MJ $B$G$b(B Java $BF1MM$K%/%i%9$N(B dynamic loading $B$r$9$k$3$H$,2DG=$G$9!#(B
-$B<!$N%W%m%0%i%`$O!"(Bdynamic loading $B$NNc$G$9!#(B
+MJ でも Java 同様にクラスの dynamic loading をすることが可能です。
+次のプログラムは、dynamic loading の例です。
 </p><p>
 <pre>
 module t.forName {
@@ -1486,46 +1486,46 @@ module t.forName {
 }
 </pre>
 </p><p>
-$B$J$*!"8=:_$N<BAu$G$O(B c.newInstance(); $B$r<B9T$7$?$H$-$K!"(B
-$B%/%i%9(B A $B$N%3%s%9%H%i%/%?$O8F$P$l$J$$$N$GCm0U$7$F2<$5$$!#(B
-$B%a%=%C%I(B _init_A $B$rL@<(E*$K8F$S=P$9I,MW$,$"$j$^$9!#(B
+なお、現在の実装では c.newInstance(); を実行したときに、
+クラス A のコンストラクタは呼ばれないので注意して下さい。
+メソッド _init_A を明示的に呼び出す必要があります。
 </p><p>
 </p><p>
-</p><h2><a name="fqn">$B40A48BDjL>(B(Fully-Qualified-Name, FQN)</a></h2><p>
+</p><h2><a name="fqn">完全限定名(Fully-Qualified-Name, FQN)</a></h2><p>
 </p><p>
-$BBg5,LO$J%"%W%j%1!<%7%g%s$G$O!"0lHL$KL>A0$N>WFM$,?<9o$JLdBj$H$J$j$^$9!#(B
-MJ $B$G$OFC$K%b%8%e!<%k$NB?=E7Q>5$K$h$C$F!"(B
-$BJL!9$KDj5A$5$l$l$?L>A0$,!">WFM$9$k2DG=@-$,$"$j$^$9!#(B
+大規模なアプリケーションでは、一般に名前の衝突が深刻な問題となります。
+MJ では特にモジュールの多重継承によって、
+別々に定義されれた名前が、衝突する可能性があります。
 </p><p>
-Java $B8@8l$G$O!"(B import $B@k8@$G@8$8$k%/%i%9L>$N>WFM$r2r7h$9$k$?$a$K(B
-$B%/%i%9$N40A48BDjL>$r;HMQ$7$^$9!#(B
-MJ $B$O$3$N%"%$%G%"$r!"%U%#!<%k%I!&%a%=%C%IL>$K$bE,MQ$9$k$3$H$G!"(B
-$BL>A0$N>WFM$NLdBj$r2r7h$7$F$$$^$9!#(B
+Java 言語では、 import 宣言で生じるクラス名の衝突を解決するために
+クラスの完全限定名を使用します。
+MJ はこのアイデアを、フィールド・メソッド名にも適用することで、
+名前の衝突の問題を解決しています。
 </p><p>
-MJ $B$G$O!"(B
-$B%=!<%9%3!<%ICf$N$"$kCOE@$K$*$$$F!"#2$D0J>e$N(B foo $B$H$$$&L>A0$,;2>H2DG=$J;~!"(B
-$B$b$7$=$NCOE@$G(B foo $B$H$$$&!VC1=cL>!W$r;H$C$?$i!"(B
- ambiguous error $B$K$J$j$^$9!#(B
-MJ $B$G$O!"L>A0$N(B shadow (hide $B$H$b8@$$$^$9(B) $B$O7h$7$F5/$-$^$;$s!#(B
-ambiguous error $B$,5/$-$?>l9g!"%W%m%0%i%^!<$O!V40A48BDjL>!W$r(B
-$B;XDj$9$k$3$H$GI,$:$=$N%(%i!<$r2sHr$9$k$3$H$,$G$-$^$9!#(B
-$B$3$N86B'$O!"$9$Y$F$NL>A0!J7?L>!"%U%#!<%k%IL>!"(B
-$B%a%=%C%IL>!"%m!<%+%kJQ?tL>!K$GE0Dl$5$l$F$$$^$9!#(B
+MJ では、
+ソースコード中のある地点において、２つ以上の foo という名前が参照可能な時、
+もしその地点で foo という「単純名」を使ったら、
+ ambiguous error になります。
+MJ では、名前の shadow (hide とも言います) は決して起きません。
+ambiguous error が起きた場合、プログラマーは「完全限定名」を
+指定することで必ずそのエラーを回避することができます。
+この原則は、すべての名前（型名、フィールド名、
+メソッド名、ローカル変数名）で徹底されています。
 </p><p>
-$B!J(BJava $B$O!"L>A0$N>WFM$N07$$J}$,Hs>o$KITE}0l$G$9!#(B
-$BNc$($P%m!<%+%kJQ?t$O30B&$N%m!<%+%kJQ?t$r(B shadow $B$G$-$J$$$N$K!"(B
-$B%m!<%+%kJQ?t$G%U%#!<%k%I$r(B shadow $B$9$k$3$H$O$G$-$^$9!#(B
-$B$^$?!"(B interface $B$N%U%#!<%k%I!JDj?t!K$O!"B?=E7Q>5$K$h$C$FL>A0$,>WFM$7$F$b(B
-$BJL!9$NDj?t$H$7$F07$o$l$^$9$,!"(B interface $B$N%a%=%C%I$O!"(B
-signature $B$,F1$8$J$i$PF10l$N%a%=%C%I$H$7$F07$o$l$^$9!#!K(B
+（Java は、名前の衝突の扱い方が非常に不統一です。
+例えばローカル変数は外側のローカル変数を shadow できないのに、
+ローカル変数でフィールドを shadow することはできます。
+また、 interface のフィールド（定数）は、多重継承によって名前が衝突しても
+別々の定数として扱われますが、 interface のメソッドは、
+signature が同じならば同一のメソッドとして扱われます。）
 </p><p>
 </p><p>
 </p><p>
-$B40A48BDjL>$O!V$=$NL>A0$r:G=i$KDj5A$7$?%b%8%e!<%kL>(B m $B!W$H!VC1=cL>(B n$B!W$NAH$G(B
-$BI=$5$l!"(B MJ $B$N%=!<%9%3!<%I>e$G$O!"(B <tt>FQN[m::n]</tt> $B$HI=5-$7$^$9(B
-$B!J(B<a href="faq-spec.html#fqn-syntax">FAQ $B;2>H(B</a>$B!K!#(B
-$B%a%=%C%I40A48BDjL>$O!"%a%=%C%I@k8@$H%a%=%C%I8F$S=P$7$NN>J}$G(B
-$B;H$&$3$H$,$G$-$^$9!#<!$NNc$r8+$F$/$@$5$$!#(B
+完全限定名は「その名前を最初に定義したモジュール名 m 」と「単純名 n」の組で
+表され、 MJ のソースコード上では、 <tt>FQN[m::n]</tt> と表記します
+（<a href="faq-spec.html#fqn-syntax">FAQ 参照</a>）。
+メソッド完全限定名は、メソッド宣言とメソッド呼び出しの両方で
+使うことができます。次の例を見てください。
 </p><p>
 <pre>
 module t.fqn.m1 {
@@ -1560,8 +1560,8 @@ module t.fqn.m4 extends t.fqn.m2, t.fqn.m3 {
 }
 </pre>
 </p><p>
-$B>e$N%W%m%0%i%`Nc$G!"$b$740A48BDjL>$r;H$o$:$K(B a.m() $B$H$$$&$U$&$K(B
-$B$"$$$^$$$J%a%=%C%I8F$S=P$7$r9T$&$H!"<!$N$h$&$J%(%i!<$K$J$j$^$9!#(B
+上のプログラム例で、もし完全限定名を使わずに a.m() というふうに
+あいまいなメソッド呼び出しを行うと、次のようなエラーになります。
 </p><p>
 <pre>
 % mjc Tutorial.java
@@ -1578,14 +1578,14 @@ Tutorial.java:322: MJ: Reference to m() of t.fqn.m1.A is ambiguous. :
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="complementary">$BJd40%b%8%e!<%k(B</a></h2><p>
+</p><h2><a name="complementary">補完モジュール</a></h2><p>
 </p><p>
-MJ $B$G$O!"J#?t$N%b%8%e!<%k$rAH$_9g$o$;$?$H$-!"(B<em>$B<BAu7gB;(B</em>$B$H$$$&(B
-$B8=>]$,5/$-$k>l9g$,$"$j$^$9!#(B
-$B7gB;$rKd$a$k$?$a$N%b%8%e!<%k$,(B<em>$BJd40%b%8%e!<%k(B</em>$B$G$9!#(B
+MJ では、複数のモジュールを組み合わせたとき、<em>実装欠損</em>という
+現象が起きる場合があります。
+欠損を埋めるためのモジュールが<em>補完モジュール</em>です。
 </p><p>
-$B<BAu7gB;$K$D$$$F!">\$7$/@bL@$7$^$7$g$&!#(B
-$B<!$N%W%m%0%i%`$r9M$($^$9!#(B
+実装欠損について、詳しく説明しましょう。
+次のプログラムを考えます。
 </p><p>
 <pre>
 module t.compl.orig {
@@ -1610,42 +1610,42 @@ module t.compl.compl_sub_abst complements t.compl.sub, t.compl.abst {
 }
 </pre>
 </p><p>
-<tt>t.compl.orig</tt> $B$O!"(B
- abstract $B$J%/%i%9(B S $B$H$=$N%5%V%/%i%9(B A $B$rDj5A$7$F$$$^$9!#(B
-<tt>t.compl.sub</tt> $B$O!"?7$?$J%5%V%/%i%9(B B $B$rDj5A$7$F$$$^$9!#(B
-$B0lJ}!"(B <tt>t.compl.abst</tt> $B$O!"%/%i%9(B S $B$K(B abstract method m $B$rDj5A$7!"(B
-$B%5%V%/%i%9(B A $B$G$=$l$r<BAu$7$F$$$^$9!#(B
+<tt>t.compl.orig</tt> は、
+ abstract なクラス S とそのサブクラス A を定義しています。
+<tt>t.compl.sub</tt> は、新たなサブクラス B を定義しています。
+一方、 <tt>t.compl.abst</tt> は、クラス S に abstract method m を定義し、
+サブクラス A でそれを実装しています。
 </p><p>
-<tt>t.compl.sub</tt> $B$H(B <tt>t.compl.abst</tt> $B$O!"$$$:$l$b%j%s%/;~%(%i!<$r5/$3$5$J$$!"(B
-$B40A4$J%W%m%0%i%`$G$9!#(B
-$B$H$3$m$,!"$3$NN>J}$N%b%8%e!<%k$rF1;~$K;H$*$&$H$9$k$H!"(B
-$B<!$N$h$&$K%j%s%/;~%(%i!<$K$J$j$^$9!#(B
+<tt>t.compl.sub</tt> と <tt>t.compl.abst</tt> は、いずれもリンク時エラーを起こさない、
+完全なプログラムです。
+ところが、この両方のモジュールを同時に使おうとすると、
+次のようにリンク時エラーになります。
 <pre>
 % mj -s t.compl.sub t.compl.abst
 MJLinker: non-abstract class t.compl.sub.B has an abstract method
  : abstract int t.compl.abst::m()
 </pre>
 </p><p>
-$B$D$^$j!"%/%i%9(B B $B$N%a%=%C%I(B m $B$rC/$b<BAu$7$F$$$J$$$?$a$K!"(B
-$B%(%i!<$K$J$j$^$9!#(B
-$B$3$N$h$&$K!"@5$7$/F0$/J#?t$N%b%8%e!<%k$rAH$_9g$o$;$?$H$-!"(B
-$B<BAu$5$l$F$$$J$$(B abstract method $B$,H/@8$9$k8=>]$r!V<BAu7gB;!W$H8F$s$G$$$^$9!#(B
-$B0lHL$K<BAu7gB;$r<+F0E*$KKd$a$k$3$H$OIT2DG=$G$9!#(B
-$BC/$+$,;EMM$rM}2r$7$F!"<BAu7gB;$rKd$a$k%b%8%e!<%k$r<BAu$7$J$1$l$P$J$j$^$;$s!#(B
-$B$3$N$h$&$J%b%8%e!<%k$rJd40%b%8%e!<%k$H8F$S$^$9!#(B
+つまり、クラス B のメソッド m を誰も実装していないために、
+エラーになります。
+このように、正しく動く複数のモジュールを組み合わせたとき、
+実装されていない abstract method が発生する現象を「実装欠損」と呼んでいます。
+一般に実装欠損を自動的に埋めることは不可能です。
+誰かが仕様を理解して、実装欠損を埋めるモジュールを実装しなければなりません。
+このようなモジュールを補完モジュールと呼びます。
 </p><p>
-MJ $B$O!"%(%s%I%f!<%6$,!"<BAu$N>\:Y$rCN$i$J$/$F$b!"(B
-$B%b%8%e!<%k$rAH$_9g$o$;$F<+J,$N9%$_$N%"%W%j%1!<%7%g%s$r9=C[$G$-$k$3$H$r(B
-$BL\I8$H$7$F$$$^$9!#(B
-$B%(%s%I%f!<%6$K$H$C$F$N;H$$>!<j$rNI$/$9$k$?$a$K!"(B
-MJ $B$N%j%s%+!<$O!"Jd40%b%8%e!<%k$N<+F0%j%s%/$N5!G=$r;}$C$F$$$^$9!#(B
+MJ は、エンドユーザが、実装の詳細を知らなくても、
+モジュールを組み合わせて自分の好みのアプリケーションを構築できることを
+目標としています。
+エンドユーザにとっての使い勝手を良くするために、
+MJ のリンカーは、補完モジュールの自動リンクの機能を持っています。
 </p><p>
-<tt>t.compl.sub</tt> $B$H(B <tt>t.compl.abst</tt> $B$N4V$rJd40$9$k(B
-$BJd40%b%8%e!<%k$O!"(B "<tt>complements t.compl.sub, t.compl.abst</tt>" $B$H$$$&(B
-<em>complements $B@k8@(B</em>$B$r;}$D%b%8%e!<%k$H$7$FDj5A$7$^$9!#(B
+<tt>t.compl.sub</tt> と <tt>t.compl.abst</tt> の間を補完する
+補完モジュールは、 "<tt>complements t.compl.sub, t.compl.abst</tt>" という
+<em>complements 宣言</em>を持つモジュールとして定義します。
 </p><p>
-$BNc$($PC/$+$,<!$N$h$&$JJd40%b%8%e!<%k$r<BAu$7$F!"(B
- CLASSPATH $B$rDL$7$F8+$($k>l=j$KCV$$$?$H$7$^$9!#(B
+例えば誰かが次のような補完モジュールを実装して、
+ CLASSPATH を通して見える場所に置いたとします。
 </p><p>
 <pre>
 module t.compl.compl_sub_abst complements t.compl.sub, t.compl.abst {
@@ -1655,24 +1655,24 @@ module t.compl.compl_sub_abst complements t.compl.sub, t.compl.abst {
 }
 </pre>
 </p><p>
-$B$3$3$G!"(B complements $B@k8@$O!"%3%s%Q%$%i$K$H$C$F$O!"(B
- extends $B@k8@$HA4$/F1$80UL#$G$9!#(B
-$B$?$@$7!"$3$N%b%8%e!<%k$,Jd40$NBP>]$H$9$k%b%8%e!<%k$N>pJs$,!"(B
-$B%3%s%Q%$%k7k2L$N%/%i%9%U%!%$%k$KIU2C$5$l$^$9!#(B
+ここで、 complements 宣言は、コンパイラにとっては、
+ extends 宣言と全く同じ意味です。
+ただし、このモジュールが補完の対象とするモジュールの情報が、
+コンパイル結果のクラスファイルに付加されます。
 </p><p>
-$B$=$7$F!"%(%s%I%f!<%6$,<!$N$h$&$K(B
- <tt>t.compl.sub</tt> $B$H(B <tt>t.compl.abst</tt> $B$r(B
-$BAH$_9g$o$;$h$&$H$9$k$H!"%j%s%+!<$O!"(B CLASSPATH $B$NCf$+$i(B
-$BJd40%b%8%e!<%k(B <tt>t.compl.compl_sub_abst</tt> $B$r8+$D$1!"(B
-$B$=$l$b%j%s%/$NBP>]$H$7$^$9!#(B
+そして、エンドユーザが次のように
+ <tt>t.compl.sub</tt> と <tt>t.compl.abst</tt> を
+組み合わせようとすると、リンカーは、 CLASSPATH の中から
+補完モジュール <tt>t.compl.compl_sub_abst</tt> を見つけ、
+それもリンクの対象とします。
 </p><p>
 </p><p>
 <pre>
 % mj -s t.compl.sub t.compl.abst
 </pre>
 </p><p>
-$B$D$^$j%(%s%I%f!<%6$K$H$C$F$OJd40$O<+F0E*$K9T$o$l$k$?$a!"(B
-$B<BAu7gB;$NLdBj$r0U<1$7$J$/$F$b$9$_$^$9!#(B
+つまりエンドユーザにとっては補完は自動的に行われるため、
+実装欠損の問題を意識しなくてもすみます。
 </p><p>
 </p><hr>
 <table width="100%"> <tr><td>

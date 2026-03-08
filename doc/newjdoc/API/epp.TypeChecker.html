@@ -27,34 +27,34 @@ java.lang.Object
   <dt> public abstract class <b>TypeChecker</b>
   <dt> extends <a href="epp.Macro.html#_top_">Macro</a>
 </dl>
-$B%/%i%9(B TypeChecker $B$O!"$9$Y$F$N(B TypeChecker $B%*%V%8%'%/%H$N%/%i%9$N(B
-$B%9!<%Q!<%/%i%9$G$9!#(B.
+クラス TypeChecker は、すべての TypeChecker オブジェクトのクラスの
+スーパークラスです。.
 <p>
-$B7?%A%'%C%/%Q%9$K$*$$$F!"Cj>]9=J8LZ$N3F%N!<%I$O!"(B
-$BBP1~$9$k(B TypeChecker $B%*%V%8%'%/%H$N%a%=%C%I(B call $B$K$h$C$F(B
-$B7?%A%'%C%/$5$l!"7?>pJsIU$-Cj>]9=J8LZ$KJQ49$5$l$^$9!#(B
-$B7?>pJsIU$-$N(B Tree $B$O!"%a%=%C%I(B type $B$K$h$C$F7?>pJs$r<h$j=P$9$3$H$,$G$-$^$9!#(B
+型チェックパスにおいて、抽象構文木の各ノードは、
+対応する TypeChecker オブジェクトのメソッド call によって
+型チェックされ、型情報付き抽象構文木に変換されます。
+型情報付きの Tree は、メソッド type によって型情報を取り出すことができます。
 <p>
-$B7?%A%'%C%/%Q%9$G$O!"C1$J$k7?%A%'%C%/$@$1$G$J$/!"!V7?>pJs$rMxMQ$7$?%^%/%mE83+!W(B
-$B$b9T$J$&$3$H$,$G$-$^$9!#(B
-plug-in programmer $B$O!"I8=`$N(B Java $B$K$J$$%N!<%I$rF3F~$7!"(B
-$B$=$l$KBP1~$9$k(B TypeChecker $B%*%V%8%'%/%H$rDj5A$9$k$3$H$,$G$-$^$9!#(B
-$B$3$N>l9g!"(B TypeChecker $B%*%V%8%'%/%H$O!"I,MW$K1~$8$F(B subtree $B$r7?%A%'%C%/$7!"(B
-$B$=$N7?>pJs$rMxMQ$7$F%^%/%mE83+$7!"7k2L$rJV$7$^$9!#(B
+型チェックパスでは、単なる型チェックだけでなく、「型情報を利用したマクロ展開」
+も行なうことができます。
+plug-in programmer は、標準の Java にないノードを導入し、
+それに対応する TypeChecker オブジェクトを定義することができます。
+この場合、 TypeChecker オブジェクトは、必要に応じて subtree を型チェックし、
+その型情報を利用してマクロ展開し、結果を返します。
 <p>
-plug-in programmer $B$,Dj5A$7$?(B TypeChecker $B%*%V%8%'%/%H$O!"(B
-Epp $B$N(B defineTypeChecker $B%a%=%C%I$r(B
-$B;H$C$F!"(B TypeChecker.macroTable $B$KEPO?$7$J$1$l$P$J$j$^$;$s!#(B
+plug-in programmer が定義した TypeChecker オブジェクトは、
+Epp の defineTypeChecker メソッドを
+使って、 TypeChecker.macroTable に登録しなければなりません。
 <p>
-TypeChecker $B%*%V%8%'%/%H$O!"(B decorator pattern $B$K$h$C$F(B
-$B:9J,E*$K3HD%$9$k$3$H$,$G$-$^$9!#(B
-$B$=$l$K$O!"(B Epp $B$N(B extendTypeChecker $B%a%=%C%I$r;H$$$^$9!#(B
-decorator $B$+$i$O!"%$%s%9%?%s%9JQ?t(B orig $B$rDL$7$F!"(B
-$B%*%j%8%J%k$N(B TypeChecker $B%*%V%8%'%/%H$r8F$S=P$9$3$H$,$G$-$^$9!#(B
-extendTypeChecker $B$K$h$C$F3HD%$5$l$F$$$J$$;~$O!"JQ?t(B orig $B$NCM$O(B null $B$G$9!#(B
+TypeChecker オブジェクトは、 decorator pattern によって
+差分的に拡張することができます。
+それには、 Epp の extendTypeChecker メソッドを使います。
+decorator からは、インスタンス変数 orig を通して、
+オリジナルの TypeChecker オブジェクトを呼び出すことができます。
+extendTypeChecker によって拡張されていない時は、変数 orig の値は null です。
 <p>
-Tree $B$N:F5"E*$J7?%A%'%C%/$O!"%a%=%C%I(B typeCheckTree $B$K$h$C$F9T$J$o$l$^$9!#(B
-$B%a%=%C%I(B typeCheckTree $B$NF0:n$O!"87L)$K$O<!$N$h$&$KDj5A$5$l$^$9!#(B
+Tree の再帰的な型チェックは、メソッド typeCheckTree によって行なわれます。
+メソッド typeCheckTree の動作は、厳密には次のように定義されます。
 <pre>
       Symbol lastTag = null;
       while(true) {
@@ -71,10 +71,10 @@ Tree $B$N:F5"E*$J7?%A%'%C%/$O!"%a%=%C%I(B typeCheckTree $B$K$h$C$F9T$J$o$l$^$
       }
       return tree;
 </pre>
-$B$9$J$o$A!"(B tree $B$N(B tag $B$KBP1~$9$k(B TypeChecker $B%*%V%8%'%/%H$N(B
-$B%a%=%C%I(B call $B$r8F$S=P$7!"JVCM$N(B tag $B$H!"8F$S=P$9A0$N(B tag $B$,(B
-$BEy$7$1$l$P!"%k!<%W$rH4$1$FJVCM$rJV$7$^$9!#$=$&$G$J$1$l$P!"(B
-tag $B$,JQ$o$i$J$/$J$k$^$G(B TypeChecker $B$K$h$kJQ49$r7+$jJV$7$^$9!#(B
+すなわち、 tree の tag に対応する TypeChecker オブジェクトの
+メソッド call を呼び出し、返値の tag と、呼び出す前の tag が
+等しければ、ループを抜けて返値を返します。そうでなければ、
+tag が変わらなくなるまで TypeChecker による変換を繰り返します。
 <p>
 <p>
 <dl>
@@ -97,34 +97,34 @@ tag $B$,JQ$o$i$J$/$J$k$^$G(B TypeChecker $B$K$h$kJQ49$r7+$jJV$7$^$9!#(B
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#call(epp.Tree)"><b>call</b></a>(Tree)
-  <dd> $B%5%V%/%i%9$K$*$$$F!"(B tree $B$r7?%A%'%C%/$9$k%a%=%C%I$rDj5A$7$^$9!#(B.
+  <dd> サブクラスにおいて、 tree を型チェックするメソッドを定義します。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#checkArgsLength(epp.Tree, int)"><b>checkArgsLength</b></a>(Tree, int)
-  <dd> $B%N!<%I$N0z?t$N?t$r%A%'%C%/$7$^$9!#(B.
+  <dd> ノードの引数の数をチェックします。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#checkVariableDeclaratorId(epp.Type, epp.Tree, epp.Tree[])"><b>checkVariableDeclaratorId</b></a>(Type, Tree, Tree[])
-  <dd> EPP $B%W%j%W%m%;%C%5$N(B checkVariableDeclaratorId $B$K(B delegation $B$5$l$k(B
-$B%a%=%C%I$G$9!#(B.
+  <dd> EPP プリプロセッサの checkVariableDeclaratorId に delegation される
+メソッドです。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#resolveAmbiguousName(epp.Tree)"><b>resolveAmbiguousName</b></a>(Tree)
-  <dd> $B7?L>$+%U%#!<%k%I%"%/%;%9$+$o$+$i$J$$!V$"$$$^$$$JL>A0!W$N0UL#$r2r<a$7$F!"(B
-$B$"$$$^$$$5$N$J$$(B Tree $B$KJQ49$7$FJV$7$^$9!#(B.
+  <dd> 型名かフィールドアクセスかわからない「あいまいな名前」の意味を解釈して、
+あいまいさのない Tree に変換して返します。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#typeCheck1(epp.Tree)"><b>typeCheck1</b></a>(Tree)
-  <dd> $B7?%A%'%C%/$r0lEY$@$19T$J$$$^$9!#(B.
+  <dd> 型チェックを一度だけ行ないます。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#typeCheckArgs(epp.Tree)"><b>typeCheckArgs</b></a>(Tree)
-  <dd> tree $B$N(B args $B$rA4$F7?%A%'%C%/$7!"7k2L$r(B tree $B$NG[Ns$K$7$FJV$7$^$9!#(B
+  <dd> tree の args を全て型チェックし、結果を tree の配列にして返します。
 
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#typeCheckTree(epp.Tree)"><b>typeCheckTree</b></a>(Tree)
-  <dd> tree $B$r:F5"E*$K7?%A%'%C%/$7!"7?>pJsIU$-(B tree $B$KJQ49$7$FJV$7$^$9!#(B.
+  <dd> tree を再帰的に型チェックし、型情報付き tree に変換して返します。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#typeNameCheckTree(epp.Tree)"><b>typeNameCheckTree</b></a>(Tree)
-  <dd> TypeNameChecker.typeNameCheckTree $B$K(B delegation $B$5$l$k%a%=%C%I$G$9!#(B.
+  <dd> TypeNameChecker.typeNameCheckTree に delegation されるメソッドです。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#unaryNumericPromotion(epp.Tree)"><b>unaryNumericPromotion</b></a>(Tree)
-  <dd> unary numeric promotion $B$r9T$J$$$^$9!#(B.
+  <dd> unary numeric promotion を行ないます。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -146,20 +146,20 @@ tag $B$,JQ$o$i$J$/$J$k$^$G(B TypeChecker $B$K$h$kJQ49$r7+$jJV$7$^$9!#(B
  public abstract <a href="epp.Tree.html#_top_">Tree</a> call(<a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> $B%5%V%/%i%9$K$*$$$F!"(B tree $B$r7?%A%'%C%/$9$k%a%=%C%I$rDj5A$7$^$9!#(B.
-$B$3$N%a%=%C%I$O!"<!$NF0:n$N$$$:$l$+$r9T$J$o$J$1$l$P$J$j$^$;$s!#(B
+  <dd> サブクラスにおいて、 tree を型チェックするメソッドを定義します。.
+このメソッドは、次の動作のいずれかを行なわなければなりません。
 <ul>
-<li> tree $B$r7?%A%'%C%/$7!"7?>pJsIU$-$N(B tree $B$KJQ49$7$FJV$9!#(B
-$BE83+8e$N(B tree $B$O!"$9$Y$F$N%N!<%I$,7?>pJsIU$-$G$J$1$l$P$J$i$J$$!#(B
-root $B$N(B tree $B$N(B tag $B$NCM$O!"JQ49$NA08e$GJQ$o$C$F$O$$$1$J$$!#(B
-<li> $BI,MW$K1~$8$F(B subtree $B$r7?%A%'%C%/$7!"(B subtree $B$N7?>pJs$r(B
-$BMxMQ$7$F?7$?$J(B tree $B$r@8@.$7!"$=$l$rJV$9!#(B
-$BE83+8e$N(B tree $B$O!"7?>pJs$N$D$$$F$$$J$$%N!<%I$G$"$C$F$b$h$$!#(B
-root $B$N(B tree $B$N(B tag $B$NCM$O!"JQ49$NA08e$GJQ$o$i$J$1$l$P$$$1$J$$!#(B
+<li> tree を型チェックし、型情報付きの tree に変換して返す。
+展開後の tree は、すべてのノードが型情報付きでなければならない。
+root の tree の tag の値は、変換の前後で変わってはいけない。
+<li> 必要に応じて subtree を型チェックし、 subtree の型情報を
+利用して新たな tree を生成し、それを返す。
+展開後の tree は、型情報のついていないノードであってもよい。
+root の tree の tag の値は、変換の前後で変わらなければいけない。
 </ul>
-$BI8=`$N(B Java $B8@8l$N%N!<%I$O!"IaDL#1HVL\$NF0:n$r$7$^$9!#(B
-$B0lJ}!"(B plug-in $B$GF3F~$5$l$?I8=`$G$J$$%N!<%I$N(B TypeChecker $B$O!"(B
-$BIaDL#2HVL\$NF0:n$r$7$J$1$l$P$J$j$^$;$s!#(B
+標準の Java 言語のノードは、普通１番目の動作をします。
+一方、 plug-in で導入された標準でないノードの TypeChecker は、
+普通２番目の動作をしなければなりません。
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>
@@ -172,9 +172,9 @@ root $B$N(B tree $B$N(B tag $B$NCM$O!"JQ49$NA08e$GJQ$o$i$J$1$l$P$$$1$J$$!#
  public static <a href="epp.Tree.html#_top_">Tree</a> typeCheckTree(<a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> tree $B$r:F5"E*$K7?%A%'%C%/$7!"7?>pJsIU$-(B tree $B$KJQ49$7$FJV$7$^$9!#(B.
-$B$b$7!"%N!<%I$,$9$G$K7?>pJsIU$-$G$"$l$P!"7?%A%'%C%/$r$;$:$K(B tree $B$r(B
-$B$=$N$^$^JV$7$^$9!#(B
+  <dd> tree を再帰的に型チェックし、型情報付き tree に変換して返します。.
+もし、ノードがすでに型情報付きであれば、型チェックをせずに tree を
+そのまま返します。
 <p>
 </dl>
 <a name="typeCheck1(epp.Tree)"><img src="images/green-ball.gif" width=12 height=12 alt=" o "></a>
@@ -183,7 +183,7 @@ root $B$N(B tree $B$N(B tag $B$NCM$O!"JQ49$NA08e$GJQ$o$i$J$1$l$P$$$1$J$$!#
  public static <a href="epp.Tree.html#_top_">Tree</a> typeCheck1(<a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> $B7?%A%'%C%/$r0lEY$@$19T$J$$$^$9!#(B.
+  <dd> 型チェックを一度だけ行ないます。.
 <p>
 </dl>
 <a name="typeCheckArgs(epp.Tree)"><img src="images/green-ball.gif" width=12 height=12 alt=" o "></a>
@@ -192,7 +192,7 @@ root $B$N(B tree $B$N(B tag $B$NCM$O!"JQ49$NA08e$GJQ$o$i$J$1$l$P$$$1$J$$!#
  public static <a href="epp.Tree.html#_top_">Tree</a>[] typeCheckArgs(<a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> tree $B$N(B args $B$rA4$F7?%A%'%C%/$7!"7k2L$r(B tree $B$NG[Ns$K$7$FJV$7$^$9!#(B
+  <dd> tree の args を全て型チェックし、結果を tree の配列にして返します。
 <p>
 </dl>
 <a name="typeNameCheckTree(epp.Tree)"><img src="images/green-ball.gif" width=12 height=12 alt=" o "></a>
@@ -201,7 +201,7 @@ root $B$N(B tree $B$N(B tag $B$NCM$O!"JQ49$NA08e$GJQ$o$i$J$1$l$P$$$1$J$$!#
  public static <a href="epp.Tree.html#_top_">Tree</a> typeNameCheckTree(<a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> TypeNameChecker.typeNameCheckTree $B$K(B delegation $B$5$l$k%a%=%C%I$G$9!#(B.
+  <dd> TypeNameChecker.typeNameCheckTree に delegation されるメソッドです。.
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -215,8 +215,8 @@ root $B$N(B tree $B$N(B tag $B$NCM$O!"JQ49$NA08e$GJQ$o$i$J$1$l$P$$$1$J$$!#
                                     int argc)
 </pre>
 <dl>
-  <dd> $B%N!<%I$N0z?t$N?t$r%A%'%C%/$7$^$9!#(B.
-tree $B$N(B args $B$ND9$5$,!"(B argc $B$G$J$1$l$P!"%a%=%C%I(B error $B$r8F$S=P$7$^$9!#(B
+  <dd> ノードの引数の数をチェックします。.
+tree の args の長さが、 argc でなければ、メソッド error を呼び出します。
 <p>
 </dl>
 <a name="checkVariableDeclaratorId(epp.Type, epp.Tree, epp.Tree[])"><img src="images/green-ball.gif" width=12 height=12 alt=" o "></a>
@@ -227,8 +227,8 @@ tree $B$N(B args $B$ND9$5$,!"(B argc $B$G$J$1$l$P!"%a%=%C%I(B error $B$r8
                                               <a href="epp.Tree.html#_top_">Tree</a> declaredVars[])
 </pre>
 <dl>
-  <dd> EPP $B%W%j%W%m%;%C%5$N(B checkVariableDeclaratorId $B$K(B delegation $B$5$l$k(B
-$B%a%=%C%I$G$9!#(B.
+  <dd> EPP プリプロセッサの checkVariableDeclaratorId に delegation される
+メソッドです。.
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -241,14 +241,14 @@ tree $B$N(B args $B$ND9$5$,!"(B argc $B$G$J$1$l$P!"%a%=%C%I(B error $B$r8
  public static <a href="epp.Tree.html#_top_">Tree</a> resolveAmbiguousName(<a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> $B7?L>$+%U%#!<%k%I%"%/%;%9$+$o$+$i$J$$!V$"$$$^$$$JL>A0!W$N0UL#$r2r<a$7$F!"(B
-$B$"$$$^$$$5$N$J$$(B Tree $B$KJQ49$7$FJV$7$^$9!#(B.
-$B$"$$$^$$$5$N2r7h%k!<%k$K$D$$$F$O!"(B JLS1.0 Section 6.5.2 $B$r(B
-$B;2>H$7$F2<$5$$!#(B
-$B$3$N%a%=%C%I$O!"(B (name ...) $B$N7A$N(B Tree $B$r<u$1<h$j!"(B
-id, name, fieldStatic, fieldExp $B$N$$$:$l$+$N<oN`$N(B Tree $B$K(B
-$BJQ49$7$FJV$7$^$9!#(B
-$B2r<aITG=$N>l9g$O(B null $B$rJV$7$^$9!#(B
+  <dd> 型名かフィールドアクセスかわからない「あいまいな名前」の意味を解釈して、
+あいまいさのない Tree に変換して返します。.
+あいまいさの解決ルールについては、 JLS1.0 Section 6.5.2 を
+参照して下さい。
+このメソッドは、 (name ...) の形の Tree を受け取り、
+id, name, fieldStatic, fieldExp のいずれかの種類の Tree に
+変換して返します。
+解釈不能の場合は null を返します。
 <p>
 </dl>
 <a name="unaryNumericPromotion(epp.Tree)"><img src="images/green-ball.gif" width=12 height=12 alt=" o "></a>
@@ -257,8 +257,8 @@ id, name, fieldStatic, fieldExp $B$N$$$:$l$+$N<oN`$N(B Tree $B$K(B
  public static <a href="epp.Tree.html#_top_">Tree</a> unaryNumericPromotion(<a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> unary numeric promotion $B$r9T$J$$$^$9!#(B.
-JLS1.0 5.6.1 $B$r;2>H$7$F2<$5$$!#(B
+  <dd> unary numeric promotion を行ないます。.
+JLS1.0 5.6.1 を参照して下さい。
 <p>
 </dl>
 <hr>

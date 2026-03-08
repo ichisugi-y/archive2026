@@ -1,73 +1,73 @@
-   pxml plug-in $B%A%e!<%H%j%"%k(B
+   pxml plug-in チュートリアル
    ---------------------------
-					$B;:6H5;=QAm9g8&5f=j(B $B>pJs=hM}8&5fItLg(B
-					$B0l?yM5;V(B      y-ichisugi@aist.go.jp
+					産業技術総合研究所 情報処理研究部門
+					一杉裕志      y-ichisugi@aist.go.jp
 					http://staff.aist.go.jp/y-ichisugi/
 								2003-01-30
-$B"!35MW(B
- pxml plug-in $B$O!"(B XML $B$N=hM}$rHs>o$K4JC1$K$9$k9=J8$r!"(B
-Java $B8@8l$KDI2C$9$k$b$N$G$9!#(B
-$BDI2C$5$l$?9=J8$r;H$&$3$H$K$h$C$F!"(BDOM $B$d(B XSLT $B$G9T$&$h$&$J=hM}$r!"(B
-$B4J7i$K!"AGD>$K!"$h$j4V0c$$$K$/$/5-=R$9$k$3$H$,2DG=$G$9!#(B
-$B6qBNE*$K$O2<5-$N9=J8$,!"(B Java $B8@8l$KDI2C$5$l$^$9!#(B
+◆概要
+ pxml plug-in は、 XML の処理を非常に簡単にする構文を、
+Java 言語に追加するものです。
+追加された構文を使うことによって、DOM や XSLT で行うような処理を、
+簡潔に、素直に、より間違いにくく記述することが可能です。
+具体的には下記の構文が、 Java 言語に追加されます。
 
-	$B#S<0Iw$N%7%s%?%C%/%9(B(pxml)$B$K$h$k%F%s%W%l!<%H5-=R9=J8(B
-	$B%k!<%W9=J8(B foreach
-	$B%?%0%j%F%i%k(B
-	XPath $BIw$N8!:w5!9=(B
-	$BL>A06u4V@k8@(B
+	Ｓ式風のシンタックス(pxml)によるテンプレート記述構文
+	ループ構文 foreach
+	タグリテラル
+	XPath 風の検索機構
+	名前空間宣言
 
- pxml plug-in $B$O!"2f!9$,3+H/$7$?%7%9%F%`$G$"$k(B EPP $B$*$h$S(B MixJuice $B$H(B
-$B6(D4$7$FF0:n$7$^$9!#(B
-
-
-$B"!3+H/$N8=>u(B
- $B8=:_!":G=i$N%P!<%8%g%s$,F0$$$F$$$^$9!#(B
- $BO@J8!"(B Web $B>eEy$G$N8xI=$O$^$@9T$C$F$$$^$;$s!#(B
-
- $B8&5f!&3+H/%Q!<%H%J!<!"%S%8%M%9%Q!<%H%J!<$rJg=8Cf$G$9!#(B
- $BFC$K!"(B Java $B%W%m%0%i%_%s%0$d(B XML $B=hM}$N8=>l$G3hLv$5$l$F$$$k4k6H$NJ}$H(B
-$B%3%i%\%l!<%7%g%s$7$F$$$/$3$H$r6/$/K>$s$G$$$^$9!#(B
+ pxml plug-in は、我々が開発したシステムである EPP および MixJuice と
+協調して動作します。
 
 
-$B"!(B pxml plug-in $B$H(B EPP, MixJuice
- pxml plug-in $B$O!"(B EPP $B$KDI2C$9$k(B plug-in $B$N#1$D$G$9!#(B
+◆開発の現状
+ 現在、最初のバージョンが動いています。
+ 論文、 Web 上等での公表はまだ行っていません。
 
- EPP $B!J(BExtensible Java Pre-Processor$B!"3HD%2DG=(B Java $B%W%j%W%m%;%C%5!K$O!"(B
-Java $B8@8l$K?7$7$$5!G=$r4JC1$KDI2C$G$-$k%W%j%W%m%;%C%5$G$9!#(B
-EPP $B$K8@8l3HD%(B plug-in $B$rDI2C$9$k$3$H$G!"(B
-$B%*%j%8%J%k$N(B Java $B8@8l$K$J$$$5$^$6$^$J8@8l5!G=$,MxMQ2DG=$K$J$j$^$9!#(B
+ 研究・開発パートナー、ビジネスパートナーを募集中です。
+ 特に、 Java プログラミングや XML 処理の現場で活躍されている企業の方と
+コラボレーションしていくことを強く望んでいます。
 
-$B$5$^$6$^$J(B plug-in $B$r!"(B pxml plug-in $B$HF1;~$KDI2C$7$FMxMQ$9$k$3$H$b2DG=$G$9!#(B
 
-$BNc$($P(B MixJuice $B8@8l$O!"(B
-$B!V:9J,%Y!<%9%b%8%e!<%k!W$H8F$V%b%8%e!<%k5!9=$r:NMQ$7$?!"3HD%(B Java $B8@8l$G$9!#(B
-MixJuice $B$N%3%s%Q%$%i$b(B EPP $B$rMQ$$$F<B8=$5$l$F$$$k$?$a!"(B
-pxml plug-in $B$r(B MixJuice $B%3%s%Q%$%i$KDI2C$7$FMxMQ$9$k$3$H$b2DG=$G$9!#(B
+◆ pxml plug-in と EPP, MixJuice
+ pxml plug-in は、 EPP に追加する plug-in の１つです。
 
-EPP $B$H(B MixJuice $B$K$D$$$F$O$=$l$>$l2<5-$N(B URL $B$r;2>H$7$F2<$5$$!#(B
+ EPP （Extensible Java Pre-Processor、拡張可能 Java プリプロセッサ）は、
+Java 言語に新しい機能を簡単に追加できるプリプロセッサです。
+EPP に言語拡張 plug-in を追加することで、
+オリジナルの Java 言語にないさまざまな言語機能が利用可能になります。
+
+さまざまな plug-in を、 pxml plug-in と同時に追加して利用することも可能です。
+
+例えば MixJuice 言語は、
+「差分ベースモジュール」と呼ぶモジュール機構を採用した、拡張 Java 言語です。
+MixJuice のコンパイラも EPP を用いて実現されているため、
+pxml plug-in を MixJuice コンパイラに追加して利用することも可能です。
+
+EPP と MixJuice についてはそれぞれ下記の URL を参照して下さい。
 	http://staff.aist.go.jp/y-ichisugi/epp/
 	http://staff.aist.go.jp/y-ichisugi/mj/
 
 
-$B"!%/%i%93,AX(B
- pxml plug-in $B$G$O!"2<5-$N%/%i%9$r;H$C$F(B XML $BJ8=q$rI=8=$7$^$9!#(B
+◆クラス階層
+ pxml plug-in では、下記のクラスを使って XML 文書を表現します。
 
-	Node		--- $BMWAG!#(B
-	TextNode	--- $B%F%-%9%H%N!<%I!#(B Node $B$N%5%V%/%i%9!#(B
-	Attribute	--- $BB0@-!#(B
-	Tag		--- $BMWAGL>!"B0@-L>!#L>A06u4V$N(B prefix $B$r4^$`!#(B
-	NameSpace	--- $BL>A06u4V!#(B
+	Node		--- 要素。
+	TextNode	--- テキストノード。 Node のサブクラス。
+	Attribute	--- 属性。
+	Tag		--- 要素名、属性名。名前空間の prefix を含む。
+	NameSpace	--- 名前空間。
 
- DOM $B$HF1MM$K(B XML $BJ8=q$NLZ9=B$$9$Y$F$r%a%b%j$KJ];}$7$F=hM}$9$k(B
-$B%9%?%$%k$K$J$j$^$9!#(B
- API $B$O!"(B DOM $B$h$j$b$O$k$+$K%7%s%W%k$G;H$$$d$9$/$J$C$F$$$^$9!#(B
+ DOM と同様に XML 文書の木構造すべてをメモリに保持して処理する
+スタイルになります。
+ API は、 DOM よりもはるかにシンプルで使いやすくなっています。
 
 
-$B"!(B pxml $B$r;H$C$?(B tree $BI=8=(B
- ` $B!J%P%C%/%/%)!<%H!K$N$&$7$m$K(B pxml $B$H8F$V#S<0Iw$NI=8=$r;H$C$F!"(B
- XML $B$N(B tree $B$r%W%m%0%i%`Cf$KKd$a9~$`$3$H$,$G$-$^$9!#(B
-$BNc!'(B
+◆ pxml を使った tree 表現
+ ` （バッククォート）のうしろに pxml と呼ぶＳ式風の表現を使って、
+ XML の tree をプログラム中に埋め込むことができます。
+例：
 
 	Node doc = `(html (head (title "Hello World"))
 			  (body
@@ -76,7 +76,7 @@ EPP $B$H(B MixJuice $B$K$D$$$F$O$=$l$>$l2<5-$N(B URL $B$r;2>H$7$F2<$5$$!#(
 			   (a href="http://www.yahoo.co.jp/" yahoo)
 			   ));
 
-$B$3$NNc$G$O!"2<5-$N(B XML $BJ8=q$rI=$9(B tree $B$,JQ?t(B doc $B$KBeF~$5$l$^$9!#(B
+この例では、下記の XML 文書を表す tree が変数 doc に代入されます。
 
 	<html>
 	<head>
@@ -90,46 +90,46 @@ EPP $B$H(B MixJuice $B$K$D$$$F$O$=$l$>$l2<5-$N(B URL $B$r;2>H$7$F2<$5$$!#(
 	</html>
 
 
- pxml $B$K$h$kI=8=$O!"(B XML $B$=$N$b$N$rJ8;zNs%j%F%i%k$H$7$F%W%m%0%i%`Cf$K(B
-$BKd$a9~$`J}K!$KHf$Y$k$H!"0J2<$N$h$&$K$5$^$6$^$JMxE@$,$"$j$^$9!#(B
+ pxml による表現は、 XML そのものを文字列リテラルとしてプログラム中に
+埋め込む方法に比べると、以下のようにさまざまな利点があります。
 
-	$B!&B?$/$N>l9g!"(B XML $B$h$j$b4J7i$K=q$1$k!#(B
+	・多くの場合、 XML よりも簡潔に書ける。
 
-	$B!&(B well-formed $B$J(B XML $B$K$J$k$3$H$,J]>Z$5$l$k!#(B
+	・ well-formed な XML になることが保証される。
 
-	$B!&(B Java $B$NJ8K!$HAj@-$,$h$$!#(B
-	$BNc$($P(B emacs $B$N(B java-mode $B$G2wE,$KJT=8$G$-$k!#(B
+	・ Java の文法と相性がよい。
+	例えば emacs の java-mode で快適に編集できる。
 
-	$B!&%W%m%0%i%^!<$K$H$C$F$OJ8K!$r=,F@$7$d$9$$!#(B
-	$BC1$J$k$+$C$3$H<1JL;R$HJ8;zNs%j%F%i%k$NAH$_9g$o$;!#(B
+	・プログラマーにとっては文法を習得しやすい。
+	単なるかっこと識別子と文字列リテラルの組み合わせ。
 
-	$B!&JD$8%?%0$r=q$+$J$/$F$b$h$$!#(B
+	・閉じタグを書かなくてもよい。
 
-	$B!&O@M}E*9=B$$KBP1~$7$?%$%s%G%s%H$,$G$-$k!#(B
+	・論理的構造に対応したインデントができる。
 
-	$B!&6uGr$N07$$$K4X$9$k%H%i%V%k$,$J$$!#(B
+	・空白の扱いに関するトラブルがない。
 
-	$B!&(B // $B$d(B /* */ $B$r;H$C$F!"%3%a%s%H$,AGD>$K=q$1$k!#(B
-	$B8e=R$N(B #+comment $B$r;H$($P!"%3%a%s%H$N%M%9%H$b$G$-$k!#(B
+	・ // や /* */ を使って、コメントが素直に書ける。
+	後述の #+comment を使えば、コメントのネストもできる。
 
-	$B!&%3%s%Q%$%i$,(B XML $BJ8=q9=B$$rG'<1$9$k$N$G!"(B
-	$B@EE*$J(B validation $B$,86M}E*$K2DG=!#(B
+	・コンパイラが XML 文書構造を認識するので、
+	静的な validation が原理的に可能。
 
 
- $B$J$*!"$3$N(B pxml $B$H$$$&5-K!$O!"(B
- SXML $B$H$$$&(B scheme $BMQ$K9M$($i$l$?(B XML $BI=8=J}K!$r%Y!<%9$K!"(B
-$B>/$73HD%$r2C$($?$b$N$G$9!#(B
-SXML $B$K$D$$$F$O2<5-$N(B URL $B$r;2>H2<$5$$!#(B
+ なお、この pxml という記法は、
+ SXML という scheme 用に考えられた XML 表現方法をベースに、
+少し拡張を加えたものです。
+SXML については下記の URL を参照下さい。
 
 	http://okmij.org/ftp/Scheme/SXML.html
 
 
-$B"!(B #+comment $B$K$h$k%3%a%s%H%"%&%H(B
-pxml $B$NCf$G!"$"$k%N!<%I$ND>A0$K(B #+comment $B$H=q$/$3$H$G!"(B
-$B$=$N%N!<%I$rL58z$K$9$k$3$H$,$G$-$^$9!#(B
-#+comment $B$O%M%9%H$G$-$^$9!#(B
+◆ #+comment によるコメントアウト
+pxml の中で、あるノードの直前に #+comment と書くことで、
+そのノードを無効にすることができます。
+#+comment はネストできます。
 
-$BNc!'(B
+例：
 	Node html = `(html (head (title "Hello World"))
 			  #+comment
 			  (body
@@ -139,104 +139,104 @@ pxml $B$NCf$G!"$"$k%N!<%I$ND>A0$K(B #+comment $B$H=q$/$3$H$G!"(B
 			   (a href="http://www.yahoo.co.jp/" yahoo)
 			   ));
 
-$B$3$NNc$O!"7k6I2<5-$N%W%m%0%i%`$HF1Ey$G$9!#(B
+この例は、結局下記のプログラムと同等です。
 
 	Node html = `(html (head (title "Hello World")));
 
 
-$B"!(B tree $B$NCf$N<0$NKd$a9~$_(B
- pxml $B$G=q$+$l$?%F%s%W%l!<%H$NCf$K!"(B
-, $B!J%3%s%^!K$G;O$^$k(B Java $B$N<0$rKd$a9~$`$3$H$,$G$-$^$9!#(B
-$B$=$N<0$N7?$,(B Node $B7?$G$"$l$P!"$=$N%N!<%I$,;RMWAG$H$7$FKd$a9~$^$l$^$9!#(B
-$B$=$N<0$N7?$,(B String $B7?$G$"$l$P!"$=$NCM$,%F%-%9%H%N!<%I$H$7$FKd$a9~$^$l$^$9!#(B
-$B$=$N<0$N7?$,(B int $B7?$G$"$l$P!"$=$N?tCM$,J8;zNs$KJQ49$5$l$F$+$i!"(B
-$B%F%-%9%H%N!<%I$H$7$FKd$a9~$^$l$^$9!#(B
+◆ tree の中の式の埋め込み
+ pxml で書かれたテンプレートの中に、
+, （コンマ）で始まる Java の式を埋め込むことができます。
+その式の型が Node 型であれば、そのノードが子要素として埋め込まれます。
+その式の型が String 型であれば、その値がテキストノードとして埋め込まれます。
+その式の型が int 型であれば、その数値が文字列に変換されてから、
+テキストノードとして埋め込まれます。
 
-$BNc!'(B
+例：
 	int i = 123;
 	Node n1 = `(th ,i);
 	Node n2 = `(table (tr ,n1));
 
-$B$3$NNc$G$O!"JQ?t(B n1, n2 $B$K$O$=$l$>$l2<5-$N(B XML tree $B$,F~$j$^$9!#(B
+この例では、変数 n1, n2 にはそれぞれ下記の XML tree が入ります。
 
 	<th>123</th>
 	<table><tr><th>123</th></hr></table>
 
 
-$B"!%k!<%W9=J8(B foreach
-foreach $B9=J8$O!"(B
-$B%G!<%?9=B$$NMWAG$KBP$9$k%k!<%W$r4J7i$K5-=R$G$-$k9=J8$G$9!#(B
-$B%Q%i%a%?IU$-7?$r07$&$?$a!"(B
-$B7?%(%i!<$O<B9T;~$G$O$J$/%3%s%Q%$%k;~$K8!=P$G$-$^$9!#(B
+◆ループ構文 foreach
+foreach 構文は、
+データ構造の要素に対するループを簡潔に記述できる構文です。
+パラメタ付き型を扱うため、
+型エラーは実行時ではなくコンパイル時に検出できます。
 
-$BNc$($P!"%N!<%I(B n $B$N;RMWAG$KBP$9$k%k!<%W$O<!$N$h$&$K=q$-$^$9!#(B
+例えば、ノード n の子要素に対するループは次のように書きます。
 
 	foreach (Node child in n.iter()){
 		System.out.println("child = " + child);
 	}
 
 
-$B$3$NB>$K!"#3$D$NAH$_9~$_$N%G!<%?9=B$!JG[Ns(B T[] $B!"(B $B2DJQD9G[Ns(B Vec<T> $B!"(B
-$B%O%C%7%eI=(B Table<T1,T2> $B!K$NMWAG$KBP$7$F!"(B foreach $B9=J8$G%k!<%W$9$k$3$H$,(B
-$B$G$-$^$9!#(B
-$BNc!'(B
+この他に、３つの組み込みのデータ構造（配列 T[] 、 可変長配列 Vec<T> 、
+ハッシュ表 Table<T1,T2> ）の要素に対して、 foreach 構文でループすることが
+できます。
+例：
 	Vec<int> v = {10, 20, 30};
 	foreach (int x in v){
 		System.out.println(x);
 	}
 
 
-$B"!%?%0%j%F%i%k(B
- $BMWAGL>$HB0@-L>$O!"(B Tag $B$H$$$&%/%i%9$GI=8=$5$l$^$9!#(B
- $B%?%0$N%j%F%i%k$O!"(B ` $B!J%P%C%/%/%)!<%H!K$ND>8e$K%?%0L>$r=q$/$3$H$G(B
-$BI=8=$7$^$9!#(B
- $B%?%0F1;N$NF10l@-$O!"(B == $B1i;;;R$G9bB.$KHf3S$9$k$3$H$,$G$-$^$9!#(B
+◆タグリテラル
+ 要素名と属性名は、 Tag というクラスで表現されます。
+ タグのリテラルは、 ` （バッククォート）の直後にタグ名を書くことで
+表現します。
+ タグ同士の同一性は、 == 演算子で高速に比較することができます。
 
-$BNc!'(B
+例：
 	Node tree = `(root (a "1") (b "2") (c "3"));
 	foreach (Node n in tree.iter()){
-		if (n.getTag() == `b){	// $BMWAGL>$,(B b $B$+!)(B
+		if (n.getTag() == `b){	// 要素名が b か？
 			System.out.println(n.get(0).getText()); // -> "2"
 		}
 	}
 	
 
-$B"!%N!<%I$N8!:w!'(B pxml path
- XPath $B$HF1MM$N5!G=$rDs6!$9$k(B pxml path $B9=J8$,$"$j$^$9!#(B
- pxml path $B9=J8$O!"(B % $B$G3+;O$7$^$9!#(B
+◆ノードの検索： pxml path
+ XPath と同様の機能を提供する pxml path 構文があります。
+ pxml path 構文は、 % で開始します。
 
-$BNc!'(B
-	%tag	--- $BBP>]%N!<%I$N;RMWAG$N$&$A(B "tag" $B$H$$$&MWAGL>$r;}$DMWAG(B
-	%..	--- $BBP>]%N!<%I$N?F%N!<%I(B
-	%_	--- $BBP>]%N!<%I$N$9$Y$F$N;RMWAG(B	$B!J(BXPath $B$N(B * $B$KAjEv!K(B
-	%/ /	--- $BBP>]%N!<%I0J2<$N$9$Y$F$NMWAG!J(BXPath $B$N(B // $B$KAjEv!K(B
+例：
+	%tag	--- 対象ノードの子要素のうち "tag" という要素名を持つ要素
+	%..	--- 対象ノードの親ノード
+	%_	--- 対象ノードのすべての子要素	（XPath の * に相当）
+	%/ /	--- 対象ノード以下のすべての要素（XPath の // に相当）
 
- pxml path $B9=J8$r0z?t$K$H$k%a%=%C%I$K$O!"(B get1, get, iter $B$,$"$j$^$9!#(B
- node.get1(path) $B$O!"%^%C%A$9$k%N!<%I$N$&$A:G=i$N#1$D$rCM$H$7$FJV$7$^$9!#(B
- node.get(path) $B$O!"%^%C%A$9$k%N!<%I$9$Y$F$r!"2DJQD9G[Ns(B Vec<Node> $B$NCM$H$7$F(B
-$BJV$7$^$9!#(B
- node.iter(path) $B$O!"%^%C%A$9$k%N!<%I$KBP$9$k%$%F%l!<%?$rJV$7$^$9!#(B
+ pxml path 構文を引数にとるメソッドには、 get1, get, iter があります。
+ node.get1(path) は、マッチするノードのうち最初の１つを値として返します。
+ node.get(path) は、マッチするノードすべてを、可変長配列 Vec<Node> の値として
+返します。
+ node.iter(path) は、マッチするノードに対するイテレータを返します。
  
 
-$BNc!'(B
+例：
 	Node books
 	        = `(books
                      (book (title "title1") (auther "auther1") (price 2200))
                      (book (title "title2") (auther "auther2") (price 3800)));
-	// $B$9$Y$F$N(B book $B$N(B title $B$r=PNO(B
+	// すべての book の title を出力
 	foreach (Node title in books.iter(%book/title/_)){
 	  System.out.println("title: "+ title.getText());
 	}
-	// $B$9$Y$F$N(B book $B$N(B auther $B$r<hF@(B
+	// すべての book の auther を取得
 	Vec<Node> authers = books.get(%book/auther/_);
 	System.out.println(authers.get(0).getText());	// -> "auther1"
   	
 
-$B"!L>A06u4V@k8@(B
- $B%W%m%0%i%`Cf$K5-=R$9$k%?%0$K$OL>A06u4V$rI=$9(B prefix $B$rIU$1$k$3$H$,$G$-$^$9!#(B
- $B;HMQ$9$k(B prefix $B$O(B xmlns $B9=J8$G@k8@$7$F$*$/I,MW$,$"$j$^$9!#(B
+◆名前空間宣言
+ プログラム中に記述するタグには名前空間を表す prefix を付けることができます。
+ 使用する prefix は xmlns 構文で宣言しておく必要があります。
 
-$BNc!'(B
+例：
 	xmlns:style="http://openoffice.org/2000/style";
 	xmlns:draw="http://openoffice.org/2000/drawing";
 	foreach (Node n in doc.iter(%/ /style:properties)){
@@ -245,17 +245,17 @@ foreach $B9=J8$O!"(B
 	}
 
 
-$B"!%G%P%C%0MQ(B print
-$B%N!<%I$K$O(B print $B$H$$$&%G%P%C%0MQ%a%=%C%I$,MQ0U$5$l$F$*$j!"(B
-XML $BJ8=q$r(B pxml $BI=8=$G4J7i$K!"$+$D%$%s%G%s%H$r$D$1$F=PNO$9$k$3$H$,2DG=$G$9!#(B
-$B$3$N;~!"%F%-%9%H%N!<%I$NFbMF$O(B Java $B$NJ8;zNs%j%F%i%k$HF1MM$N%k!<%k$G(B
-$B%(%9%1!<%W$5$l$k$?$a!"FC<lJ8;z$K$^$D$o$k%H%i%V%k$,$"$j$^$;$s!#(B
+◆デバッグ用 print
+ノードには print というデバッグ用メソッドが用意されており、
+XML 文書を pxml 表現で簡潔に、かつインデントをつけて出力することが可能です。
+この時、テキストノードの内容は Java の文字列リテラルと同様のルールで
+エスケープされるため、特殊文字にまつわるトラブルがありません。
 
-$BNc!'(B
+例：
 	Node n = `(p "line 1\n" "line 2\n" "line 3\n");
 	n.print("n:");
 
-$B$3$NNc$G$O!"2<5-$NJ8;zNs$,I8=`%(%i!<=PNO$K=PNO$5$l$^$9!#(B
+この例では、下記の文字列が標準エラー出力に出力されます。
 
 	n:
 	(p
@@ -264,107 +264,107 @@ XML $BJ8=q$r(B pxml $BI=8=$G4J7i$K!"$+$D%$%s%G%s%H$r$D$1$F=PNO$9$k$3$H$,2DG=$
 	  "line 3\n")
 
 
-$B"!F~=PNO(B
-$B30It(B URI $B$+$i$NF~NO$O(B Node.readXML(String uri) $B!"(B
-$B%9%H%j!<%`$X$N=PNO$O(B node.toXMLStream(InputStream in) $B$G9T$$$^$9!#(B
+◆入出力
+外部 URI からの入力は Node.readXML(String uri) 、
+ストリームへの出力は node.toXMLStream(InputStream in) で行います。
 
-$BNc!'(B
+例：
       Node n = Node.readXML("http://aaa.ccc.ddd/");
       n.toXMLStream(System.out);
 
 
- XML $BJ8=q$H$7$F$NF~=PNO$N<BAu$K$O(B j2sdk1.4 $B$N(B JAXP API $B$rMQ$$$F$$$^$9!#(B
+ XML 文書としての入出力の実装には j2sdk1.4 の JAXP API を用いています。
 
 
-$B"!4XO"8&5f(B
+◆関連研究
 
-DOM $B$h$j$b;H$$$d$9$$(B API $B$rL\;X$9%i%$%V%i%j$H$7$F$O!"(B
-Java $B8@8lMQ$K(B JDOM, dom4j, XOM $B!"(B Python $B8@8lMQ$K(B PyDOM $B!"(B
-Ruby $BMQ$K(B REXML $B$J$I$,$"$j$^$9!#(B
-$B$3$l$i$NB?$/$O!"%*!<%W%s%=!<%9%=%U%H%&%(%"$H$7$F!"(B
-$B%$%s%?!<%M%C%H>e$NAH?%$N3@:,$rD6$($?3+H/BN@)$N$b$H$G3+H/$,?J$s$G$$$^$9!#(B
-$B$^$?!"ElBg^<8&5f<<$K$h$k(B xFAX $B$H$$$&Ds0F$b$"$j$^$9!#(B
-$B$7$+$7$$$:$l$b4{B8$N%W%m%0%i%_%s%08@8l$N9=J8$r3HD%$7$J$$!"(B
-$B!V=c?h$J%i%$%V%i%j!W$H$7$F<BAu$5$l$F$$$k$?$a!"(B
-$B$=$N5-=RNO$K$O$I$&$7$F$b8B3&$,$"$j$^$9!#(B
+DOM よりも使いやすい API を目指すライブラリとしては、
+Java 言語用に JDOM, dom4j, XOM 、 Python 言語用に PyDOM 、
+Ruby 用に REXML などがあります。
+これらの多くは、オープンソースソフトウエアとして、
+インターネット上の組織の垣根を超えた開発体制のもとで開発が進んでいます。
+また、東大渕研究室による xFAX という提案もあります。
+しかしいずれも既存のプログラミング言語の構文を拡張しない、
+「純粋なライブラリ」として実装されているため、
+その記述力にはどうしても限界があります。
 
-$B0lJ}!"(B XML $B$r(B Java $B8@8l$=$N$b$N$,;}$D%G!<%?9=B$$KBP1~$E$1$F$7$^$&(B
-$B%"%W%m!<%A$H$7$F!"(B Data binding $B$H8F$P$l$kJ}K!$b$"$j$^$9!#(B
-$B%5%s%^%$%/%m%7%9%F%`%:<R$,Cf?4$H$J$kAH?%(B JCP $B$K$h$k(B JAXB $B$NB>!"(B
-$B@u3$CR@2;a$K$h$k(B Relaxer $B$,M-L>$G$9!#(B
-Data binding $B$rMQ$$$l$P4J7i$+$D0BA4$J%W%m%0%i%_%s%0$,2DG=$G$9!#(B
-$B$7$+$7!"(B Data binding $B$rMxMQ$9$k$K$OJLES%9%-!<%^Dj5A$,(B
-$BI,MW$K$J$k$H$$$&@)Ls$,$"$j$^$9!#(B
+一方、 XML を Java 言語そのものが持つデータ構造に対応づけてしまう
+アプローチとして、 Data binding と呼ばれる方法もあります。
+サンマイクロシステムズ社が中心となる組織 JCP による JAXB の他、
+浅海智晴氏による Relaxer が有名です。
+Data binding を用いれば簡潔かつ安全なプログラミングが可能です。
+しかし、 Data binding を利用するには別途スキーマ定義が
+必要になるという制約があります。
 
-XSLT $B$N$h$&$K!"(BXML $BJ8K!!J$"$k$$$ON`;wJ8K!!K$rMQ$$$?0l<o$N%W%m%0%i%_%s%08@8l$r(B
-$BDs6!$9$k%"%W%m!<%A$H$7$F$O!"(BZope $B<R$N(B DTML $B$d!"(B
-$B9qFb$NHs1DMxCDBN%Y%$%-%C%H$K$h$k(B Xi $B$,$"$j$^$9!#(B
-$B$7$+$7!"9=J8$K(B XML $B$rMQ$$$F$$$k$?$a!"%W%m%0%i%`$N8+$?L\$O(B
-$BHs>o$K8+DL$7$N0-$$$b$N$K$J$C$F$7$^$$$^$9!#(B
+XSLT のように、XML 文法（あるいは類似文法）を用いた一種のプログラミング言語を
+提供するアプローチとしては、Zope 社の DTML や、
+国内の非営利団体ベイキットによる Xi があります。
+しかし、構文に XML を用いているため、プログラムの見た目は
+非常に見通しの悪いものになってしまいます。
 
-Lisp $B8@8l$N#S<0$rMQ$$$F(B XML $B$r=hM}$9$k%"%W%m!<%A$H$7$F$O!"(B
-$B%+%J%@(B Naval Postgraduate School $B$N(B SXML $B!"(B
-$BElBg6L0f8&5f<<;fL>;a$N(B XPoL$B$,$"$j$^$9!#(B
-$B#S<0$K$h$k(B XML $BI=8=$OHs>o$K4J7i$G$"$j!"(B
-$B$^$?(B Lisp $B$O$b$H$b$HLZ9=B$$N=hM}$K8~$$$F$$$k$?$a!"(B
-$BJ#;($J=hM}$r$9$k$N$K8~$$$F$$$^$9!#(B
-$B$7$+$7!"$b$H$b$H#S<0$K$J$$B0@-$dL>A06u4V$N07$$$K$d$dFqE@$,$"$j$^$9!#(B
-$B$^$?!"(B lisp $B8@8l<+BN$,%]%T%e%i!<$G$J$$$H$$$&LdBj$b$"$j$^$9!#(B
+Lisp 言語のＳ式を用いて XML を処理するアプローチとしては、
+カナダ Naval Postgraduate School の SXML 、
+東大玉井研究室紙名氏の XPoLがあります。
+Ｓ式による XML 表現は非常に簡潔であり、
+また Lisp はもともと木構造の処理に向いているため、
+複雑な処理をするのに向いています。
+しかし、もともとＳ式にない属性や名前空間の扱いにやや難点があります。
+また、 lisp 言語自体がポピュラーでないという問題もあります。
 
-XML $B=hM}@lMQ$N%W%m%0%i%_%s%08@8l$H$7$F$O!"(B
-$B%Z%s%7%k%P%K%"Bg$N(B XDuce, $B%m%s%I%sBg$N(B ProXML $B$,$"$j$^$9!#(B
-$B$3$N$h$&$K@lMQ8@8l$rDs6!$9$k%"%W%m!<%A$O@x:_E*$K9b$$5-=RNO$rC#@.$9$k(B
-$B2DG=@-$,$"$j$^$9$,!"0lHL$KFH<+8@8l$rIa5Z$5$;$k$K$O!"(B
-$B%i%$%V%i%j$d3+H/4D6-@0Hw$J$I$NFq$7$$2]Bj$,$"$j$^$9!#(B
+XML 処理専用のプログラミング言語としては、
+ペンシルバニア大の XDuce, ロンドン大の ProXML があります。
+このように専用言語を提供するアプローチは潜在的に高い記述力を達成する
+可能性がありますが、一般に独自言語を普及させるには、
+ライブラリや開発環境整備などの難しい課題があります。
 
-pxml plug-in $B$N$h$&$K!"4{B8$NHFMQ%W%m%0%i%_%s%08@8l$K(B XML $B=hM}9=J8$r(B
-$B2C$($k%"%W%m!<%A$r<h$k8&5f$O>/$J$/!"(B
-$B2f!9$,CN$k8B$j%Z%s%7%k%P%K%"Bg$N(B Xtatic $B$N$_$G$9!#(B
-Xtatic $B$O!"(B C# $B$N3HD%$G!"(BXDuce $B$HF1MM$K!"%W%m%0%i%`Cf$N(B XML $B$N@EE*7?%A%'%C%/$r(B
-$B9T$($k$H$$$&FCD'$,$"$j$^$9!#(B
-$B$7$+$7(B pxml plug-in $B$,Ds6!$9$k$h$&$J%F%s%W%l!<%H5-=R$d%k!<%WCj>]$N$?$a$N9=J8$O(B
-$B;}$A$^$;$s!#(B
+pxml plug-in のように、既存の汎用プログラミング言語に XML 処理構文を
+加えるアプローチを取る研究は少なく、
+我々が知る限りペンシルバニア大の Xtatic のみです。
+Xtatic は、 C# の拡張で、XDuce と同様に、プログラム中の XML の静的型チェックを
+行えるという特徴があります。
+しかし pxml plug-in が提供するようなテンプレート記述やループ抽象のための構文は
+持ちません。
 
-$B$3$N$h$&$K$5$^$6$^$J%"%W%m!<%A$K$h$kBeBX0F$,MpN)$7$F$$$k>u67$O!"(B
-$B8=:_$N(B XML $B=hM}5;=Q$,$$$+$KITJX$G$"$k$+$rG!<B$K<($7$F$$$^$9!#(B
+このようにさまざまなアプローチによる代替案が乱立している状況は、
+現在の XML 処理技術がいかに不便であるかを如実に示しています。
 
 
-$B"!>-Mh$N5!G=DI2CM=Dj(B
-$B!&%3%s%Q%$%k;~$N0BA4@-$N8!>Z(B
-$B%3%s%Q%$%i$,(B XML $B=hM}%W%m%0%i%`$N0BA4@-$r(B
-$B$"$kDxEY@EE*$K8!>Z$9$k$3$H$,2DG=$G$9!#(B
-$B$3$l$O!"%F%s%W%l!<%H!"MWAGL>!"B0@-L>!"%Q%9$N$9$Y$F$r(B
-$B8@8l=hM}7O$,9=J82r@O$7$F2r<a$7$F$$$k$?$a$K=i$a$F2DG=$K$J$j$^$9!#(B
-$BNc$($P(B DTD $B$r%3%s%Q%$%i$N%*%W%7%g%s$H$7$FM?$($k$3$H$G!"(B
-$B%W%m%0%i%`Cf$K;HMQ$9$kMWAGL>$N%9%Z%k%_%9$r8+$D$1$?$j!"(B
-DTD $B$K0cH?$9$k2DG=@-$N$"$k%F%s%W%l!<%H$r8+$D$1$?$j$9$k$3$H$,$G$-$^$9!#(B
+◆将来の機能追加予定
+・コンパイル時の安全性の検証
+コンパイラが XML 処理プログラムの安全性を
+ある程度静的に検証することが可能です。
+これは、テンプレート、要素名、属性名、パスのすべてを
+言語処理系が構文解析して解釈しているために初めて可能になります。
+例えば DTD をコンパイラのオプションとして与えることで、
+プログラム中に使用する要素名のスペルミスを見つけたり、
+DTD に違反する可能性のあるテンプレートを見つけたりすることができます。
 
-$B!&%3%s%Q%$%i$K$h$k:GE,2=(B
-pxml path $BEy$r%3%s%Q%$%k;~$K2r@O!&=hM}$G$-$k$?$a!"(B
-$B9bEY$J:GE,2=$,2DG=$G$9!#(B
+・コンパイラによる最適化
+pxml path 等をコンパイル時に解析・処理できるため、
+高度な最適化が可能です。
 
-$B!&(B pxml path $B$N9b5!G=2=(B
-$B8=:_$O(B XPath $B$N5!G=$N$4$/0lIt$7$+<BAu$5$l$F$$$^$;$s$,!"(B
-Java $B8@8l$NI=8=NO$r3hMQ$7$?$h$j6/NO$J8!:w5!9=$rF3F~$G$-$^$9!#(B
+・ pxml path の高機能化
+現在は XPath の機能のごく一部しか実装されていませんが、
+Java 言語の表現力を活用したより強力な検索機構を導入できます。
 
-$B!&(B Eclipse $BEy$N(B IDE $B$H$NE}9g!#(B
-$BNc$($P(B DTD $B$rM?$($k$3$H$G!"%W%m%0%i%`Cf$G$N%?%0L>$NJd40$J$I$r(B
-$B<B8=$9$k$3$H$,2DG=$G$9!#(B
+・ Eclipse 等の IDE との統合。
+例えば DTD を与えることで、プログラム中でのタグ名の補完などを
+実現することが可能です。
 
-$B!&(B Java $B0J30$N8@8l$KBP$9$k(B pxml $B3HD%9=J8$NDI2C!#(B
-$BNc$($P(B Ruby, python $B$J$I$N%9%/%j%W%H8@8l$r3HD%$9$l$P!"(B
-$BHs>o$K<BMQ@-$N9b$$(B XML $B=hM}8@8l$K$J$k$O$:$G$9!#(B
+・ Java 以外の言語に対する pxml 拡張構文の追加。
+例えば Ruby, python などのスクリプト言語を拡張すれば、
+非常に実用性の高い XML 処理言語になるはずです。
 
-$B$3$NB>$K$b!"%G%P%C%0;Y1g!"<~JU%D!<%k!"%i%$%V%i%jEy$K4X$7$F!"(B
-$BMM!9$J%"%$%G%"$r;}$C$F$$$^$9!#(B
+この他にも、デバッグ支援、周辺ツール、ライブラリ等に関して、
+様々なアイデアを持っています。
 
 
-$B"!J8K!(B
-$B$3$3$G$O(B Java $B8@8l$KBP$9$k:9J,$N$_$r!"3HD%(B BNF $B$G5-=R$7$^$9!#(B
-$BBgJ8;z$G;O$^$kL>A0$OHs=*C<5-9f$rI=$7$^$9!#(B
-_opt $B$,$D$$$?=*C<5-9f$O!">JN,2DG=$G$"$k$3$H$rI=$7$^$9!#(B
-$BHs=*C<5-9f$ND>8e$N(B * $B$O!"#08D0J>e$N7+$jJV$7$rI=$7$^$9!#(B
-<original alternatives> $B$O!"(B Java $B8@8l;EMM=q$GDj5A$5$l$F$$$kA*Br;h$rI=$7$^$9!#(B
+◆文法
+ここでは Java 言語に対する差分のみを、拡張 BNF で記述します。
+大文字で始まる名前は非終端記号を表します。
+_opt がついた終端記号は、省略可能であることを表します。
+非終端記号の直後の * は、０個以上の繰り返しを表します。
+<original alternatives> は、 Java 言語仕様書で定義されている選択肢を表します。
 
 Primary:
 	<original alternatives>
@@ -414,7 +414,7 @@ PathElem:
 	/
 
 
-$B"!Nc!'6e6e$NI=:n@.%W%m%0%i%`(B
+◆例：九九の表作成プログラム
 /*
 
  kuku program, written in MixJuice with pxml plug-in
@@ -453,7 +453,7 @@ module mj.mjdom.kuku_table extends mj.mjdom.jaxp {
 }
 
 
-$B"!;29M!'(B DOM $B$K$h$k6e6e$NI=:n@.%W%m%0%i%`(B
+◆参考： DOM による九九の表作成プログラム
 /*
 
  kuku program, written in Java with JAXP API
@@ -515,7 +515,7 @@ public class Test {
 }
 
 
-$B"!@8@.$5$l$k(B html
+◆生成される html
 <html>
 <head>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">

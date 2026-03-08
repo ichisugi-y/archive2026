@@ -25,19 +25,19 @@ java.lang.Object
   <dt> public class <b>FileSignatureTable</b>
   <dt> extends Object
 </dl>
-$B%/%i%9(B FileSignatureTable $B$O!"%/%i%9L>$+$i!"(B
-$B%/%i%9$N30It%$%s%?!<%U%'!<%9(B
-$B!J(BTypeDeclarationSignatureTree$B!K$r8!:w$9$k$?$a$N%F!<%V%k$G$9!#(B.
+クラス FileSignatureTable は、クラス名から、
+クラスの外部インターフェース
+（TypeDeclarationSignatureTree）を検索するためのテーブルです。.
 <p>
-epp $B$N=hM}BP>]$H$J$C$F$$$k(B
-$B$9$Y$F$N%U%!%$%k$N(B FileSignature $B$,!"$3$N%F!<%V%k$KEPO?$5$l$^$9!#(B
-$B$3$N%/%i%9$O!"EPO?$5$l$F$$$k(B FileSignature $B$NCf$+$i!"(B
-$B;XDj$5$l$?L>A0$r;}$D(B TypeDeclarationSignatureTree $B$r8!:w$7$F$=$l$rJV$7$^$9!#(B
+epp の処理対象となっている
+すべてのファイルの FileSignature が、このテーブルに登録されます。
+このクラスは、登録されている FileSignature の中から、
+指定された名前を持つ TypeDeclarationSignatureTree を検索してそれを返します。
 <p>
-$B$3$N%F!<%V%k$N%$%s%9%?%s%9$O!"F0E*JQ?t(B :fileSignatureTable $B$K(B
-$BF~$l$i$l$F$$$^$9!#(B
-$B$=$7$F!"(B EPP $B$N#1%;%C%7%g%sFb$N$9$Y$F$N(B EPP $B%W%j%W%m%;%C%5$K$h$C$F(B
-$B6&M-$5$l$^$9!#(B
+このテーブルのインスタンスは、動的変数 :fileSignatureTable に
+入れられています。
+そして、 EPP の１セッション内のすべての EPP プリプロセッサによって
+共有されます。
 <p>
 <dl>
     <dt> <b>See Also:</b>
@@ -59,18 +59,18 @@ epp $B$N=hM}BP>]$H$J$C$F$$$k(B
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#addFileSignature(epp.Tree)"><b>addFileSignature</b></a>(Tree)
-  <dd> FileSignature $B$r!"%F!<%V%k$KEPO?$7$^$9!#(B.
+  <dd> FileSignature を、テーブルに登録します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#get(epp.Symbol)"><b>get</b></a>(Symbol)
-  <dd> $B%/%i%9L>$N40A48BDjL>%7%s%\%k!JNc!'(B :"jp.go.etl.epp.epp.Tree"$B!K$+$i!"(B
-$B$=$l$KBP1~$9$k(B TypeDeclarationSignatureTree $B$rJV$7$^$9!#(B.
+  <dd> クラス名の完全限定名シンボル（例： :"jp.go.etl.epp.epp.Tree"）から、
+それに対応する TypeDeclarationSignatureTree を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#readFileSignatureFile(epp.Symbol)"><b>readFileSignatureFile</b></a>(Symbol)
-  <dd> $B$3$N%a%=%C%I$O!"$^$@<BAu$5$l$F$$$^$;$s!#(B
+  <dd> このメソッドは、まだ実装されていません。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#writeFileSignatureFile(epp.Tree)"><b>writeFileSignatureFile</b></a>(Tree)
-  <dd> $B$3$N%a%=%C%I$O!"$^$@<BAu$5$l$F$$$^$;$s!#(B
+  <dd> このメソッドは、まだ実装されていません。
 
 </dl>
 <a name="constructors"></a>
@@ -93,9 +93,9 @@ epp $B$N=hM}BP>]$H$J$C$F$$$k(B
  public <a href="epp.Tree.html#_top_">Tree</a> get(<a href="epp.Symbol.html#_top_">Symbol</a> fullName)
 </pre>
 <dl>
-  <dd> $B%/%i%9L>$N40A48BDjL>%7%s%\%k!JNc!'(B :"jp.go.etl.epp.epp.Tree"$B!K$+$i!"(B
-$B$=$l$KBP1~$9$k(B TypeDeclarationSignatureTree $B$rJV$7$^$9!#(B.
-$BBP1~$9$k(B TypeDeclarationSignatureTree $B$,$J$$>l9g$O(B null $B$rJV$7$^$9!#(B
+  <dd> クラス名の完全限定名シンボル（例： :"jp.go.etl.epp.epp.Tree"）から、
+それに対応する TypeDeclarationSignatureTree を返します。.
+対応する TypeDeclarationSignatureTree がない場合は null を返します。
 <p>
 </dl>
 <a name="addFileSignature(epp.Tree)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -104,8 +104,8 @@ epp $B$N=hM}BP>]$H$J$C$F$$$k(B
  public void addFileSignature(<a href="epp.Tree.html#_top_">Tree</a> sig)
 </pre>
 <dl>
-  <dd> FileSignature $B$r!"%F!<%V%k$KEPO?$7$^$9!#(B.
-$B$3$N%a%=%C%I$O!"(B EPP main routine $B$+$i8F$S=P$5$l$^$9!#(B
+  <dd> FileSignature を、テーブルに登録します。.
+このメソッドは、 EPP main routine から呼び出されます。
 <p>
 </dl>
 <a name="readFileSignatureFile(epp.Symbol)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -114,7 +114,7 @@ epp $B$N=hM}BP>]$H$J$C$F$$$k(B
  public <a href="epp.Tree.html#_top_">Tree</a> readFileSignatureFile(<a href="epp.Symbol.html#_top_">Symbol</a> fullName)
 </pre>
 <dl>
-  <dd> $B$3$N%a%=%C%I$O!"$^$@<BAu$5$l$F$$$^$;$s!#(B
+  <dd> このメソッドは、まだ実装されていません。
 <p>
 </dl>
 <a name="writeFileSignatureFile(epp.Tree)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -123,7 +123,7 @@ epp $B$N=hM}BP>]$H$J$C$F$$$k(B
  public void writeFileSignatureFile(<a href="epp.Tree.html#_top_">Tree</a> sig)
 </pre>
 <dl>
-  <dd> $B$3$N%a%=%C%I$O!"$^$@<BAu$5$l$F$$$^$;$s!#(B
+  <dd> このメソッドは、まだ実装されていません。
 <p>
 </dl>
 <hr>

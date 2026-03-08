@@ -1,180 +1,180 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="./style.css">
-<title> MJ $B$N35MW(B </title>
+<title> MJ の概要 </title>
 </head> <body>
 <div class="header-link">
 [<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
 [<a href="index.html">Document index</a>]
 </div>
-<h1>MJ $B$N35MW(B</h1>
+<h1>MJ の概要</h1>
 <ul class="headers">
-<li><a href="#java-base">Java $B8@8l$r%Y!<%9$K$7$?%W%m%0%i%_%s%08@8l(B</a>
-<li><a href="#module">$B:9J,%Y!<%9%b%8%e!<%k(B</a>
-<li><a href="#collection">$B7?%Q%i%a%?IU$-$N%3%l%/%7%g%s7?(B</a>
-<li><a href="#features">$B$=$NB>$NJXMx$J5!G=(B</a>
-<li><a href="#extensible">$B%=!<%9%3!<%IJQ49$H%P%$%H%3!<%IJQ49$K$h$k<BAu(B</a>
+<li><a href="#java-base">Java 言語をベースにしたプログラミング言語</a>
+<li><a href="#module">差分ベースモジュール</a>
+<li><a href="#collection">型パラメタ付きのコレクション型</a>
+<li><a href="#features">その他の便利な機能</a>
+<li><a href="#extensible">ソースコード変換とバイトコード変換による実装</a>
 </p></ul><p>
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="java-base">Java $B8@8l$r%Y!<%9$K$7$?%W%m%0%i%_%s%08@8l(B</a></h2><p>
+</p><h2><a name="java-base">Java 言語をベースにしたプログラミング言語</a></h2><p>
 </p><p>
-MJ $B$O(B Java $B8@8l$K2~NI$r2C$($?%W%m%0%i%_%s%08@8l$G!"(B
-$B<B9T%b%G%k$O(B Java $B$H$^$C$?$/F1$8%*%V%8%'%/%H;X8~$G$9!#(B
-MJ $B$+$i$O(B Java $B$N$9$Y$F$N%i%$%V%i%j$,MxMQ$G$-!"(B
-$B%"%W%j%1!<%7%g%s$O$9$Y$F$N(B JavaVM $B$N>e$GF0:n$7$^$9!#(B
+MJ は Java 言語に改良を加えたプログラミング言語で、
+実行モデルは Java とまったく同じオブジェクト指向です。
+MJ からは Java のすべてのライブラリが利用でき、
+アプリケーションはすべての JavaVM の上で動作します。
 </p><p>
 </p><p>
-</p><h2><a name="module">$B:9J,%Y!<%9%b%8%e!<%k(B</a></h2><p>
+</p><h2><a name="module">差分ベースモジュール</a></h2><p>
 </p><p>
-</p><h3>$B:9J,!a%b%8%e!<%k(B</h3><p>
+</p><h3>差分＝モジュール</h3><p>
 </p><p>
-MJ $B$O!"(B Java $B8@8l$N%b%8%e!<%k5!9=$H$OA4$/0[$J$k(B
-$B!V:9J,%Y!<%9%b%8%e!<%k5!9=!W$rDs6!$7$^$9!#(B
-$B$3$l$O!"!V%*%j%8%J%k$N%W%m%0%i%`$H3HD%$5$l$?%W%m%0%i%`$N4V$N:9J,!W$r(B
-$B%b%8%e!<%k$H$7$F07$&5!9=$G$9!#(B
-$B4{B8$N%7%9%F%`$KBP$9$k%b%8%e!<%k$NDI2C$O!"(B
-$B%=!<%9%3!<%I$K(B patch $B$KEv$F$k$3$H$KAjEv$7$^$9!#(B
-$B$?$@$7!"!V:9J,!W$N5-=R$O(B patch $B$N$h$&$K9TC10L!JJ8;zNs%l%Y%k!K$G$O$J$/(B
-$B%a%=%C%IC10L!J8@8l%l%Y%k!K$G$"$j!"(B
-$B8@8l=hM}7O$,7?8!::$r9T$&$N$G!"0BA4$K:9J,$NDI2C$,9T$($^$9!#(B
+MJ は、 Java 言語のモジュール機構とは全く異なる
+「差分ベースモジュール機構」を提供します。
+これは、「オリジナルのプログラムと拡張されたプログラムの間の差分」を
+モジュールとして扱う機構です。
+既存のシステムに対するモジュールの追加は、
+ソースコードに patch に当てることに相当します。
+ただし、「差分」の記述は patch のように行単位（文字列レベル）ではなく
+メソッド単位（言語レベル）であり、
+言語処理系が型検査を行うので、安全に差分の追加が行えます。
 </p><p>
 <div align=center>
 <img src="images/diff.gif">
 </div>
 </p><p>
-$B=>Mh$N%*%V%8%'%/%H;X8~8@8l$G$b!"%/%i%97Q>5$r;H$C$F(B
-$B%/%i%9C10L$N:9J,%W%m%0%i%_%s%0$O$G$-$^$7$?!#(B
-$B$7$+$7$=$N$?$a$K$O!"(B super class $B$H$OJL$NL>A0$r;}$C$?(B subclass $B$r!"(B
-$B?7$?$KDj5A$9$kI,MW$,$"$j$^$7$?!#(B
-MJ $B$G$O!"(B super class $B$,;}$D%a%=%C%I$=$N$b$N$r!"(B
-$B?7$?$J%/%i%9$rDj5A$9$k$3$H$J$7$K!"(B
-$B3HD%$9$k$3$H$,$G$-$^$9!#(B
+従来のオブジェクト指向言語でも、クラス継承を使って
+クラス単位の差分プログラミングはできました。
+しかしそのためには、 super class とは別の名前を持った subclass を、
+新たに定義する必要がありました。
+MJ では、 super class が持つメソッドそのものを、
+新たなクラスを定義することなしに、
+拡張することができます。
 </p><p>
-MJ $B$G$O!"%/%i%93,AXCf$N$9$Y$F$N%a%=%C%I$,!"(B
-$B:9J,$rDI2C$9$k$?$a$N(B "hook" $B$H$7$FF/$-$^$9!#(B
-$B$3$N$*$+$2$G!"(B
-$B!VHs>o$K3HD%@-$N9b$$%"%W%j%1!<%7%g%s!W$,!"(B
-$B=>Mh$N(B Java $B8@8l$h$j$b4J7i$K5-=R$G$-$^$9!#(B
+MJ では、クラス階層中のすべてのメソッドが、
+差分を追加するための "hook" として働きます。
+このおかげで、
+「非常に拡張性の高いアプリケーション」が、
+従来の Java 言語よりも簡潔に記述できます。
 </p><p>
-</p><h3>$B%/%i%9!b%b%8%e!<%k(B</h3><p>
-MJ $B$G$O!"=>Mh$N(B C++, Java $B$H$O0c$$!"(B
-$B%/%i%9$O%b%8%e!<%k$H$7$F$N5!G=$r;}$C$F$$$^$;$s!#(B
-$B%/%i%9$O%*%V%8%'%/%H$N?w7?!"(B
-$B%b%8%e!<%k$O%=!<%9%3!<%I$NItIJ!J:FMxMQ!&>pJs1#JC$NC10L!K$G$"$j!"(B
-$B#2$D$N5!9=$O(B MJ $B$G$O40A4$KJ,N%$5$l$F$$$^$9!#(B
+</p><h3>クラス≠モジュール</h3><p>
+MJ では、従来の C++, Java とは違い、
+クラスはモジュールとしての機能を持っていません。
+クラスはオブジェクトの雛型、
+モジュールはソースコードの部品（再利用・情報隠蔽の単位）であり、
+２つの機構は MJ では完全に分離されています。
 </p><p>
-MJ $B$O%*%V%8%'%/%H;X8~8@8l$G$"$j!"(B
-$B%*%V%8%'%/%H$,<B9T;~$NItIJ$G$"$k$3$H$K$O(B
-$BJQ$o$j$"$j$^$;$s!#(B
-MJ $B$O<B9T;~$NItIJ$G$"$k%*%V%8%'%/%H$H!"(B
-$B%3%s%Q%$%k;~$NItIJ$G$"$k%b%8%e!<%k$H$rFHN)$5$;$?8@8l$G$"$k$H8@$($^$9!#(B
+MJ はオブジェクト指向言語であり、
+オブジェクトが実行時の部品であることには
+変わりありません。
+MJ は実行時の部品であるオブジェクトと、
+コンパイル時の部品であるモジュールとを独立させた言語であると言えます。
 </p><p>
-$B=>Mh$N%*%V%8%'%/%H;X8~8@8l$N$h$&$J!V%/%i%9!a%b%8%e!<%k!W$H$$$&(B
-$B@)Ls$,$J$/$J$k$?$a!"(B
-$B<+M3EY$N9b$$%b%8%e!<%kJ,$1$,2DG=$G$9!#(B
-$BNc$($P!"J#?t$N%/%i%9$r2#CG$9$k%3%i%\%l!<%7%g%s$r!"(B
-$BFHN)$7$?%b%8%e!<%k$H$7$F5-=R$9$k$3$H$,$G$-$^$9!#(B
-$B$3$l$K$h$j%W%m%0%i%`$NJ]<i@-!&:FMxMQ@-$,8~>e$9$k$H4|BT$G$-$^$9!#(B
+従来のオブジェクト指向言語のような「クラス＝モジュール」という
+制約がなくなるため、
+自由度の高いモジュール分けが可能です。
+例えば、複数のクラスを横断するコラボレーションを、
+独立したモジュールとして記述することができます。
+これによりプログラムの保守性・再利用性が向上すると期待できます。
 </p><p>
 <div align=center>
 <img src="images/soc.gif">
 </div>
 </p><p>
 </p><p>
-</p><h3> $B%(%s%I%f!<%6$K$h$k%b%8%e!<%k$N7k9g(B</h3><p>
+</p><h3> エンドユーザによるモジュールの結合</h3><p>
 </p><p>
-$B%(%s%I%f!<%6$O!V;HMQ$7$?$$%b%8%e!<%k$NL>A0$N=89g!W$r(B
-$B%j%s%+!<$K;XDj$9$k$3$H$K$h$j!"(B
-$BJ#?t$N%b%8%e!<%k$r$D$J$.9g$o$;$F!"FH<+$N%"%W%j%1!<%7%g%s$r(B
-$B9=C[$9$k$3$H$,2DG=$G$9!#(B
-$B$3$N;~!"%b%8%e!<%kF1;N$N$D$J$.J}$r;X<($9$kI,MW$O0l@Z$"$j$^$;$s!#(B
+エンドユーザは「使用したいモジュールの名前の集合」を
+リンカーに指定することにより、
+複数のモジュールをつなぎ合わせて、独自のアプリケーションを
+構築することが可能です。
+この時、モジュール同士のつなぎ方を指示する必要は一切ありません。
 </p><p>
-$B$[$H$s$I$N%W%m%0%i%_%s%08@8l$G$O!"%b%8%e!<%k$r:FMxMQ$9$k$H$-!"(B
-$B%b%8%e!<%k$rAH$_9g$o$;$kItJ,$N%3!<%I$r%W%m%0%i%^!<$,=q$+$J$1$l$P$J$j$^$;$s!#(B
-$B$3$N$H$-!"%W%m%0%i%^!<$O%b%8%e!<%k$N30It;EMM$r$A$c$s$HM}2r$9$kI,MW$,$"$j$^$9!#(B
-$B%$%s%?!<%U%'!<%9%S%k%@!<$J$I$N%D!<%k$rMQ$$$l$P%3!<%I$r=q$/I,MW$O$J$$$H$7$F$b!"(B
-$B!VItIJ$r$D$J$0:n6H!W$OI,MW$K$J$C$F$7$^$$$^$9!#(B
-$B$7$+$7(B MJ $B$G$O$=$N:n6H$OI,MW$"$j$^$;$s!#(B
+ほとんどのプログラミング言語では、モジュールを再利用するとき、
+モジュールを組み合わせる部分のコードをプログラマーが書かなければなりません。
+このとき、プログラマーはモジュールの外部仕様をちゃんと理解する必要があります。
+インターフェースビルダーなどのツールを用いればコードを書く必要はないとしても、
+「部品をつなぐ作業」は必要になってしまいます。
+しかし MJ ではその作業は必要ありません。
 </p><p>
-n $B8D$N%b%8%e!<%k$,Ds6!$5$l$F$$$l$P!":GBg(B 2^n $B$NAH9g$;$NCf$+$i!"(B
-$B<+J,$NL\E*$K:GE,$J%3%s%U%#%.%e%l!<%7%g%s$r%(%s%I%f!<%6$,A*$V$3$H$,(B
-$B$G$-$k$3$H$K$J$j$^$9!#(B
-$B$3$l$O!"$A$g$&$I%Q%=%3%s$N<~JU5!4o$r!"(B
-$B%(%s%I%f!<%6$,4JC1$KAH$_9g$o$;$i$l$k$3$H$K;w$F$$$^$9!#(B
-$B%(%s%I%f!<%6$O!"<~JU5!4o$r$D$J$0EE5$E*?.9f$N;EMM$dDL?.<j=g$K$D$$$F$N(B
-$B6qBNE*$JCN<1$,$J$/$F$b!"<+J,$,;H$$$?$$<~JU5!4o$N%W%i%0$r(B
-$B%=%1%C%H$K:9$79~$`$@$1$G!"MxMQ$G$-$^$9!#(B
-$BF1MM$K(B MJ $B$G=q$+$l$?%"%W%j%1!<%7%g%s$N%(%s%I%f!<%6$O!"(B
-$BItIJ$N>\:Y$rCN$i$J$/$F$b!"I,MW$J5!G=$r;}$C$?%b%8%e!<%k$r(B
-$BAH$_9g$o$;$F;H$&$3$H$,$G$-$^$9!#(B
-</p><p>
-</p><p>
-</p><h3>$BL>A06u4V$NB?=E7Q>5(B</h3><p>
-MJ $B$G$O%b%8%e!<%k4V$N0MB84X78$O!"!V%b%8%e!<%k4V$N7Q>54X78!W$H$7$FI=8=$7$^$9!#(B
-sub-module $B$O!"(B super-module $B$+$i$9$Y$F$NL>A0$r7Q>5$7$^$9!#(B
-$B7Q>54X78$@$1$K$h$C$F!"=>Mh$N8@8l$N%b%8%e!<%k5!9=$,;}$D(B import/export $B!"(B
-$B%0%k!<%W2=$J$I$N5!G=$rI=8=$7$^$9!#(B
-</p><p>
-Java $B$N(B nested class $B$O%M%9%H$7$?L>A06u4V$rI=8=2DG=$G$9$,!"(B
-MJ $B$G$OL>A06u4V$NB?=E7Q>5$K$h$j!"$h$j0lHLE*$JL>A06u4V$N9=B$$,I=8=2DG=$G$9!#(B
+n 個のモジュールが提供されていれば、最大 2^n の組合せの中から、
+自分の目的に最適なコンフィギュレーションをエンドユーザが選ぶことが
+できることになります。
+これは、ちょうどパソコンの周辺機器を、
+エンドユーザが簡単に組み合わせられることに似ています。
+エンドユーザは、周辺機器をつなぐ電気的信号の仕様や通信手順についての
+具体的な知識がなくても、自分が使いたい周辺機器のプラグを
+ソケットに差し込むだけで、利用できます。
+同様に MJ で書かれたアプリケーションのエンドユーザは、
+部品の詳細を知らなくても、必要な機能を持ったモジュールを
+組み合わせて使うことができます。
 </p><p>
 </p><p>
-</p><h3>$B%U%#!<%k%I!&%a%=%C%I$N40A48BDjL>(B</h3><p>
-$BB?=E7Q>5$KH<$&LdBj$N#1$D$H$7$F!"L>A0$N>WFM$,$"$j$^$9!#(B
-Java $B8@8l$K$O!V%/%i%9$N40A48BDjL>!W$H$$$&35G0$,$"$j$^$9$,!"(B
-MJ $B$G$O$3$l$r%U%#!<%k%IL>!&%a%=%C%IL>$K$bF3F~$9$k$3$H$G!"(B
-$BL>A0$N>WFM$NLdBj$O40A4$K2r7h$7$F$$$^$9!#(B
+</p><h3>名前空間の多重継承</h3><p>
+MJ ではモジュール間の依存関係は、「モジュール間の継承関係」として表現します。
+sub-module は、 super-module からすべての名前を継承します。
+継承関係だけによって、従来の言語のモジュール機構が持つ import/export 、
+グループ化などの機能を表現します。
+</p><p>
+Java の nested class はネストした名前空間を表現可能ですが、
+MJ では名前空間の多重継承により、より一般的な名前空間の構造が表現可能です。
 </p><p>
 </p><p>
-</p><h3>$BJ,3d%3%s%Q%$%k;~$H%j%s%/;~$N7?%A%'%C%/(B</h3><p>
-$B3F%b%8%e!<%k$O!"%b%8%e!<%kC10L$GJ,3d%3%s%Q%$%k$,$G$-$^$9!#(B
-$B$^$?!"$^$C$?$/FHN)$K3+H/$5$l$?%b%8%e!<%k$r!"%(%s%I%f!<%6$,AH$_9g$o$;$k(B
-$B!J%j%s%/$9$k!K$3$H$,$G$-$^$9!#(B
-$B%j%s%/;~$K$b7?%A%'%C%/$,9T$o$l$k$N$G!"%j%s%/7k2L$N%"%W%j%1!<%7%g%s$N(B
-$B0BA4@-$,J]>Z$5$l$^$9!#(B
-</p><p>
-MJ $B$G$O%(%s%I%f!<%6$,;HMQ$9$k%b%8%e!<%k$r;XDj$9$k$3$H$,$G$-$^$9$,!"(B
-$B$3$l$O=>Mh$N>r7o%3%s%Q%$%k(B( #ifdef ) $B$NMQES$K;w$F$$$^$9!#(B#ifdef $B$O(B
-$BJ8;zNs%l%Y%k$N5!9=$G$9$,!"(B MJ $B$O%3%s%Q%$%k;~$H%j%s%/;~$N(B
-$B7?%A%'%C%/$K$h$j!"(B #ifdef $B$h$j$b0BA4$K%3%s%U%#%.%e%l!<%7%g%s$r(B
-$B%+%9%?%^%$%:$9$k$3$H$,$G$-$^$9!#(B
+</p><h3>フィールド・メソッドの完全限定名</h3><p>
+多重継承に伴う問題の１つとして、名前の衝突があります。
+Java 言語には「クラスの完全限定名」という概念がありますが、
+MJ ではこれをフィールド名・メソッド名にも導入することで、
+名前の衝突の問題は完全に解決しています。
 </p><p>
 </p><p>
+</p><h3>分割コンパイル時とリンク時の型チェック</h3><p>
+各モジュールは、モジュール単位で分割コンパイルができます。
+また、まったく独立に開発されたモジュールを、エンドユーザが組み合わせる
+（リンクする）ことができます。
+リンク時にも型チェックが行われるので、リンク結果のアプリケーションの
+安全性が保証されます。
 </p><p>
-</p><h3>$B<B9T$KI,MW$J%b%8%e!<%k$r<+F0E*$K%j%s%/(B</h3><p>
-$B%(%s%I%f!<%6$,%j%s%/;~$K;H$$$?$$%b%8%e!<%k$r;XDj$9$k$H!"(B
-$B$=$N%b%8%e!<%k$,I,MW$H$9$k%b%8%e!<%k$b<+F0E*$K%j%s%/$5$l$^$9!#(B
-$B$3$N$H$-!"B?$/$N%7%9%F%`$K$"$k$h$&$JC1=c$J(B
-A requires B $B$H$$$&0MB84X78$@$1$G$O$J$/!"(B
-A complements B, C $B$H$$$&FC<l$J4X78$b=hM}$7$^$9!#(B
+MJ ではエンドユーザが使用するモジュールを指定することができますが、
+これは従来の条件コンパイル( #ifdef ) の用途に似ています。#ifdef は
+文字列レベルの機構ですが、 MJ はコンパイル時とリンク時の
+型チェックにより、 #ifdef よりも安全にコンフィギュレーションを
+カスタマイズすることができます。
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="collection">$B7?%Q%i%a%?IU$-$N%3%l%/%7%g%s7?(B</a></h2><p>
+</p><h3>実行に必要なモジュールを自動的にリンク</h3><p>
+エンドユーザがリンク時に使いたいモジュールを指定すると、
+そのモジュールが必要とするモジュールも自動的にリンクされます。
+このとき、多くのシステムにあるような単純な
+A requires B という依存関係だけではなく、
+A complements B, C という特殊な関係も処理します。
 </p><p>
-MJ $B$OAH$_9~$_$N(B<a href="collection.html">$B%3%l%/%7%g%s7?(B</a>$B$r(B
-$B;}$C$F$^$9!#(B
-$B%a%=%C%I$N0z?t$O%3%s%Q%$%k;~$K7?%A%'%C%/$5$l$k$?$a!"(B
-$B%W%m%0%i%`$N%(%i!<$rAa4|$KH/8+$9$k$3$H$,$G$-$^$9!#(B
 </p><p>
-$B6qBNE*$K$O!"0J2<$NFCD'$r;}$A$^$9!#(B
+</p><p>
+</p><h2><a name="collection">型パラメタ付きのコレクション型</a></h2><p>
+</p><p>
+MJ は組み込みの<a href="collection.html">コレクション型</a>を
+持ってます。
+メソッドの引数はコンパイル時に型チェックされるため、
+プログラムのエラーを早期に発見することができます。
+</p><p>
+具体的には、以下の特徴を持ちます。
 </p><p>
 <ul>
-<li>$B@EE*$K7?%A%'%C%/$5$l$k2DJQD9G[Ns!"%O%C%7%eI=!"%$%F%l!<%?$rAH$_9~$_7?$H$7$FDs6!(B
-<li>$BJXMx$J%7%s%?%C%/%9%7%e%,!<(B: <tt>{}</tt>$B!"(B<tt>foreach</tt>
-<li>$BJVCM$N(Bnull$B$NCM$N%A%'%C%/$r6/@)$9$k(B<tt>ifNull</tt>$B9=J8(B
-<li>int $B7?$N<+F0(B wrap/unwrap
-<li>$B%G%P%C%0$KJXMx$J(B print $B%a%=%C%I(B
-<li>$B%7%s%W%k$J;EMM$H<BAu(B
-<li>EPP plug-in $B$N7A$G$N(B composability $B$N9b$$<BAu(B
+<li>静的に型チェックされる可変長配列、ハッシュ表、イテレータを組み込み型として提供
+<li>便利なシンタックスシュガー: <tt>{}</tt>、<tt>foreach</tt>
+<li>返値のnullの値のチェックを強制する<tt>ifNull</tt>構文
+<li>int 型の自動 wrap/unwrap
+<li>デバッグに便利な print メソッド
+<li>シンプルな仕様と実装
+<li>EPP plug-in の形での composability の高い実装
 </ul>
 </p><p>
 </p><p>
- $B$3$l$O!"(B foreach $B$K$h$k#2=E%k!<%W$NNc$G$9!#(B
+ これは、 foreach による２重ループの例です。
 </p><p>
 <pre>
 found:
@@ -186,39 +186,39 @@ found:
 </pre>
 </p><p>
 </p><p>
-$B<B$OLs#8#0#0#09T$N(B MJ $B$N8@8l=hM}7O<+BN$,!"$3$N(B "Collection plug-in" $B$r(B
-$BMQ$$$F=q$+$l$F$*$j!"5-=RNO$N9b$5$O<B>Z:Q$G$9!#(B
+実は約８０００行の MJ の言語処理系自体が、この "Collection plug-in" を
+用いて書かれており、記述力の高さは実証済です。
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="features">$B$=$NB>$NJXMx$J5!G=(B</a></h2><p>
+</p><h2><a name="features">その他の便利な機能</a></h2><p>
 </p><p>
-</p><h3>assert $B%^%/%m(B</h3><p>
-<a href="assert.html">assert $B%^%/%m(B</a>$B$,;H$($^$9!#(B
-</p><p>
-</p><p>
-</p><h3>$B9=J8C10L$N%3%a%s%H%"%&%H(B</h3><p>
-<tt>#+comment</tt> $B$H=q$$$F!"$=$N8e$N9=J8#1$D$r%3%a%s%H%"%&%H$9$k$3$H$,(B
-$B$G$-$^$9!#(B
+</p><h3>assert マクロ</h3><p>
+<a href="assert.html">assert マクロ</a>が使えます。
 </p><p>
 </p><p>
+</p><h3>構文単位のコメントアウト</h3><p>
+<tt>#+comment</tt> と書いて、その後の構文１つをコメントアウトすることが
+できます。
 </p><p>
-</p><h2><a name="extensible">$B%=!<%9%3!<%IJQ49$H%P%$%H%3!<%IJQ49$K$h$k<BAu(B</a></h2><p>
-$B8@8l=hM}7O$O!"%W%j%W%m%;%C%5!J%=!<%9%3!<%IJQ49!K$H(B
-$B%]%9%H%W%m%;%C%5!J%P%$%H%3!<%IJQ49!K$K$h$C$F<B8=$5$l$F$$$^$9!#(B
 </p><p>
-MJ $B$N%=!<%9%3!<%I$O!"$^$:%W%j%W%m%;%C%5$K$h$C$F(B Java $B8@8l$N(B
-$B%=!<%9%3!<%I$KJQ49$5$l!"(B Java $B%3%s%Q%$%i$K$h$C$F(B class file $B$K(B
-$B%3%s%Q%$%k$5$l$^$9!#(B
-$B$7$+$7!"$3$N(B class file $B$O(B MJ $B$NCf4V%3!<%I$K$9$.$:!"(B
-$B$=$N$^$^$G$O(B Java $B$N%W%m%0%i%`$H$7$F<B9T$O$G$-$^$;$s!#(B
-$BJ#?t$N(B class file $B$r%P%$%H%3!<%IJQ49$7$F!V%j%s%/!W$9$k$3$H$K$h$C$F!"(B
-$B$O$8$a$F<B9T2DG=$J(B Java $B$N%W%m%0%i%`$,$G$-$^$9!#(B
 </p><p>
-$B%W%j%W%m%;%C%5$N<BAu$K$O(B
-<a href="http://staff.aist.go.jp/y-ichisugi/epp/j-index.html">$B3HD%2DG=(B Java $B%W%j%W%m%;%C%5(BEPP</a>$B$r(B
-$BMQ$$$F$$$^$9!#(B
-"EPP plug-in" $B$rDI2C$9$k$3$H$G!"MQES$K1~$8$F8@8l;EMM$r3HD%$9$k$3$H$,$G$-$^$9!#(B
+</p><h2><a name="extensible">ソースコード変換とバイトコード変換による実装</a></h2><p>
+言語処理系は、プリプロセッサ（ソースコード変換）と
+ポストプロセッサ（バイトコード変換）によって実現されています。
+</p><p>
+MJ のソースコードは、まずプリプロセッサによって Java 言語の
+ソースコードに変換され、 Java コンパイラによって class file に
+コンパイルされます。
+しかし、この class file は MJ の中間コードにすぎず、
+そのままでは Java のプログラムとして実行はできません。
+複数の class file をバイトコード変換して「リンク」することによって、
+はじめて実行可能な Java のプログラムができます。
+</p><p>
+プリプロセッサの実装には
+<a href="http://staff.aist.go.jp/y-ichisugi/epp/j-index.html">拡張可能 Java プリプロセッサEPP</a>を
+用いています。
+"EPP plug-in" を追加することで、用途に応じて言語仕様を拡張することができます。
 </p><p>
 </p><p>
 </p><hr>

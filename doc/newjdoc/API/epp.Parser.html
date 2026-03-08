@@ -25,34 +25,34 @@ java.lang.Object
   <dt> public class <b>Parser</b>
   <dt> extends Object
 </dl>
-EPP $B%W%j%W%m%;%C%5$,;}$D%a%=%C%I$N$&$A(B
-Java $B8@8l$N%Q!<%6ItJ,$rDj5A$9$k%a%=%C%I$G$9!#(B.
+EPP プリプロセッサが持つメソッドのうち
+Java 言語のパーザ部分を定義するメソッドです。.
 <p>
-<b> $BCm0U!'(B $B$3$N%/%i%9$O!"(B javadoc $B$r:n$k$?$a$NJX59E*$J%/%i%9$G$9!#(B
-$B<B:]$N(B EPP $B$N%=!<%9%3!<%ICf$K$OB8:_$7$^$;$s!#(B </b>
+<b> 注意： このクラスは、 javadoc を作るための便宜的なクラスです。
+実際の EPP のソースコード中には存在しません。 </b>
 <p>
-plug-in $B$NCf$+$i!"(BSystemMixin $B9=J8$r;H$C$F!"(B
-$B3F%a%=%C%I$N5sF0$r3HD%$9$k$3$H$K$h$j!"(B EPP $B$,=hM}$9$k(B Java $B8@8l$N(B
-$BJ8K!$r3HD%$9$k$3$H$,$G$-$^$9!#(B
+plug-in の中から、SystemMixin 構文を使って、
+各メソッドの挙動を拡張することにより、 EPP が処理する Java 言語の
+文法を拡張することができます。
 <p>
-EPP $B$N%Q!<%6$O!":F5"2<9_%9%?%$%k$G=q$+$l$F$$$^$9!#(B
-$B:F5"2<9_%Q!<%6$H$O!"3F(B non-terminal $B$r#1$D$N4X?t$GI=$9%9%?%$%k$G(B
-$B=q$+$l$?%Q!<%6$G$9!#(B
-$B4X?t$O!"(B non-terminal $B$r#1$D9=J82r@O$7!"7k2L$r(B tree $B$H$7$FJV$7$^$9!#(B
-$BNc$($P(B EPP $B$N>l9g!"(B expression() $B$H$$$&%a%=%C%I8F$S=P$7$O!"(B
-$B8=:_$N%H!<%/%s$+$i!V<0!W$,;O$^$k$b$N$H2>Dj$7$F9=J82r@O$r;O$a!"(B
-$B@.8y$7$?$i9=J82r@O$N7k2L$rCj>]9=J8LZ$H$7$FJV$7$^$9!#(B
+EPP のパーザは、再帰下降スタイルで書かれています。
+再帰下降パーザとは、各 non-terminal を１つの関数で表すスタイルで
+書かれたパーザです。
+関数は、 non-terminal を１つ構文解析し、結果を tree として返します。
+例えば EPP の場合、 expression() というメソッド呼び出しは、
+現在のトークンから「式」が始まるものと仮定して構文解析を始め、
+成功したら構文解析の結果を抽象構文木として返します。
 <p>
-$BHs=*C<5-9f$NB?$/$O!"(B defineNonterminal $B$H$$$&%^%/%m$GDj5A$5$l$^$9!#(B
-$B$3$N%^%/%m$O!"(B xxxTop, xxxLeft, xxxRight $B$H$$$&%a%=%C%I$r<+F0E*$K(B
-$BDj5A$7$^$9!#(B plug-in $B$O!"$3$l$i$N%a%=%C%I$r3HD%$9$k$3$H$G!"(B
-$BHs=*C<5-9f$K?7$?$JA*Br;h$rDI2C$9$k$3$H$,$G$-$^$9!#(B
-$B$I$N$h$&$JHs=*C<5-9f$,$"$k$+$O!"(B
-<a href="../JavaGrammar.html">$B!V(BEPP $B$,<uM}$9$k(B Java $BJ8K!!W(B</a> $B$r8+$F2<$5$$!#(B
+非終端記号の多くは、 defineNonterminal というマクロで定義されます。
+このマクロは、 xxxTop, xxxLeft, xxxRight というメソッドを自動的に
+定義します。 plug-in は、これらのメソッドを拡張することで、
+非終端記号に新たな選択肢を追加することができます。
+どのような非終端記号があるかは、
+<a href="../JavaGrammar.html">「EPP が受理する Java 文法」</a> を見て下さい。
 <p>
-EPP $B$G$O9=J82r@OCf$K%P%C%/%H%i%C%/$9$k5!9=$rDs6!$7$F$^$9!#(B
-$B=c?h$J#1%H!<%/%s@hFI$_:F5"2<9_9=J82r@O$G$O(B LL(1) $B$NJ8K!$7$+2r@O$G$-$^$;$s$,!"(B
-$B%P%C%/%H%i%C%/$9$k$3$H$K$h$j!"$h$j9-HO0O$NJ8K!$r07$($^$9!#(B
+EPP では構文解析中にバックトラックする機構を提供してます。
+純粋な１トークン先読み再帰下降構文解析では LL(1) の文法しか解析できませんが、
+バックトラックすることにより、より広範囲の文法を扱えます。
 <p>
 <dl>
     <dt> <b>See Also:</b>
@@ -74,29 +74,29 @@ EPP $B$G$O9=J82r@OCf$K%P%C%/%H%i%C%/$9$k5!9=$rDs6!$7$F$^$9!#(B
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#convertExpressionToType(epp.Tree)"><b>convertExpressionToType</b></a>(Tree)
-  <dd> $B<0$H$7$F9=J82r@O$5$l$?Cj>]9=J8LZ$r!"7?$rI=8=$9$k@55,7A$KJQ49$9$k(B
-$B%a%=%C%I$G$9!#(B.
+  <dd> 式として構文解析された抽象構文木を、型を表現する正規形に変換する
+メソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#type()"><b>type</b></a>()
-  <dd> $BHs=*C<5-9f(B Type $B$r9=J82r@O$7!"7k2L$rJV$9%a%=%C%I$G$9!#(B.
+  <dd> 非終端記号 Type を構文解析し、結果を返すメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#xxx()"><b>xxx</b></a>()
-  <dd> $BHs=*C<5-9f(B xxx $B$r9=J82r@O$7!"7k2L$NCj>]9=J8LZ$rJV$9%a%=%C%I$G$9!#(B.
+  <dd> 非終端記号 xxx を構文解析し、結果の抽象構文木を返すメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#xxx1()"><b>xxx1</b></a>()
-  <dd> $BHs=*C<5-9f(B xxx $B$NA*Br;h$,A4$F%^%C%A$7$J$+$C$?;~$K8F$P$l$k%a%=%C%I$G$9!#(B.
+  <dd> 非終端記号 xxx の選択肢が全てマッチしなかった時に呼ばれるメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#xxxLeft(epp.Tree)"><b>xxxLeft</b></a>(Tree)
-  <dd> $BHs=*C<5-9f(B xxx $B$,;}$DA*Br;h$N$&$A!"(B
-$B:8:F5"%k!<%k$r9=J82r@O$7$FJV$9%a%=%C%I$G$9!#(B.
+  <dd> 非終端記号 xxx が持つ選択肢のうち、
+左再帰ルールを構文解析して返すメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#xxxRight(epp.Tree)"><b>xxxRight</b></a>(Tree)
-  <dd> $BHs=*C<5-9f(B xxx $B$,;}$DA*Br;h$N$&$A!"(B
-$B1&7k9g#29`1i;;;R$r9=J82r@O$7$FJV$9%a%=%C%I$G$9!#(B.
+  <dd> 非終端記号 xxx が持つ選択肢のうち、
+右結合２項演算子を構文解析して返すメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#xxxTop()"><b>xxxTop</b></a>()
-  <dd> $BHs=*C<5-9f(B xxx $B$,;}$DA*Br;h$N$&$A!"(B
-$B@hF,$N#1%H!<%/%s$@$1$GH=CG$G$-$k$b$N$r9=J82r@O$7$FJV$9%a%=%C%I$G$9!#(B.
+  <dd> 非終端記号 xxx が持つ選択肢のうち、
+先頭の１トークンだけで判断できるものを構文解析して返すメソッドです。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -118,14 +118,14 @@ EPP $B$G$O9=J82r@OCf$K%P%C%/%H%i%C%/$9$k5!9=$rDs6!$7$F$^$9!#(B
  public <a href="epp.Tree.html#_top_">Tree</a> xxx()
 </pre>
 <dl>
-  <dd> $BHs=*C<5-9f(B xxx $B$r9=J82r@O$7!"7k2L$NCj>]9=J8LZ$rJV$9%a%=%C%I$G$9!#(B.
-xxx $B$OHs=*C<5-9f$NL>A0$N@hF,$r>.J8;z$K$7$?$b$N$G$9!#(B
-$B!JNc$($P!"(B statement, expression, classBodyDeclaration $B$J$I!#!K(B
-defineNonterminal $B%^%/%m$r;H$C$FDj5A$5$l$^$9!#(B
-$B$3$N%a%=%C%I$O!"IaDL!"(B plug-in $B$,3HD%!&:FDj5A$7$F$O$$$1$^$;$s!#(B
-$B!J9THV9f=hM}$J$I$,68$&2DG=@-$,$"$j$^$9!#!K(B
-$B9=J8$r3HD%$7$?$$>l9g$O!"(B xxxTop, xxxRight, xxxLeft $B$H$$$&%a%=%C%I$r(B
-$B3HD%$7$F2<$5$$!#(B
+  <dd> 非終端記号 xxx を構文解析し、結果の抽象構文木を返すメソッドです。.
+xxx は非終端記号の名前の先頭を小文字にしたものです。
+（例えば、 statement, expression, classBodyDeclaration など。）
+defineNonterminal マクロを使って定義されます。
+このメソッドは、普通、 plug-in が拡張・再定義してはいけません。
+（行番号処理などが狂う可能性があります。）
+構文を拡張したい場合は、 xxxTop, xxxRight, xxxLeft というメソッドを
+拡張して下さい。
 <p>
 </dl>
 <a name="xxxTop()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -134,10 +134,10 @@ defineNonterminal $B%^%/%m$r;H$C$FDj5A$5$l$^$9!#(B
  public <a href="epp.Tree.html#_top_">Tree</a> xxxTop()
 </pre>
 <dl>
-  <dd> $BHs=*C<5-9f(B xxx $B$,;}$DA*Br;h$N$&$A!"(B
-$B@hF,$N#1%H!<%/%s$@$1$GH=CG$G$-$k$b$N$r9=J82r@O$7$FJV$9%a%=%C%I$G$9!#(B.
+  <dd> 非終端記号 xxx が持つ選択肢のうち、
+先頭の１トークンだけで判断できるものを構文解析して返すメソッドです。.
 <p>
-$B$3$N%a%=%C%I$O!"(BdefineNonterminal $B%^%/%m$K$h$C$F<+F0E*$KDj5A$5$l$^$9!#(B
+このメソッドは、defineNonterminal マクロによって自動的に定義されます。
 <p>
 </dl>
 <a name="xxxRight(epp.Tree)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -146,11 +146,11 @@ defineNonterminal $B%^%/%m$r;H$C$FDj5A$5$l$^$9!#(B
  public <a href="epp.Tree.html#_top_">Tree</a> xxxRight(<a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> $BHs=*C<5-9f(B xxx $B$,;}$DA*Br;h$N$&$A!"(B
-$B1&7k9g#29`1i;;;R$r9=J82r@O$7$FJV$9%a%=%C%I$G$9!#(B.
-$B0z?t(B tree $B$O!"#29`1i;;;R$N:8JU$r9=J82r@O$7$?7k2L$N(B tree $B$G$9!#(B
+  <dd> 非終端記号 xxx が持つ選択肢のうち、
+右結合２項演算子を構文解析して返すメソッドです。.
+引数 tree は、２項演算子の左辺を構文解析した結果の tree です。
 <p>
-$B$3$N%a%=%C%I$O!"(BdefineNonterminal $B%^%/%m$K$h$C$F<+F0E*$KDj5A$5$l$^$9!#(B
+このメソッドは、defineNonterminal マクロによって自動的に定義されます。
 <p>
 </dl>
 <a name="xxxLeft(epp.Tree)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -159,11 +159,11 @@ defineNonterminal $B%^%/%m$r;H$C$FDj5A$5$l$^$9!#(B
  public <a href="epp.Tree.html#_top_">Tree</a> xxxLeft(<a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> $BHs=*C<5-9f(B xxx $B$,;}$DA*Br;h$N$&$A!"(B
-$B:8:F5"%k!<%k$r9=J82r@O$7$FJV$9%a%=%C%I$G$9!#(B.
-$B0z?t(B tree $B$O!"Hs=*C<5-9f(B xxx $B$r9=J82r@O$7$?7k2L$N(B tree $B$G$9!#(B
+  <dd> 非終端記号 xxx が持つ選択肢のうち、
+左再帰ルールを構文解析して返すメソッドです。.
+引数 tree は、非終端記号 xxx を構文解析した結果の tree です。
 <p>
-$B$3$N%a%=%C%I$O!"(BdefineNonterminal $B%^%/%m$K$h$C$F<+F0E*$KDj5A$5$l$^$9!#(B
+このメソッドは、defineNonterminal マクロによって自動的に定義されます。
 <p>
 </dl>
 <a name="xxx1()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -172,10 +172,10 @@ defineNonterminal $B%^%/%m$r;H$C$FDj5A$5$l$^$9!#(B
  public <a href="epp.Tree.html#_top_">Tree</a> xxx1()
 </pre>
 <dl>
-  <dd> $BHs=*C<5-9f(B xxx $B$NA*Br;h$,A4$F%^%C%A$7$J$+$C$?;~$K8F$P$l$k%a%=%C%I$G$9!#(B.
-$B<0$N>l9g$O!"IaDL<!$NM%@hEY$NHs=*C<5-9f$N%a%=%C%I$r8F$S=P$9$h$&$K(B
-$BDj5A$5$l$F$$$^$9!#(B
-$B$3$N%a%=%C%I$O!"IaDL(B plug-in $B$O:FDj5A$7$^$;$s!#(B
+  <dd> 非終端記号 xxx の選択肢が全てマッチしなかった時に呼ばれるメソッドです。.
+式の場合は、普通次の優先度の非終端記号のメソッドを呼び出すように
+定義されています。
+このメソッドは、普通 plug-in は再定義しません。
 <p>
 </dl>
 <a name="type()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -184,16 +184,16 @@ defineNonterminal $B%^%/%m$r;H$C$FDj5A$5$l$^$9!#(B
  public <a href="epp.Tree.html#_top_">Tree</a> type()
 </pre>
 <dl>
-  <dd> $BHs=*C<5-9f(B Type $B$r9=J82r@O$7!"7k2L$rJV$9%a%=%C%I$G$9!#(B.
+  <dd> 非終端記号 Type を構文解析し、結果を返すメソッドです。.
 <p>
-$B<BAu$NET9g>e!"%a%=%C%I(B type $B$O!"$^$:%a%=%C%I(B primary $B$r8F$S=P$7!"(B
-$B$=$NJVCM$r7?$rI=8=$9$k@55,7A$KJQ49$7$F!"JV$7$^$9!#(B
-$B@55,7A$KJQ49$9$k$?$a$K!"%a%=%C%I(B convertExpressionToType $B$r(B
-$B8F$S=P$7$^$9!#(B
+実装の都合上、メソッド type は、まずメソッド primary を呼び出し、
+その返値を型を表現する正規形に変換して、返します。
+正規形に変換するために、メソッド convertExpressionToType を
+呼び出します。
 <p>
-plug-in $B$,?7$7$$!V7?$NI=8=!W$rF3F~$9$k$?$a$K$O!"(B
-$B%a%=%C%I(B primaryTop $B$H%a%=%C%I(B convertExpressionToType $B$r(B
-$B3HD%$9$kI,MW$,$"$j$^$9!#(B
+plug-in が新しい「型の表現」を導入するためには、
+メソッド primaryTop とメソッド convertExpressionToType を
+拡張する必要があります。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -206,16 +206,16 @@ plug-in $B$,?7$7$$!V7?$NI=8=!W$rF3F~$9$k$?$a$K$O!"(B
  public <a href="epp.Tree.html#_top_">Tree</a> convertExpressionToType(<a href="epp.Tree.html#_top_">Tree</a> exp)
 </pre>
 <dl>
-  <dd> $B<0$H$7$F9=J82r@O$5$l$?Cj>]9=J8LZ$r!"7?$rI=8=$9$k@55,7A$KJQ49$9$k(B
-$B%a%=%C%I$G$9!#(B.
-EPP $B$N%Q!<%6$O!":F5"2<9_$K$h$k<BAu$NET9g>e!"(B
-$B7?L>$r:G=i!"<0$H$7$F9=J82r@O$7$^$9!#(B
-$B$=$N8e!"$3$N%a%=%C%I$G!"(B
-$B7?L>$H$7$F07$$$d$9$$7A$KJQ49$7$^$9!#(B
-$BNc$($P(B "int" $B$H$$$&<1JL;R$O!"<0$H$7$F9=J82r@O$7$?7k2L$O(B (id int) 
-$B$G$9$,!"$3$l$r@55,7A$KJQ49$9$k$H(B (name (id int)) $B$K$J$j$^$9!#(B
+  <dd> 式として構文解析された抽象構文木を、型を表現する正規形に変換する
+メソッドです。.
+EPP のパーザは、再帰下降による実装の都合上、
+型名を最初、式として構文解析します。
+その後、このメソッドで、
+型名として扱いやすい形に変換します。
+例えば "int" という識別子は、式として構文解析した結果は (id int) 
+ですが、これを正規形に変換すると (name (id int)) になります。
 <p>
-$B7?$N@55,7A$O!"<!$N$h$&$KDj5A$5$l$^$9!#(B
+型の正規形は、次のように定義されます。
 <pre>
  CanonicalType:
 	(name Identifier Identifier*)
@@ -223,8 +223,8 @@ EPP $B$N%Q!<%6$O!":F5"2<9_$K$h$k<BAu$NET9g>e!"(B
        &ltextended alternatives&gt
 </pre>
 <p>
-$B7?$rI=8=$9$kCj>]9=J8LZ$H$7$FITE,@Z$J$b$N$,0z?t$KEO$5$l$?;~$O!"(B
-EppUserError $B$,(B throw $B$5$l$^$9!#(B
+型を表現する抽象構文木として不適切なものが引数に渡された時は、
+EppUserError が throw されます。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>

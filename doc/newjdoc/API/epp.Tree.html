@@ -26,37 +26,37 @@ java.lang.Object
   <dt> extends Object
   <dt> implements Cloneable, Serializable
 </dl>
-Tree $B$O!"Cj>]9=J8LZ$N%N!<%I$rI=8=$9$k$?$a$N%/%i%9$G$9!#(B.
+Tree は、抽象構文木のノードを表現するためのクラスです。.
 <p>
-$BNc$($P!"(B if $BJ8$O(B EPP $B$NFbIt$G$O(B 
+例えば、 if 文は EPP の内部では 
 (if <it> condition </it> <it> then </it> <it> else </it> )
-$B$H$$$&Cj>]9=J8LZ$GI=8=$5$l$^$9!#(B
-$B$3$N%N!<%I$O!"(B new Tree(:if, condition, then, else)
-$B$H$$$&%$%s%9%?%s%9@8@.<0$G@8@.$9$k$3$H$,$G$-$^$9!#(B
-$B%N!<%I$N<oN`$rI=$9ItJ,(B($B$3$N>l9g$O(B :if)$B$r(B tag $B!"(B
-$B%N!<%I$N$9$Y$F(B subtree 
-($B$3$N>l9g$O(B condition, then, else)$B$r(B args $B$H8F$S$^$9!#(B
+という抽象構文木で表現されます。
+このノードは、 new Tree(:if, condition, then, else)
+というインスタンス生成式で生成することができます。
+ノードの種類を表す部分(この場合は :if)を tag 、
+ノードのすべて subtree 
+(この場合は condition, then, else)を args と呼びます。
 <p>
-Tree $B$O(B immutable object $B$G$9!#(B
-tag $B$d(B args $B$rJQ99$9$k$3$H$O$G$-$^$;$s!#(B
-$B!J%W%m%0%i%^!<$O!"%a%=%C%I8F$S=P$7(B tree.args() $B$,JV$9(B Tree $B$NG[Ns$NCf?H$r(B
-$B$&$C$+$j=q$-49$($J$$$h$&$KCm0U$9$kI,MW$,$"$j$^$9!#(B
-$BK|0l=q$-49$($F$7$^$&$H!"Hs>o$K8+$D$1$K$/$$%P%0$N860x$K$J$j$^$9!#!K(B
+Tree は immutable object です。
+tag や args を変更することはできません。
+（プログラマーは、メソッド呼び出し tree.args() が返す Tree の配列の中身を
+うっかり書き換えないように注意する必要があります。
+万一書き換えてしまうと、非常に見つけにくいバグの原因になります。）
 <p>
-Tree $B$N%5%V%/%i%9$K!"(B Identifier $B$H(B LiteralTree $B$,$"$j$^$9!#(B
-$B$9$Y$F$NCj>]9=J8LZ$N%N!<%I$O!"(B Tree, Identifier, LiteralTree $B$N#3$D$N$$$:$l$+$G(B
-$BI=8=$5$l$^$9!#(B
-plug-in $B$O!"9=J8$r3HD%$7$F?7$?$J<oN`$N%N!<%I$rF3F~$G$-$^$9$,!"(B
-$B$=$N>l9g$G$b%N!<%I$r#3$D$N%/%i%9$N$$$:$l$+$GI=8=$7$J$1$l$P$J$j$^$;$s!#(B
+Tree のサブクラスに、 Identifier と LiteralTree があります。
+すべての抽象構文木のノードは、 Tree, Identifier, LiteralTree の３つのいずれかで
+表現されます。
+plug-in は、構文を拡張して新たな種類のノードを導入できますが、
+その場合でもノードを３つのクラスのいずれかで表現しなければなりません。
 <p>
-$B%/%i%9(B Tree $B$N%$%s%9%?%s%9(B tree $B$KBP$7$F(B tree.print() $B$H$$$&(B
-$B%a%=%C%I8F$S=P$7$r$9$k$3$H$G!"Cj>]9=J8LZ$r#S<0$N7A$G(B
-$B=PNO$9$k$3$H$,$G$-$^$9!#(B
-$BNc$($P!"(B
+クラス Tree のインスタンス tree に対して tree.print() という
+メソッド呼び出しをすることで、抽象構文木をＳ式の形で
+出力することができます。
+例えば、
 <pre>
 	if (x == 0) System.out.println("Hello!");
 </pre>
-$B$H$$$&%W%m%0%i%`$r9=J82r@O$7$?7k2L$NCj>]9=J8LZ$O!"(B
+というプログラムを構文解析した結果の抽象構文木は、
 <pre>
       (if
        (==
@@ -72,13 +72,13 @@ plug-in $B$O!"9=J8$r3HD%$7$F?7$?$J<oN`$N%N!<%I$rF3F~$G$-$^$9$,!"(B
           (literalTree string "Hello!"))))
        (emptyStatement))
 </pre>
-$B$H(B print $B$5$l$^$9!#(B
+と print されます。
 <p>
-LiteralTree $B$H(B Identifier $B$K4X$7$F$O!"(B tree.args() $B$O(B
-$B>o$KD9$5#0$NG[Ns$rJV$7$^$9!#(B
-$B$3$N$h$&$J;E3]$1$K$J$C$F$$$k$?$a!"(B tree $B$KBP$9$k:F5"E*=hM}$O(B
-$BHs>o$K4JC1$K$J$j$^$9!#Nc$($P!"(B tree $B$NCf$K(B if $BJ8$,8=$l$k?t$r?t$($k(B
-$B%a%=%C%I$O!"(B
+LiteralTree と Identifier に関しては、 tree.args() は
+常に長さ０の配列を返します。
+このような仕掛けになっているため、 tree に対する再帰的処理は
+非常に簡単になります。例えば、 tree の中に if 文が現れる数を数える
+メソッドは、
 <pre>
 int countIf(Tree tree){
   int c = 0;
@@ -90,31 +90,31 @@ int countIf(Tree tree){
   return c;
 }
 </pre>
-$B$G$9$`$3$H$K$J$j$^$9!#(B
+ですむことになります。
 <p>
-$B%/%i%9(B Tree $B$O!"(B tag $B$H(B args $B$NB>$K$b9THV9f>pJs$J$I$NIU2C>pJs$r(B
-$B;}$C$F$$$^$9!#(B
-$B$3$l$i$N>pJs$rJ]B8$7$?$^$^!"(B args $B$NCM$@$1$rJQ99$7$?(B tree $B$r(B
-$B@8@.$7$?$$;~$K$O!"(B "modifyArgs" $B$H$$$&%a%=%C%I$r;H$$$^$9!#(B
+クラス Tree は、 tag と args の他にも行番号情報などの付加情報を
+持っています。
+これらの情報を保存したまま、 args の値だけを変更した tree を
+生成したい時には、 "modifyArgs" というメソッドを使います。
 <pre>
 	Tree[] newArgs = {...};
 	Tree newTree = tree.modifyArgs(newArgs);
 </pre>
-$B$3$l$O!"<!$N%W%m%0%i%`$H$[$H$s$IF1$8$G$9$,!"(B tree $B$,;}$C$F$$$k(B
-$B9THV9f$J$I$N>pJs$,(B newTree $B$K$b%3%T!<$5$l$kE@$,0[$J$j$^$9!#(B
+これは、次のプログラムとほとんど同じですが、 tree が持っている
+行番号などの情報が newTree にもコピーされる点が異なります。
 <pre>
 	Tree[] newArgs = {...};
 	Tree newTree = new Tree(tree.tag(), newArgs);
 </pre>
 <p>
-$BBg$-$$(B Tree $B$r@8@.$9$k%3!<%I$r4JC1$K=q$/$?$a$K!"(B
-BackQuote plug-in $B$,Ds6!$5$l$F$$$^$9!#(B
-$B>\$7$/$O!"(B<a href="../BackQuote.html">../BackQuote.html</a> $B$r8+$F2<$5$$!#(B
-tree.print() $B$"$k$$$O(B epp $B$N(B -tree $B%*%W%7%g%s$K$h$C$F=PNO$5$l$?Cj>]9=J8LZ$O!"(B
-$B%+%C%H%"%s%I%Z!<%9%H$7$F!"(B BackQuote $B%^%/%m$K$=$N$^$^;H$&$3$H$,$G$-$^$9!#(B
+大きい Tree を生成するコードを簡単に書くために、
+BackQuote plug-in が提供されています。
+詳しくは、<a href="../BackQuote.html">../BackQuote.html</a> を見て下さい。
+tree.print() あるいは epp の -tree オプションによって出力された抽象構文木は、
+カットアンドペーストして、 BackQuote マクロにそのまま使うことができます。
 <p>
-Tree $B$N2DJQD9G[Ns$r;H$&$3$H$,$h$/$"$k$N$G!"%/%i%9(B TreeVec $B$,MQ0U$5$l$F$$$^$9!#(B
-$B%-%c%9%H$,ITMW$J$N$G(B java.lang.Vector $B$h$jJXMx$G$9!#(B
+Tree の可変長配列を使うことがよくあるので、クラス TreeVec が用意されています。
+キャストが不要なので java.lang.Vector より便利です。
 <p>
 <p>
 <dl>
@@ -164,35 +164,35 @@ Tree $B$N2DJQD9G[Ns$r;H$&$3$H$,$h$/$"$k$N$G!"%/%i%9(B TreeVec $B$,MQ0U$5$l$F$
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#args()"><b>args</b></a>()
-  <dd> $BCj>]9=J8LZ$N(B subtree $B$r<h$j=P$7$^$9!#(B
+  <dd> 抽象構文木の subtree を取り出します。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#beginningPoint()"><b>beginningPoint</b></a>()
-  <dd> $B$3$N%N!<%I$N3+;O0LCV$N(B point $B$rJV$7$^$9!#(B.
+  <dd> このノードの開始位置の point を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#endPoint()"><b>endPoint</b></a>()
-  <dd> $B$3$N%N!<%I$N=*N;0LCV$N(B point $B$rJV$7$^$9!#(B.
+  <dd> このノードの終了位置の point を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#idName()"><b>idName</b></a>()
-  <dd> $B$3$N%N!<%I$,(B Identifier $B$J$i$P!"$=$NL>A0$rJV$7$^$9!#(B.
+  <dd> このノードが Identifier ならば、その名前を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#isTyped()"><b>isTyped</b></a>()
-  <dd> $B$3$N%a%=%C%I$,7?>pJs$r;}$C$F$$$l$P(B true $B!"$=$&$G$J$1$l$P(B false $B$r(B
-$BJV$7$^$9!#(B
+  <dd> このメソッドが型情報を持っていれば true 、そうでなければ false を
+返します。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#lineNumber()"><b>lineNumber</b></a>()
-  <dd> $B$3$N%N!<%I$N9THV9f>pJs$rJV$7$^$9!#(B.
+  <dd> このノードの行番号情報を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#literalToken()"><b>literalToken</b></a>()
-  <dd> $B$3$N%N!<%I$,(B LiteralTree $B$J$i$P!"$=$NCf?H$rI=$9(B LiteralToken $B$rJV$7$^$9!#(B.
+  <dd> このノードが LiteralTree ならば、その中身を表す LiteralToken を返します。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#main(java.lang.String[])"><b>main</b></a>(String[])
-  <dd> $B%F%9%HMQ$N%a%=%C%I$G$9!#(B
+  <dd> テスト用のメソッドです。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#modifyArgs(epp.Tree[])"><b>modifyArgs</b></a>(Tree[])
-  <dd> $B$3$N%N!<%I$N(B args $B$N$_$rJQ99$7$?(B Tree $B$r:n$C$FJV$7$^$9!#(B.
+  <dd> このノードの args のみを変更した Tree を作って返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#modifyBeginningPoint(int)"><b>modifyBeginningPoint</b></a>(int)
   <dd> 
@@ -204,19 +204,19 @@ Tree $B$N2DJQD9G[Ns$r;H$&$3$H$,$h$/$"$k$N$G!"%/%i%9(B TreeVec $B$,MQ0U$5$l$F$
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#modifyProperty(epp.Symbol, java.lang.Object)"><b>modifyProperty</b></a>(Symbol, Object)
-  <dd> $B$3$N%N!<%I$N%W%m%Q%F%#$rJQ99$7$?(B Tree $B$r:n$C$FJV$7$^$9!#(B.
+  <dd> このノードのプロパティを変更した Tree を作って返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#modifyTypeAndArgs(epp.Type, epp.Tree[])"><b>modifyTypeAndArgs</b></a>(Type, Tree[])
-  <dd> $B$3$N%N!<%I$N(B type $B$H(B args $B$N$_$rJQ99$7$?(B Tree $B$r:n$C$FJV$7$^$9!#(B.
+  <dd> このノードの type と args のみを変更した Tree を作って返します。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#nameEqual(epp.Tree, epp.Tree)"><b>nameEqual</b></a>(Tree, Tree)
-  <dd> :name $B$r%?%0$K;}$D(B Tree $BF1;N$rHf3S$7$^$9!#(B.
+  <dd> :name をタグに持つ Tree 同士を比較します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#nameToString()"><b>nameToString</b></a>()
-  <dd> :name $B$r%?%0$K;}$D(B Tree $B$rJ8;zNs$KJQ49$7$^$9!#(B.
+  <dd> :name をタグに持つ Tree を文字列に変換します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#print()"><b>print</b></a>()
-  <dd> Opts.out $B$K!"?M4V$K8+$d$9$$$h$&$KCf?H$r=PNO$9$k%G%P%C%0MQ%a%=%C%I$G$9!#(B.
+  <dd> Opts.out に、人間に見やすいように中身を出力するデバッグ用メソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#print(java.io.PrintWriter)"><b>print</b></a>(PrintWriter)
   <dd> 
@@ -228,26 +228,26 @@ Tree $B$N2DJQD9G[Ns$r;H$&$3$H$,$h$/$"$k$N$G!"%/%i%9(B TreeVec $B$,MQ0U$5$l$F$
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#property(epp.Symbol)"><b>property</b></a>(Symbol)
-  <dd> $B%N!<%I$KIU$1$i$l$?%W%m%Q%F%#$r8!:w$7$FJV$7$^$9!#(B.
+  <dd> ノードに付けられたプロパティを検索して返します。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#quoteString(java.lang.String)"><b>quoteString</b></a>(String)
   <dd> This method is called by class Identifier and LiteralToken.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#resetType()"><b>resetType</b></a>()
-  <dd> $B7?>pJs$r;}$?$J$$(B Tree $B$r:n$C$FJV$7$^$9!#(B.
+  <dd> 型情報を持たない Tree を作って返します。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#stringToNameTree(java.lang.String)"><b>stringToNameTree</b></a>(String)
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#tag()"><b>tag</b></a>()
-  <dd> $BCj>]9=J8LZ$N<oN`$rI=$9(B tag $B$r<h$j=P$7$^$9!#(B
+  <dd> 抽象構文木の種類を表す tag を取り出します。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#toString()"><b>toString</b></a>()
   <dd> Convert tree to String without indentation.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#type()"><b>type</b></a>()
-  <dd> $B$3$N%N!<%I$N7?$rJV$7$^$9!#(B.
+  <dd> このノードの型を返します。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -344,7 +344,7 @@ Tree $B$N2DJQD9G[Ns$r;H$&$3$H$,$h$/$"$k$N$G!"%/%i%9(B TreeVec $B$,MQ0U$5$l$F$
  public static void main(String argv[])
 </pre>
 <dl>
-  <dd> $B%F%9%HMQ$N%a%=%C%I$G$9!#(B
+  <dd> テスト用のメソッドです。
 <p>
 </dl>
 <a name="tag()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -353,7 +353,7 @@ Tree $B$N2DJQD9G[Ns$r;H$&$3$H$,$h$/$"$k$N$G!"%/%i%9(B TreeVec $B$,MQ0U$5$l$F$
  public <a href="epp.Symbol.html#_top_">Symbol</a> tag()
 </pre>
 <dl>
-  <dd> $BCj>]9=J8LZ$N<oN`$rI=$9(B tag $B$r<h$j=P$7$^$9!#(B
+  <dd> 抽象構文木の種類を表す tag を取り出します。
 <p>
 </dl>
 <a name="args()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -362,7 +362,7 @@ Tree $B$N2DJQD9G[Ns$r;H$&$3$H$,$h$/$"$k$N$G!"%/%i%9(B TreeVec $B$,MQ0U$5$l$F$
  public <a href="#_top_">Tree</a>[] args()
 </pre>
 <dl>
-  <dd> $BCj>]9=J8LZ$N(B subtree $B$r<h$j=P$7$^$9!#(B
+  <dd> 抽象構文木の subtree を取り出します。
 <p>
 </dl>
 <a name="lineNumber()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -371,11 +371,11 @@ Tree $B$N2DJQD9G[Ns$r;H$&$3$H$,$h$/$"$k$N$G!"%/%i%9(B TreeVec $B$,MQ0U$5$l$F$
  public int lineNumber()
 </pre>
 <dl>
-  <dd> $B$3$N%N!<%I$N9THV9f>pJs$rJV$7$^$9!#(B.
-$B9THV9f>pJs$O!"$3$N%N!<%I$rI=8=$7$F$$$?9=J8$N@hF,$N9THV9f$G$9!#(B
-$B9=J82r@O%Q%9$G$O$J$/(B
-$B%^%/%mE83+%Q%9$G@8@.$5$l$k%N!<%I$K$O!"9THV9f>pJs$O$"$j$^$;$s!#(B
-$B9THV9f>pJs$,$J$$>l9g$O(B -1 $B$rJV$7$^$9!#(B
+  <dd> このノードの行番号情報を返します。.
+行番号情報は、このノードを表現していた構文の先頭の行番号です。
+構文解析パスではなく
+マクロ展開パスで生成されるノードには、行番号情報はありません。
+行番号情報がない場合は -1 を返します。
 <p>
 </dl>
 <a name="beginningPoint()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -384,8 +384,8 @@ Tree $B$N2DJQD9G[Ns$r;H$&$3$H$,$h$/$"$k$N$G!"%/%i%9(B TreeVec $B$,MQ0U$5$l$F$
  public int beginningPoint()
 </pre>
 <dl>
-  <dd> $B$3$N%N!<%I$N3+;O0LCV$N(B point $B$rJV$7$^$9!#(B.
-<b>$B$3$N%a%=%C%I$O!"$^$@<BAu$5$l$F$$$^$;$s!#(B</b>
+  <dd> このノードの開始位置の point を返します。.
+<b>このメソッドは、まだ実装されていません。</b>
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -398,8 +398,8 @@ Tree $B$N2DJQD9G[Ns$r;H$&$3$H$,$h$/$"$k$N$G!"%/%i%9(B TreeVec $B$,MQ0U$5$l$F$
  public int endPoint()
 </pre>
 <dl>
-  <dd> $B$3$N%N!<%I$N=*N;0LCV$N(B point $B$rJV$7$^$9!#(B.
-<b>$B$3$N%a%=%C%I$O!"$^$@<BAu$5$l$F$$$^$;$s!#(B</b>
+  <dd> このノードの終了位置の point を返します。.
+<b>このメソッドは、まだ実装されていません。</b>
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -412,7 +412,7 @@ Tree $B$N2DJQD9G[Ns$r;H$&$3$H$,$h$/$"$k$N$G!"%/%i%9(B TreeVec $B$,MQ0U$5$l$F$
  public <a href="epp.Type.html#_top_">Type</a> type()
 </pre>
 <dl>
-  <dd> $B$3$N%N!<%I$N7?$rJV$7$^$9!#(B. $B7?$,L$7hDj$N>l9g$O(B fatal error $B$K$J$j$^$9!#(B
+  <dd> このノードの型を返します。. 型が未決定の場合は fatal error になります。
 <p>
 </dl>
 <a name="property(epp.Symbol)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -421,7 +421,7 @@ Tree $B$N2DJQD9G[Ns$r;H$&$3$H$,$h$/$"$k$N$G!"%/%i%9(B TreeVec $B$,MQ0U$5$l$F$
  public Object property(<a href="epp.Symbol.html#_top_">Symbol</a> key)
 </pre>
 <dl>
-  <dd> $B%N!<%I$KIU$1$i$l$?%W%m%Q%F%#$r8!:w$7$FJV$7$^$9!#(B.
+  <dd> ノードに付けられたプロパティを検索して返します。.
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -434,8 +434,8 @@ Tree $B$N2DJQD9G[Ns$r;H$&$3$H$,$h$/$"$k$N$G!"%/%i%9(B TreeVec $B$,MQ0U$5$l$F$
  public <a href="epp.Symbol.html#_top_">Symbol</a> idName()
 </pre>
 <dl>
-  <dd> $B$3$N%N!<%I$,(B Identifier $B$J$i$P!"$=$NL>A0$rJV$7$^$9!#(B.
-$B$=$&$G$J$1$l$P!"(B fatal error $B$G$9!#(B
+  <dd> このノードが Identifier ならば、その名前を返します。.
+そうでなければ、 fatal error です。
 <p>
 </dl>
 <a name="literalToken()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -444,8 +444,8 @@ Tree $B$N2DJQD9G[Ns$r;H$&$3$H$,$h$/$"$k$N$G!"%/%i%9(B TreeVec $B$,MQ0U$5$l$F$
  public <a href="epp.LiteralToken.html#_top_">LiteralToken</a> literalToken()
 </pre>
 <dl>
-  <dd> $B$3$N%N!<%I$,(B LiteralTree $B$J$i$P!"$=$NCf?H$rI=$9(B LiteralToken $B$rJV$7$^$9!#(B.
-$B$=$&$G$J$1$l$P!"(B fatal error $B$G$9!#(B
+  <dd> このノードが LiteralTree ならば、その中身を表す LiteralToken を返します。.
+そうでなければ、 fatal error です。
 <p>
 </dl>
 <a name="modifyArgs(epp.Tree[])"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -454,8 +454,8 @@ Tree $B$N2DJQD9G[Ns$r;H$&$3$H$,$h$/$"$k$N$G!"%/%i%9(B TreeVec $B$,MQ0U$5$l$F$
  public <a href="#_top_">Tree</a> modifyArgs(<a href="#_top_">Tree</a> args[])
 </pre>
 <dl>
-  <dd> $B$3$N%N!<%I$N(B args $B$N$_$rJQ99$7$?(B Tree $B$r:n$C$FJV$7$^$9!#(B.
-$B9THV9f>pJs$J$I!"(B args $B0J30$NA4$F$N>pJs$O?7$?$J(B Tree $B$K%3%T!<$5$l$^$9!#(B
+  <dd> このノードの args のみを変更した Tree を作って返します。.
+行番号情報など、 args 以外の全ての情報は新たな Tree にコピーされます。
 <p>
 </dl>
 <a name="isTyped()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -464,8 +464,8 @@ Tree $B$N2DJQD9G[Ns$r;H$&$3$H$,$h$/$"$k$N$G!"%/%i%9(B TreeVec $B$,MQ0U$5$l$F$
  public boolean isTyped()
 </pre>
 <dl>
-  <dd> $B$3$N%a%=%C%I$,7?>pJs$r;}$C$F$$$l$P(B true $B!"$=$&$G$J$1$l$P(B false $B$r(B
-$BJV$7$^$9!#(B
+  <dd> このメソッドが型情報を持っていれば true 、そうでなければ false を
+返します。
 <p>
 </dl>
 <a name="modifyTypeAndArgs(epp.Type, epp.Tree[])"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -475,10 +475,10 @@ Tree $B$N2DJQD9G[Ns$r;H$&$3$H$,$h$/$"$k$N$G!"%/%i%9(B TreeVec $B$,MQ0U$5$l$F$
                                <a href="#_top_">Tree</a> args[])
 </pre>
 <dl>
-  <dd> $B$3$N%N!<%I$N(B type $B$H(B args $B$N$_$rJQ99$7$?(B Tree $B$r:n$C$FJV$7$^$9!#(B.
-$B9THV9f>pJs$J$I!"B>$NA4$F$N>pJs$O?7$?$J(B Tree $B$K%3%T!<$5$l$^$9!#(B
-$B$3$N(B Tree $B$,$9$G$K7?>pJs$r;}$C$F$$$k>l9g$O(B
-fatal error $B$K$J$j$^$9!#(B
+  <dd> このノードの type と args のみを変更した Tree を作って返します。.
+行番号情報など、他の全ての情報は新たな Tree にコピーされます。
+この Tree がすでに型情報を持っている場合は
+fatal error になります。
 <p>
 </dl>
 <a name="resetType()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -487,8 +487,8 @@ fatal error $B$K$J$j$^$9!#(B
  public <a href="#_top_">Tree</a> resetType()
 </pre>
 <dl>
-  <dd> $B7?>pJs$r;}$?$J$$(B Tree $B$r:n$C$FJV$7$^$9!#(B.
-$B7?>pJs0J30$NA4$F$N>pJs$O!"$b$H$N(B Tree $B$+$i?7$?$J(B Tree $B$K%3%T!<$5$l$^$9!#(B
+  <dd> 型情報を持たない Tree を作って返します。.
+型情報以外の全ての情報は、もとの Tree から新たな Tree にコピーされます。
 <p>
 </dl>
 <a name="modifyProperty(epp.Symbol, java.lang.Object)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -498,9 +498,9 @@ fatal error $B$K$J$j$^$9!#(B
                             Object val)
 </pre>
 <dl>
-  <dd> $B$3$N%N!<%I$N%W%m%Q%F%#$rJQ99$7$?(B Tree $B$r:n$C$FJV$7$^$9!#(B.
-$BIU2C>pJs0J30$NA4$F$N>pJs$O!"(B
-$B$b$H$N(B Tree $B$+$i?7$?$J(B Tree $B$K%3%T!<$5$l$^$9!#(B
+  <dd> このノードのプロパティを変更した Tree を作って返します。.
+付加情報以外の全ての情報は、
+もとの Tree から新たな Tree にコピーされます。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -529,7 +529,7 @@ fatal error $B$K$J$j$^$9!#(B
                                  <a href="#_top_">Tree</a> name2)
 </pre>
 <dl>
-  <dd> :name $B$r%?%0$K;}$D(B Tree $BF1;N$rHf3S$7$^$9!#(B.
+  <dd> :name をタグに持つ Tree 同士を比較します。.
 <p>
 </dl>
 <a name="nameToString()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -538,8 +538,8 @@ fatal error $B$K$J$j$^$9!#(B
  public String nameToString()
 </pre>
 <dl>
-  <dd> :name $B$r%?%0$K;}$D(B Tree $B$rJ8;zNs$KJQ49$7$^$9!#(B.
-$BNc$($P!"(B (name (id a) (id b) (id c)) $B$O(B "a.b.c" $B$K$J$j$^$9!#(B
+  <dd> :name をタグに持つ Tree を文字列に変換します。.
+例えば、 (name (id a) (id b) (id c)) は "a.b.c" になります。
 <p>
 </dl>
 <a name="print()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -548,17 +548,17 @@ fatal error $B$K$J$j$^$9!#(B
  public <a href="#_top_">Tree</a> print()
 </pre>
 <dl>
-  <dd> Opts.out $B$K!"?M4V$K8+$d$9$$$h$&$KCf?H$r=PNO$9$k%G%P%C%0MQ%a%=%C%I$G$9!#(B.
-tree.print()  $B$H=q$1$P!"(B tree $B$,!"?M4V$K8+$d$9$$$h$&$K%$%s%G%s%H$5$l$F(B
-$B=PNO$5$l$^$9!#(B
-$B$3$N%a%=%C%I$OJVCM$H$7$F!"<+J,<+?H$rJV$7$^$9!#(B
+  <dd> Opts.out に、人間に見やすいように中身を出力するデバッグ用メソッドです。.
+tree.print()  と書けば、 tree が、人間に見やすいようにインデントされて
+出力されます。
+このメソッドは返値として、自分自身を返します。
 <p>
-epp $B%3%^%s%I$N5/F0;~$N%*%W%7%g%s$K1~$8$F!"(B
-$B7?>pJs!"9THV9f>pJs$bF1;~$K=PNO$5$l$^$9!#(B
+epp コマンドの起動時のオプションに応じて、
+型情報、行番号情報も同時に出力されます。
 <p>
-$B$3$l$i$N>pJs$,$D$$$F$$$J$$>l9g$O!"(B
-$B=PNO7k2L$r%+%C%H%"%s%I%Z!<%9%H$7$F!"$=$N$^$^(B BackQuote macro $B$N0lIt$H$7$F(B
-$B;H$&$3$H$,$G$-$^$9!#(B
+これらの情報がついていない場合は、
+出力結果をカットアンドペーストして、そのまま BackQuote macro の一部として
+使うことができます。
 <p>
 </dl>
 <a name="print(java.io.PrintWriter)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -599,9 +599,9 @@ epp $B%3%^%s%I$N5/F0;~$N%*%W%7%g%s$K1~$8$F!"(B
   <dd> This method is called by class Identifier and LiteralToken.
 <pre>
    Examples:
-  	"foo" -> "(J\(B"foo(J\(B""
-  	"(J\(Bn" -> "(J\(B"(J\\(Bn(J\(B""
-  	"(J\(B"" => "(J\(B"(J\\\(B"(J\(B""
+  	"foo" -> "\"foo\""
+  	"\n" -> "\"\\n\""
+  	"\"" => "\"\\\"\""
 </pre>
 <p>
 </dl>

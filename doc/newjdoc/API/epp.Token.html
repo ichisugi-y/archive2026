@@ -25,36 +25,36 @@ java.lang.Object
   <dt> public abstract class <b>Token</b>
   <dt> extends Object
 </dl>
-$B%/%i%9(B Token $B$O!";z6g2r@O%k!<%A%s$,JV$9%G!<%?7?$G$9!#(B.
+クラス Token は、字句解析ルーチンが返すデータ型です。.
 <p>
-$B%/%i%9(B Token $B<+BN$O!"(B abstract class $B$G$9!#(B
-Token $B$K$O!"(B LiteralToken $B$H(B Symbol $B$N#2$D$N%5%V%/%i%9$,$"$j$^$9!#(B
-$BA4$F$N%j%F%i%k!J@0?tDj?t!"J8;zNsDj?t$J$I!K$N%H!<%/%s$O(B  LiteralToken $B$G(B
-$BI=8=$5$l$^$9!#(B
-$B$^$?!"%j%F%i%k0J30$NA4$F$N%H!<%/%s!J(Bclass, if, while $B$J$I$N%-!<%o!<%I!"(B
-+, -, == $B$J$I$N5-9f!"JQ?tL>$J$I$N<1JL;R!K$O!"(B Symbol $B$GI=8=$5$l$^$9!#(B
+クラス Token 自体は、 abstract class です。
+Token には、 LiteralToken と Symbol の２つのサブクラスがあります。
+全てのリテラル（整数定数、文字列定数など）のトークンは  LiteralToken で
+表現されます。
+また、リテラル以外の全てのトークン（class, if, while などのキーワード、
++, -, == などの記号、変数名などの識別子）は、 Symbol で表現されます。
 <p>
-plug-in $B$O!";z6g2r@O%k!<%A%s$r3HD%$9$k$3$H$,$G$-$^$9$,!"(B
-$B%/%i%9(B Token $B$N%5%V%/%i%9$r?7$?$K:n$k$3$H$O$G$-$^$;$s!#(B
-$B?7$?$J<oN`$N%H!<%/%s$rF3F~$9$k>l9g!"(B
-$BI,$:(B LiteralToken $B$+(B Symbol $B$N(B
-$B$$$:$l$+$G%H!<%/%s$rI=8=$7$J$1$l$P$J$j$^$;$s!#(B
+plug-in は、字句解析ルーチンを拡張することができますが、
+クラス Token のサブクラスを新たに作ることはできません。
+新たな種類のトークンを導入する場合、
+必ず LiteralToken か Symbol の
+いずれかでトークンを表現しなければなりません。
 <p>
-$B;z6g2r@O4o$O!"!V%-!<%o!<%I!W$O6hJL$7$^$;$s!#(B
-if, class $B$J$I$N%-!<%o!<%I$b!"(B x, y $B$J$I$NJQ?tL>!&%a%=%C%IL>$b!"(B
-+, - $B$J$I$N%*%Z%l!<%?$b$9$Y$F(B Symbol $B$GI=$7$^$9!#(B
+字句解析器は、「キーワード」は区別しません。
+if, class などのキーワードも、 x, y などの変数名・メソッド名も、
++, - などのオペレータもすべて Symbol で表します。
 <p>
-$B%j%F%i%k$O!"%/%i%9(B LiteralToken $B$GI=$5$l!"(B
-$B$3$l$r(B toString() $B$GJ8;zNs$KJQ49$9$k$H!"%j%F%i%k$N<oN`$rI=$9%j%F%i%k%?%0$H!"(B
-$B%j%F%i%k$NCf?H$rI=$9J8;zNs$NAH$K$J$j$^$9!#(B
-$BNc$($P!"(B 123 $B$H$$$&@0?t%j%F%i%k$O!"(B (int "123") $B$K!"(B
-"abc" $B$H$$$&J8;zNs%j%F%i%k$O!"(B (string "abc") $B$K$J$j$^$9!#(B
+リテラルは、クラス LiteralToken で表され、
+これを toString() で文字列に変換すると、リテラルの種類を表すリテラルタグと、
+リテラルの中身を表す文字列の組になります。
+例えば、 123 という整数リテラルは、 (int "123") に、
+"abc" という文字列リテラルは、 (string "abc") になります。
 <p>
-$BNc$($P!"<!$N$h$&$J%W%m%0%i%`$r;z6g2r@O$9$k$H!"(B
+例えば、次のようなプログラムを字句解析すると、
 <pre>
 	if (x == 0) System.out.println("Hello!");
 </pre>
-$B7k2L$O!"(B
+結果は、
 <pre>
 	if
 	(
@@ -72,17 +72,17 @@ if, class $B$J$I$N%-!<%o!<%I$b!"(B x, y $B$J$I$NJQ?tL>!&%a%=%C%IL>$b!"(B
 	)
 	; 
 </pre>
-$B$H$$$&$h$&$J%H!<%/%s$NNs$K$J$j$^$9!#(B
-$B!J(Bepp $B$N(B -token $B%*%W%7%g%s$K$h$C$F!";z6g2r@O$N7k2L$r=PNO$5$;$k(B
-$B$3$H$,$G$-$^$9!#!K(B
+というようなトークンの列になります。
+（epp の -token オプションによって、字句解析の結果を出力させる
+ことができます。）
 <p>
-$B%j%F%i%k%?%0$H%j%F%i%k$NCf?H$O!"(B
-$B$=$l$>$l!"(B literalTag(), literalContents() 
-$B$H$$$&%a%=%C%I$G<h$j=P$9$3$H$,$G$-$^$9!#(B
-$B$3$l$i$N%a%=%C%I$O!"%/%i%9(B Token $B$KMQ0U$5$l$F$*$j!"(B
-$B%/%i%9(B LiteralToken $B$K%-%c%9%H$7$J$/$F$b8F$S=P$9$3$H$,$G$-$^$9!#(B
-$BNc$($P!"$"$k%H!<%/%s$,J8;zNs%j%F%i%k$G$"$C$?;~$K!"$=$NCf?H$r(B
-$B=PNO$9$k%W%m%0%i%`$O!"0J2<$N$h$&$K$J$j$^$9!#(B
+リテラルタグとリテラルの中身は、
+それぞれ、 literalTag(), literalContents() 
+というメソッドで取り出すことができます。
+これらのメソッドは、クラス Token に用意されており、
+クラス LiteralToken にキャストしなくても呼び出すことができます。
+例えば、あるトークンが文字列リテラルであった時に、その中身を
+出力するプログラムは、以下のようになります。
 <pre>
 	Token token = ...;
 	if (token.isLiteralToken() && token.literalTag() == :string){
@@ -90,14 +90,14 @@ if, class $B$J$I$N%-!<%o!<%I$b!"(B x, y $B$J$I$NJQ?tL>!&%a%=%C%IL>$b!"(B
 	}
 </pre>
 <p>
-EPP $B$O8@8l3HD%$rL\E*$H$7$?%W%j%W%m%;%C%5$G$9$+$i!"(B
-$B;z6g2r@O4o$O8@8l;EMM$X$N0MB8$,$G$-$k$@$1>.$5$/$J$k$h$&$K(B
-$BCm0U$7$F=q$+$l$F$$$^$9!#(B
-$B%-!<%o!<%I$H<1JL;R$N6hJL$r$7$J$$$N$O$=$N$?$a$G$9!#(B
-$B$^$?!"%j%F%i%k$b$G$-$k$@$1%W%m%0%i%`Cf$K=q$+$l$?7A$r$=$N$^$^(B
-$BJ]$D$h$&$K$7$F$$$^$9!#(B
-$BNc$($P!"(B003.000 $B$O(B (double "003.000") $B$H$$$&$U$&$KI=$5$l$^$9!#(B
-(double "3.0") $B$K$O$J$j$^$;$s!#(B
+EPP は言語拡張を目的としたプリプロセッサですから、
+字句解析器は言語仕様への依存ができるだけ小さくなるように
+注意して書かれています。
+キーワードと識別子の区別をしないのはそのためです。
+また、リテラルもできるだけプログラム中に書かれた形をそのまま
+保つようにしています。
+例えば、003.000 は (double "003.000") というふうに表されます。
+(double "3.0") にはなりません。
 <p>
 <dl>
     <dt> <b>See Also:</b>
@@ -119,21 +119,21 @@ EPP $B$O8@8l3HD%$rL\E*$H$7$?%W%j%W%m%;%C%5$G$9$+$i!"(B
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#isLiteralToken()"><b>isLiteralToken</b></a>()
-  <dd> $B$3$N(B token $B$,(B LiteralToken $B$J$i(B true $B!"(B $B$=$&$G$J$$$1$l$P(B false $B$rJV$7$^$9!#(B
+  <dd> この token が LiteralToken なら true 、 そうでないければ false を返します。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#isSymbol()"><b>isSymbol</b></a>()
-  <dd> $B$3$N(B token $B$,(B Symbol $B$J$i(B true $B!"(B $B$=$&$G$J$$$1$l$P(B false $B$rJV$7$^$9!#(B
+  <dd> この token が Symbol なら true 、 そうでないければ false を返します。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#literalContents()"><b>literalContents</b></a>()
-  <dd> $B$3$N(B token $B$,(B LiteralToken $B$J$i!"(B literalContents $B$rJV$7$^$9!#(B.
+  <dd> この token が LiteralToken なら、 literalContents を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#literalTag()"><b>literalTag</b></a>()
-  <dd> $B$3$N(B token $B$,(B LiteralToken $B$J$i!"(B literalTag $B$rJV$7$^$9!#(B.
+  <dd> この token が LiteralToken なら、 literalTag を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#print()"><b>print</b></a>()
-  <dd> Opts.out $B$K!"$3$N%H!<%/%s$r(B print $B$9$k!"%G%P%C%0MQ%a%=%C%I$G$9!#(B.
+  <dd> Opts.out に、このトークンを print する、デバッグ用メソッドです。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -155,7 +155,7 @@ EPP $B$O8@8l3HD%$rL\E*$H$7$?%W%j%W%m%;%C%5$G$9$+$i!"(B
  public boolean isLiteralToken()
 </pre>
 <dl>
-  <dd> $B$3$N(B token $B$,(B LiteralToken $B$J$i(B true $B!"(B $B$=$&$G$J$$$1$l$P(B false $B$rJV$7$^$9!#(B
+  <dd> この token が LiteralToken なら true 、 そうでないければ false を返します。
 <p>
 </dl>
 <a name="isSymbol()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -164,7 +164,7 @@ EPP $B$O8@8l3HD%$rL\E*$H$7$?%W%j%W%m%;%C%5$G$9$+$i!"(B
  public boolean isSymbol()
 </pre>
 <dl>
-  <dd> $B$3$N(B token $B$,(B Symbol $B$J$i(B true $B!"(B $B$=$&$G$J$$$1$l$P(B false $B$rJV$7$^$9!#(B
+  <dd> この token が Symbol なら true 、 そうでないければ false を返します。
 <p>
 </dl>
 <a name="literalTag()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -173,8 +173,8 @@ EPP $B$O8@8l3HD%$rL\E*$H$7$?%W%j%W%m%;%C%5$G$9$+$i!"(B
  public <a href="epp.Symbol.html#_top_">Symbol</a> literalTag()
 </pre>
 <dl>
-  <dd> $B$3$N(B token $B$,(B LiteralToken $B$J$i!"(B literalTag $B$rJV$7$^$9!#(B.
-$B$3$N(B token $B$,(B LiteralToken $B$G$J$$$J$i!"(B fatal error $B$G$9!#(B
+  <dd> この token が LiteralToken なら、 literalTag を返します。.
+この token が LiteralToken でないなら、 fatal error です。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -187,8 +187,8 @@ EPP $B$O8@8l3HD%$rL\E*$H$7$?%W%j%W%m%;%C%5$G$9$+$i!"(B
  public String literalContents()
 </pre>
 <dl>
-  <dd> $B$3$N(B token $B$,(B LiteralToken $B$J$i!"(B literalContents $B$rJV$7$^$9!#(B.
-$B$3$N(B token $B$,(B LiteralToken $B$G$J$$$J$i!"(B fatal error $B$G$9!#(B
+  <dd> この token が LiteralToken なら、 literalContents を返します。.
+この token が LiteralToken でないなら、 fatal error です。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -201,9 +201,9 @@ EPP $B$O8@8l3HD%$rL\E*$H$7$?%W%j%W%m%;%C%5$G$9$+$i!"(B
  public <a href="#_top_">Token</a> print()
 </pre>
 <dl>
-  <dd> Opts.out $B$K!"$3$N%H!<%/%s$r(B print $B$9$k!"%G%P%C%0MQ%a%=%C%I$G$9!#(B.
-$B<+J,<+?H$rCM$H$7$FJV$7$^$9!#(B
-$B;HMQNc!'(B
+  <dd> Opts.out に、このトークンを print する、デバッグ用メソッドです。.
+自分自身を値として返します。
+使用例：
 <pre>
        if(lookahead().print() == :"+") ...
 </pre>

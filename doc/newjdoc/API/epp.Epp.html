@@ -25,30 +25,30 @@ java.lang.Object
   <dt> public class <b>Epp</b>
   <dt> extends Object
 </dl>
-$B%/%i%9(B Epp $B$O!"(B EPP main routine $B$rDj5A$9$k%/%i%9$G$9!#(B.
+クラス Epp は、 EPP main routine を定義するクラスです。.
 <p>
-epp $B$H$$$&%3%^%s%I$r%7%'%k$N%3%^%s%I%i%$%s$+$i<B9T$9$k$H!"(B
-$B$^$:!"(B EPP main routine $B$H$$$&%W%m%0%i%`$,F0$-$^$9!#(B
-EPP main routine $B$O!"$^$:%3%^%s%I%i%$%s$N0z?t$G;XDj$5$l$?%*%W%7%g%s$N(B
-$B2r<a$r9T$J$$$^$9!#(B
-$B$=$N8e!";XDj$5$l$?%U%!%$%k$N%?%$%`%9%?%s%W$NHf3S$r9T$J$$!"(B
-$BE83+$9$Y$-%U%!%$%k$rA*$S=P$7$F!"$=$l$>$l$NE83+=hM}$r9T$J$$$^$9!#(B
+epp というコマンドをシェルのコマンドラインから実行すると、
+まず、 EPP main routine というプログラムが動きます。
+EPP main routine は、まずコマンドラインの引数で指定されたオプションの
+解釈を行ないます。
+その後、指定されたファイルのタイムスタンプの比較を行ない、
+展開すべきファイルを選び出して、それぞれの展開処理を行ないます。
 <p>
-$B%U%!%$%k$r=hM}$9$k<j=g$O!"<!$N$h$&$K$J$j$^$9!#(B
-$B$^$:!"%U%!%$%k$r0lEY%9%-%c%s$7$F!"(B #epp $B%3%^%s%I$G;XDj$5$l$?(B plug-in $B$N(B
-$B%j%9%H$r:n$j$^$9!#(B
-$B$=$7$F!"!VI8=`$N(B Java $B%W%j%W%m%;%C%5!W$r9=@.$9$k(B system mixin $B$H!"(B
-#epp $B%3%^%s%I$G;XDj$5$l$?(B system mixin $B$r$9$Y$F$D$J$.9g$o$;!"(B
-$B#1$D$N%/%i%9$r9=C[$7$^$9!#!J$3$N%/%i%9$O!"(B Java $B$N%/%i%9$G$O$J$/(B Ld-2 $B$N(B
-$B%/%i%9$G$9!#!K(B
-$B$=$7$F!"9=C[$5$l$?%/%i%9$N%$%s%9%?%s%9$r#1$D:n@.$7!"(B
-$B=i4|2=%a%=%C%I$r8F$S=P$9$3$H$K$h$C$F!"%U%!%$%k$NJQ49=hM}$r3+;O$7$^$9!#(B
+ファイルを処理する手順は、次のようになります。
+まず、ファイルを一度スキャンして、 #epp コマンドで指定された plug-in の
+リストを作ります。
+そして、「標準の Java プリプロセッサ」を構成する system mixin と、
+#epp コマンドで指定された system mixin をすべてつなぎ合わせ、
+１つのクラスを構築します。（このクラスは、 Java のクラスではなく Ld-2 の
+クラスです。）
+そして、構築されたクラスのインスタンスを１つ作成し、
+初期化メソッドを呼び出すことによって、ファイルの変換処理を開始します。
 <p>
-plug-in $B$O!"%/%i%9(B Epp $B$N5sF0$r3HD%$9$k$3$H$O$G$-$^$;$s!#(B
-$B$=$N$+$o$j!"(B main routine $B$N5sF0$r3HD%$9$k<jCJ$H$7$F!"(B
-$B%/%i%9(B Epp $B$N%5%V%/%i%9$r:n$j!"$=$l$r5/F0$9$kJ}K!$,$"$j$^$9!#(B
-$B$=$N$3$H$rA[Dj$7$F!"%/%i%9(B Epp $B$N$[$H$s$I$N%a%=%C%I$O!"(B
-non-static $B%a%=%C%I$H$7$FDj5A$5$l$F$$$^$9!#(B
+plug-in は、クラス Epp の挙動を拡張することはできません。
+そのかわり、 main routine の挙動を拡張する手段として、
+クラス Epp のサブクラスを作り、それを起動する方法があります。
+そのことを想定して、クラス Epp のほとんどのメソッドは、
+non-static メソッドとして定義されています。
 <p>
 <hr>
 <a name="index"></a>
@@ -81,20 +81,20 @@ non-static $B%a%=%C%I$H$7$FDj5A$5$l$F$$$^$9!#(B
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#eppMain(java.lang.String[])"><b>eppMain</b></a>(String[])
-  <dd> main $B$+$i8F$S=P$5$l$k!"<B<AE*$J(B main routine $B$G$9!#(B.
+  <dd> main から呼び出される、実質的な main routine です。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#eppMainRoutineError(java.lang.String)"><b>eppMainRoutineError</b></a>(String)
   <dd> 
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#error(java.lang.String)"><b>error</b></a>(String)
-  <dd> $B%f!<%6$K$h$k%(%i!<$,H/@8$7$?;~$K8F$S=P$9%a%=%C%I$G$9!#(B.
+  <dd> ユーザによるエラーが発生した時に呼び出すメソッドです。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#fatal(java.lang.String)"><b>fatal</b></a>(String)
-  <dd> $BCWL?E*%(%i!<$,@8$8$?;~$K8F$S=P$9%a%=%C%I$G$9!#(B.
+  <dd> 致命的エラーが生じた時に呼び出すメソッドです。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getClassNameFromFileName(java.lang.String)"><b>getClassNameFromFileName</b></a>(String)
-  <dd> "foo/bar/File.java" $B$N$h$&$J%U%!%$%kL>$+$i!"(B "File" $B$H$$$&%/%i%9L>$r(B
-$B<h$j=P$9(B utility $B$G$9!#(B.
+  <dd> "foo/bar/File.java" のようなファイル名から、 "File" というクラス名を
+取り出す utility です。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#globalEpp(java.lang.String[])"><b>globalEpp</b></a>(String[])
   <dd> 
@@ -103,14 +103,14 @@ non-static $B%a%=%C%I$H$7$FDj5A$5$l$F$$$^$9!#(B
   <dd> 
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#isGeneratedFile(java.lang.String)"><b>isGeneratedFile</b></a>(String)
-  <dd> path $B$G;XDj$5$l$?%U%!%$%k$,!"!V(BEPP $B$+(B javac $B$K$h$C$F@8@.$5$l$?%U%!%$%k!W(B
-$B$J$i$P(B true $B!"$=$&$G$J$$$J$i!"(B false $B$rJV$7$^$9!#(B.
+  <dd> path で指定されたファイルが、「EPP か javac によって生成されたファイル」
+ならば true 、そうでないなら、 false を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#loadDefaultConfiguration()"><b>loadDefaultConfiguration</b></a>()
   <dd> 
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#main(java.lang.String[])"><b>main</b></a>(String[])
-  <dd> epp $B%3%^%s%I$,5/F0$5$l$k$H8F$S=P$5$l$k%a%=%C%I$G$9!#(B.
+  <dd> epp コマンドが起動されると呼び出されるメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#makeEppGlobalProcessor()"><b>makeEppGlobalProcessor</b></a>()
   <dd> 
@@ -180,9 +180,9 @@ non-static $B%a%=%C%I$H$7$FDj5A$5$l$F$$$^$9!#(B
  public static void main(String argv[])
 </pre>
 <dl>
-  <dd> epp $B%3%^%s%I$,5/F0$5$l$k$H8F$S=P$5$l$k%a%=%C%I$G$9!#(B.
-$B$3$N%a%=%C%I$O!"<!$N$h$&$K<BAu$5$l$F$*$j!"(B
-$B<B<AE*$J(B main routine $B$G$"$k(B eppMain $B$r8F$S=P$7$^$9!#(B
+  <dd> epp コマンドが起動されると呼び出されるメソッドです。.
+このメソッドは、次のように実装されており、
+実質的な main routine である eppMain を呼び出します。
 <pre>
     new Epp().eppMain(argv);
 </pre>
@@ -198,7 +198,7 @@ non-static $B%a%=%C%I$H$7$FDj5A$5$l$F$$$^$9!#(B
  public void eppMain(String argv[])
 </pre>
 <dl>
-  <dd> main $B$+$i8F$S=P$5$l$k!"<B<AE*$J(B main routine $B$G$9!#(B.
+  <dd> main から呼び出される、実質的な main routine です。.
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -348,8 +348,8 @@ non-static $B%a%=%C%I$H$7$FDj5A$5$l$F$$$^$9!#(B
  public static String getClassNameFromFileName(String inputFileName)
 </pre>
 <dl>
-  <dd> "foo/bar/File.java" $B$N$h$&$J%U%!%$%kL>$+$i!"(B "File" $B$H$$$&%/%i%9L>$r(B
-$B<h$j=P$9(B utility $B$G$9!#(B.
+  <dd> "foo/bar/File.java" のようなファイル名から、 "File" というクラス名を
+取り出す utility です。.
 <p>
 </dl>
 <a name="isGeneratedFile(java.lang.String)"><img src="images/green-ball.gif" width=12 height=12 alt=" o "></a>
@@ -358,10 +358,10 @@ non-static $B%a%=%C%I$H$7$FDj5A$5$l$F$$$^$9!#(B
  public static boolean isGeneratedFile(String path)
 </pre>
 <dl>
-  <dd> path $B$G;XDj$5$l$?%U%!%$%k$,!"!V(BEPP $B$+(B javac $B$K$h$C$F@8@.$5$l$?%U%!%$%k!W(B
-$B$J$i$P(B true $B!"$=$&$G$J$$$J$i!"(B false $B$rJV$7$^$9!#(B.
-$B$3$l$,(B true $B$J$i$P!"(B EPP $B$O$3$N%U%!%$%k$r0BA4$K(B overwrite $B$7$F$b$h$$$H(B
-$BH=CG$7$^$9!#(B
+  <dd> path で指定されたファイルが、「EPP か javac によって生成されたファイル」
+ならば true 、そうでないなら、 false を返します。.
+これが true ならば、 EPP はこのファイルを安全に overwrite してもよいと
+判断します。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -374,13 +374,13 @@ non-static $B%a%=%C%I$H$7$FDj5A$5$l$F$$$^$9!#(B
  public static Error error(String str)
 </pre>
 <dl>
-  <dd> $B%f!<%6$K$h$k%(%i!<$,H/@8$7$?;~$K8F$S=P$9%a%=%C%I$G$9!#(B.
-$BF~NO%W%m%0%i%`Cf$N%7%s%?%C%/%9%(%i!<$J$I!"(B EPP $B$*$h$S(B EPP plug-in $B$N(B
-$B%f!<%6!JIaDL$N(B Java $B%W%m%0%i%^!<!K$,860x$H$J$k>l9g$N%(%i!<$G$9!#(B
-$B$3$N%a%=%C%I$O!"(B EppUserError $B$r(B throw $B$7$^$9!#(B
+  <dd> ユーザによるエラーが発生した時に呼び出すメソッドです。.
+入力プログラム中のシンタックスエラーなど、 EPP および EPP plug-in の
+ユーザ（普通の Java プログラマー）が原因となる場合のエラーです。
+このメソッドは、 EppUserError を throw します。
 <p>
-$BNc30(B EppUserError $B$ODL>o!"(B EPP $B$N%(%i!<%j%+%P%j5!9=$K$h$C$F(B
-catch $B$5$l=hM}$5$l$^$9!#(B
+例外 EppUserError は通常、 EPP のエラーリカバリ機構によって
+catch され処理されます。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -393,14 +393,14 @@ catch $B$5$l=hM}$5$l$^$9!#(B
  public static Error fatal(String str)
 </pre>
 <dl>
-  <dd> $BCWL?E*%(%i!<$,@8$8$?;~$K8F$S=P$9%a%=%C%I$G$9!#(B.
-$BCWL?E*%(%i!<$H$O!"(BEPP $BK\BN$N%P%0!"(B EPP plug-in $B$N%P%0!"(B
-EPP plug-in $BF1;N$N>WFM$J$I$,860x$H;W$o$l$k%(%i!<$G$9!#(B
-$BIaDL!"<!$N$h$&$K$7$F;H$$$^$9!#(B
+  <dd> 致命的エラーが生じた時に呼び出すメソッドです。.
+致命的エラーとは、EPP 本体のバグ、 EPP plug-in のバグ、
+EPP plug-in 同士の衝突などが原因と思われるエラーです。
+普通、次のようにして使います。
 <pre>
 	throw Epp.fatal("message");
 </pre>
-$B$3$N%a%=%C%I$O!"<!$N$h$&$KDj5A$5$l$F$$$^$9!#(B
+このメソッドは、次のように定義されています。
 <pre>
   public static Error fatal(String str){
     return new Error("EPP FATAL: "+ str);

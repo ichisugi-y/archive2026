@@ -25,26 +25,26 @@ java.lang.Object
   <dt> public class <b>EppInputStream</b>
   <dt> extends Object
 </dl>
-$B%/%i%9(B EppInputStream $B$O!"(B
-$BF~NO%U%!%$%k$+$i!"#1J8;z$D$EJ8;z$rFI$_$H$k$?$a$N!"(B EPP $B@lMQ$N(B
-$BF~NO%9%H%j!<%`%/%i%9$G$9!#(B.
-$B%P%C%/%H%i%C%/!"9THV9f$N%+%&%s%H$J$I$r(B
-$B%5%]!<%H$7$^$9!#(B
-$B>-Mh$N%P!<%8%g%s$G$O!"(B unicode escape $B$b$3$N%/%i%9$,=hM}$7$^$9!#(B
+クラス EppInputStream は、
+入力ファイルから、１文字つづ文字を読みとるための、 EPP 専用の
+入力ストリームクラスです。.
+バックトラック、行番号のカウントなどを
+サポートします。
+将来のバージョンでは、 unicode escape もこのクラスが処理します。
 <p>
-plug-in $B$O(B Epp $B$N%a%=%C%I(B openEppInputStream $B$r3HD%$9$k$3$H$G!"(B
-EPP $B$,;H$&F~NO%9%H%j!<%`%/%i%9$rJQ99$9$k$3$H$,$G$-$^$9!#(B
+plug-in は Epp のメソッド openEppInputStream を拡張することで、
+EPP が使う入力ストリームクラスを変更することができます。
 <p>
 NOTE:<br>
 In order to make the implementation simpler, 
 the border of each line is defined as follows.
-(Beginning of line is '(J\(Bn' for Unix and Win, '(J\(Br' for Mac.)
+(Beginning of line is '\n' for Unix and Win, '\r' for Mac.)
 <pre>
-    Unix:  ...(J\(Bn...
+    Unix:  ...\n...
               ^
-    Mac:   ...(J\(Br...
+    Mac:   ...\r...
               ^
-    Win    ...(J\(Br(J\(Bn...
+    Win    ...\r\n...
                 ^
 </pre>
 <p>
@@ -68,37 +68,37 @@ the border of each line is defined as follows.
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#backtrack(int)"><b>backtrack</b></a>(int)
-  <dd> $BF~NO%]%$%s%?$r0z?t$N0LCV$^$GLa$7$^$9!#(B.
+  <dd> 入力ポインタを引数の位置まで戻します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#bufferSubString(int, int)"><b>bufferSubString</b></a>(int, int)
-  <dd> $B;XDj$5$l$?0LCV$N4V$NJ8;zNs$rJV$7$^$9!#(B
+  <dd> 指定された位置の間の文字列を返します。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#fileName()"><b>fileName</b></a>()
-  <dd> $B$3$N%9%H%j!<%`$N%U%!%$%kL>$rJV$7$^$9!#(B
+  <dd> このストリームのファイル名を返します。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getc()"><b>getc</b></a>()
-  <dd> $B#1J8;zFI$s$GJV$7$^$9!#(B
+  <dd> １文字読んで返します。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#isEof()"><b>isEof</b></a>()
-  <dd> $BF~NO%9%H%j!<%`$,(B EOF $B$J$i$P(B true $B!"$=$&$G$J$$$J$i(B false $B$rJV$7$^$9!#(B
+  <dd> 入力ストリームが EOF ならば true 、そうでないなら false を返します。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#lineNumber()"><b>lineNumber</b></a>()
-  <dd> $B8=:_$N9THV9f$rJV$7$^$9!#(B
+  <dd> 現在の行番号を返します。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#peekc()"><b>peekc</b></a>()
-  <dd> $B#1J8;z@hFI$_$7$FJV$7$^$9!#(B
+  <dd> １文字先読みして返します。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#pointer()"><b>pointer</b></a>()
-  <dd> $BF~NO%9%H%j!<%`$N8=:_$N0LCV$rJV$7$^$9!#(B.
+  <dd> 入力ストリームの現在の位置を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#ungetc(char)"><b>ungetc</b></a>(char)
-  <dd> $B#1J8;z!"F~NO%9%H%j!<%`$KLa$7$^$9!#(B.
+  <dd> １文字、入力ストリームに戻します。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -120,7 +120,7 @@ the border of each line is defined as follows.
  public char peekc()
 </pre>
 <dl>
-  <dd> $B#1J8;z@hFI$_$7$FJV$7$^$9!#(B
+  <dd> １文字先読みして返します。
 <p>
 </dl>
 <a name="getc()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -129,7 +129,7 @@ the border of each line is defined as follows.
  public char getc()
 </pre>
 <dl>
-  <dd> $B#1J8;zFI$s$GJV$7$^$9!#(B
+  <dd> １文字読んで返します。
 <p>
 </dl>
 <a name="ungetc(char)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -138,8 +138,8 @@ the border of each line is defined as follows.
  public void ungetc(char c)
 </pre>
 <dl>
-  <dd> $B#1J8;z!"F~NO%9%H%j!<%`$KLa$7$^$9!#(B.
-$BLa$=$&$H$9$kJ8;z$,!"FI$s$@J8;z$H0c$&$H%(%i!<$K$J$j$^$9!#(B
+  <dd> １文字、入力ストリームに戻します。.
+戻そうとする文字が、読んだ文字と違うとエラーになります。
 <p>
 </dl>
 <a name="isEof()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -148,7 +148,7 @@ the border of each line is defined as follows.
  public boolean isEof()
 </pre>
 <dl>
-  <dd> $BF~NO%9%H%j!<%`$,(B EOF $B$J$i$P(B true $B!"$=$&$G$J$$$J$i(B false $B$rJV$7$^$9!#(B
+  <dd> 入力ストリームが EOF ならば true 、そうでないなら false を返します。
 <p>
 </dl>
 <a name="pointer()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -157,8 +157,8 @@ the border of each line is defined as follows.
  public int pointer()
 </pre>
 <dl>
-  <dd> $BF~NO%9%H%j!<%`$N8=:_$N0LCV$rJV$7$^$9!#(B.
-$B$3$NJVCM$O!"%a%=%C%I(B backtrack $B$N0z?t$K;H$($^$9!#(B
+  <dd> 入力ストリームの現在の位置を返します。.
+この返値は、メソッド backtrack の引数に使えます。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -171,7 +171,7 @@ the border of each line is defined as follows.
  public int lineNumber()
 </pre>
 <dl>
-  <dd> $B8=:_$N9THV9f$rJV$7$^$9!#(B
+  <dd> 現在の行番号を返します。
 <p>
 </dl>
 <a name="fileName()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -180,7 +180,7 @@ the border of each line is defined as follows.
  public String fileName()
 </pre>
 <dl>
-  <dd> $B$3$N%9%H%j!<%`$N%U%!%$%kL>$rJV$7$^$9!#(B
+  <dd> このストリームのファイル名を返します。
 <p>
 </dl>
 <a name="bufferSubString(int, int)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -190,7 +190,7 @@ the border of each line is defined as follows.
                                int end)
 </pre>
 <dl>
-  <dd> $B;XDj$5$l$?0LCV$N4V$NJ8;zNs$rJV$7$^$9!#(B
+  <dd> 指定された位置の間の文字列を返します。
 <p>
 </dl>
 <a name="backtrack(int)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -199,7 +199,7 @@ the border of each line is defined as follows.
  public void backtrack(int newp)
 </pre>
 <dl>
-  <dd> $BF~NO%]%$%s%?$r0z?t$N0LCV$^$GLa$7$^$9!#(B.
+  <dd> 入力ポインタを引数の位置まで戻します。.
 <p>
 </dl>
 <hr>

@@ -27,7 +27,7 @@ java.lang.Object
   <dt> public class <b>ArrayType</b>
   <dt> extends <a href="epp.Type.html#_top_">Type</a>
 </dl>
-$B%/%i%9(B ArrayType $B$O!"(B :arrayOf $B7?$rI=$9(B Type $B$G$9!#(B.
+クラス ArrayType は、 :arrayOf 型を表す Type です。.
 <p>
 <dl>
     <dt> <b>See Also:</b>
@@ -49,13 +49,13 @@ java.lang.Object
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getComponentType()"><b>getComponentType</b></a>()
-  <dd> $BMWAG$N7?$rJV$7$^$9!#(B.
+  <dd> 要素の型を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#toString()"><b>toString</b></a>()
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#toTree()"><b>toTree</b></a>()
-  <dd> $B$3$N7?$r%W%m%0%i%`Cf$GI=8=$9$k(B tree $B$rJV$7$^$9!#(B.
+  <dd> この型をプログラム中で表現する tree を返します。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -77,8 +77,8 @@ java.lang.Object
  public <a href="epp.Type.html#_top_">Type</a> getComponentType()
 </pre>
 <dl>
-  <dd> $BMWAG$N7?$rJV$7$^$9!#(B.
-$BE57?E*$J;HMQNc$O!"<!$N$h$&$K$J$j$^$9!#(B
+  <dd> 要素の型を返します。.
+典型的な使用例は、次のようになります。
 <pre>
  if (type.tag() == :arrayOf){
     Type t = ((ArrayType)type).getComponentType();
@@ -93,7 +93,7 @@ java.lang.Object
  public <a href="epp.Tree.html#_top_">Tree</a> toTree()
 </pre>
 <dl>
-  <dd> $B$3$N7?$r%W%m%0%i%`Cf$GI=8=$9$k(B tree $B$rJV$7$^$9!#(B.
+  <dd> この型をプログラム中で表現する tree を返します。.
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>

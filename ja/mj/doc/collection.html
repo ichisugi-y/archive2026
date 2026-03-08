@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="./style.css">
 <title> Collection plug-in </title>
 </head> <body>
@@ -11,136 +11,136 @@
 </div>
 <h1>Collection plug-in</h1>
 <ul class="headers">
-<li><a href="#intro">$B$O$8$a$K(B</a>
-<li><a href="#basic">$B4pK\;v9`(B</a>
-<li><a href="#Vec">$B2DJQD9G[Ns(B Vec&lt;T&gt;</a>
-<li><a href="#ifNull"> NullOr&lt;T&gt;$B7?$H(Bnull$B%A%'%C%/9=J8(B ifNull</a>
-<li><a href="#Table">$B%O%C%7%eI=(B Table&lt;Key,Value&gt;</a>
-<li><a href="#Iter">$B%$%F%l!<%?(B Iter&lt;T&gt;</a>
-<li><a href="#foreach">$B%k!<%W9=J8(B foreach</a>
-<li><a href="#wrap"> int $B7?$N(B wrap/unwrap</a>
-<li><a href="#print">print $B%a%=%C%I(B</a>
-<li><a href="#feature">$B>-Mh$N2]Bj(B</a>
-<li><a href="#syntax">$BJ8K!(B</a>
-<li><a href="#reference">$B%j%U%!%l%s%9%^%K%e%"%k(B</a>
+<li><a href="#intro">はじめに</a>
+<li><a href="#basic">基本事項</a>
+<li><a href="#Vec">可変長配列 Vec&lt;T&gt;</a>
+<li><a href="#ifNull"> NullOr&lt;T&gt;型とnullチェック構文 ifNull</a>
+<li><a href="#Table">ハッシュ表 Table&lt;Key,Value&gt;</a>
+<li><a href="#Iter">イテレータ Iter&lt;T&gt;</a>
+<li><a href="#foreach">ループ構文 foreach</a>
+<li><a href="#wrap"> int 型の wrap/unwrap</a>
+<li><a href="#print">print メソッド</a>
+<li><a href="#feature">将来の課題</a>
+<li><a href="#syntax">文法</a>
+<li><a href="#reference">リファレンスマニュアル</a>
 </p></ul><p>
 </p><p>
-</p><h2><a name="intro">$B$O$8$a$K(B</a></h2><p>
+</p><h2><a name="intro">はじめに</a></h2><p>
 </p><p>
-Java $B8@8l$KB-$j$J$$$H$h$/8@$o$l$k8@8l5!G=$N#1$D$K!"(B
-parameterized class $B$,$"$j$^$9!#(B
-GJ $B$N$h$&$K(B Java $B8@8l$K(B parameterized class $B$N5!G=$rDI2C$9$kDs0F$O(B
-$B$$$/$D$+B8:_$7$^$9$,!"I8=`;EMM$K$O$$$^$@<h$j9~$^$l$F$$$^$;$s!#(B
+Java 言語に足りないとよく言われる言語機能の１つに、
+parameterized class があります。
+GJ のように Java 言語に parameterized class の機能を追加する提案は
+いくつか存在しますが、標準仕様にはいまだ取り込まれていません。
 </p><p>
-GJ $B$OHs>o$K$&$^$/@_7W$5$l$F$$$k$H;W$$$^$9$,!"(B
-Java $B%W%m%0%i%^!<$N;kE@$+$i8+$k$H!"$$$/$D$+ITK~$,;D$j$^$9!#(B
-$BNc$($P%k!<%W9=J8$N3HD%$O9T$C$F$$$J$$$?$a!"(B
-$B%3%l%/%7%g%s$NMWAG$KBP$9$k%k!<%W$N5-=R$N(B
-$BHK;($5$O(B Java $B8@8l$+$i$=$N$^$^0z$-7Q$$$G$$$^$9!#(B
-$B$^$?!"(B int $B$J$I$N4pK\7?$r7?%Q%i%a%?$K;XDj$G$-$^$;$s!#(B
-STL $B$H0c$$!"(B
-$B%m!<%+%kJQ?t$r@k8@$7$F=i4|2=$9$k;~$K!"(B
-$BD9$$7?L>$r#2EY=q$+$J$1$l$P$J$i$J$$$N$b$a$s$I$&$G$9!#(B
+GJ は非常にうまく設計されていると思いますが、
+Java プログラマーの視点から見ると、いくつか不満が残ります。
+例えばループ構文の拡張は行っていないため、
+コレクションの要素に対するループの記述の
+繁雑さは Java 言語からそのまま引き継いでいます。
+また、 int などの基本型を型パラメタに指定できません。
+STL と違い、
+ローカル変数を宣言して初期化する時に、
+長い型名を２度書かなければならないのもめんどうです。
 </p><p>
 </p><p>
-$BB?$/$N?M$,(B parameterized class $B$rI,MW$H$7$F$$$^$9$,!"(B
-$B<B$O!"$=$N$&$A$N$[$H$s$I$N?M$O!"@EE*$J7?%A%'%C%/$r9T$C$F$/$l$k(B
-$B%3%l%/%7%g%s%i%$%V%i%j$,$"$l$P==J,$J$N$G$O$J$$$G$7$g$&$+!)(B
-$B$b$H$b$H(BJava $B8@8l$K$O(B <tt>T[]</tt> $B$H$$$&AH$_9~$_$N(B parameterized type $B$,#1$D(B
-$B$"$j$^$9$,!"$=$l%W%i%9!"$h$/;H$&(B parameterized type $B$,(B
-$B?t8D$"$l$P!"<BMQ>e$O==J,$@$H;W$$$^$9!#(B
-$B$3$NJ}K!$J$i$P!"(B Java $B8@8l$NBg$-$JFCD9$G$"$k!V%7%s%W%k$5!W$b!"(B
-$B$"$^$jB;$J$o$:$K$9$_$^$9!#(B
+多くの人が parameterized class を必要としていますが、
+実は、そのうちのほとんどの人は、静的な型チェックを行ってくれる
+コレクションライブラリがあれば十分なのではないでしょうか？
+もともとJava 言語には <tt>T[]</tt> という組み込みの parameterized type が１つ
+ありますが、それプラス、よく使う parameterized type が
+数個あれば、実用上は十分だと思います。
+この方法ならば、 Java 言語の大きな特長である「シンプルさ」も、
+あまり損なわずにすみます。
 </p><p>
-$B$3$N$h$&$J@_7WJ}?K$N$b$H$K!"87A*$7$?#3$D$N(B parameterized type $B$r(B
-$B8@8l$NAH$_9~$_7?$H$7$FDs6!$9$k(B
-Collection plug-in $B$r@_7W!&<BAu$7$^$7$?!#(B
-Collection plug-in $B$O!"0J2<$NFCD'$r;}$A$^$9!#(B
+このような設計方針のもとに、厳選した３つの parameterized type を
+言語の組み込み型として提供する
+Collection plug-in を設計・実装しました。
+Collection plug-in は、以下の特徴を持ちます。
 </p><p>
 <ul>
-<li>$B@EE*$K7?%A%'%C%/$5$l$k2DJQD9G[Ns!"%O%C%7%eI=!"%$%F%l!<%?$rAH$_9~$_7?$H$7$FDs6!(B
-<li>$BJXMx$J%7%s%?%C%/%9%7%e%,!<(B: <tt>{}</tt>$B!"(B<tt>foreach</tt>
-<li>$BJVCM$N(Bnull$B$NCM$N%A%'%C%/$r6/@)$9$k(B<tt>ifNull</tt>$B9=J8(B
-<li>int $B7?$N<+F0(B wrap/unwrap
-<li>$B%G%P%C%0$KJXMx$J(B print $B%a%=%C%I(B
-<li>$B%7%s%W%k$J;EMM$H<BAu(B
-<li>EPP plug-in $B$N7A$G$N(B composability $B$N9b$$<BAu(B
+<li>静的に型チェックされる可変長配列、ハッシュ表、イテレータを組み込み型として提供
+<li>便利なシンタックスシュガー: <tt>{}</tt>、<tt>foreach</tt>
+<li>返値のnullの値のチェックを強制する<tt>ifNull</tt>構文
+<li>int 型の自動 wrap/unwrap
+<li>デバッグに便利な print メソッド
+<li>シンプルな仕様と実装
+<li>EPP plug-in の形での composability の高い実装
 </ul>
 </p><p>
-</p><h2><a name="basic">$B4pK\;v9`(B</a></h2><p>
+</p><h2><a name="basic">基本事項</a></h2><p>
 </p><p>
-$B%Q%i%a%?$D$-$N7?!J(BVec&lt;T&gt;$B!"(BTable&lt;Key,Value&gt;$B!"(BIter&lt;T&gt;$B!"(B
-NullOr&lt;T&gt;$B!K$O!"(B
-$B7?L>$,;H$($kA4$F$N>l=j$G;H$&$3$H$,$G$-$^$9!#(B
-$B6qBNE*$K$O!"%m!<%+%kJQ?t@k8@!"%U%#!<%k%I@k8@!"(B
-$B%a%=%C%I$NJVCM$H0z?t$N@k8@$J$I$G$9!#(B
+パラメタつきの型（Vec&lt;T&gt;、Table&lt;Key,Value&gt;、Iter&lt;T&gt;、
+NullOr&lt;T&gt;）は、
+型名が使える全ての場所で使うことができます。
+具体的には、ローカル変数宣言、フィールド宣言、
+メソッドの返値と引数の宣言などです。
 </p><p>
-$B7?%Q%i%a%?$K$O!"(B int $B7?$+;2>H7?!J(B class, interface, T[] $B$^$?$O%3%l%/%7%g%s7?!K(B
-$B$@$1$,5v$5$l$^$9!#(B
+型パラメタには、 int 型か参照型（ class, interface, T[] またはコレクション型）
+だけが許されます。
 </p><p>
-$B%3%l%/%7%g%s$KBP$9$k%a%=%C%I8F$S=P$7$N0z?t$HJVCM$O!"(B
-$B$A$c$s$H%3%s%Q%$%k;~$K7?%A%'%C%/$5$l$^$9!#(B
+コレクションに対するメソッド呼び出しの引数と返値は、
+ちゃんとコンパイル時に型チェックされます。
 </p><p>
-$B7?%Q%i%a%?$K(B int $B7?$r;XDj$7$?>l9g$O!"(B
-$B%3%l%/%7%g%s$KBP$9$k%a%=%C%I8F$S=P$7$N0z?t$HJVCM$O!"(B
-$BI,MW$K1~$8$F<+F0E*$K(B Integer $B7?$K(B wrap/unwrap $B$5$l$^$9!#(B
+型パラメタに int 型を指定した場合は、
+コレクションに対するメソッド呼び出しの引数と返値は、
+必要に応じて自動的に Integer 型に wrap/unwrap されます。
 </p><p>
- $B$J$*!"%3%l%/%7%g%s7?$r%M%9%H$9$k$H$-$O!"#2$D$N(B "&gt;" $B$N4V$KI,$:(B
-$B%9%Z!<%9$rF~$l$F$/$@$5$$!#$=$&$7$J$$$H%3%s%Q%$%i$O9=J82r@O$G$-$:!"(B
-$B%7%s%?%C%/%9%(%i!<$K$J$j$^$9!#(B
+ なお、コレクション型をネストするときは、２つの "&gt;" の間に必ず
+スペースを入れてください。そうしないとコンパイラは構文解析できず、
+シンタックスエラーになります。
 </p><p>
 </p><p>
-</p><h2><a name="Vec">$B2DJQD9G[Ns(B Vec&lt;T&gt;</a></h2><p>
-Vec&lt;T&gt; $B$O!"2DJQD9G[Ns$G$9!#(B
-$BFCDj$N%$%s%G%C%/%9$KBP1~$9$kMWAG$NBeF~!&;2>H$,(B
- O(1) $B$G9T$($^$9!#(B
-$B:F8eHx$NMWAG$NDI2C!&:o=|$,9T$(!"%9%?%C%/$H$7$F$bMQ$$$k$3$H$,$G$-$^$9!#(B
-$B%a%=%C%I(B toArray() $B$K$h$C$F!"(B
-T[] $B7?$NG[Ns$KJQ49$9$k$3$H$b$G$-$^$9!#(B
+</p><h2><a name="Vec">可変長配列 Vec&lt;T&gt;</a></h2><p>
+Vec&lt;T&gt; は、可変長配列です。
+特定のインデックスに対応する要素の代入・参照が
+ O(1) で行えます。
+再後尾の要素の追加・削除が行え、スタックとしても用いることができます。
+メソッド toArray() によって、
+T[] 型の配列に変換することもできます。
 </p><p>
-$B$3$l$O(B Vec&lt;T&gt; $B$N;HMQNc$G$9!#(B
+これは Vec&lt;T&gt; の使用例です。
 </p><p>
 <pre>
 {
-  Vec&lt;String&gt; vec = {};  // new Vec&lt;String&gt;() $B$NCM$G=i4|2=!#(B
+  Vec&lt;String&gt; vec = {};  // new Vec&lt;String&gt;() の値で初期化。
   vec.push("aaa");
   vec.push("bbb");
   vec.push("ccc");
-  System.out.println(vec.get(2));  // ccc $B$,=PNO$5$l$k!#(B
+  System.out.println(vec.get(2));  // ccc が出力される。
   foreach (String s in vec){
-    // aaa, bbb, ccc $B$,=g$K=PNO$5$l$k!#(B
+    // aaa, bbb, ccc が順に出力される。
     System.out.println(s);
   }
-  vec.put(2, "xxx");  // $BMWAG$NJQ99!#(B
-  foreach (int index, String s in vec){  // $B#2JQ?t(B foreach
-    // 0:aaa, 1:bbb, 2:xxx $B$,=g$K=PNO$5$l$k!#(B
+  vec.put(2, "xxx");  // 要素の変更。
+  foreach (int index, String s in vec){  // ２変数 foreach
+    // 0:aaa, 1:bbb, 2:xxx が順に出力される。
     System.out.println(index+ ":"+ s);
   }
-  System.out.println(vec.size());  // 3 $B$,=PNO$5$l$k!#(B
-  System.out.println(vec.pop());   // xxx $B$,=PNO$5$l$k!#(B
-  System.out.println(vec.size());  // 2 $B$,=PNO$5$l$k!#(B
+  System.out.println(vec.size());  // 3 が出力される。
+  System.out.println(vec.pop());   // xxx が出力される。
+  System.out.println(vec.size());  // 2 が出力される。
 }
 </pre>
 </p><p>
-Vec&lt;T&gt; $B$N=i4|2=<0$H$7$F!"(B {} $B$,;H$($^$9!#(B
-$B$3$l$O!"(B new Vec&lt;T&gt;() 
-$B=q$$$?$N$HF1$80UL#$G$9!#(B
-{} $B$NCf$KMWAG$rJB$Y$k$3$H$b$G$-$^$9!#(B
+Vec&lt;T&gt; の初期化式として、 {} が使えます。
+これは、 new Vec&lt;T&gt;() 
+書いたのと同じ意味です。
+{} の中に要素を並べることもできます。
 </p><p>
 </p><p>
-Vec&lt;T&gt; $B$NCM$KBP$9$k(B foreach $B$O!"8zN($r0U<1$7$F<BAu$5$l$F$$$^$9!#(B
-T[] $B$KBP$9$k(B for $B%k!<%W$H$[$H$s$IJQ$o$i$J$$B.EY$G(B
-$B%k!<%W$9$k$3$H$,$G$-$^$9!#(B
-$B!J$^$@7WB,$O$7$F$$$^$;$s!#!K(B
-$B$^$?!"(BVec&lt;T&gt; $B$NCM$KBP$9$k(B foreach $B$O!"(B heap $B$r>CHq$7$^$;$s!#(B
+Vec&lt;T&gt; の値に対する foreach は、効率を意識して実装されています。
+T[] に対する for ループとほとんど変わらない速度で
+ループすることができます。
+（まだ計測はしていません。）
+また、Vec&lt;T&gt; の値に対する foreach は、 heap を消費しません。
 </p><p>
 </p><p>
-</p><h2><a name="ifNull"> NullOr&lt;T&gt;$B7?$H(Bnull$B%A%'%C%/9=J8(B ifNull</a></h2><p>
-$B!V@5>o$JCM$^$?$O$O(B null $B!W$rJV$9$h$&$J%a%=%C%I$OB?$/$"$j$^$9$,!"(B
-$B$=$N$h$&$J%a%=%C%I$NJVCM$N(Bnull$B%A%'%C%/$r%W%m%0%i%^!<$K6/@)$5$;$k$?$a$N7?$,(B
-NullOr&lt;T&gt;$B7?$G$9!#(B
+</p><h2><a name="ifNull"> NullOr&lt;T&gt;型とnullチェック構文 ifNull</a></h2><p>
+「正常な値またはは null 」を返すようなメソッドは多くありますが、
+そのようなメソッドの返値のnullチェックをプログラマーに強制させるための型が
+NullOr&lt;T&gt;型です。
 </p><p>
-$B<!$N%W%m%0%i%`$O$3$N7?$N;HMQNc$G$9!#(B
+次のプログラムはこの型の使用例です。
 <pre>
 void test(){
   String s = find("a") ifNull { s = "default"; };
@@ -158,25 +158,25 @@ NullOr&lt;String&gt; find(String key){
 </p><p>
 </p><p>
 </p><p>
- NullOr&lt;T&gt;$B7?$NCM$O!"(BifNull $B9=J8$r;H$C$F(B T $B7?$KJQ49$7$J$$$H!"(B
-T $B7?$NCM$H$7$F;H$($^$;$s!#(B
-$B$D$^$j!"$&$C$+$j(B null $B$+$I$&$+$N%A%'%C%/$rK:$l$k$H(B
-$B%3%s%Q%$%k;~%(%i!<$K$J$j$^$9!#(B
-NullOr&lt;T&gt; $B7?$NJQ?t$X$NBeF~!"(B return $B!"0z?tEO$7$O$G$-$^$9!#(B
+ NullOr&lt;T&gt;型の値は、ifNull 構文を使って T 型に変換しないと、
+T 型の値として使えません。
+つまり、うっかり null かどうかのチェックを忘れると
+コンパイル時エラーになります。
+NullOr&lt;T&gt; 型の変数への代入、 return 、引数渡しはできます。
 </p><p>
- NullOr&lt;T&gt; $B$O(B Object $B7?$NJQ?t$KBeF~$G$-$^$9!#(B
+ NullOr&lt;T&gt; は Object 型の変数に代入できます。
 </p><p>
- NullOr&lt;T&gt; $B7?$NJQ?t$X$O!"(B NullOr&lt;S&gt;, S, null $B7?$NCM$r(B $BBeF~$G$-$^$9!#(B
-$B$?$@$7(B S $B$O(B T $B$N(B subtype $B!J$+(B T $B<+?H!K$G$9!#(B
+ NullOr&lt;T&gt; 型の変数へは、 NullOr&lt;S&gt;, S, null 型の値を 代入できます。
+ただし S は T の subtype （か T 自身）です。
 </p><p>
-$B8=:_$N$H$3$m7?%Q%i%a%?(B T $B$K$O!"(B reference $B7?$H(B int $B$N$_$,5v$5$l$^$9!#(B
-$B!J(Bint $B7?$rMQ$$$?>l9g$O!"<BAu>e$O<+F0E*$K(B Integer $B7?$K(B wrap $B$5$l$^$9!#!K(B
+現在のところ型パラメタ T には、 reference 型と int のみが許されます。
+（int 型を用いた場合は、実装上は自動的に Integer 型に wrap されます。）
 </p><p>
 </p><p>
-ifNull $B9=J8$K$O#2$D$N%?%$%W$,$"$j!"$=$l$>$l(B
-$B<!$N$h$&$K%^%/%mE83+$5$l$^$9!#(B
+ifNull 構文には２つのタイプがあり、それぞれ
+次のようにマクロ展開されます。
 <pre>
-        { T var = exp ifNull block; $B8e$KB3$/J8(B; }
+        { T var = exp ifNull block; 後に続く文; }
 -&gt;
         { T var;
           T tmp = exp;
@@ -184,7 +184,7 @@ ifNull $B9=J8$K$O#2$D$N%?%$%W$,$"$j!"$=$l$>$l(B
             var = tmp;
           else
             block
-          $B8e$KB3$/J8(B;
+          後に続く文;
         }
 </pre>
 <pre>
@@ -198,20 +198,20 @@ ifNull $B9=J8$K$O#2$D$N%?%$%W$,$"$j!"$=$l$>$l(B
         }
 </pre>
 </p><p>
-$B$D$^$jA0<T$N%?%$%W$N>l9g!"(B
-$B@k8@$5$l$?JQ?t$N%9%3!<%W$O!"(B ifNull $B$N%V%m%C%/$NCf$*$h$S!"(B
-ifNull $B$N8e$KB3$/J8$K$^$G5Z$S$^$9!#(B
+つまり前者のタイプの場合、
+宣言された変数のスコープは、 ifNull のブロックの中および、
+ifNull の後に続く文にまで及びます。
 </p><p>
-ifNull $B9=J8$G@k8@$7$?JQ?t$N%G%U%)%k%HCM$r(B Block $B$NCf$G@_Dj$7K:$l$k$H!"(B
-$B%3%s%Q%$%k%(%i!<$K$J$j$^$9!#(B
-$BNc$($P<!$N%W%m%0%i%`$r%3%s%Q%$%k$9$k$H!"(B
+ifNull 構文で宣言した変数のデフォルト値を Block の中で設定し忘れると、
+コンパイルエラーになります。
+例えば次のプログラムをコンパイルすると、
 <pre>
  NullOr&lt;int&gt; x = 123;
  int y = x ifNull { /* do nothing */ };
  System.out.println(y);
 </pre>
- javac $B$N%U%'!<%:$G<!$N$h$&$J(B
-$B%(%i!<%a%C%;!<%8$,=P$^$9!#(B
+ javac のフェーズで次のような
+エラーメッセージが出ます。
 <pre>
 Test.java:19: Variable y may not have been initialized.
       (System.out).println(y); 
@@ -220,8 +220,8 @@ Test.java:19: Variable y may not have been initialized.
 </pre>
 </p><p>
 </p><p>
-</p><h2><a name="Table">$B%O%C%7%eI=(B Table&lt;Key,Value&gt;</a></h2><p>
-$B$3$l$O(B Table&lt;Key,Value&gt;$B$N;HMQNc$G$9!#(B
+</p><h2><a name="Table">ハッシュ表 Table&lt;Key,Value&gt;</a></h2><p>
+これは Table&lt;Key,Value&gt;の使用例です。
 </p><p>
 <pre>
 {
@@ -231,117 +231,117 @@ Test.java:19: Variable y may not have been initialized.
   table.put("ccc", 333);
   int x1 = table.get("aaa")
         ifNull { throw new Error(); };
-  System.out.println(x1);  // 111 $B$,=PNO$5$l$k!#(B
+  System.out.println(x1);  // 111 が出力される。
   foreach (int val in table.valueIter()){
-    System.out.println(val);  // 111, 222, 333 $B$,=g$K=PNO$5$l$k!#(B
+    System.out.println(val);  // 111, 222, 333 が順に出力される。
   }
-  table.put("aaa", 999);  // $BMWAG$NJQ99!#(B
-  foreach (String key, int val in table){  // $B#2JQ?t(B foreach
-    // aaa:999, bbb:222, ccc:333 $B$,=g$K=PNO$5$l$k!#(B
+  table.put("aaa", 999);  // 要素の変更。
+  foreach (String key, int val in table){  // ２変数 foreach
+    // aaa:999, bbb:222, ccc:333 が順に出力される。
     System.out.println(key+ ":"+ val);
   }
 }
 </pre>
 </p><p>
-Table&lt;Key,Value&gt; $B$N=i4|2=<0$H$7$F!"(B {} $B$,;H$($^$9!#(B
-$B$3$l$O!"(B new Table&lt;Key,Value&gt;() $B$H(B
-$B=q$$$?$N$HF1$80UL#$G$9!#(B
-$B8=:_$N<BAu$G$O(B {} $B$NCf$KMWAG$rJB$Y$k$3$H$O$G$-$^$;$s!#(B
+Table&lt;Key,Value&gt; の初期化式として、 {} が使えます。
+これは、 new Table&lt;Key,Value&gt;() と
+書いたのと同じ意味です。
+現在の実装では {} の中に要素を並べることはできません。
 </p><p>
 </p><p>
-table.put(key, value) $B$GCM$rDI2C$7$^$9!#(B
-$B$3$N;~!"(B value $B$,(B null $B$G$"$l$P!"$3$N%a%=%C%I$O(B NullPointerException $B$r(B
-throw $B$7$^$9!#(B
+table.put(key, value) で値を追加します。
+この時、 value が null であれば、このメソッドは NullPointerException を
+throw します。
 </p><p>
-table.get(key) $B$G!"CM$r;2>H$7$^$9!#(B
-$B$3$N$H$-!"$b$7(B key $B$KBP1~$9$k%(%s%H%j$,%O%C%7%eI=$K$J$1$l$P!"(B
-$BCM(B null $B$,JV$5$l$^$9!#(B
-table.get(key) $B$NJVCM$N@EE*$J7?$O(B NullOr&lt;Value&gt;$B$G$"$k$?$a!"(B
-$BJVCM$r7?(BValue$B$H$7$F;H$&$?$a$K$OI,$:(BifNull$B9=J8$r;H$&I,MW$,$"$j$^$9!#(B
-</p><p>
-</p><p>
-Java 2 collection library $B$J$I$G$O(B
-$B%O%C%7%eI=$K%(%s%H%j$,B8:_$7$J$$>l9g$N=hM}$rK:$l$k$H!"(B
-$B<B9T;~$K(B NullPointerException $B$K$J$C$F$7$^$$$d$C$+$$$G$9!#(B
-$B$3$N(B Table $B$N>l9g$O!"(Bnull $B$N%A%'%C%/$rK:$l$k$H(B
-$B%3%s%Q%$%k;~$K(B type error $B$K$J$k$?$a!"(B
-$B@x:_E*%(%i!<$rAa4|$KH/8+$9$k$3$H$,$G$-$^$9!#(B
+table.get(key) で、値を参照します。
+このとき、もし key に対応するエントリがハッシュ表になければ、
+値 null が返されます。
+table.get(key) の返値の静的な型は NullOr&lt;Value&gt;であるため、
+返値を型Valueとして使うためには必ずifNull構文を使う必要があります。
 </p><p>
 </p><p>
+Java 2 collection library などでは
+ハッシュ表にエントリが存在しない場合の処理を忘れると、
+実行時に NullPointerException になってしまいやっかいです。
+この Table の場合は、null のチェックを忘れると
+コンパイル時に type error になるため、
+潜在的エラーを早期に発見することができます。
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="Iter">$B%$%F%l!<%?(B Iter&lt;T&gt;</a></h2><p>
-Iter&lt;T&gt; $B$O!"(B vec.iter() $B!"(B table.keyIter() $B!"(B table.valueIter() $B$N(B
-$BJVCM$G$9!#(B
-$B8=:_$N$H$3$m!"$3$l$i0J30$K$O(B Iter&lt;T&gt; $B$N%$%s%9%?%s%9$r(B
-$B:n$kJ}K!$O$"$j$^$;$s!#(B
 </p><p>
-Iter&lt;T&gt; $B$K$O<!$N#2$D$N%a%=%C%I$,$"$j$^$9!#(B
-$B;H$$J}$O!"(B Java 2 collection library $B$N(B
-Iterator $B$HF1$8$G$9!#!J$b$A$m$sL@<(E*%-%c%9%H$OITMW$G$9!#!K(B
+</p><p>
+</p><h2><a name="Iter">イテレータ Iter&lt;T&gt;</a></h2><p>
+Iter&lt;T&gt; は、 vec.iter() 、 table.keyIter() 、 table.valueIter() の
+返値です。
+現在のところ、これら以外には Iter&lt;T&gt; のインスタンスを
+作る方法はありません。
+</p><p>
+Iter&lt;T&gt; には次の２つのメソッドがあります。
+使い方は、 Java 2 collection library の
+Iterator と同じです。（もちろん明示的キャストは不要です。）
 </p><p>
 <pre>
         boolean hasNext()
         T next()
 </pre>
 </p><p>
-$B%$%F%l!<%?$r;H$C$F$$$k4V$O!"$b$H$K$J$k%3%l%/%7%g%s$NCM$r(B
-$BJQ99$7$F$O$$$1$^$;$s!#$=$l$r9T$C$?>l9g$NF0:n$OL$Dj5A$H$7$^$9!#(B
+イテレータを使っている間は、もとになるコレクションの値を
+変更してはいけません。それを行った場合の動作は未定義とします。
 </p><p>
 </p><p>
-</p><h2><a name="foreach">$B%k!<%W9=J8(B foreach</a></h2><p>
+</p><h2><a name="foreach">ループ構文 foreach</a></h2><p>
 </p><p>
-</p><h3>$B#1JQ?t(B foreach</h3><p>
+</p><h3>１変数 foreach</h3><p>
 </p><p>
 <pre>
 foreach (Value val in exp) { ... }
 </pre>
 </p><p>
-exp $B$N7?$O!"(Bint, T[], Vec&lt;T&gt;, Iter&lt;T&gt; 
-$B$N$$$:$l$+$G$J$1$l$P$J$j$^$;$s!#(B
+exp の型は、int, T[], Vec&lt;T&gt;, Iter&lt;T&gt; 
+のいずれかでなければなりません。
 </p><p>
 <ul>
-<li> exp $B$N7?$,(B int $B$N>l9g$O!"(B val $B$K$O(B 0 $B$+$i(B exp - 1 $B$^$G$NCM$,=g$KF~$j$^$9!#(B
-<br>$B!J$"$^$j;H$o$J$$$N$G!">-Mh$O;EMM$+$i30$9$+$b$7$l$^$;$s!#!K(B
-<li> exp $B$N7?$,(B T[] $B$N>l9g$O!"(B val $B$K$O(B exp[0] $B$+$i(B exp[exp.length - 1] $B$N(B
-$BCM$,=g$KF~$j$^$9!#(B
-<li> exp $B$N7?$,(B Vec&lt;T&gt; $B$N>l9g$O!"(B val $B$K$O(B exp.get(0) $B$+$i(B
-exp.get(exp.size() - 1) $B$NCM$,=g$KF~$j$^$9!#(B
-<li> exp $B$N7?$,(B Iter&lt;T&gt; $B$N>l9g$O!"(B 
-exp.hasNext() $B$,(B false $B$K$J$k$^$G!"(B val $B$K$O(B exp.next() $B$NCM$,=g$KF~$j$^$9!#(B
+<li> exp の型が int の場合は、 val には 0 から exp - 1 までの値が順に入ります。
+<br>（あまり使わないので、将来は仕様から外すかもしれません。）
+<li> exp の型が T[] の場合は、 val には exp[0] から exp[exp.length - 1] の
+値が順に入ります。
+<li> exp の型が Vec&lt;T&gt; の場合は、 val には exp.get(0) から
+exp.get(exp.size() - 1) の値が順に入ります。
+<li> exp の型が Iter&lt;T&gt; の場合は、 
+exp.hasNext() が false になるまで、 val には exp.next() の値が順に入ります。
 </ul>
 </p><p>
-exp $B$O!"%k!<%W$KF~$kA0$K#1EY$@$1I>2A$5$l$^$9!#(B
+exp は、ループに入る前に１度だけ評価されます。
 </p><p>
 </p><p>
-</p><h3>$B#2JQ?t(B foreach</h3><p>
+</p><h3>２変数 foreach</h3><p>
 </p><p>
 <pre>
 foreach (Key key, Value val in exp) { ... }
 </pre>
 </p><p>
- exp $B$N7?$O!"(B T[], Vec&lt;T&gt;, Table&lt;Key,Value&gt;
-$B$N$$$:$l$+$G$J$1$l$P$J$j$^$;$s!#(B
+ exp の型は、 T[], Vec&lt;T&gt;, Table&lt;Key,Value&gt;
+のいずれかでなければなりません。
 </p><p>
 <ul>
-<li> exp $B$N7?$,(B T[] $B$N>l9g$O!"(B
-key $B$K$O(B 0 $B$+$i(B exp.length - 1 $B$NCM$,!"(B
-val $B$K$O(B exp[0] $B$+$i(B exp[exp.length - 1] $B$NCM$,=g$KF~$j$^$9!#(B
-<li> exp $B$N7?$,(B Vec&lt;T&gt; $B$N>l9g$O!"(B
-key $B$K$O(B 0 $B$+$i(B exp.size() - 1 $B$NCM$,!"(B
- val $B$K$O(B exp.get(0) $B$+$i(B exp.get(exp.size() - 1) $B$NCM$,=g$KF~$j$^$9!#(B
-<li> exp $B$N7?$,(B Table&lt;Key,Value&gt; $B$N>l9g$O!"(B 
-key, value $B$K$O!"$=$l$>$l%O%C%7%eI=$N%-!<$HBP1~$9$kCM$,=g$KF~$j$^$9!#(B
+<li> exp の型が T[] の場合は、
+key には 0 から exp.length - 1 の値が、
+val には exp[0] から exp[exp.length - 1] の値が順に入ります。
+<li> exp の型が Vec&lt;T&gt; の場合は、
+key には 0 から exp.size() - 1 の値が、
+ val には exp.get(0) から exp.get(exp.size() - 1) の値が順に入ります。
+<li> exp の型が Table&lt;Key,Value&gt; の場合は、 
+key, value には、それぞれハッシュ表のキーと対応する値が順に入ります。
 </ul>
 </p><p>
-exp $B$O!"%k!<%W$KF~$kA0$K#1EY$@$1I>2A$5$l$^$9!#(B
+exp は、ループに入る前に１度だけ評価されます。
 </p><p>
 </p><p>
 </p><h3> break, continue </h3><p>
-foreach $BFbIt$G$N(B break $BJ8!"(B continue $BJ8$O4|BT$7$?DL$j$KF0$-$^$9!#(B
-$B%i%Y%kIU$-(B break $B$b4|BT$7$?DL$j$KF0$-$^$9!#(B
-$BNc!'(B
+foreach 内部での break 文、 continue 文は期待した通りに動きます。
+ラベル付き break も期待した通りに動きます。
+例：
 <pre>
 found:
   foreach (Vec&lt;String&gt; vec in vecOfVec){
@@ -351,60 +351,60 @@ found:
   }
 </pre>
 </p><p>
-$B8=:_$N<BAu$G$O!"%i%Y%kIU$-(B continue $BJ8$O4|BT$7$?DL$j$KF0$-$^$;$s!#(B
-$B!J(BEPP $B$rDL$7$?%=!<%9$r(B javac $B$9$k%U%'!<%:$G%3%s%Q%$%k%(%i!<$K$J$j$^$9!#!K(B
-$B$3$l$O%P%0$G$9!#>-MhD>$9M=Dj$G$9!#(B
+現在の実装では、ラベル付き continue 文は期待した通りに動きません。
+（EPP を通したソースを javac するフェーズでコンパイルエラーになります。）
+これはバグです。将来直す予定です。
 </p><p>
-</p><h3>$BMWAG$NJQ99(B</h3><p>
- foreach $B$G%k!<%W$7$F$$$k4V!"(B
-$B0J2<$N>l9g$K8B$j!"%k!<%WBP>]$N%G!<%?9=B$$NMWAG$rJQ99$9$k$3$H$,$G$-$^$9!#(B
+</p><h3>要素の変更</h3><p>
+ foreach でループしている間、
+以下の場合に限り、ループ対象のデータ構造の要素を変更することができます。
 <ul>
-<li>T[] $B$KBP$7$F%k!<%W$7$F$$$k;~$K!"G$0U$NG[Ns$N0LCV$KBeF~$7$F$b$+$^$$$^$;$s!#(B
-<li>Vec $B$KBP$7$F%k!<%W$7$F$$$k;~$K!"(B
-$BG$0U$N0LCV$K(B vec.put(i, x) $B$7$F$b$+$^$$$^$;$s!#(B
-$B!J(B push$B!"(B pop $B$O!"$7$F$O$$$1$^$;$s!#!K(B
+<li>T[] に対してループしている時に、任意の配列の位置に代入してもかまいません。
+<li>Vec に対してループしている時に、
+任意の位置に vec.put(i, x) してもかまいません。
+（ push、 pop は、してはいけません。）
 </ul>
 </p><p>
 </p><p>
-$B$3$l$i0J30$NJ}K!$G!"(B foreach $B$N%k!<%WBP>]$N(B
-$B%3%l%/%7%g%s$NMWAG$rJQ99$7$F$O$$$1$^$;$s!#(B
-$BJQ99$r9T$C$?>l9g$NF0:n$O!"L$Dj5A$H$7$^$9!#(B
+これら以外の方法で、 foreach のループ対象の
+コレクションの要素を変更してはいけません。
+変更を行った場合の動作は、未定義とします。
 </p><p>
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="wrap"> int $B7?$N(B wrap/unwrap</a></h2><p>
+</p><h2><a name="wrap"> int 型の wrap/unwrap</a></h2><p>
 </p><p>
-$B7?%Q%i%a%?$K(B int $B$r;XDj$9$k$3$H$,$G$-$^$9!#(B
+型パラメタに int を指定することができます。
 </p><p>
-int $B7?$O<BAu>e$O(B Integer $B$K(B wrap/unwrap $B$5$l$^$9$,!"(B
-$B%W%m%0%i%^!<$+$i$O$=$l$O8+$($^$;$s!#(B
+int 型は実装上は Integer に wrap/unwrap されますが、
+プログラマーからはそれは見えません。
 </p><p>
--10 <= x < 1024 $B$N4V$N(B x $B$KBP1~$9$k(B Integer $B$O%-%c%C%7%e$5$l$F$$$k$N$G!"(B
-wrap $B$9$k$H$-$K(B heap $B$+$i%a%b%j$r(B allocate $B$9$k$3$H$O$"$j$^$;$s!#(B
-$B%-%c%C%7%e$5$l$kHO0O$O!"<!$N$h$&$K$7$F%+%9%?%^%$%:$9$k$3$H$,2DG=$G$9!#(B
+-10 <= x < 1024 の間の x に対応する Integer はキャッシュされているので、
+wrap するときに heap からメモリを allocate することはありません。
+キャッシュされる範囲は、次のようにしてカスタマイズすることが可能です。
 <pre>
 jp.go.etl.epp.util.Wrapper.setCacheRange(min, max);
 </pre>
 </p><p>
-int $B0J30$N4pK\7?$N(B wrap/unrwap $B$O!"8=:_$N$H$3$m<BAu$5$l$F$$$^$;$s!#(B
+int 以外の基本型の wrap/unrwap は、現在のところ実装されていません。
 </p><p>
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="print">print $B%a%=%C%I(B</a></h2><p>
+</p><h2><a name="print">print メソッド</a></h2><p>
 </p><p>
-Vec $B$H(B Table $B$O(B print(String) $B$H$$$&%a%=%C%I$r;}$C$F$$$F!"(B
-$B%G%P%C%0MQ$K;H$($^$9!#(B
+Vec と Table は print(String) というメソッドを持っていて、
+デバッグ用に使えます。
 </p><p>
 <ul>
-<li>$B%M%9%H$7$?9=B$$b%$%s%G%s%H$7$F=PNO$7$F$/$l$^$9!#(B
-<li>print $B%a%=%C%I$N8F$S=P$7$O<+J,<+?H$rCM$H$7$FJV$9$N$G!"(B
-$B<0$NESCf$K(B ".print(str)" $B$rKd$a9~$`$3$H$,$G$-$^$9!#(B
-<li>String $B7?$,MWAG$G$"$k>l9g$O!"0zMQId$H(B escape sequence $B$rIU$1$F=PNO$7$F$/$l$^$9!#(B
+<li>ネストした構造もインデントして出力してくれます。
+<li>print メソッドの呼び出しは自分自身を値として返すので、
+式の途中に ".print(str)" を埋め込むことができます。
+<li>String 型が要素である場合は、引用符と escape sequence を付けて出力してくれます。
 </ul>
 </p><p>
-$B6qBNNc!'(B
+具体例：
 <pre>
 Table&lt;String, Vec&lt;String&gt; &gt; table = {};
 Vec&lt;String&gt; vec1 = {"aaa", "bbb", "\n"};
@@ -415,7 +415,7 @@ Vec&lt;String&gt; v = table.print("table:").get("key1")
   ifNull{ throw new Error(); };
 </pre>
 </p><p>
-$B$3$l$r<B9T$9$k$H!"<!$N$h$&$J=PNO$,I8=`%(%i!<=PNO$K=P$^$9!#(B
+これを実行すると、次のような出力が標準エラー出力に出ます。
 <pre>
 table:
 {
@@ -435,32 +435,32 @@ table:
 }
 </pre>
 </p><p>
-$B%f!<%6Dj5A$N%/%i%9$,MWAG$K$"$k>l9g$b8+$d$9$/(B
- print $B$9$k$h$&$K%+%9%?%^%$%:$9$k$3$H$,$G$-$^$9!#(B<br>
-$B!JJ}K!$K$D$$$F$O!"%A%e!<%H%j%"%k%W%m%0%i%`$N(B
- lib/Tutorial.java $B$NCf$N(B t.collection.printFunction $B$r8+$F$/$@$5$$!#!K(B
+ユーザ定義のクラスが要素にある場合も見やすく
+ print するようにカスタマイズすることができます。<br>
+（方法については、チュートリアルプログラムの
+ lib/Tutorial.java の中の t.collection.printFunction を見てください。）
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="feature">$B>-Mh$N2]Bj(B</a></h2><p>
+</p><h2><a name="feature">将来の課題</a></h2><p>
 </p><p>
-</p><h3> Generics(GJ) $B$H$NE}9g(B</h3><p>
-$B6a$$$&$A$K(B Java $B8@8l$NI8=`5!G=$K(B generics $B$,F~$k$h$&$G$9$,!"(B
-$B>-MhE*$K$O(B Collection plug-in $B$O(B generics $B$N5!G=$HE}9g$7$?$$$H;W$$$^$9!#(B
-</p><p>
-</p><p>
-</p><h3> &gt;&gt; $B$NLdBj(B</h3><p>
-</p><p>
-$B8=:_$N<BAu$G$O!"(Bg++ $B$HF1MM!"%Q%i%a%?IU$-%/%i%9$,%M%9%H$7$?$H$-$O!"(B
-Vec&lt;Vec&lt;T&gt;&gt; $B$G$O$J$/!"(B
- Vec&lt;Vec&lt;T&gt; &gt; $B$N$h$&$K#2$D$N(B &gt;&gt; $B$N4V$K%9%Z!<%9$r(B
-$BF~$l$J$1$l$P$J$j$^$;$s!#(B
-generics $B$N;EMM$G$O%9%Z!<%9$OITMW$G$"$j!"(B Collection plug-in $B$b(B
-$B$=$l$K9g$o$;$?$$$H;W$C$F$$$^$9!#(B
+</p><h3> Generics(GJ) との統合</h3><p>
+近いうちに Java 言語の標準機能に generics が入るようですが、
+将来的には Collection plug-in は generics の機能と統合したいと思います。
 </p><p>
 </p><p>
+</p><h3> &gt;&gt; の問題</h3><p>
 </p><p>
-</p><h2><a name="syntax">$BJ8K!(B</a></h2><p>
+現在の実装では、g++ と同様、パラメタ付きクラスがネストしたときは、
+Vec&lt;Vec&lt;T&gt;&gt; ではなく、
+ Vec&lt;Vec&lt;T&gt; &gt; のように２つの &gt;&gt; の間にスペースを
+入れなければなりません。
+generics の仕様ではスペースは不要であり、 Collection plug-in も
+それに合わせたいと思っています。
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="syntax">文法</a></h2><p>
 <pre>
 </p><p>
 Type
@@ -473,25 +473,25 @@ Type
 Statement
         &lt;original alternatives&gt;
         foreach ( Type Identifier in Expression ) Block
-                # Expression $B$N7?$O(B int, T[], Vec&lt;T&gt;, Iter&lt;T&gt;
+                # Expression の型は int, T[], Vec&lt;T&gt;, Iter&lt;T&gt;
         foreach ( Type Identifier , Type Identifier in Expression ) Block
-                # Expression $B$N7?$O!"(B T[], Vec&lt;T&gt;, Table&lt;Key,Value&gt;
+                # Expression の型は、 T[], Vec&lt;T&gt;, Table&lt;Key,Value&gt;
         Identifier = Expression ifNull Block ;
         Type Identifier = Expression ifNull Block ;
 </p><p>
 </pre>
 </p><p>
 </p><p>
-</p><h2><a name="reference">$B%j%U%!%l%s%9%^%K%e%"%k(B</a></h2><p>
-</p><h3>$B<g$J%3%s%9%H%i%/%?$H%a%=%C%I(B</h3><p>
+</p><h2><a name="reference">リファレンスマニュアル</a></h2><p>
+</p><h3>主なコンストラクタとメソッド</h3><p>
 <pre>
 </p><p>
-Vec&lt;T&gt; $B$N%3%s%9%H%i%/%?(B
+Vec&lt;T&gt; のコンストラクタ
         Vec&lt;T&gt;()
         Vec&lt;T&gt;(Object[])
         Vec&lt;T&gt;(Vector)
 </p><p>
-Vec&lt;T&gt; $B$N%a%=%C%I(B
+Vec&lt;T&gt; のメソッド
         void push(T)
         T pop()
         T top()
@@ -502,11 +502,11 @@ Vec&lt;T&gt; $B$N%a%=%C%I(B
         Iter&lt;T&gt; iter()
         Vec&lt;T&gt; print(String)
 </p><p>
-Table&lt;Key,Value&gt; $B$N%3%s%9%H%i%/%?(B
+Table&lt;Key,Value&gt; のコンストラクタ
         Table&lt;Key,Value&gt;()
 </p><p>
-Table&lt;Key,Value&gt; $B$N%a%=%C%I(B
-        void put(Key, Value)    // $B$?$@$7(B null $B$O(B put $B$G$-$J$$!#(B        
+Table&lt;Key,Value&gt; のメソッド
+        void put(Key, Value)    // ただし null は put できない。        
         NullOr&lt;Value&gt; get(Key)
         void remove(Key)
         boolean containsKey(Key)
@@ -514,21 +514,21 @@ Table&lt;Key,Value&gt; $B$N%a%=%C%I(B
         Iter&lt;Value&gt; valueIter()
         Table&lt;Key,Value&gt; print(String)
 </p><p>
-Iter&lt;T&gt; $B$N%a%=%C%I(B
+Iter&lt;T&gt; のメソッド
         boolean hasNext()
         T next()
 </pre>
-</p><h3>Vec $B$N%$%G%#%*%`(B</h3><p>
+</p><h3>Vec のイディオム</h3><p>
 <pre>
 </p><p>
-// Vec $B$N3FMWAG$K4X?t(B f $B$rE,MQ$7$FJL$N(B Vec $B$r:n$k!#(B
+// Vec の各要素に関数 f を適用して別の Vec を作る。
 Vec&lt;T&gt newVec = {};
 foreach (T x in oldVec) { newVec.push(f(x)); }
 </p><p>
-// vec1 $B$N$&$7$m$K(B vec2 $B$rDI2C(B
+// vec1 のうしろに vec2 を追加
 foreach (T x in vec2) { vec1.push(x); }
 </p><p>
-// Vec $B$NCf$+$i>r7o(B p $B$rK~$?$9:G=i$NMWAG$r8!:w(B
+// Vec の中から条件 p を満たす最初の要素を検索
 T val = null;
 foreach (T x in vec) {
   if (p(x)) {
@@ -538,49 +538,49 @@ foreach (T x in vec) {
 }
 if (val == null) { ... } else { ... }
 </p><p>
-// Vec $B$NCf$N>r7o(B p $B$rK~$?$9MWAG(B x $B$r(B f(x) $B$KCV49(B
+// Vec の中の条件 p を満たす要素 x を f(x) に置換
 foreach (int index, T x in vec) {
   if (p(x)) { vec.put(index, f(x)); }
 }
 </p><p>
 </pre>
-</p><h3>Table $B$N%$%G%#%*%`(B</h3><p>
+</p><h3>Table のイディオム</h3><p>
 <pre>
 </p><p>
-// $B%G%U%)%k%H$NCM(B
+// デフォルトの値
 Value val = table.get(key) ifNull { val = defaultValue; };
 </p><p>
-// $B%G%U%)%k%H$NCM$r%F!<%V%k$KF~$l$k(B
+// デフォルトの値をテーブルに入れる
 Value val = table.get(key) ifNull {
   val = defaultValue; 
-  table.put(key, val); // $BK:$l$,$A!#Cm0U!*(B
+  table.put(key, val); // 忘れがち。注意！
 };
 </p><p>
-// $BI,$:%(%s%H%j$,B8:_$9$k>l9g(B
+// 必ずエントリが存在する場合
 Value val = table.get(key) ifNull { throw new Error("fatal"); };
 </p><p>
-// $B%(%s%H%j$,B8:_$9$k>l9g$@$12?$+=hM}(B
+// エントリが存在する場合だけ何か処理
 Value val = table.get(key) ifNull { return; };
 ...
 </p><p>
-// $B%(%s%H%j$,B8:_$7$J$$>l9g$@$12?$+=hM}(B
+// エントリが存在しない場合だけ何か処理
 if (! table.containsKey(key)) { ... }
 </p><p>
-// $B%(%s%H%j$,B8:_$9$k>l9g$HB8:_$7$J$$>l9g$K$=$l$>$l2?$+=hM}(B
+// エントリが存在する場合と存在しない場合にそれぞれ何か処理
 Value val = table.get(key) ifNull { val = null; };
 if (val == null) { ... } else { ... }
 </p><p>
-// $B$9$Y$F$N(B key $B$KBP$7$F%k!<%W(B
+// すべての key に対してループ
 foreach (Key x in table.keyIter()) { ... }
 </pre>
-</p><h3>Table&lt;Key,Vec&lt;Value&gt; &gt; $B$N%$%G%#%*%`(B</h3><p>
+</p><h3>Table&lt;Key,Vec&lt;Value&gt; &gt; のイディオム</h3><p>
 <pre>
 </p><p>
-// key $B$KBP1~$9$k(B Vec $B$KCM$rDI2C(B
+// key に対応する Vec に値を追加
 Vec&lt;Value&gt; vec = table.get(key)
   ifNull {
     vec = new Vec&lt;Value&gt;();
-    table.put(key, vec); // $BK:$l$,$A!#Cm0U!*(B
+    table.put(key, vec); // 忘れがち。注意！
   };
 vec.push(val);
 </pre>

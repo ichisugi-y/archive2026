@@ -25,16 +25,16 @@ java.lang.Object
   <dt> public abstract class <b>Emitter</b>
   <dt> extends Object
 </dl>
-$B%/%i%9(B Emitter $B$O!"$9$Y$F$N(B Emitter $B%*%V%8%'%/%H$N%/%i%9$N(B super class $B$G$9!#(B.
+クラス Emitter は、すべての Emitter オブジェクトのクラスの super class です。.
 <p>
-code-emitting pass $B$K$*$$$F!"Cj>]9=J8LZ$O!"J8;zNs$KJQ49$5$l$J$,$i!"(B
-$B=PNO%U%!%$%k$K=PNO$5$l$^$9!#(B
-$BCj>]9=J8LZ$N3F%N!<%I$rJ8;zNs$KJQ49$7$F=PNO$9$k%*%V%8%'%/%H$,!"(B
-Emitter $B%*%V%8%'%/%H$G$9!#(B
-$B%N!<%I$N<oN`$4$H$K!"BP1~$9$k(B Emitter $B%*%V%8%'%/%H$,Dj5A$5$l$F$$$^$9!#(B
-$BNc$($P!"(B for $BJ8$r=PNO$9$k%/%i%9$O!"%/%i%9(B ForEmitter $B$G$9!#(B
+code-emitting pass において、抽象構文木は、文字列に変換されながら、
+出力ファイルに出力されます。
+抽象構文木の各ノードを文字列に変換して出力するオブジェクトが、
+Emitter オブジェクトです。
+ノードの種類ごとに、対応する Emitter オブジェクトが定義されています。
+例えば、 for 文を出力するクラスは、クラス ForEmitter です。
 <p>
-plug-in $B%W%m%0%i%^!<$O!"IaDL!"$3$N%/%i%9$r;H$&I,MW$O$"$j$^$;$s!#(B
+plug-in プログラマーは、普通、このクラスを使う必要はありません。
 <p>
 <hr>
 <a name="index"></a>
@@ -52,7 +52,7 @@ plug-in $B%W%m%0%i%^!<$O!"IaDL!"$3$N%/%i%9$r;H$&I,MW$O$"$j$^$;$s!#(B
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#call(java.io.OutputStream, epp.Tree)"><b>call</b></a>(OutputStream, Tree)
-  <dd> $B0z?t$N(B tree $B$rJ8;zNs$K$7$F=PNO$7$^$9!#(B.
+  <dd> 引数の tree を文字列にして出力します。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#checkArgsLength(epp.Tree, int)"><b>checkArgsLength</b></a>(Tree, int)
   <dd> 
@@ -61,7 +61,7 @@ plug-in $B%W%m%0%i%^!<$O!"IaDL!"$3$N%/%i%9$r;H$&I,MW$O$"$j$^$;$s!#(B
   <dd> 
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#emitTree(java.io.OutputStream, epp.Tree)"><b>emitTree</b></a>(OutputStream, Tree)
-  <dd> Tree $B$r:F5"E*$K=PNO$7$^$9!#(B.
+  <dd> Tree を再帰的に出力します。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#error(java.lang.String)"><b>error</b></a>(String)
   <dd> 
@@ -93,9 +93,9 @@ plug-in $B%W%m%0%i%^!<$O!"IaDL!"$3$N%/%i%9$r;H$&I,MW$O$"$j$^$;$s!#(B
                            <a href="epp.Tree.html#_top_">Tree</a> tree) throws IOException
 </pre>
 <dl>
-  <dd> $B0z?t$N(B tree $B$rJ8;zNs$K$7$F=PNO$7$^$9!#(B.
-$B%N!<%I$N<oN`$4$H$K!"$3$N%a%=%C%I$rDj5A$9$k%5%V%/%i%9$r(B
-$BDj5A$7$J$1$l$P$J$j$^$;$s!#(B
+  <dd> 引数の tree を文字列にして出力します。.
+ノードの種類ごとに、このメソッドを定義するサブクラスを
+定義しなければなりません。
 <p>
 </dl>
 <a name="emitTree(java.io.OutputStream, epp.Tree)"><img src="images/green-ball.gif" width=12 height=12 alt=" o "></a>
@@ -105,11 +105,11 @@ plug-in $B%W%m%0%i%^!<$O!"IaDL!"$3$N%/%i%9$r;H$&I,MW$O$"$j$^$;$s!#(B
                              <a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> Tree $B$r:F5"E*$K=PNO$7$^$9!#(B.
-emitterTable $B$r8!:w$7$F!"0z?t$N(B tree $B$KBP1~$9$k(B
-Emitter $B%*%V%8%'%/%H$r<h$j=P$7!"(B call $B%a%=%C%I$r8F$S=P$7$^$9!#(B
-$B$3$N%a%=%C%I$O!"(B call $B%a%=%C%I$NCf$+$i!"(B subtree $B$r:F5"E*$K(B
-$B=PNO$7$?$$;~$K;H$o$l$^$9!#(B
+  <dd> Tree を再帰的に出力します。.
+emitterTable を検索して、引数の tree に対応する
+Emitter オブジェクトを取り出し、 call メソッドを呼び出します。
+このメソッドは、 call メソッドの中から、 subtree を再帰的に
+出力したい時に使われます。
 <p>
 </dl>
 <a name="emitString(java.io.OutputStream, java.lang.String)"><img src="images/green-ball.gif" width=12 height=12 alt=" o "></a>

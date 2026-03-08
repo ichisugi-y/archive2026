@@ -25,28 +25,28 @@ java.lang.Object
   <dt> public class <b>FileSig</b>
   <dt> extends Object
 </dl>
-EPP $B%W%j%W%m%;%C%5$,;}$D%a%=%C%I$N$&$A(B
-$B%U%!%$%k(B FileSig.java $B$GDj5A$5$l$k%a%=%C%I$O!"(B
-$B<g$K(B FileSignature $B$K4X78$9$k%a%=%C%I$G$9!#(B.
+EPP プリプロセッサが持つメソッドのうち
+ファイル FileSig.java で定義されるメソッドは、
+主に FileSignature に関係するメソッドです。.
 <p>
-<b> $BCm0U!'(B $B$3$N%/%i%9$O!"(B javadoc $B$r:n$k$?$a$NJX59E*$J%/%i%9$G$9!#(B
-$B<B:]$N(B EPP $B$N%=!<%9%3!<%ICf$K$OB8:_$7$^$;$s!#(B </b>
+<b> 注意： このクラスは、 javadoc を作るための便宜的なクラスです。
+実際の EPP のソースコード中には存在しません。 </b>
 <p>
-FileSignature $B$O!"J,3d%3%s%Q%$%k$r%5%]!<%H$?$a$KI,MW$H$J$k%G!<%?9=B$$G$9!#(B
-EPP $B$N#1$D$N%U%!%$%k$KBP$9$k=hM}$O!"(B phase1 $B$H(B phase2 $B$KJ,$+$l$^$9!#(B
-phase1 $B$O!"9=J82r@O%Q%9$H%^%/%mE83+%Q%9$+$i@.$j$^$9!#(B
-phase1 $B$OB>$N%U%!%$%k$K0l@Z0MB8$;$:$K9T$J$o$l$^$9!#(B
-$B$=$7$F!"(B phase1 $B$,=*$C$?;~E@$G!"$=$N%U%!%$%k$N(B FileSignature $B$,3NDj$7!"(B
-FileSignature $B$O!"%U%!%$%k$KJ]B8$5$l$^$9!#(B
-phase2 $B$O!"7?%A%'%C%/%Q%9$*$h$S%3!<%I=PNO%Q%9$+$i@.$j$^$9!#(B
-phase2 $B$G$O!"B>$N%U%!%$%k$N(B FileSignature $B$rI,MW$K1~$8$F;2>H$7$J$,$i!"(B
-$B7?%A%'%C%/$r9T$J$C$?$j!"7?>pJs$rMxMQ$7$?%^%/%mE83+$r9T$J$C$?$j$7$^$9!#(B
+FileSignature は、分割コンパイルをサポートために必要となるデータ構造です。
+EPP の１つのファイルに対する処理は、 phase1 と phase2 に分かれます。
+phase1 は、構文解析パスとマクロ展開パスから成ります。
+phase1 は他のファイルに一切依存せずに行なわれます。
+そして、 phase1 が終った時点で、そのファイルの FileSignature が確定し、
+FileSignature は、ファイルに保存されます。
+phase2 は、型チェックパスおよびコード出力パスから成ります。
+phase2 では、他のファイルの FileSignature を必要に応じて参照しながら、
+型チェックを行なったり、型情報を利用したマクロ展開を行なったりします。
 <p>
-plug-in $B$O!"B>$N%U%!%$%k$+$i;2>H2DG=$J!"FH<+$N7?Dj5A9=J8$rF3F~$9$k>l9g!"(B
-$B$3$3$G@bL@$9$k%a%=%C%I$N$&$A$N$$$/$D$+$r3HD%$9$kI,MW$,$"$j$^$9!#(B
+plug-in は、他のファイルから参照可能な、独自の型定義構文を導入する場合、
+ここで説明するメソッドのうちのいくつかを拡張する必要があります。
 <p>
-FileSignature $B$O!"0J2<$N9=B$$r;}$D(B Tree $B$G$9!#(B
-$B!J%W%m%0%i%`$NCj>]9=J8LZ$H$O0[$J$k9=B$$K$J$C$F$$$^$9!#!K(B
+FileSignature は、以下の構造を持つ Tree です。
+（プログラムの抽象構文木とは異なる構造になっています。）
 <pre>
 FileSignature:
 	(fileSignature 
@@ -88,7 +88,7 @@ ClassSignatureTree:
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getFileSignatureFromClass(java.lang.Class)"><b>getFileSignatureFromClass</b></a>(Class)
-  <dd> class file $BCf$K(B encode $B$5$l$?(B FileSignature $B>pJs$,$b$7$"$l$P!"$=$l$rJV$7$^$9!#(B.
+  <dd> class file 中に encode された FileSignature 情報がもしあれば、それを返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#inheritFieldInfo(epp.Type, epp.Tree)"><b>inheritFieldInfo</b></a>(Type, Tree)
   <dd> 
@@ -100,7 +100,7 @@ ClassSignatureTree:
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#makeClassInfo(epp.Symbol)"><b>makeClassInfo</b></a>(Symbol)
-  <dd> $B%/%i%9L>$N40A48BDjL>%7%s%\%k$+$i!"$=$l$KBP1~$9$k(B ClassInfo $B$r:n$C$FJV$7$^$9!#(B.
+  <dd> クラス名の完全限定名シンボルから、それに対応する ClassInfo を作って返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#makeClassInfoFromClass(java.lang.Class)"><b>makeClassInfoFromClass</b></a>(Class)
   <dd> 
@@ -109,14 +109,14 @@ ClassSignatureTree:
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#makeFileSignature()"><b>makeFileSignature</b></a>()
-  <dd> $B%^%/%mE83+%Q%98e$NCj>]9=J8LZ(B(self!tree)$B$+$i!"(B
-FileSignature $B$r:n$C$FJV$7$^$9!#(B.
+  <dd> マクロ展開パス後の抽象構文木(self!tree)から、
+FileSignature を作って返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#normalizeClass(epp.Tree)"><b>normalizeClass</b></a>(Tree)
-  <dd> class $B$+(B interface $B$NCj>]9=J8LZ$r(B ClassSignatureTree $B$KJQ49$7$^$9!#(B.
+  <dd> class か interface の抽象構文木を ClassSignatureTree に変換します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#normalizeCompilationUnit(epp.Tree)"><b>normalizeCompilationUnit</b></a>(Tree)
-  <dd> CompilationUnit $B$NCj>]9=J8LZ$r(B FileSignature $B$KJQ49$7$^$9!#(B.
+  <dd> CompilationUnit の抽象構文木を FileSignature に変換します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#normalizeFields(epp.TreeVec, epp.Tree)"><b>normalizeFields</b></a>(TreeVec, Tree)
   <dd> 
@@ -128,14 +128,14 @@ FileSignature $B$r:n$C$FJV$7$^$9!#(B.
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#normalizeTypeDeclaration(epp.Tree)"><b>normalizeTypeDeclaration</b></a>(Tree)
-  <dd> TypeDeclaration $B$NCj>]9=J8LZ$r(B TypeDeclarationSignatureTree  $B$K(B
-$BJQ49$7$^$9!#(B.
+  <dd> TypeDeclaration の抽象構文木を TypeDeclarationSignatureTree  に
+変換します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#normalizeVariableDeclaratorId(epp.Tree, epp.Tree)"><b>normalizeVariableDeclaratorId</b></a>(Tree, Tree)
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#treeToClassInfo(epp.Tree)"><b>treeToClassInfo</b></a>(Tree)
-  <dd> ClassSignatureTree $B$+$i!"(B ClassInfo $B$r:n$C$FJV$7$^$9!#(B.
+  <dd> ClassSignatureTree から、 ClassInfo を作って返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#treeToFieldInfo(epp.Tree)"><b>treeToFieldInfo</b></a>(Tree)
   <dd> 
@@ -147,7 +147,7 @@ FileSignature $B$r:n$C$FJV$7$^$9!#(B.
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#treeToType(epp.Tree)"><b>treeToType</b></a>(Tree)
-  <dd> FileSignature $BCf$K8=$l$k7?L>$r!"(B Type $B$KJQ49$9$k%a%=%C%I$G$9!#(B.
+  <dd> FileSignature 中に現れる型名を、 Type に変換するメソッドです。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -169,9 +169,9 @@ FileSignature $B$r:n$C$FJV$7$^$9!#(B.
  public <a href="epp.Tree.html#_top_">Tree</a> makeFileSignature()
 </pre>
 <dl>
-  <dd> $B%^%/%mE83+%Q%98e$NCj>]9=J8LZ(B(self!tree)$B$+$i!"(B
-FileSignature $B$r:n$C$FJV$7$^$9!#(B.
-$B$3$N%a%=%C%I$O!"(B  EPP main routine $B$+$i!"(B phase1 $B$N:G8e$K8F$P$l$^$9!#(B
+  <dd> マクロ展開パス後の抽象構文木(self!tree)から、
+FileSignature を作って返します。.
+このメソッドは、  EPP main routine から、 phase1 の最後に呼ばれます。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -184,7 +184,7 @@ FileSignature $B$r:n$C$FJV$7$^$9!#(B.
  public <a href="epp.Tree.html#_top_">Tree</a> normalizeCompilationUnit(<a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> CompilationUnit $B$NCj>]9=J8LZ$r(B FileSignature $B$KJQ49$7$^$9!#(B.
+  <dd> CompilationUnit の抽象構文木を FileSignature に変換します。.
 <p>
 </dl>
 <a name="normalizeTypeDeclaration(epp.Tree)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -193,8 +193,8 @@ FileSignature $B$r:n$C$FJV$7$^$9!#(B.
  public <a href="epp.Tree.html#_top_">Tree</a> normalizeTypeDeclaration(<a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> TypeDeclaration $B$NCj>]9=J8LZ$r(B TypeDeclarationSignatureTree  $B$K(B
-$BJQ49$7$^$9!#(B.
+  <dd> TypeDeclaration の抽象構文木を TypeDeclarationSignatureTree  に
+変換します。.
 <p>
 </dl>
 <a name="normalizeClass(epp.Tree)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -203,8 +203,8 @@ FileSignature $B$r:n$C$FJV$7$^$9!#(B.
  public <a href="epp.Tree.html#_top_">Tree</a> normalizeClass(<a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> class $B$+(B interface $B$NCj>]9=J8LZ$r(B ClassSignatureTree $B$KJQ49$7$^$9!#(B.
-$B$3$N%a%=%C%I$O!"(B normalizeTypeDeclaration $B$+$i8F$S=P$5$l$^$9!#(B
+  <dd> class か interface の抽象構文木を ClassSignatureTree に変換します。.
+このメソッドは、 normalizeTypeDeclaration から呼び出されます。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -239,7 +239,7 @@ FileSignature $B$r:n$C$FJV$7$^$9!#(B.
  public <a href="epp.ClassInfo.html#_top_">ClassInfo</a> makeClassInfo(<a href="epp.Symbol.html#_top_">Symbol</a> fullName)
 </pre>
 <dl>
-  <dd> $B%/%i%9L>$N40A48BDjL>%7%s%\%k$+$i!"$=$l$KBP1~$9$k(B ClassInfo $B$r:n$C$FJV$7$^$9!#(B.
+  <dd> クラス名の完全限定名シンボルから、それに対応する ClassInfo を作って返します。.
 <p>
 </dl>
 <a name="makeClassInfoFromClass(java.lang.Class)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -253,10 +253,10 @@ FileSignature $B$r:n$C$FJV$7$^$9!#(B.
  public <a href="epp.Tree.html#_top_">Tree</a> getFileSignatureFromClass(Class c)
 </pre>
 <dl>
-  <dd> class file $BCf$K(B encode $B$5$l$?(B FileSignature $B>pJs$,$b$7$"$l$P!"$=$l$rJV$7$^$9!#(B.
-$B$J$1$l$P!"(B null $B$rJV$7$^$9!#(B
+  <dd> class file 中に encode された FileSignature 情報がもしあれば、それを返します。.
+なければ、 null を返します。
 <p>
-$B$3$N%a%=%C%I$O!"8=:_<BAu$5$l$F$*$i$:!"L5>r7o$K(B null $B$rJV$7$^$9!#(B
+このメソッドは、現在実装されておらず、無条件に null を返します。
 <p>
 </dl>
 <a name="classToClassInfo(java.lang.Class)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -276,7 +276,7 @@ FileSignature $B$r:n$C$FJV$7$^$9!#(B.
  public <a href="epp.ClassInfo.html#_top_">ClassInfo</a> treeToClassInfo(<a href="epp.Tree.html#_top_">Tree</a> classSig)
 </pre>
 <dl>
-  <dd> ClassSignatureTree $B$+$i!"(B ClassInfo $B$r:n$C$FJV$7$^$9!#(B.
+  <dd> ClassSignatureTree から、 ClassInfo を作って返します。.
 <p>
 </dl>
 <a name="inheritFieldInfo(epp.Type, epp.Tree)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -324,9 +324,9 @@ FileSignature $B$r:n$C$FJV$7$^$9!#(B.
  public <a href="epp.Type.html#_top_">Type</a> treeToType(<a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> FileSignature $BCf$K8=$l$k7?L>$r!"(B Type $B$KJQ49$9$k%a%=%C%I$G$9!#(B.
-treeToClassInfo $B$J$I$+$i8F$S=P$5$l$^$9!#(B
-TypeChecker $B$+$i$O!"8F$S=P$7$F$O$$$1$^$;$s!#(B
+  <dd> FileSignature 中に現れる型名を、 Type に変換するメソッドです。.
+treeToClassInfo などから呼び出されます。
+TypeChecker からは、呼び出してはいけません。
 <p>
 </dl>
 <hr>

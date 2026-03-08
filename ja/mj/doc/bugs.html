@@ -1,54 +1,54 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="./style.css">
-<title> $BCN$i$l$F$$$k%P%0(B </title>
+<title> 知られているバグ </title>
 </head> <body>
 <div class="header-link">
 [<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
 [<a href="index.html">Document index</a>]
 </div>
-<h1> $BCN$i$l$F$$$k%P%0(B</h1>
+<h1> 知られているバグ</h1>
 <ul class="headers">
-<li><a href="#error-messages">$B%(%i!<%a%C%;!<%8$K$D$$$F(B</a>
-<li><a href="#known-bugs">$BCN$i$l$F$$$k%P%0$HBP=hK!(B</a>
+<li><a href="#error-messages">エラーメッセージについて</a>
+<li><a href="#known-bugs">知られているバグと対処法</a>
 </p></ul><p>
 </p><p>
 </p><p>
-</p><h2><a name="error-messages">$B%(%i!<%a%C%;!<%8$K$D$$$F(B</a></h2><p>
+</p><h2><a name="error-messages">エラーメッセージについて</a></h2><p>
 </p><p>
-mjc $B$,=P$9%(%i!<$K$O#3<oN`$"$j$^$9!#(B
+mjc が出すエラーには３種類あります。
 <ul>
-<li>EPP $B$,=P$9%(%i!<%a%C%;!<%8(B<br>
-Java $B8@8l$H$7$F4V0c$C$F$$$k>l9g$K=P$k%(%i!<%a%C%;!<%8$G$9!#(B
-<li>mjc plug-in $B$,=P$9%(%i!<%a%C%;!<%8(B<br>
-MJ $B8@8l$H$7$F4V0c$C$F$$$k>l9g$K=P$k%(%i!<%a%C%;!<%8$G$9!#(B
-$B%(%i!<%a%C%;!<%8$N@hF,$K$O!"$?$$$F$$(B "<tt>MJ:</tt>" $B$,IU$-$^$9!#(B
-$B!JIU$+$J$$>l9g$b$"$j$^$9!#!K(B
-<li>javac $B$,=P$9%(%i!<%a%C%;!<%8(B<br>
-Java $B8@8l$H$7$F4V0c$C$F$$$k>l9g$K=P$k%(%i!<%a%C%;!<%8$G$9!#(B<br>
-$B!JK\Mh$O$9$Y$F$N%(%i!<$r(B preprocessing phase $B$G%A%'%C%/$9$Y$-$G$9$,!"(B
-$B8=:_$N<BAu$G$O0lIt$N%(%i!<$O(B compiling phase $B$G%A%'%C%/$7$F$^$9!#!K(B
+<li>EPP が出すエラーメッセージ<br>
+Java 言語として間違っている場合に出るエラーメッセージです。
+<li>mjc plug-in が出すエラーメッセージ<br>
+MJ 言語として間違っている場合に出るエラーメッセージです。
+エラーメッセージの先頭には、たいてい "<tt>MJ:</tt>" が付きます。
+（付かない場合もあります。）
+<li>javac が出すエラーメッセージ<br>
+Java 言語として間違っている場合に出るエラーメッセージです。<br>
+（本来はすべてのエラーを preprocessing phase でチェックすべきですが、
+現在の実装では一部のエラーは compiling phase でチェックしてます。）
 </ul>
 </p><p>
-EPP $B$+(B mjc plug-in $B$,(B FATAL ERROR $B$r=P$7$?$i!"(B
-$B$=$l$OL5>r7o$K(B mjc $B$N%P%0$G$9!#(B
+EPP か mjc plug-in が FATAL ERROR を出したら、
+それは無条件に mjc のバグです。
 </p><p>
-$B$o$+$j$K$/$$%(%i!<%a%C%;!<%8$b%P%0$G$9!#(B
+わかりにくいエラーメッセージもバグです。
 </p><p>
-$B860xITL@$N%(%i!<$,=P$k;~$O!"(B mjc $B$K(B -E-nocatch $B$H$$$&%*%W%7%g%s$r(B
-$BIU$1$k$H!"860x$,FCDj$G$-$k%(%i!<%a%C%;!<%8$,=P$k>l9g$,$"$j$^$9!#(B
-$B;n$7$F$_$F$/$@$5$$!#(B
-</p><p>
-</p><p>
-</p><p>
-</p><h2><a name="known-bugs">$BCN$i$l$F$$$k%P%0$HBP=hK!(B</a></h2><p>
+原因不明のエラーが出る時は、 mjc に -E-nocatch というオプションを
+付けると、原因が特定できるエラーメッセージが出る場合があります。
+試してみてください。
 </p><p>
 </p><p>
 </p><p>
-</p><h3>field $B$N=i4|CM$K(B field $B$NCM$r;H$&$H%(%i!<$K$J$k!#(B</h3><p>
-$BNc!'(B
+</p><h2><a name="known-bugs">知られているバグと対処法</a></h2><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h3>field の初期値に field の値を使うとエラーになる。</h3><p>
+例：
 <pre>
 module m {
  define class C {
@@ -58,8 +58,8 @@ module m {
 }
 </pre>
 </p><p>
-$BBP=hK!!'(B<br>
-FQN $B$r;H$&!#(B
+対処法：<br>
+FQN を使う。
 <pre>
 module m {
  define class C {
@@ -69,29 +69,29 @@ module m {
 }
 </pre>
 </p><p>
-</p><h3> anonymous class $B$NCf$G$O!"(B outer class $B$N(B field/method $B$K%"%/%;%9$G$-$J$$!#(B</h3><p>
+</p><h3> anonymous class の中では、 outer class の field/method にアクセスできない。</h3><p>
 </p><p>
-$BBP=hK!!'(B<br>
+対処法：<br>
 </p><p>
-$B<!$N$h$&$K(B this $B$NCM$r(B outer $B$H$$$&(B final $B$J%m!<%+%kJQ?t$KBeF~$7$F$*$-!"(B
-outer.foo $B$+(B outer.foo() $B$H=q$/$3$H$K$h$C$F(B field/method $B$K%"%/%;%9$9$k!#(B
+次のように this の値を outer という final なローカル変数に代入しておき、
+outer.foo か outer.foo() と書くことによって field/method にアクセスする。
 </p><p>
 <pre>
-      final Draw outer = this;               // outer $B$H$$$&(B final $BJQ?t$r@k8@(B
+      final Draw outer = this;               // outer という final 変数を宣言
       b.addActionListener(new ActionListener(){
         public void actionPerformed(ActionEvent e){
-          Graphics g = outer.getGraphics();  // outer class $B$N(B method $B8F$S=P$7(B
+          Graphics g = outer.getGraphics();  // outer class の method 呼び出し
           ...;
         }});
 </pre>
 </p><p>
 </p><p>
-</p><h3> "MJC: FATAL ERROR : findMethodInfo: ..." $B$H=P$k!#(B</h3><p>
+</p><h3> "MJC: FATAL ERROR : findMethodInfo: ..." と出る。</h3><p>
 </p><p>
-Java $B$N%i%$%V%i%j$GDj5A$5$l$F$$$k%a%=%C%I$HF1$8(B signature $B$N(B
-$B%a%=%C%I$r(B define $B$9$k$H!"(B FATAL ERROR $B$,$G$k!#(B
+Java のライブラリで定義されているメソッドと同じ signature の
+メソッドを define すると、 FATAL ERROR がでる。
 </p><p>
-$BNc!'(B
+例：
 <pre>
 module m1 {
   define class A {
@@ -100,7 +100,7 @@ module m1 {
 }
 </pre>
 </p><p>
-$B%(%i!<%a%C%;!<%8!'(B
+エラーメッセージ：
 <pre>
 </p><p>
 Preprocessing phase.
@@ -116,35 +116,35 @@ java.lang.Error: MJC: FATAL ERROR : findMethodInfo: More than one MethodInfo fou
 </pre>
 </p><p>
 </p><p>
-$BBP=hK!!'(B<br>
-Java $B$N%i%$%V%i%j$GDj5A$5$l$F$$$k%a%=%C%I$r(B override $B$9$k>l9g$O(B
- define $B$OITMW$J$N$G!"<h$k!#(B
+対処法：<br>
+Java のライブラリで定義されているメソッドを override する場合は
+ define は不要なので、取る。
 </p><p>
 </p><p>
 </p><p>
 </p><p>
 </p><p>
-</p><h3>anonymous class $B$N%3%s%9%H%i%/%?$N0z?t$K(B MJ class $B$r;XDj$9$k$H%(%i!<$K$J$k!#(B</h3><p>
+</p><h3>anonymous class のコンストラクタの引数に MJ class を指定するとエラーになる。</h3><p>
 </p><p>
 </p><p>
-$BBP=hK!!'(B<br>
-$B%3%s%9%H%i%/%?$N0z?t$H$7$FI,MW$H$5$l$k(B Java class $B$N7?$K!"(B
-$BL@<(E*$K%-%c%9%H$9$k!#(B
+対処法：<br>
+コンストラクタの引数として必要とされる Java class の型に、
+明示的にキャストする。
 </p><p>
 </p><p>
-</p><h3> MJ interface $B$K%a%=%C%I$rDI2C$9$k$H!"%j%s%/;~%(%i!<$K$J$k!#(B</h3><p>
+</p><h3> MJ interface にメソッドを追加すると、リンク時エラーになる。</h3><p>
 </p><p>
-$BBP=hK!!'(B<br>
-$B$J$7!#(B interface $B$X$N:9J,$NDI2C$O$"$-$i$a$k!#(B
+対処法：<br>
+なし。 interface への差分の追加はあきらめる。
 </p><p>
 </p><p>
-</p><h3>protected $B$J%a%=%C%I$rB>$N%/%i%9$+$i8F$S=P$7$F$b%3%s%Q%$%k%(%i!<$K$J$i$J$$!#(B</h3><p>
+</p><h3>protected なメソッドを他のクラスから呼び出してもコンパイルエラーにならない。</h3><p>
 </p><p>
-$BNc$($P(B protected Object clone() $B$r!"B>$N%/%i%9$+$i8F$S=P$7$F$b!"(B
-$B%3%s%Q%$%i$rDL$C$F$7$^$$!"<B9T;~$K(B ClassCastException $B$,H/@8$9$k!#(B
+例えば protected Object clone() を、他のクラスから呼び出しても、
+コンパイラを通ってしまい、実行時に ClassCastException が発生する。
 </p><p>
-$BBP=hK!!'(B<br>
-clone $B$N>l9g$O!"<!$N$h$&$K(B  public $B$G(B override $B$9$k!#(B
+対処法：<br>
+clone の場合は、次のように  public で override する。
 <pre>
 define class C {
   Object clone() throws CloneNotSupportedException {
@@ -154,19 +154,19 @@ define class C {
 </pre>
 </p><p>
 </p><p>
-</p><h3> "MJ: Type dependency loop is detected" $B$H$$$&%(%i!<%a%C%;!<%8$,=P$k!#(B</h3><p>
+</p><h3> "MJ: Type dependency loop is detected" というエラーメッセージが出る。</h3><p>
 </p><p>
-$B$"$k%/%i%9$N@k8@It$K%(%i!<$,$"$k;~!"(B
-$B$=$N%(%i!<$N$"$k%/%i%9$r;2>H$9$k$H!"(B "MJ: Type dependency loop is detected"
-$B$H$$$&%(%i!<%a%C%;!<%8$,=P$F$7$^$&!#(B
+あるクラスの宣言部にエラーがある時、
+そのエラーのあるクラスを参照すると、 "MJ: Type dependency loop is detected"
+というエラーメッセージが出てしまう。
 </p><p>
-$BBP=hK!!'(B<br>
-$B%/%i%9@k8@It$N%(%i!<$r=$@5$9$l$P=P$J$/$J$k!#(B
+対処法：<br>
+クラス宣言部のエラーを修正すれば出なくなる。
 </p><p>
 </p><p>
-</p><h3>$B$"$k<o$N(B Java interface $B$r(B MJ class $B$,(B implement $B$9$k$H%3%s%Q%$%k%(%i!<$K$J$k!#(B</h3><p>
+</p><h3>ある種の Java interface を MJ class が implement するとコンパイルエラーになる。</h3><p>
 </p><p>
-$BNc!'(B
+例：
 <pre>
 b.java:2: MJ: In b.B at module b : Definition-method overrides another method. : equals
   define class B implements java.security.Principal {
@@ -174,24 +174,24 @@ b.java:2: MJ: In b.B at module b : Definition-method overrides another method. :
 1 errors
 </pre>
 </p><p>
-$BBP=hK!(B:<br>
-$B$"$i$+$8$a(B Java $B8@8lB&$G!"LdBj$H$J$k(B interface $B$r(B implments $B$9$k(B
-$B%/%i%9$r:n$C$F$*$-!"$=$N%/%i%9$r(B MJ $BB&$G(B extends $B$9$k!#(B
+対処法:<br>
+あらかじめ Java 言語側で、問題となる interface を implments する
+クラスを作っておき、そのクラスを MJ 側で extends する。
 </p><p>
-</p><h3>$BDj?t(B(static final field) $B$rC1=cL>$G;2>H$9$k$H(B Compiling phase $B$G%(%i!<$K$J$k!#(B</h3><p>
+</p><h3>定数(static final field) を単純名で参照すると Compiling phase でエラーになる。</h3><p>
 </p><p>
-$BBP=hK!(B:<br>
-$BC1=cL>$G$O$J$/!"(B  ClassName.CONSTANT $B$H$$$&9=J8$GDj?t$r;2>H$9$k!#(B
+対処法:<br>
+単純名ではなく、  ClassName.CONSTANT という構文で定数を参照する。
 </p><p>
 </p><p>
-</p><h3>C.class $B$H$$$&9=J8$r;H$&$H(B FATAL ERROR $B$K$J$k!#(B</h3><p>
+</p><h3>C.class という構文を使うと FATAL ERROR になる。</h3><p>
 </p><p>
-$BBP=hK!(B:<br>
-Class.forName("C") $B$GBeMQ$9$k!#(B
+対処法:<br>
+Class.forName("C") で代用する。
 </p>
 
-<h3>interface $B$r4^$`B?=E7Q>5$G(B "Definition-method overrides another method" $B$H$$$&%(%i!<$,=P$k!#(B</h3>
-<p>$BNc!'(B</p>
+<h3>interface を含む多重継承で "Definition-method overrides another method" というエラーが出る。</h3>
+<p>例：</p>
 <pre>
 module m {
   define interface I1 {
@@ -203,9 +203,9 @@ module m {
 }
 </pre>
 <p>
-$BBP=hK!!'(B<br>
-I1 $B$H(B I2 $B$r#1$D$N%$%s%?!<%U%'!<%9$KE}9g$7$F$7$^$&!#(B
-$B$"$k$$$O!"(B I1 $B$H(B I2 $B$r7Q>54X78$N$J$$FHN)$7$?%$%s%?!<%U%'!<%9$K$9$k!#(B
+対処法：<br>
+I1 と I2 を１つのインターフェースに統合してしまう。
+あるいは、 I1 と I2 を継承関係のない独立したインターフェースにする。
 
 </p>
 

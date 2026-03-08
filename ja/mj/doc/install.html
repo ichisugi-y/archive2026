@@ -1,26 +1,26 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="./style.css">
-<title> $B%$%s%9%H!<%k$H<B9TJ}K!(B </title>
+<title> インストールと実行方法 </title>
 </head> <body>
 <div class="header-link">
 [<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
 [<a href="index.html">Document index</a>]
 </div>
-<h1>$B%$%s%9%H!<%k$H<B9TJ}K!(B</h1>
+<h1>インストールと実行方法</h1>
 <ul class="headers">
-<li><a href="#environment">$B<B9T4D6-(B</a>
-<li><a href="#install">$B%$%s%9%H!<%kJ}K!(B</a>
-<li><a href="#command">$B3F%7%'%k%9%/%j%W%H$N@bL@(B</a>
-<li><a href="#stack-trace">$B%9%?%C%/%H%l!<%9$N8+J}(B</a>
-<li><a href="#how-to-read-log"> log $B$N8+J}(B</a>
+<li><a href="#environment">実行環境</a>
+<li><a href="#install">インストール方法</a>
+<li><a href="#command">各シェルスクリプトの説明</a>
+<li><a href="#stack-trace">スタックトレースの見方</a>
+<li><a href="#how-to-read-log"> log の見方</a>
 </p></ul><p>
 </p><p>
-</p><h2><a name="environment">$B<B9T4D6-(B</a></h2><p>
+</p><h2><a name="environment">実行環境</a></h2><p>
 </p><p>
-$B3+H/!&<B9TMQ%7%'%k%9%/%j%W%H$O!"0J2<$N4D6-$G%F%9%H$r9T$C$F$$$^$9!#(B
+開発・実行用シェルスクリプトは、以下の環境でテストを行っています。
 </p><p>
 <ul>
 <li>linux, IBM JDK1.1.8
@@ -28,102 +28,102 @@
 <li>Windows98, cygwin 1.3.5, Sun JDK1.3.1_01
 </ul>
 </p><p>
-$B$^$?!"(B dump $B$:$_$N(B class file $B$N<B9T$O!">e5-4D6-$K2C$(!"(B
-$B0J2<$N<B9T4D6-$G$b%F%9%H$r9T$C$F$$$^$9!#(B
+また、 dump ずみの class file の実行は、上記環境に加え、
+以下の実行環境でもテストを行っています。
 </p><p>
 </p><p>
 <ul>
 <li>Sun MIDP Emulator 1.0
-<li>i-mode Java F503i, P503i, So503i $B<B5!(B
+<li>i-mode Java F503i, P503i, So503i 実機
 </ul>
 </p><p>
 </p><p>
-</p><h2><a name="install">$B%$%s%9%H!<%kJ}K!(B</a></h2><p>
-MJ $B$N%[!<%`%Z!<%8$+$i:G?7HG$r%@%&%s%m!<%I$7$F$/$@$5$$!#(B
+</p><h2><a name="install">インストール方法</a></h2><p>
+MJ のホームページから最新版をダウンロードしてください。
 </p><p>
-$B%@%&%s%m!<%I$7$?(B zip $B%U%!%$%k$rE83+$9$k$H!"(B
- mj $B$H$$$&%G%#%l%/%H%j$,$G$-$^$9!#(B
-$B$=$N2<$K$"$k%G%#%l%/%H%j(B bin $B$r!"(B PATH $B$KF~$l$F$/$@$5$$!#(B
+ダウンロードした zip ファイルを展開すると、
+ mj というディレクトリができます。
+その下にあるディレクトリ bin を、 PATH に入れてください。
 </p><p>
-CLASSPATH $B$N@_Dj$OITMW$G$9!#(B
+CLASSPATH の設定は不要です。
 </p><p>
-</p><h2><a name="command">$B3F%7%'%k%9%/%j%W%H$N@bL@(B</a></h2><p>
+</p><h2><a name="command">各シェルスクリプトの説明</a></h2><p>
 </p><p>
 </p><h3>mjc [options] *.java</h3><p>
 </p><p>
- mjc $B$O!"0z?t$G;XDj$5$l$?%=!<%9%U%!%$%k$r%3%s%Q%$%k$7!"(B
-$B7k2L$N%/%i%9%U%!%$%k$r(B eppout $B$N2<$K:n$j$^$9!#(B
+ mjc は、引数で指定されたソースファイルをコンパイルし、
+結果のクラスファイルを eppout の下に作ります。
 </p><p>
-mjc $B$O!"<B9T%m%0$r(B MJ/MJC.log $B$K=PNO$7$^$9!#(B
+mjc は、実行ログを MJ/MJC.log に出力します。
 </p><p>
- javac $B$N$h$&$J!VI,MW$J%=!<%9%U%!%$%k$r<+F0E*$K%3%s%Q%$%k$9$k!W$H$$$&(B
-$B5!G=$O!"(B mjc $B$K$O$"$j$^$;$s!#(B
-$B%3%s%Q%$%k$7$?$$%=!<%9%U%!%$%k$O!"$9$Y$F!"(B
-mjc $B$N0z?t$K;XDj$7$J$1$l$P$J$j$^$;$s!#(B
+ javac のような「必要なソースファイルを自動的にコンパイルする」という
+機能は、 mjc にはありません。
+コンパイルしたいソースファイルは、すべて、
+mjc の引数に指定しなければなりません。
 </p><p>
- mjc $B$O!"%3%s%Q%$%k$7$?%=!<%9%U%!%$%kCf$K4^$^$l$kA4$F$N%b%8%e!<%kL>$r!"(B
-MJ/MJall.log $B$K=q$-=P$7$^$9!#(B
-$B$3$N%U%!%$%k$O!"(B mjball $B%3%^%s%I$GMxMQ$5$l$^$9!#(B
+ mjc は、コンパイルしたソースファイル中に含まれる全てのモジュール名を、
+MJ/MJall.log に書き出します。
+このファイルは、 mjball コマンドで利用されます。
 </p><p>
- option $B$H$7$F!"(B -Jxxx $B$H(B -Exxx $B$,G$0U$N8D?t!";XDj$G$-$^$9!#(B<br>
- -Jxxx $B$O!"(B xxx $B$r(B java $B$N%*%W%7%g%s$H$7$FEO$7$^$9!#(B<br>
- -Exxx $B$O!"(B xxx $B$r(B epp $B$N%*%W%7%g%s$H$7$FEO$7$^$9!#(B<br>
-$BNc!'(B
+ option として、 -Jxxx と -Exxx が任意の個数、指定できます。<br>
+ -Jxxx は、 xxx を java のオプションとして渡します。<br>
+ -Exxx は、 xxx を epp のオプションとして渡します。<br>
+例：
 <pre>
 % mjc -J-mx512m -J-Ddebug=true -E-plug-in -Ejp.go.etl.epp.typeof *.java
 </pre>
 </p><p>
  mjc -J-Dmj.emitToSingleFile=true *.java
-$B$H$d$k$H!"F~NO%U%!%$%k$4$H$K!"JQ497k2L$,(B
-$B#1$D$N=PNO%U%!%$%k$K$^$H$a$F=PNO$5$l$^$9!#(B
-$B!J$3$N%*%W%7%g%s$r$D$1$J$$$H!"%/%i%9$4$H$KJL$N=PNO%U%!%$%k$K(B
-$BJ,$1$F=PNO$5$l$^$9!#!K(B
-mjc $B$N%W%j%W%m%;%C%5$,=PNO$9$k(B Java $B%=!<%9%3!<%I$r8+$F$_$?$$>l9g$K(B
-$BMxMQ$7$F$/$@$5$$!#(B
-$B$J$*!"$3$N=PNO%U%!%$%k$O(B javac $B$rDL$i$J$$$N$G!"$3$N%3%^%s%I$O(B
-$B%3%s%Q%$%k%(%i!<$G=*N;$7$^$9!#(B
+とやると、入力ファイルごとに、変換結果が
+１つの出力ファイルにまとめて出力されます。
+（このオプションをつけないと、クラスごとに別の出力ファイルに
+分けて出力されます。）
+mjc のプリプロセッサが出力する Java ソースコードを見てみたい場合に
+利用してください。
+なお、この出力ファイルは javac を通らないので、このコマンドは
+コンパイルエラーで終了します。
 </p><p>
- mjc -h $B$O!"%*%W%7%g%s$N4JC1$J@bL@$rI=<($7$^$9!#(B
+ mjc -h は、オプションの簡単な説明を表示します。
 </p><p>
 </p><p>
-$BCm0U(B :
-$B%/%i%9$N?t$,B?$/$J$k$H!"(B cygwin $B$G$O%3%s%Q%$%k$G$-$J$/$J$k(B
-$B$+$b$7$l$J$$$N$G!"Cm0U$7$F$/$@$5$$!#!J(B javac $B$KEO$90z?t$,D9$/$J$k$?$a!#!K(B
+注意 :
+クラスの数が多くなると、 cygwin ではコンパイルできなくなる
+かもしれないので、注意してください。（ javac に渡す引数が長くなるため。）
 </p><p>
 </p><p>
 </p><p>
 </p><h3>mj [option] module [args...]</h3><p>
 </p><p>
- mj $B$O!"0z?t$G;XDj$5$l$?(B module $B!J(B "selected module" $B$H8F$S$^$9!K$r(B
- JavaVM $B$K(B load $B$7$F<B9T$7$^$9!#(B
-$B$3$N$H$-%j%s%+!<$O!"(B selected module $B$,0MB8$9$k%b%8%e!<%k$H!"(B
-$BI,MW$JJd40%b%8%e!<%k$r(B CLASSPATH $B$+$i<+F0E*$K8!:w$7!"%j%s%/$7$^$9!#(B
+ mj は、引数で指定された module （ "selected module" と呼びます）を
+ JavaVM に load して実行します。
+このときリンカーは、 selected module が依存するモジュールと、
+必要な補完モジュールを CLASSPATH から自動的に検索し、リンクします。
 </p><p>
- mj $B$O!"(B eppout $B$H$$$&%G%#%l%/%H%j$,$J$/$F$b<B9T$9$k$3$H$,$G$-$^$9!#(B
+ mj は、 eppout というディレクトリがなくても実行することができます。
 </p><p>
- option $B$H$7$F!"(B -Jxxx $B!"(B -Exxx $B!"(B-s m $B$,G$0U$N8D?t!";XDj$G$-$^$9!#(B<br>
- -Jxxx $B$O!"(B xxx $B$r(B java $B$N%*%W%7%g%s$H$7$FEO$7$^$9!#(B<br>
- -Exxx $B$O!"(B xxx $B$r(B epp $B$N%*%W%7%g%s$H$7$FEO$7$^$9!#(B<br>
- -s m $B$O!"(B m $B$r(B selected module $B$N%j%9%H$K2C$($^$9!#(B<br>
+ option として、 -Jxxx 、 -Exxx 、-s m が任意の個数、指定できます。<br>
+ -Jxxx は、 xxx を java のオプションとして渡します。<br>
+ -Exxx は、 xxx を epp のオプションとして渡します。<br>
+ -s m は、 m を selected module のリストに加えます。<br>
 </p><p>
- -log $B$,;XDj$5$l$k$H!"(BMJ/MJ.log $B$K%m%0$r=PNO$7$^$9!#(B<br>
- -h $B$O!"%*%W%7%g%s$N4JC1$J@bL@$rI=<($7$^$9!#(B<br>
+ -log が指定されると、MJ/MJ.log にログを出力します。<br>
+ -h は、オプションの簡単な説明を表示します。<br>
 </p><p>
- args... $B$O!"$=$N$^$^(B void main(String[] args) $B$KEO$5$l$^$9!#(B
+ args... は、そのまま void main(String[] args) に渡されます。
 </p><p>
-selected module $B$N;XDj$N=g=x$O!"<B9T$K1F6A$rM?$($^$;$s!#(B
-$B%j%s%+!<$O!"8@8l;EMM$K$h$C$F7h$a$i$l$?%k!<%k$K=>$C$F(B
-$BA4$F$N%b%8%e!<%k$r(B linearize $B$7$F$+$i<B9T$9$k$+$i$G$9!#(B
+selected module の指定の順序は、実行に影響を与えません。
+リンカーは、言語仕様によって決められたルールに従って
+全てのモジュールを linearize してから実行するからです。
 </p><p>
 </p><h3>mjb bottom m1 m2 ...</h3><p>
 </p><p>
- mjb $B$O!"BhFs0z?t0J9_$G;XDj$5$l$?(B module $B$9$Y$F$r(B extends $B$9$k$h$&$J(B
-module  $B!J(B"bottom module" $B$H8F$S$^$9!K$r!"(B
-$BBh0l0z?t$NL>A0$G@8@.$7!"(B eppout $B$N2<$K=PNO$7$^$9!#(B
+ mjb は、第二引数以降で指定された module すべてを extends するような
+module  （"bottom module" と呼びます）を、
+第一引数の名前で生成し、 eppout の下に出力します。
 </p><p>
- $B@8@.$5$l$?(B bottom module $B$O!"%=!<%9$+$i%3%s%Q%$%k$7$?%b%8%e!<%k$d!"(B
- CLASSPATH $BCf$N%b%8%e!<%k$HA4$/F1MM$K07$&$3$H$,$G$-$^$9!#(B
-$BNc!'(B
+ 生成された bottom module は、ソースからコンパイルしたモジュールや、
+ CLASSPATH 中のモジュールと全く同様に扱うことができます。
+例：
 <pre>
 % mjb m1m2 m1 m2
 % mjb m1m2m3 m1m2 m3
@@ -131,15 +131,15 @@ module  $B!J(B"bottom module" $B$H8F$S$^$9!K$r!"(B
 ...
 </pre>
 </p><p>
- mjb $B$O!"Jd40%b%8%e!<%k$NDI2C$O9T$$$^$;$s!#(B
+ mjb は、補完モジュールの追加は行いません。
 </p><p>
 </p><p>
 </p><p>
 </p><h3>mjball all</h3><p>
 </p><p>
- mjball $B$O!"D>A0$K(B mjc $B$7$?(B *.java $B$K4^$^$l$kA4$F$N(B module $B$N(B
-bottom module $B$r!"Bh0l0z?t$NL>A0$G@8@.$7!"(B eppout $B$N2<$K=PNO$7$^$9!#(B
-$BNc!'(B
+ mjball は、直前に mjc した *.java に含まれる全ての module の
+bottom module を、第一引数の名前で生成し、 eppout の下に出力します。
+例：
 </p><p>
 <pre>
         % mjc T1.java
@@ -147,19 +147,19 @@ bottom module $B$r!"Bh0l0z?t$NL>A0$G@8@.$7!"(B eppout $B$N2<$K=PNO$7$^$9!#(B
         % mj all
 </pre>
 </p><p>
-$B$3$N%3%^%s%I$O!"(B mjc $B%3%^%s%I$,@8@.$7$?(B MJ/MJall.log $B$H$$$&%U%!%$%k$N(B
-$BCf?H$rMxMQ$7$F$$$^$9!#(B
+このコマンドは、 mjc コマンドが生成した MJ/MJall.log というファイルの
+中身を利用しています。
 </p><p>
 </p><p>
 </p><h3>mjdump [option] module</h3><p>
 </p><p>
- mjdump $B$O!"0z?t$G;XDj$5$l$?(B selected module $B$*$h$S!"(B
-$B$=$l$,0MB8$9$k%b%8%e!<%k$HI,MW$JJd40%b%8%e!<%k$r$9$Y$F%j%s%/$7$F!"(B
-$B$=$N7k2L$G$-$?%/%i%9%U%!%$%k$rIaDL$N(B Java $B%"%W%j%1!<%7%g%s$N7A$G!"(B
-$B%G%#%l%/%H%j(B eppout/mjdump $B$N2<$K=PNO$7$^$9!#(B
-dump $B$5$l$?%"%W%j%1!<%7%g%s$O!"(B java mjc.Start $B$H$d$C$F<B9T$9$k$3$H$,$G$-$^$9!#(B
+ mjdump は、引数で指定された selected module および、
+それが依存するモジュールと必要な補完モジュールをすべてリンクして、
+その結果できたクラスファイルを普通の Java アプリケーションの形で、
+ディレクトリ eppout/mjdump の下に出力します。
+dump されたアプリケーションは、 java mjc.Start とやって実行することができます。
 </p><p>
-$B;HMQNc!'(B
+使用例：
 </p><p>
 <pre>
         % mjdump all
@@ -168,18 +168,18 @@ dump $B$5$l$?%"%W%j%1!<%7%g%s$O!"(B java mjc.Start $B$H$d$C$F<B9T$9$k$3$H$,$G
         % java mjc.Start
 </pre>
 </p><p>
- mjc.Start $B$K$O!"0z?t$rM?$($k$3$H$b$G$-$^$9!#(B
-$B0z?t$O(B main(String[]) $B$KEO$5$l$^$9!#(B
+ mjc.Start には、引数を与えることもできます。
+引数は main(String[]) に渡されます。
 </p><p>
- option $B$H$7$F!"(B -Jxxx $B!"(B -Exxx $B!"(B -s m $B$,G$0U$N8D?t!";XDj$G$-$^$9!#(B<br>
-$B0UL#$O!"(B mj $B%3%^%s%I$HA4$/F1$8$G$9!#(B
+ option として、 -Jxxx 、 -Exxx 、 -s m が任意の個数、指定できます。<br>
+意味は、 mj コマンドと全く同じです。
 </p><p>
 </p><p>
 </p><p>
 </p><h3>mjclear</h3><p>
 </p><p>
- $B%G%#%l%/%H%j(B eppout $B$N2<$N(B *.java, *.class $B$r>C$7$?$$$H$-$O!"(B
- mjclear $B$rMQ$$$^$9!#(B
+ ディレクトリ eppout の下の *.java, *.class を消したいときは、
+ mjclear を用います。
 </p><p>
 <pre>
         % mjclear
@@ -190,11 +190,11 @@ dump $B$5$l$?%"%W%j%1!<%7%g%s$O!"(B java mjc.Start $B$H$d$C$F<B9T$9$k$3$H$,$G
         %
 </pre>
 </p><p>
-$B$3$N%3%^%s%I$O!"(B *.java $B%U%!%$%k$,(B EPP $B$K$h$C$F<+F0@8@.$5$l$?$b$N$+$I$&$+$r!"(B
-$B%U%!%$%k$N@hF,$rFI$s$GH=Dj$7$^$9!#(B
-EPP $B$,@8@.$7$?$b$N$G$O$J$$(B *.java $B%U%!%$%k$d!"(B
-*.java $B!"(B *.class $B0J30$N%U%!%$%k$,#1$D$G$b(B eppout $B$N2<$K$"$k>l9g$O!"(B
-mjclear $B$O%U%!%$%k$r0l@Z:o=|$;$:$K!"%a%C%;!<%8$r=P$7$F=*N;$7$^$9!#(B
+このコマンドは、 *.java ファイルが EPP によって自動生成されたものかどうかを、
+ファイルの先頭を読んで判定します。
+EPP が生成したものではない *.java ファイルや、
+*.java 、 *.class 以外のファイルが１つでも eppout の下にある場合は、
+mjclear はファイルを一切削除せずに、メッセージを出して終了します。
 <pre>
 </p><p>
         % mjclear
@@ -208,9 +208,9 @@ mjclear $B$O%U%!%$%k$r0l@Z:o=|$;$:$K!"%a%C%;!<%8$r=P$7$F=*N;$7$^$9!#(B
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="stack-trace">$B%9%?%C%/%H%l!<%9$N8+J}(B</a></h2><p>
+</p><h2><a name="stack-trace">スタックトレースの見方</a></h2><p>
 </p><p>
-$B!&%9%?%C%/%H%l!<%9$NNc(B
+・スタックトレースの例
 <pre>
 java.lang.Error: test!
         at m3._Delta_ss_SS.m1_testA(_Delta_ss_SS.java:114)
@@ -234,17 +234,17 @@ test!
 java.lang.Error: Error during executing main.
 </pre>
 </p><p>
-$B!&(B (Compiled Code) $B$H=P$F9THV9f$,=P$J$$>l9g$O!"(B JIT $B$r(B off $B$K$9$l$P(B
-$B=P$k$h$&$K$J$j$^$9!#(B
-$BNc!'(B
+・ (Compiled Code) と出て行番号が出ない場合は、 JIT を off にすれば
+出るようになります。
+例：
 <pre>
         % ( setenv MJJAVA 'java -Djava.compiler=' ; mj all )
 </pre>
 </p><p>
-$B!&(B mjc.MJLinker.startMain(MJLinker.java:186) $B$H$$$&9T$h$j$b>e$NItJ,$,!"(B
-$B%"%W%j%1!<%7%g%s$N<B9TItJ,$G$9!#$3$N9T0J2<$OL5;k$7$F$/$@$5$$!#(B
+・ mjc.MJLinker.startMain(MJLinker.java:186) という行よりも上の部分が、
+アプリケーションの実行部分です。この行以下は無視してください。
 </p><p>
-$B!&3F9T$O!"<!$N$h$&$KFI$_$^$9!#(B
+・各行は、次のように読みます。
 <tt>
 <pre>
         at m3._Delta_ss_SS.m1_testA(_Delta_ss_SS.java:114)
@@ -253,39 +253,39 @@ java.lang.Error: Error during executing main.
                            -------- *3
            --                              -------------- *4
 </p><p>
- *1 $B$O!"%b%8%e!<%k(B m3 $B$NCf$N%a%=%C%I$r<B9TCf$G$"$k$3$H$rI=$9!#(B
- *2 $B$O!"%/%i%9(B ss.SS $B$N%a%=%C%I$r<B9TCf$G$"$k$3$H$rI=$9!#(B
- *3 $B$O!"(Bm1::tsetA $B$H$$$&L>A0$N%a%=%C%I$r<B9TCf$G$"$k$3$H$rI=$9!#(B
- *4 $B$O!"%b%8%e!<%k(B m3 $B$NCf$N%/%i%9(B ss.SS $B$N(B 114 $B9TL\$r<B9TCf$G$"$k$3$H$rI=$9!#(B
+ *1 は、モジュール m3 の中のメソッドを実行中であることを表す。
+ *2 は、クラス ss.SS のメソッドを実行中であることを表す。
+ *3 は、m1::tsetA という名前のメソッドを実行中であることを表す。
+ *4 は、モジュール m3 の中のクラス ss.SS の 114 行目を実行中であることを表す。
 </pre>
 </tt>
 </p><p>
-</p><h2><a name="how-to-read-log"> log $B$N8+J}(B</a></h2><p>
+</p><h2><a name="how-to-read-log"> log の見方</a></h2><p>
 </p><p>
-</p><h3> log $B$N>l=j$H=PNO$N;EJ}(B</h3><p>
+</p><h3> log の場所と出力の仕方</h3><p>
 </p><p>
-mjc $B$O!"(B MJ/MJC.log $B$K(B log $B$r=PNO$7$^$9!#(B
+mjc は、 MJ/MJC.log に log を出力します。
 </p><p>
-mj, mjdump $B$O!"%G%U%)%k%H$G$O(B log $B$r=PNO$7$^$;$s!#(B
-$B%*%W%7%g%s$G(B -log $B$r;XDj$9$l$P!"(B MJ/MJ.log $B$K(B log $B$r=PNO$7$^$9!#(B
+mj, mjdump は、デフォルトでは log を出力しません。
+オプションで -log を指定すれば、 MJ/MJ.log に log を出力します。
 </p><p>
 </p><p>
-$B0J2<$N@a$G@bL@$9$k(B log $B$NFbMF$O!"(B MJC.log $B$H(B MJ.log $B$G6&DL$G$9!#(B
+以下の節で説明する log の内容は、 MJC.log と MJ.log で共通です。
 </p><p>
 </p><p>
 </p><p>
 </p><h3> MJClassInfo </h3><p>
-$B7?%A%'%C%/$G%(%i!<$,=P$k$H!"(B
-$B!V$"$k(B module $B$+$i8+$F!"%/%i%9(B C $B$,$I$N$h$&$J%a%=%C%I$r;}$C$F$$$k$+!W$,(B
-$BCN$j$?$/$J$j$^$9!#(B
-$B$3$&$$$&>l9g$O!"(B MJ/MJC.log $B$^$?$O(B MJ/MJ.log $B$NCf$+$i(B
- MJClassInfo $B$N=PNO7k2L$rC5$7$F$/$@$5$$!#(B
+型チェックでエラーが出ると、
+「ある module から見て、クラス C がどのようなメソッドを持っているか」が
+知りたくなります。
+こういう場合は、 MJ/MJC.log または MJ/MJ.log の中から
+ MJClassInfo の出力結果を探してください。
 </p><p>
-$B$=$N$?$a$K$O!"(B  log $B%U%!%$%k$NCf$r!"(B
+そのためには、  log ファイルの中を、
  "End initializing MJClassInfo of ClassFullName at ModuleName " 
-$B$H$$$&J8;zNs$G8!:w$7$^$9!#(B
+という文字列で検索します。
 </p><p>
-$BNc!'(B all $B$H$$$&%b%8%e!<%k$+$i8+$?!"(B merge0.C $B$H$$$&%/%i%9$N(B MJClassInfo
+例： all というモジュールから見た、 merge0.C というクラスの MJClassInfo
 </p><p>
 <pre>
 End initializing MJClassInfo of merge0.C at all .
@@ -311,18 +311,18 @@ rtedException
   }
 </pre>
 </p><p>
-$B!J(B public$B!"(Bprotected $B$H$$$&(B modifier $B$,$D$$$F$$$^$9$,!"(B
- MJ $B$G$OL5;k$5$l$^$9!#!K(B
+（ public、protected という modifier がついていますが、
+ MJ では無視されます。）
 </p><p>
 </p><p>
 </p><h3> override</h3><p>
-$B!V$"$k(B module $B$+$i8+$F!"$I$N%a%=%C%I$,$I$N%a%=%C%I$r(B override $B$7$F$$$k$+!W$,(B
-$BCN$j$?$/$J$k$3$H$b$"$j$^$9!#(B
-MJClassInfo $B$r:n$k2aDx$G!"(B override $B$N=hM}$r$d$C$F$$$k$O$:$J$N$G!"(B
-$B$=$N=hM}$N(B log $B=PNO$r8+$F$/$@$5$$!#(B
+「ある module から見て、どのメソッドがどのメソッドを override しているか」が
+知りたくなることもあります。
+MJClassInfo を作る過程で、 override の処理をやっているはずなので、
+その処理の log 出力を見てください。
 </p><p>
-$BNc!'(B all $B$H$$$&%b%8%e!<%k$+$i8+$?(B mj.SubA $B$H$$$&%/%i%9$N%a%=%C%I$N(B
-  override $B$N=hM}$N2aDx(B
+例： all というモジュールから見た mj.SubA というクラスのメソッドの
+  override の処理の過程
 </p><p>
 <pre>
 Start initializing MJClassInfo of m1.SubA at all .
@@ -333,7 +333,7 @@ Start initializing MJClassInfo of m1.A at all .
                  overrides m1.A#m1::a at m2 .
 End initializing MJClassInfo of m1.A at all .
 MJClassInfo:
-$B!J(B mj.A $B$N(B MJClassInfo $B$N=PNO!">JN,!#!K(B
+（ mj.A の MJClassInfo の出力、省略。）
         m1.SubA#m1::a at m1
                  overrides m1.A#m1::a at m3 .
         m1.SubA#m1::a at m2
@@ -347,8 +347,8 @@ MJClassInfo:
 End initializing MJClassInfo of m1.SubA at all .
 </pre>
 </p><p>
-$B$3$N(B log $B$r8+$l$P!"Nc$($P(B m1::a $B$H$$$&%a%=%C%I$O<!$N=g$G(B
-override $B$5$l$F$$$k$3$H$,!"0l1~$o$+$j$^$9!#(B
+この log を見れば、例えば m1::a というメソッドは次の順で
+override されていることが、一応わかります。
 </p><p>
 <pre>
         m1.A#m1::a at m1
@@ -362,12 +362,12 @@ override $B$5$l$F$$$k$3$H$,!"0l1~$o$+$j$^$9!#(B
 </p><p>
 </p><h3> linearizedUsingModules</h3><p>
 </p><p>
-MJC.log $B$+(B MJ.log $B$r8+$l$P!"$"$k%b%8%e!<%k$+$i8+$F!"(B
-$B%b%8%e!<%k$,$I$N$h$&$K(B linearize $B$5$l$?$+$r8+$k$3$H$,$G$-$^$9!#(B
-log $B%U%!%$%k$r(B "linearizedUsingModules for ModuleName" 
-$B$H$$$&J8;zNs$G8!:w$7$F$/$@$5$$!#(B
+MJC.log か MJ.log を見れば、あるモジュールから見て、
+モジュールがどのように linearize されたかを見ることができます。
+log ファイルを "linearizedUsingModules for ModuleName" 
+という文字列で検索してください。
 </p><p>
-$BNc!'(B m2 $B$+$i8+$?%b%8%e!<%k$N%j%9%H(B
+例： m2 から見たモジュールのリスト
 <pre>
 linearizedUsingModules for m2 :
   mj.lang.ss

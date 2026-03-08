@@ -1,112 +1,112 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="./style.css">
-<title> $B!V8@8l=hM}7O$NItIJ2=!W$K4X$9$k#F#A#Q(B </title>
+<title> 「言語処理系の部品化」に関するＦＡＱ </title>
 </head> <body>
 <div class="header-link">
 [<a href="index.html">MJ Top page</a>]
 [<a href="site-map.html">Site map</a>]
 </div>
-<h1>$B!V8@8l=hM}7O$NItIJ2=!W$K4X$9$k#F#A#Q(B</h1>
+<h1>「言語処理系の部品化」に関するＦＡＱ</h1>
 <ul class="headers">
-<li><a href="#debug">$B8@8l$r3HD%$9$k$H!"%G%P%C%0$,$7$K$/$/$J$k$N$G$O!)(B</a>
-<li><a href="#readability">$B8@8l$r3HD%$9$k$H2DFI@-$,8:$k$N$G$O!)(B</a>
-<li><a href="#portability">$B8@8l$,3HD%$5$l$k$H!"%=!<%9%3!<%I$N2DHB@-$,8:$k$N$G$O!)(B</a>
-<li><a href="#collision">$B3HD%ItIJ$I$&$7$N>WFM$O$I$&Hr$1$k!)(B</a>
-<li><a href="#environment">$B3+H/4D6-$d4XO"%D!<%k$O!)(B</a>
-<li><a href="#distribution">$B$?$/$5$s$NItIJ$,Ds6!$5$l$F$b!"$=$l$r0lHL$N%W%m%0%i%^!<$,@5$7$/AH$_9g$o$;$k$N$OIT2DG=$G$O!)(B</a>
-<li><a href="#consistency">$B$h$$%W%m%0%i%_%s%08@8l$H$O8@8l;EMM$H<BAu$NA4BN$N%P%i%s%9$,<h$l$F$$$k$b$N$G$"$k!#ItIJ2=$7$F0lIt$@$1JQ99$7$F$b;H$$$d$9$$8@8l$K$O$J$i$J$$$N$G$O!#(B</a>
-<li><a href="#simple-languages">$B3HD%2DG=$J8@8l$H$$$($P(B x (x = lisp, forth, tcl)$B$,$"$j$^$9$,!"$=$l$G$O$@$a$J$N$G$9$+!)(B</a>
-<li><a href="#extensible-langauge">$B3HD%2DG=8@8l$N8&5f$O@N!"N.9T$C$?$,!"7k6I<:GT$K=*$o$C$?!#(B</a>
+<li><a href="#debug">言語を拡張すると、デバッグがしにくくなるのでは？</a>
+<li><a href="#readability">言語を拡張すると可読性が減るのでは？</a>
+<li><a href="#portability">言語が拡張されると、ソースコードの可搬性が減るのでは？</a>
+<li><a href="#collision">拡張部品どうしの衝突はどう避ける？</a>
+<li><a href="#environment">開発環境や関連ツールは？</a>
+<li><a href="#distribution">たくさんの部品が提供されても、それを一般のプログラマーが正しく組み合わせるのは不可能では？</a>
+<li><a href="#consistency">よいプログラミング言語とは言語仕様と実装の全体のバランスが取れているものである。部品化して一部だけ変更しても使いやすい言語にはならないのでは。</a>
+<li><a href="#simple-languages">拡張可能な言語といえば x (x = lisp, forth, tcl)がありますが、それではだめなのですか？</a>
+<li><a href="#extensible-langauge">拡張可能言語の研究は昔、流行ったが、結局失敗に終わった。</a>
 </p></ul><p>
 </p><p>
-</p><h2><a name="debug">$B8@8l$r3HD%$9$k$H!"%G%P%C%0$,$7$K$/$/$J$k$N$G$O!)(B</a></h2><p>
-$B%7%s%?%C%/%9%7%e%,!<DxEY$N8@8l3HD%$J$i$P!"(B
-$B%G%P%C%0$,$=$l$[$I$7$K$/$/$J$k$3$H$O$"$j$^$;$s!#(B
+</p><h2><a name="debug">言語を拡張すると、デバッグがしにくくなるのでは？</a></h2><p>
+シンタックスシュガー程度の言語拡張ならば、
+デバッグがそれほどしにくくなることはありません。
 </p><p>
-$BJ#;($J5!G=3HD%$r$9$k>l9g$O!"<BAu$N;EJ}$K$h$C$F$O(B
-$B3N$+$K%G%P%C%0$,$7$K$/$/$J$j$^$9!#(B
-$B8@8l;EMM$H<BAu$N@_7W$r$9$k:]$K$O!"%G%P%C%0$N$3$H$r>o$K9MN8$9$kI,MW$,$"$j$^$9!#(B
-</p><p>
-</p><p>
-</p><h2><a name="readability">$B8@8l$r3HD%$9$k$H2DFI@-$,8:$k$N$G$O!)(B</a></h2><p>
-$B$3$l$O3HD%ItIJ$N@_7W<T$N%;%s%9$NLdBj$K5"Ce$5$l$^$9!#(B
-$B8@8l$N3HD%$O:G8e$N<jCJ$G$"$C$F!"$G$-$k$@$1IaDL$N%i%$%V%i%j$H$7$F(B
-$BDs6!$G$-$J$$$+!"8!F$$9$Y$-$@$H;W$$$^$9!#(B
+複雑な機能拡張をする場合は、実装の仕方によっては
+確かにデバッグがしにくくなります。
+言語仕様と実装の設計をする際には、デバッグのことを常に考慮する必要があります。
 </p><p>
 </p><p>
-</p><h2><a name="portability">$B8@8l$,3HD%$5$l$k$H!"%=!<%9%3!<%I$N2DHB@-$,8:$k$N$G$O!)(B</a></h2><p>
-$B3HD%ItIJ$O%i%$%V%i%j$HF1$8$G!"$=$l$,F~<j2DG=$G$"$k8B$j!"(B
-$B%=!<%9%3!<%I$N2DHB@-$OJ]>Z$5$l$^$9!#(B
-$B$D$^$j!"==J,0BDj$7$?!V8@8l3HD%%$%s%?!<%U%'!<%9!W$N$b$H$G(B
-$B3HD%ItIJ$r:n$C$F$$$k8B$j$O!"2DHB@-$OLdBj$K$O$J$j$^$;$s!#(B
+</p><h2><a name="readability">言語を拡張すると可読性が減るのでは？</a></h2><p>
+これは拡張部品の設計者のセンスの問題に帰着されます。
+言語の拡張は最後の手段であって、できるだけ普通のライブラリとして
+提供できないか、検討すべきだと思います。
 </p><p>
 </p><p>
-</p><h2><a name="collision">$B3HD%ItIJ$I$&$7$N>WFM$O$I$&Hr$1$k!)(B</a></h2><p>
-$B3HD%ItIJ$N!V<BAu5,Ls!W$K$h$j!">WFM$r2sHr$9$k$3$H$,2DG=$@$H9M$($F$$$^$9!#(B
-PC $BItIJ$K$*$1$k(B plug-and-play $B$N$h$&$J5,Ls$G$9!#(B
-plug-and-play $B$KBP1~$7$?ItIJ$J$i$P!"%j%=!<%9$,<+F0E*$K3d$jEv$F$i$l$k$?$a!"(B
-$B%(%s%I%f!<%6$OMF0W$KAH$_9g$o$;$F;H$&$3$H$,$G$-$^$9!#(B
-$BF1MM$N5!9=$rF~$l$k$3$H$G!">WFM$NLdBj$KBP=h$7$?$$$H;W$$$^$9!#(B
+</p><h2><a name="portability">言語が拡張されると、ソースコードの可搬性が減るのでは？</a></h2><p>
+拡張部品はライブラリと同じで、それが入手可能である限り、
+ソースコードの可搬性は保証されます。
+つまり、十分安定した「言語拡張インターフェース」のもとで
+拡張部品を作っている限りは、可搬性は問題にはなりません。
 </p><p>
 </p><p>
-</p><h2><a name="environment">$B3+H/4D6-$d4XO"%D!<%k$O!)(B</a></h2><p>
-JavaDoc $B$d(B prity printer $B$J$I$N4XO"%D!<%k$b!"(B
-$B8@8l=hM}7O<+?H$HF10l$N%U%l!<%`%o!<%/$rMQ$$$F<BAu$9$l$P!"(B
-$B3HD%$5$l$?8@8l5!G=$b$[$\<+F0E*$K=hM}2DG=$K$J$k$H;W$$$^$9!#(B
+</p><h2><a name="collision">拡張部品どうしの衝突はどう避ける？</a></h2><p>
+拡張部品の「実装規約」により、衝突を回避することが可能だと考えています。
+PC 部品における plug-and-play のような規約です。
+plug-and-play に対応した部品ならば、リソースが自動的に割り当てられるため、
+エンドユーザは容易に組み合わせて使うことができます。
+同様の機構を入れることで、衝突の問題に対処したいと思います。
 </p><p>
 </p><p>
-</p><h2><a name="distribution">$B$?$/$5$s$NItIJ$,Ds6!$5$l$F$b!"$=$l$r0lHL$N%W%m%0%i%^!<$,@5$7$/AH$_9g$o$;$k$N$OIT2DG=$G$O!)(B</a></h2><p>
-</p><p>
-$B#1$D$a$NEz$($G$9$,!"3HD%ItIJ5-=R8@8l$H3HD%(BAPI$B$r$&$^$/@_7W$9$k$3$H$G!"(B
-$BItIJ$NAH$_9g$o$;$,>/$7$G$bMF0W$K$J$k$h$&$K$9$k$D$b$j$G$9!#(B
-</p><p>
-$B#2$D$a$NEz$($H$7$F$O!"(B
-$B$9$Y$F$N%W%m%0%i%^!<$,!"<+J,$GItIJ$rAH$_9g$o$;$k$3$H$K$O$J$i$J$$$H;W$$$^$9!#(B
-$BNc$($P!"8=:_$N%Q%=%3%s$b!"<+J,$GItIJ$rAH$_9g$o$;$k$N$O0lIt$N%f!<%6$@$1$G!"(B
-$B$[$H$s$I$N%f!<%6$O!"Bg<j%a!<%+!<$d%Q%=%3%s%7%g%C%W$,(B
-$BF0:n3NG'$7$?AH9g$;$rMxMQ$7$F$$$k$K$9$.$^$;$s!#(B
-linux $B$N(B distribution $B$b$=$l$K;w$F$$$^$9!#(B
-$B$[$H$s$I$N%f!<%6$O!"M-L>$J(B distribution $B$r$[$H$s$I$=$N$^$^;H$$$^$9!#(B
-$B%+!<%M%k$N%3%s%U%#%.%e%l!<%7%g%s$ND4@0$d!"(B
-$B%i%$%V%i%j$N%P!<%8%g%s$rJQ$($k$3$H$O!"I,MW:GDc8B$7$+$d$j$^$;$s!#(B
+</p><h2><a name="environment">開発環境や関連ツールは？</a></h2><p>
+JavaDoc や prity printer などの関連ツールも、
+言語処理系自身と同一のフレームワークを用いて実装すれば、
+拡張された言語機能もほぼ自動的に処理可能になると思います。
 </p><p>
 </p><p>
+</p><h2><a name="distribution">たくさんの部品が提供されても、それを一般のプログラマーが正しく組み合わせるのは不可能では？</a></h2><p>
 </p><p>
+１つめの答えですが、拡張部品記述言語と拡張APIをうまく設計することで、
+部品の組み合わせが少しでも容易になるようにするつもりです。
 </p><p>
-</p><h2><a name="consistency">$B$h$$%W%m%0%i%_%s%08@8l$H$O8@8l;EMM$H<BAu$NA4BN$N%P%i%s%9$,<h$l$F$$$k$b$N$G$"$k!#ItIJ2=$7$F0lIt$@$1JQ99$7$F$b;H$$$d$9$$8@8l$K$O$J$i$J$$$N$G$O!#(B</a></h2><p>
-</p><p>
-$B3K$H$J$k8@8l;EMM$O%P%i%s%9$N$H$l$?>.$5$$$b$N$G!"(B
-$B$=$l$KBP$7$F!"MQES$K1~$8$F$A$g$C$H$7$?3HD%$r2C$($k$3$H$,$G$-$k!"(B
-$B$H$$$&8@8l$,M}A[$@$H;W$$$^$9!#(B
-</p><p>
-</p><p>
-</p><h2><a name="simple-languages">$B3HD%2DG=$J8@8l$H$$$($P(B x (x = lisp, forth, tcl)$B$,$"$j$^$9$,!"$=$l$G$O$@$a$J$N$G$9$+!)(B</a></h2><p>
-</p><p>
-lisp, forth, tcl $B$O$$$:$l$b3K$H$J$k8@8l;EMM$r%7%s%W%k$K$7!"(B
-$BJ8K!$K$b6/$$@)Ls$rF~$l$k$3$H$G!"3HD%@-$r9b$/$9$k$3$H$K@.8y$7$F$$$^$9!#(B
-$B$7$+$7!"J8K!$K6/$$@)Ls$,$"$k$3$H$H!"@EE*7?%A%'%C%/$,$J$$$?$a!"(B
-$B0lHL$N%W%m%0%i%^!<$K$h$k%"%W%j%1!<%7%g%s3+H/$K$O8~$+$:!"(B
-$B%=%U%H%&%(%"3+H/$N<gN.$N8@8l$K$O$J$C$F$$$^$;$s!#(B
-</p><p>
-</p><p>
-</p><h2><a name="extensible-langauge">$B3HD%2DG=8@8l$N8&5f$O@N!"N.9T$C$?$,!"7k6I<:GT$K=*$o$C$?!#(B</a></h2><p>
+２つめの答えとしては、
+すべてのプログラマーが、自分で部品を組み合わせることにはならないと思います。
+例えば、現在のパソコンも、自分で部品を組み合わせるのは一部のユーザだけで、
+ほとんどのユーザは、大手メーカーやパソコンショップが
+動作確認した組合せを利用しているにすぎません。
+linux の distribution もそれに似ています。
+ほとんどのユーザは、有名な distribution をほとんどそのまま使います。
+カーネルのコンフィギュレーションの調整や、
+ライブラリのバージョンを変えることは、必要最低限しかやりません。
 </p><p>
 </p><p>
 </p><p>
-comp.compilers $B$N(B moderator $B$N(B John $B;a$K$h$k$H!"3HD%2DG=8@8l$O(B
-1970 $BG/Be$KN.9T$C$?$=$&$G$9!#(B
-$B$3$N$3$m$O3HD%$NBP>]$OJ8K!$G!"(B
- on-the-fly $B$GJ8K!3HD%$G$-$k(B Earley's algorithm $B$r;H$C$?(B
- EL1 $B$H$$$&8@8l$,M-L>$@$C$?$h$&$G$9!#(B
-$B8=:_$N2f!9$J$i$PEvA3M=A[$9$k$h$&$K!"(B
-$B3F%W%m%0%i%^!<$,>!<j$KJ8K!$r3HD%$G$-$k$N$G!"(B
-$BFI$_$K$/$$%W%m%0%i%`$K$J$C$?$h$&$G$9!#(B
-$BJ8K!$rDj5A$9$k$N$O%W%m%0%i%^!<$G$O$J$/!"(B
-$B%;%s%9$N$h$$0lIt$N8@8l@_7W<T$K8B$l$P!"(B
-$B2DFI@-$NLdBj$O@8$8$J$$$H;W$$$^$9!#(B
+</p><p>
+</p><h2><a name="consistency">よいプログラミング言語とは言語仕様と実装の全体のバランスが取れているものである。部品化して一部だけ変更しても使いやすい言語にはならないのでは。</a></h2><p>
+</p><p>
+核となる言語仕様はバランスのとれた小さいもので、
+それに対して、用途に応じてちょっとした拡張を加えることができる、
+という言語が理想だと思います。
+</p><p>
+</p><p>
+</p><h2><a name="simple-languages">拡張可能な言語といえば x (x = lisp, forth, tcl)がありますが、それではだめなのですか？</a></h2><p>
+</p><p>
+lisp, forth, tcl はいずれも核となる言語仕様をシンプルにし、
+文法にも強い制約を入れることで、拡張性を高くすることに成功しています。
+しかし、文法に強い制約があることと、静的型チェックがないため、
+一般のプログラマーによるアプリケーション開発には向かず、
+ソフトウエア開発の主流の言語にはなっていません。
+</p><p>
+</p><p>
+</p><h2><a name="extensible-langauge">拡張可能言語の研究は昔、流行ったが、結局失敗に終わった。</a></h2><p>
+</p><p>
+</p><p>
+</p><p>
+comp.compilers の moderator の John 氏によると、拡張可能言語は
+1970 年代に流行ったそうです。
+このころは拡張の対象は文法で、
+ on-the-fly で文法拡張できる Earley's algorithm を使った
+ EL1 という言語が有名だったようです。
+現在の我々ならば当然予想するように、
+各プログラマーが勝手に文法を拡張できるので、
+読みにくいプログラムになったようです。
+文法を定義するのはプログラマーではなく、
+センスのよい一部の言語設計者に限れば、
+可読性の問題は生じないと思います。
 </p><p>
 </p><p>
 </p><hr>

@@ -1,18 +1,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="./style.css">
-<title> $B%"%9%Z%/%H;X8~8@8l!"(BSeparation of Concerns $B4XO"8&5f%a%b(B </title>
+<title> アスペクト指向言語、Separation of Concerns 関連研究メモ </title>
 </head> <body>
 <div class="header-link">
 [<a href="index.html">MJ Top page</a>]
 [<a href="site-map.html">Site map</a>]
 </div>
-<h1> $B%"%9%Z%/%H;X8~8@8l!"(BSeparation of Concerns $B4XO"8&5f%a%b(B</h1>
+<h1> アスペクト指向言語、Separation of Concerns 関連研究メモ</h1>
 <ul class="headers">
 <li><a href="#news"><font COLOR="red">News !</font></a>
-<li><a href="#intro">$B%"%9%Z%/%H;X8~8@8l$H$O!)(B</a>
+<li><a href="#intro">アスペクト指向言語とは？</a>
 <li><a href="#aop">AspectJ (Aspect-Oriented Programming)</a>
 <li><a href="#hyperJ">Hyper/J (Multi-dimentional separation of concerns)</a>
 <li><a href="#adaptive">adaptive programming</a>
@@ -47,13 +47,13 @@
 <hr>
 </p><p>
 <p>
-$B$3$N%Z!<%8$O!"%W%m%0%i%_%s%08@8l(B <a href="http://staff.aist.go.jp/y-ichisugi/mj/">MixJuice</a> $B$d:9J,%Y!<%9%b%8%e!<%k$N(B
-$B4XO"8&5f%a%b$G$9!#(B
-$B%"%9%Z%/%H;X8~8@8l$d(B separation of concerns $B!"%b%8%e!<%k5!9=$K4XO"$7$?(B
-$B8&5f$N$&$A=EMW$=$&$J$b$N$r$H$j$"$($:%j%9%H%"%C%W$7$F$$$^$9!#(B
+このページは、プログラミング言語 <a href="http://staff.aist.go.jp/y-ichisugi/mj/">MixJuice</a> や差分ベースモジュールの
+関連研究メモです。
+アスペクト指向言語や separation of concerns 、モジュール機構に関連した
+研究のうち重要そうなものをとりあえずリストアップしています。
 </p><p>
-$B$J$*!"$9$Y$F$N8&5f$K$D$$$F!">\:Y$KD4::$7$?$o$1$G$O$"$j$^$;$s!#(B
-$B4V0c$$$,$"$C$?>l9g$O8fMF<O$r!#(B
+なお、すべての研究について、詳細に調査したわけではありません。
+間違いがあった場合は御容赦を。
 </p>
 </p><p>
 </p><p>
@@ -61,12 +61,12 @@
 <hr>
 </p><h2><a name="news"><font COLOR="red">News !</font></a></h2><p>
 <ul>
-<li>$B%"%9%Z%/%H;X8~$K4X$9$kF|K\8l%a%$%j%s%0%j%9%H$rN)$A>e$2$^$7$?!#(B
+<li>アスペクト指向に関する日本語メイリングリストを立ち上げました。
 <a href="http://www.egroups.co.jp/group/aosd-jp">aosd-jp ML</a><br>
-<li><a href="#intentional">intentional programming</a> $B$N(B Charles Simonyi $B$H(B
-<a href="#aop">AspectJ</a> $B$N(B Gregor Kiczales $B$,%=%U%H%&%'%"3+H/%D!<%k$N?72q<R(B
-<a href="http://intentsoft.com/">Intentional Software</a>$B$r(B
-$BN)$A>e$2$?$=$&$G$9!#(B
+<li><a href="#intentional">intentional programming</a> の Charles Simonyi と
+<a href="#aop">AspectJ</a> の Gregor Kiczales がソフトウェア開発ツールの新会社
+<a href="http://intentsoft.com/">Intentional Software</a>を
+立ち上げたそうです。
 </p><p>
 <a href="http://www.zdnet.co.jp/news/0209/18/nebt_11.html">
 http://www.zdnet.co.jp/news/0209/18/nebt_11.html</a>
@@ -75,47 +75,47 @@ http://www.zdnet.co.jp/news/0209/18/nebt_11.html</a>
 <hr>
 </p><p>
 </p><p>
-</p><h2><a name="intro">$B%"%9%Z%/%H;X8~8@8l$H$O!)(B</a></h2><p>
-$B%W%m%0%i%`$NJ]<i@-!&:FMxMQ@-$r9b$a$k$?$a$K$O!"(B
-$B$G$-$k$@$14XO"$N?<$$%3!<%I$r6a$$>l=j$K=8$a$F!"B>$H$OJ,N%$7$F5-=R$9$Y$-$G$9!#(B
-$B$3$l$r(B separation of concerns $B!J4X?4;v$NJ,N%!K$H8@$$$^$9!#(B 
+</p><h2><a name="intro">アスペクト指向言語とは？</a></h2><p>
+プログラムの保守性・再利用性を高めるためには、
+できるだけ関連の深いコードを近い場所に集めて、他とは分離して記述すべきです。
+これを separation of concerns （関心事の分離）と言います。 
 </p><p>
-$B%*%V%8%'%/%H;X8~8@8l$O%G!<%?9=B$$H$=$l$K?<$/4XO"$9$k<jB3$-$r#12U=j$G5-=R$9$k(B
-$B9=J8$rDs6!$9$k$?$a!"<jB3$-7?8@8l$h$j$b(B separation of concerns 
-$B$,!V$&$^$/$G$-$k>l9g$,B?$/!W!"$=$N$?$a$K9-$/Ia5Z$7$F$^$9!#(B
+オブジェクト指向言語はデータ構造とそれに深く関連する手続きを１箇所で記述する
+構文を提供するため、手続き型言語よりも separation of concerns 
+が「うまくできる場合が多く」、そのために広く普及してます。
 </p><p>
-$B$7$+$7!"0lHL$K$OJ#?t$N%/%i%9$r2#CG$9$k7A$G4XO"$9$k%3!<%I$r5-=R$;$6$k$rF@$J$$(B
-$B>l9g$b$"$j$^$9!#$D$^$j!"8=:_$N%*%V%8%'%/%H;X8~8@8l$G$O!"(B
-separation of concerns $B$,!V$G$-$J$$>l9g$b$"$k!W$N$G$9!#(B
+しかし、一般には複数のクラスを横断する形で関連するコードを記述せざるを得ない
+場合もあります。つまり、現在のオブジェクト指向言語では、
+separation of concerns が「できない場合もある」のです。
 </p><p>
-$B$3$NLdBj$N2r7h$N$?$a$K:G6aCmL\$5$l$F$$$k$N$,%"%9%Z%/%H;X8~8@8l$G$9!#(B
-$B!J%"%9%Z%/%H;X8~$K4X$7$F>\$7$/$O!"<!$N(B URL $B$r;2>H2<$5$$!#(B
-<a href="http://aosd.net">http://aosd.net</a>$B!K(B
+この問題の解決のために最近注目されているのがアスペクト指向言語です。
+（アスペクト指向に関して詳しくは、次の URL を参照下さい。
+<a href="http://aosd.net">http://aosd.net</a>）
 </p><p>
 </p><p>
 </p><p>
 </p><h2><a name="aop">AspectJ (Aspect-Oriented Programming)</a></h2><p>
 <a href="http://www.cs.ubc.ca/~gregor/">[ Gregor Kiczales ]</a>
 </p><p>
-$B$"$k!VB&LL(B(aspect)$B!W$K4XO"$9$k%3!<%I$O!"0lHL$KJ#?t$N%/%i%9$r2#CG$7$FB8:_$9$k!#(B
-$B$=$l$r$R$H$^$H$a$K$7$F:FMxMQ$NC10L$H$9$Y$7!"$H$$$&OC!#(B
-aspect $B$O(B concern $B$H$@$$$?$$F1$80UL#$H;W$C$F$h$5$=$&!#(B
+ある「側面(aspect)」に関連するコードは、一般に複数のクラスを横断して存在する。
+それをひとまとめにして再利用の単位とすべし、という話。
+aspect は concern とだいたい同じ意味と思ってよさそう。
 </p><p>
 </p><p>
 <ul>
 <li><a href="http://aosd.net">http://aosd.net</a><br>
-AOSD(Aspect-Oriented Software Development) $B$N%Z!<%8(B
+AOSD(Aspect-Oriented Software Development) のページ
 <li><a href="http://www.parc.xerox.com/aop/">
         Aspect-Oriented Programming</a><br>
-$B0JA0$OLdBjNN0h$4$H$K8@8l=hM}7O$r:n$k!"$H$$$&OC$@$C$?$,!"(B
-$B:G6a!"HFMQ$N8@8l=hM}7O(B <a href="http://aspectj.org/">AspectJ</a> $B$,EP>l!#(B
-before/after, advice $B$J$I(B CLOS $BIw5!G=$,FCD'!#(B
-context sensitive $B$J=hM}!"(B call site $B$N=hM}$bJ,N%$7$F5-=R$G$-$k!#(B
-$B8=:_$O(BJava $B$N%W%j%W%m%;%C%5$H$7$F<B8=!"(B
-$BJ,3d%3%s%Q%$%k$O$G$-$J$$!#(B
+以前は問題領域ごとに言語処理系を作る、という話だったが、
+最近、汎用の言語処理系 <a href="http://aspectj.org/">AspectJ</a> が登場。
+before/after, advice など CLOS 風機能が特徴。
+context sensitive な処理、 call site の処理も分離して記述できる。
+現在はJava のプリプロセッサとして実現、
+分割コンパイルはできない。
 </ul>
 </p><p>
-$BF|K\?M$K$h$k2r@b!J:G6a$O8!:w$9$k$H$b$C$H$?$/$5$s8+$D$+$j$^$9!#!K(B
+日本人による解説（最近は検索するともっとたくさん見つかります。）
 <ul>
 <li><a href="http://www.race.u-tokyo.ac.jp/~yoshimi/AOP/">http://www.race.u-tokyo.ac.jp/~yoshimi/AOP/</a>
 <li><a href="http://www.tender-brains.net/information/glossary/200101/20010115.html">http://www.tender-brains.net/information/glossary/200101/20010115.html</a>
@@ -123,28 +123,28 @@ context sensitive $B$J=hM}!"(B call site $B$N=hM}$bJ,N%$7$F5-=R$G$-$k!#(B
 </ul>
 </p><p>
 </p><p>
-$B:G6a4|BT$N9qFb%Z!<%8(B
+最近期待の国内ページ
 <ul>
-<li><a href="http://www.oucc.org/~tail/">tail $B$5$s(B</a><br>
-<a href="http://www.oucc.org/~tail/aspectj/">$B!V(BAspectJ Tips and Pitfalls$B!W(B</a> 
-<a href="http://www.oucc.org/~tail/diary/">$B!V$K$C$-!W(B</a>
-<li><a href="http://www.csg.is.titech.ac.jp/index-j.html">$BEl9)Bg@iMU8&5f<<(B</a><br>
-<a href="http://www.csg.is.titech.ac.jp/~chiba/javassist">Javassist</a>$B$r;H$C$?F0E*%"%9%Z%/%H;X8~8@8l$N<BAu$J$I!#(B
-<li><a href="http://www.graco.c.u-tokyo.ac.jp/~masuhara/">$BElBgA}86@h@8(B</a><br>
-UBC $B$N(B Kiczales $B$N8&5f<<$K#1G/4VBZ:_!"(B AOP $B8@8l$N0UL#O@$N8&5f$r$7$F$$$^$7$?!#(B
-<li><a href="http://www.graco.c.u-tokyo.ac.jp/~kazu/">kazu $B$5$s(B</a><br>
-$BA}868&$N3X@8$5$s!#(B<br>
-<a href="http://dolphin.c.u-tokyo.ac.jp/~kazu0/aspectj-primer/">$B!V(BAspectJ Primer$B!W(B</a>
+<li><a href="http://www.oucc.org/~tail/">tail さん</a><br>
+<a href="http://www.oucc.org/~tail/aspectj/">「AspectJ Tips and Pitfalls」</a> 
+<a href="http://www.oucc.org/~tail/diary/">「にっき」</a>
+<li><a href="http://www.csg.is.titech.ac.jp/index-j.html">東工大千葉研究室</a><br>
+<a href="http://www.csg.is.titech.ac.jp/~chiba/javassist">Javassist</a>を使った動的アスペクト指向言語の実装など。
+<li><a href="http://www.graco.c.u-tokyo.ac.jp/~masuhara/">東大増原先生</a><br>
+UBC の Kiczales の研究室に１年間滞在、 AOP 言語の意味論の研究をしていました。
+<li><a href="http://www.graco.c.u-tokyo.ac.jp/~kazu/">kazu さん</a><br>
+増原研の学生さん。<br>
+<a href="http://dolphin.c.u-tokyo.ac.jp/~kazu0/aspectj-primer/">「AspectJ Primer」</a>
 <a href="http://www.graco.c.u-tokyo.ac.jp/~kazu/works/index.html">
-$B!VD4$Y$?$3$H$d$*JY6/$7$?$3$H!#!W(B</a>
-<li><a href="http://www.ncfreak.com/asato/">asato $B$5$s(B</a><br>
+「調べたことやお勉強したこと。」</a>
+<li><a href="http://www.ncfreak.com/asato/">asato さん</a><br>
 <a href="http://www.ncfreak.com/asato/doc/aspectj_dp.html">
-$B!V(BAspectJ $B$r;H$C$?%G%6%$%s%Q%?!<%s$N2~A1$H;Y1g!W(B</a><br>
-UBC $B$N(B <a href="http://www.cs.ubc.ca/~jan/AODPs/">$B!V(BAspect-Oriented Design Pattern Implementations$B!W(B</a>$B$KHf$Y$k$H!"(B
- introduction $B$r3hMQ$9$k$J$I$d$jJ}$K0c$$$,$"$k$h$&$G$9!#(B
-introduction $B$N$_$r;H$&(B
+「AspectJ を使ったデザインパターンの改善と支援」</a><br>
+UBC の <a href="http://www.cs.ubc.ca/~jan/AODPs/">「Aspect-Oriented Design Pattern Implementations」</a>に比べると、
+ introduction を活用するなどやり方に違いがあるようです。
+introduction のみを使う
 <a href="http://cvs.m17n.org/~akr/mj/design-pattern/">
-MixJuice $B$K$h$k%G%6%$%s%Q%?!<%s2~A1%+%?%m%0(B</a>$B$H$b$@$$$V0c$$$^$9!#(B
+MixJuice によるデザインパターン改善カタログ</a>ともだいぶ違います。
 </ul>
 </p><p>
 </p><p>
@@ -153,40 +153,40 @@ MixJuice $B$K$h$k%G%6%$%s%Q%?!<%s2~A1%+%?%m%0(B</a>$B$H$b$@$$$V0c$$$^$9!#(B
 <a href="http://www.research.ibm.com/people/o/ossher/">
 [ Harold Ossher ]</a>
 <p>
-OOPSLA'92 $B$NO@J8$N$3$m$+$i!"(B
- <a href="http://www.research.ibm.com/sop/">"Subject-oriented programming"</a> $B$H$7$F(B
-separation of concerns $BE*$J5!G=$N(B
-$BI,MW@-$r$&$C$?$($F$$$k!#(B
-$B:G6a$O(B <a href="http://www.research.ibm.com/hyperspace/">Multi-dimentional separation of concerns (MDSOC)</a>$B$K?J2=$7$?!#(B
-Hyper/J $B$H$$$&(B Java $BMQ%D!<%k$,(B alphaworks $B$+$i8x3+$5$l$?!#(B
+OOPSLA'92 の論文のころから、
+ <a href="http://www.research.ibm.com/sop/">"Subject-oriented programming"</a> として
+separation of concerns 的な機能の
+必要性をうったえている。
+最近は <a href="http://www.research.ibm.com/hyperspace/">Multi-dimentional separation of concerns (MDSOC)</a>に進化した。
+Hyper/J という Java 用ツールが alphaworks から公開された。
 </p><p>
 <p>
-<a href="http://www.research.ibm.com/hyperspace/HyperJ/HyperJ.htm">Hyper/J</a> $B$O8@8l$G$O$J$/!"%P%$%H%3!<%IJT=8$rMQ$$$?%D!<%k$G$"$k!#(B
-$BIaDL$N(B Javac $B$G%3%s%Q%$%k$7$?%P%$%H%3!<%I$+$i!"(B
-$B!V$"$k4QE@!W$G(B hyper slice $B$rH4$-$@$7!"(B
-$B$=$l$rB>$N%"%W%j%1!<%7%g%s$KDI2C$9$k$3$H$,$G$-$k!#(B
-$B$3$N(B hyper slice $B$,(B concern $B$KAjEv!#(B
-$BB>$N%7%9%F%`$HBg$-$/0c$&$N$O!"%W%m%0%i%^!<$,$"$i$+$8$a(B
-concern $B$rJ,N%$7$F5-=R$9$k$N$G$O$J$/!"(B
-$BIaDL$K5-=R$5$l$?%"%W%j%1!<%7%g%s$N%P%$%H%3!<%I$+$i!"(B
- concern $B$rH4$-=P$7$F:FMxMQ$G$-$kE@!#(B
+<a href="http://www.research.ibm.com/hyperspace/HyperJ/HyperJ.htm">Hyper/J</a> は言語ではなく、バイトコード編集を用いたツールである。
+普通の Javac でコンパイルしたバイトコードから、
+「ある観点」で hyper slice を抜きだし、
+それを他のアプリケーションに追加することができる。
+この hyper slice が concern に相当。
+他のシステムと大きく違うのは、プログラマーがあらかじめ
+concern を分離して記述するのではなく、
+普通に記述されたアプリケーションのバイトコードから、
+ concern を抜き出して再利用できる点。
 </p><p>
-$B2r7hJ}K!$O$H$b$+$/$H$7$F!"(B Harold Osshe $B$NLdBj0U<1$K$O$9$4$/6&46$G$-$^$9!#(B
+解決方法はともかくとして、 Harold Osshe の問題意識にはすごく共感できます。
 </p><p>
 </p><p>
 </p><p>
 </p><h2><a name="adaptive">adaptive programming</a></h2><p>
 <a href="http://www.ccs.neu.edu/home/lieber/">
         [ Karl J. Lieberherr ]</a><br>
-Karl J. Lieberherr $B$O(B Law of Demeter $B$GM-L>$J%=%U%H%&%(%"9)3X$N?M!#(B
+Karl J. Lieberherr は Law of Demeter で有名なソフトウエア工学の人。
 </p><p>
 <p>
-DemeterJ $B$H$$$&%D!<%k$,$"$k!#$=$l$r$5$i$K4JN,2=$7$?(B DJ $B$H$$$&%D!<%k$b$"$k!#(B
+DemeterJ というツールがある。それをさらに簡略化した DJ というツールもある。
 </p><p>
-XML $B=hM}%W%m%0%i%`$J$I$N!"%0%i%U9=B$$r(B traverse $B$9$k%W%m%0%i%`$O!"(B
-$B%*%V%8%'%/%H;X8~E*$K$O$-$l$$$K=q$1$J$$!#(B
-$B$3$l$i$N%D!<%k$O$3$NLdBj$r2r7h$9$k$b$N$G!"(B
-traverse $B$9$k%3!<%I$r:FMxMQ2DG=$K$9$k!#(B
+XML 処理プログラムなどの、グラフ構造を traverse するプログラムは、
+オブジェクト指向的にはきれいに書けない。
+これらのツールはこの問題を解決するもので、
+traverse するコードを再利用可能にする。
 </p><p>
 </p><p>
 </p><p>
@@ -197,10 +197,10 @@ traverse $B$9$k%3!<%I$r:FMxMQ2DG=$K$9$k!#(B
 Mira Mezini and Karl J. Lieberherr: <br>
 "Adaptive Plug-and-Play Components for Evolutionary Software Development"
 In Proc. of OOPSLA'98.<br>
-adaptive programming $B$N0l<o!#(B
-$BFCDj$N%/%i%93,AX$N9=B$$K0MB8$7$J$$7A$G!"$=$N%/%i%93,AX$K5!G=$rDI2C$G$-$k!#(B
-$B%a%+%K%:%`$H$7$F$O!"%j%K%"%i%$%:$r$d$i$J$$(B mixin $B!#(B
-$B5!G=$NDI2C@h$r;XDj$9$k$N$,$a$s$I$&$=$&!#(B
+adaptive programming の一種。
+特定のクラス階層の構造に依存しない形で、そのクラス階層に機能を追加できる。
+メカニズムとしては、リニアライズをやらない mixin 。
+機能の追加先を指定するのがめんどうそう。
 </p><p>
 <p>
 Mira Mezini and Linda Seiter and Karl Lieberherr:
@@ -208,9 +208,9 @@ Mira Mezini and Linda Seiter and Karl Lieberherr:
 In Mehmet Aksit ed., 
 Software Architectures and Component Technology: The State of
 the Art in Research and Practice, 2000.<br>
-AP&amp;PC $B$N2~NIHG!#(B
-$B@\B3$OMF0W!"!V:9J,!W$NF0E*%m!<%I$,2DG=!#(B
-type lifting $B$H$$$&%F%/%K%C%/$K$h$j!"F0E*%m!<%I;~$N7?%7%9%F%`$NLdBj$r2r7h!#(B
+AP&amp;PC の改良版。
+接続は容易、「差分」の動的ロードが可能。
+type lifting というテクニックにより、動的ロード時の型システムの問題を解決。
 </p><p>
 <p>
 Mira Mezini and Klaus Ostermann:
@@ -226,11 +226,11 @@ Mira Mezini and Klaus Ostermann:
 Klaus Ostermann:
 "Dynamically Composable Collaborations with Delegation Layers",
  In Proc. of ECOOP 2002.<br>
-<a href="#mixin-layers">Mixin layers</a> $B$H(B
- delegation (prototype-based OOP) $B$H$NM;9g!#(B
-delegation layer $B$OF0E*$K%m!<%I$7$F!"4{B8$N%/%i%93,AX$K(B
-$B$"$H$E$1$9$k$3$H$,$G$-$k!#(B
-$B7?%7%9%F%`$NLdBj$O(B <a href="#appc">PCA</a> $B$N(B type lifting $B$HF1$8$h$&$J$b$N$G2r7h!#(B
+<a href="#mixin-layers">Mixin layers</a> と
+ delegation (prototype-based OOP) との融合。
+delegation layer は動的にロードして、既存のクラス階層に
+あとづけすることができる。
+型システムの問題は <a href="#appc">PCA</a> の type lifting と同じようなもので解決。
 </p><p>
 </p><p>
 </p><h2><a name="composition-filters">Composition filters</a></h2><p>
@@ -243,11 +243,11 @@ Composition Filters homepage</a>
 Separation and Composition of Concerns in the Object-Oriented Model </a>
 </ul>
 </p><p>
-$B$^$@>\:Y$K$OD4::$7$F$J$$!#(B
-$B%/%i%9Dj5A$K$"$H$+$i(B filter $B$rIU$1$k$3$H$G!"=hM}$r3HD%$G$-$k!#(B
-$BJ#?t$N(B filter $B$r(B compose $B$9$k$3$H$,$G$-$k!#(B
-$B8D!9$N(B filter $B$,(B aspect $B$G$"$j!"(B concern $B$G$"$k!#(B
-Java $B%Y!<%9$N8@8l$,@bL@$K=P$FMh$k$,!"<BAu$O$5$l$F$$$k$N$@$m$&$+!)(B
+まだ詳細には調査してない。
+クラス定義にあとから filter を付けることで、処理を拡張できる。
+複数の filter を compose することができる。
+個々の filter が aspect であり、 concern である。
+Java ベースの言語が説明に出て来るが、実装はされているのだろうか？
 </p><p>
 </p><p>
 </p><p>
@@ -257,34 +257,34 @@ Java $B%Y!<%9$N8@8l$,@bL@$K=P$FMh$k$,!"<BAu$O$5$l$F$$$k$N$@$m$&$+!)(B
         [ Yannis Smaragdakis ]</a><br>
 "Implementing Layered Designs with Mixin Layers"
 In Proc. of ECOOP'98.<br>
-C++ $B$N(B template $B$N5!G=$r6n;H$7$?%W%m%0%i%_%s%05;K!!#(B
-$B%/%i%93,AX$KBP$9$k:9J,$r!"J,N%$7$F5-=R$G$-$k!#(B
-$B$3$N:9J,$r(B mixin layers $B$H8F$s$G$$$k!#(B
-$B#1$D$N(B mixin layer $B$O!"J#?t$N%/%i%9$N4XO"$9$k(B role $B$r#1$D$K$^$H$a$?$b$N(B
-$B$G$b$"$k!#(B
-template $B$r;H$C$F$$$k$N$G!"(B
-$B%G%P%C%0$7$K$/$$!"J,3d%3%s%Q%$%k$G$-$J$$$H$$$&$H$3$m$,FqE@!#(B
+C++ の template の機能を駆使したプログラミング技法。
+クラス階層に対する差分を、分離して記述できる。
+この差分を mixin layers と呼んでいる。
+１つの mixin layer は、複数のクラスの関連する role を１つにまとめたもの
+でもある。
+template を使っているので、
+デバッグしにくい、分割コンパイルできないというところが難点。
 <li><a href="http://www.cs.utexas.edu/users/schwartz/">
         [ Product-line architecture ]</a><br>
-$B$=$NB>!"(B U. Texas $B$N%0%k!<%W$K$*$1$k@N$+$i$N8&5f!#(B
-GenVoca $B$H$$$&%7%9%F%`$,(B1995$B$/$i$$$+$i$"$k!#(B Mixin Layers $B$NA0?H!)(B
-$BL$D4::!#(B<br>
-$B!J$3$NCf$N(B Jak $B$H$$$&%D!<%k$O(B EPP $B$HL\E*$,;w$F$$$k!#!K(B
+その他、 U. Texas のグループにおける昔からの研究。
+GenVoca というシステムが1995くらいからある。 Mixin Layers の前身？
+未調査。<br>
+（この中の Jak というツールは EPP と目的が似ている。）
 </ul>
 </p><p>
 </p><p>
 </p><h2><a name="Java-Layers">Java Layers</a></h2><p>
-<a href="#mixin-layers">Mixin Layers</a> $B$N(B Java $BHG!#(B
-$B%W%m%0%i%`$KBP$7$F?7$?$J5!G=$r<B8=$9$k!V%l%$%d!<!W$r(B
-$BDI2C$7$F$$$/$3$H$K$h$j!"CJ3,E*$K%"%W%j%1!<%7%g%s$rH/E8$5$;$F9T$/!#(B
-$B!J$3$N%W%m%0%i%_%s%0%9%?%$%k$O!"(B MJ $B$HA4$/F1$8!#!K(B
+<a href="#mixin-layers">Mixin Layers</a> の Java 版。
+プログラムに対して新たな機能を実現する「レイヤー」を
+追加していくことにより、段階的にアプリケーションを発展させて行く。
+（このプログラミングスタイルは、 MJ と全く同じ。）
 </p><p>
-JL (Java Layers) $B$O!"(B
- Mixin Layers $B$HF1MM$K!"(B parameterized class $B$H(B nested class $B$N(B
-$B5!9=$r;H$C$F!V:9J,$NDI2C!W$r<B8=$9$k8@8l!#(B
-$B$7$+$7=c?h$K$=$l$@$1$G$OLdBj$,$"$k$?$a!"(B
-$B7?%7%9%F%`$K$$$/$D$+3HD%$,$J$5$l$F$$$k!#(B
-$B!J8@8l$H$7$F$O!"$+$J$j$@$5$$!#!K(B
+JL (Java Layers) は、
+ Mixin Layers と同様に、 parameterized class と nested class の
+機構を使って「差分の追加」を実現する言語。
+しかし純粋にそれだけでは問題があるため、
+型システムにいくつか拡張がなされている。
+（言語としては、かなりださい。）
 </p><p>
 <a href="http://www.cs.utexas.edu/users/richcar/JavaLayers.html">
 http://www.cs.utexas.edu/users/richcar/JavaLayers.html</a>
@@ -297,13 +297,13 @@ http://www.cs.utexas.edu/users/richcar/JavaLayers.html</a>
 "Using Role Components to Implement Collaboration-Based Designs", 
 OOPSLA'96.
 </p><p>
-UML $B$G8@$&(B role $B$r:FMxMQ$NC10L$H$9$Y$7!"$H$$$&OC!#(B
-$B$3$N(B role $B$O!"<B<A(B mixin $B!#(B role $B$r2#$K$D$J$2$?$b$N$,(B UML $B$G8@$&(B
-collaboration $B$G!"$3$l$O(B Mixin Layers $B!J(BMJ $B$N%b%8%e!<%k!K$KAjEv$9$k!#(B
-mixin $B$r;H$&$3$H$K$h$j!"%d%3%V%=%s$N(B OOSE $B$NK\$K$"$k(B
-$B%j%5%$%/%k%^%7%s$NNc$,!"$-$l$$$K%b%8%e!<%kJ,$1$G$-$k!#(B
-$B:FMxMQ$NC10L$H$7$F$ON3EY$,:Y$+$9$.$F!"ItIJ$r$D$J$2$k$N$,BgJQ!#(B
-$B$3$NLdBj$O(B Mixin Layers $B$G$O2r7h$5$l$F$$$k!#(B
+UML で言う role を再利用の単位とすべし、という話。
+この role は、実質 mixin 。 role を横につなげたものが UML で言う
+collaboration で、これは Mixin Layers （MJ のモジュール）に相当する。
+mixin を使うことにより、ヤコブソンの OOSE の本にある
+リサイクルマシンの例が、きれいにモジュール分けできる。
+再利用の単位としては粒度が細かすぎて、部品をつなげるのが大変。
+この問題は Mixin Layers では解決されている。
 </p><p>
 </p><p>
 </p><h2><a name="roles">Object-oriented modeling with roles</a></h2><p>
@@ -315,18 +315,18 @@ International Conference on Object-Oriented Information Systems,
 1996.
 </ul>
 </p><p>
-$BL$FI!##1$D$N%*%V%8%'%/%H$O!"B>$NJ#?t$N%*%V%8%'%/%H$HAj8_:nMQ$9$k$,!"(B
-$BAj<j$K$h$C$F0[$J$kB&LL$r8+$;$k!#$3$N!VB&LL!W$,(B role $B!#(B
-role $B$r;H$C$?(B modeling $B$N$?$a$N5-K!$rDj5A$7$F$$$k!#(B
+未読。１つのオブジェクトは、他の複数のオブジェクトと相互作用するが、
+相手によって異なる側面を見せる。この「側面」が role 。
+role を使った modeling のための記法を定義している。
 </p><p>
-role $B$NFCD'$H$7$F!"(B
+role の特徴として、
 visibility, dependency, identity, dynamicity, multiplicity, abstractivity
-$B$N#6$D$rDj5A$7$F$$$k!#(B
-$B!J(BMJ $B$N(B module $B$O(B role $B$N=89g$H2r<a$G$-$k!#(B
-MJ $B$N(B role $B$O!"(B dynamicity $B0J30$NA4$F$NMW7o$rK~$?$7$F$$$k!#!K(B
+の６つを定義している。
+（MJ の module は role の集合と解釈できる。
+MJ の role は、 dynamicity 以外の全ての要件を満たしている。）
 </p><p>
 </p><p>
-AspectJ $B$r;H$C$F!"(B role model $B$K$h$k@_7W!&<BAu$r$9$k!"$H$$$&O@J8$b$"$k!#(B
+AspectJ を使って、 role model による設計・実装をする、という論文もある。
 <ul>
 <li>Elizabeth A. Kendall, 
 "Role model designs and implementations with aspect-oriented programming",
@@ -339,46 +339,46 @@ In Proc. of OOPSLA'99.
 by Krzysztof Czarnecki and Ulrich W. Eisenecker<br>
 <a href="http://www.generative-programming.org/">
 http://www.generative-programming.org/</a><br>
-$BK\$,=P$F$$$k!#L$FI!#(B
-$B%W%m%0%i%`$r<+F0@8@.$9$k%D!<%k$r;H$($P!":FMxMQ@-$,>e$,$k!"$H$$$&OC!)(B
-international programming, template meta-programming $B$J$I$NOC$b(B
-$B4^$^$l$F$$$k!#(B
+本が出ている。未読。
+プログラムを自動生成するツールを使えば、再利用性が上がる、という話？
+international programming, template meta-programming などの話も
+含まれている。
 </p><p>
 </p><p>
 </p><h2><a name="clos">CLOS (Common Lisp Object System)</a></h2><p>
 <ul>
 <li><a href="http://www.cs.cmu.edu/afs/cs.cmu.edu/project/ai-repository/ai/html/cltl/clm/node1.html">
         [ Common Lisp ]</a><br>
-CLOS $B$G$O!"L>A06u4V$H%/%i%9$O40A4$KD>8r$7$?35G0$G$"$k!#(B
-$B$=$b$=$b(B generic function $B$O(B
-$BFCDj$N%/%i%9$H$N7k$SIU$-$O<e$$!#(B
+CLOS では、名前空間とクラスは完全に直交した概念である。
+そもそも generic function は
+特定のクラスとの結び付きは弱い。
 <li>Object-Oriented Programming: the CLOS Perspective
      edited by Andreas Paepcke, MIT Press, 1993. 
 </ul>
 </p><p>
 </p><h2><a name="smalltalk">Smalltalk, Objective-C</a></h2><p>
-$B$3$l$i$N8@8l$O(B category $B$H$$$&!"%/%i%9$H$OJL$N!VJ,N`<jCJ!W$r(B
-$B;}$C$F$$$k!#!J$3$l$b(B crosscutting concerns $B$+!)!K(B<br>
-Objective-C $B$O!"$"$H$+$i(B category $B$rDI2C$G$-$k!#(B
-$B:G?7$N(B<a href="http://www.cincom.co.jp/products/visualworks/">
-VisualWorks</a> $B$G$O!"$5$i$K!"%/%i%9$*$h$S(B category $B$HD>8r$7$?!J!)!K(B
-$BL>A06u4V5!G=$H9=@.4IM}5!G=$r;}$C$F$$$k$i$7$$!#(B
+これらの言語は category という、クラスとは別の「分類手段」を
+持っている。（これも crosscutting concerns か？）<br>
+Objective-C は、あとから category を追加できる。
+最新の<a href="http://www.cincom.co.jp/products/visualworks/">
+VisualWorks</a> では、さらに、クラスおよび category と直交した（？）
+名前空間機能と構成管理機能を持っているらしい。
 </p><p>
 </p><p>
 </p><h2><a name="cecil">Cecil, Dubious, MultiJava</a></h2><p>
 <ul>
 <li><a href="http://www.cs.washington.edu/research/projects/cecil/">
         [ Cecil/Vortex ]</a><wbr>
-multi-method $B$,07$($k>e!"J,3d7?%A%'%C%/2DG=$J%b%8%e!<%k5!9=$r(B
-$B;}$C$F$$$k8@8l!#!J(BCecil $B$O%b%8%e!<%k5!9=$r$^$@;}$C$F$$$J$$!#(B
-$B8=:_<BAuCf$N<!$N8@8l$KF~$k!#!K(B
-$B4{B8$N%/%i%9$N%=!<%9$rJT=8$;$:$K!"%a%=%C%I$rDI2C$9$k$3$H$b2DG=!#(B
-$B$3$l$r(B Chambers $B$O(B "open classes" $B$H8F$s$G$$$k!#(B
-"open classes" $B$N5!G=$K$h$j!"Nc$($P(B visitor pattern $B$,ITMW$K$J$k!#(B
+multi-method が扱える上、分割型チェック可能なモジュール機構を
+持っている言語。（Cecil はモジュール機構をまだ持っていない。
+現在実装中の次の言語に入る。）
+既存のクラスのソースを編集せずに、メソッドを追加することも可能。
+これを Chambers は "open classes" と呼んでいる。
+"open classes" の機能により、例えば visitor pattern が不要になる。
 <br>
-Dubious $B$N%b%8%e!<%k5!9=$K$O!"(B extends $B$H(B imports $B$H$,$"$k!#(B
-imports $B$O!"(B extends $B$KHf$Y$F$G$-$k$3$H$,>/$J$$!#(B
-imports $BF3F~$NL\E*$O!"%j%s%/;~$N(B global check $B$rITMW$K$9$k$3$H$K$"$k!#(B
+Dubious のモジュール機構には、 extends と imports とがある。
+imports は、 extends に比べてできることが少ない。
+imports 導入の目的は、リンク時の global check を不要にすることにある。
 </p><p>
 <li>
 Craig Chambers and Gary Leavens:
@@ -401,19 +401,19 @@ http://www.cs.iastate.edu/~cclifton/multijava/</a>
 </p><h2><a name="intentional">intentional programming</a></h2><p>
 <a href="http://www.research.microsoft.com/research/ip/">
         [ Microsoft, Charles Simonyi ]</a><br>
-separation of concerns $B$r%^%/%m$G<B8=!"$H$$$&$+$s$8$+!)(B
-$B9=B$%(%G%#%?$K$h$k%W%m%0%i%_%s%0$rA0Ds$H$9$k!#(B
-$BCj>]9=J8LZ$KBP$9$kJQ49$r9T$&!#(B
-domain-specific $B$J5!G=$rDI2C$9$k$3$H$,$G$-$k!#(B<br>
-$B!J(BCharles Simonyi $B$O%O%s%,%j%"%s5-K!$NDs>'<T!#!K(B
+separation of concerns をマクロで実現、というかんじか？
+構造エディタによるプログラミングを前提とする。
+抽象構文木に対する変換を行う。
+domain-specific な機能を追加することができる。<br>
+（Charles Simonyi はハンガリアン記法の提唱者。）
 </p><p>
 </p><p>
 </p><h2><a name="plaice">intentional programming</a></h2><p>
 <a href="http://www.cse.unsw.edu.au/~plaice">
         [ John Plaice ]</a><br>
-MS $B$N(B intentional programming $B$H$OA4$/L54X78!#(B
-$B%P!<%8%g%s$4$H$N5sF0$N0c$$$r#1$D$N%W%m%0%i%`$NCf$GI=8=$9$k!#(B
-$B!J(B#ifdef $B$_$?$$$J$b$N$@$,!"<B9T;~$K%P!<%8%g%s$,@ZBX$($i$l$k$_$?$$!#!K(B
+MS の intentional programming とは全く無関係。
+バージョンごとの挙動の違いを１つのプログラムの中で表現する。
+（#ifdef みたいなものだが、実行時にバージョンが切替えられるみたい。）
 </p><p>
 </p><p>
 </p><h2><a name="BCA">BCA(binary component adaptation)</a></h2><p>
@@ -421,24 +421,24 @@ MS $B$N(B intentional programming $B$H$OA4$/L54X78!#(B
 Keller, R. and U.Holzle,
 "Binary Component Adaptation",
 in Proc. of ECOOP'98, LNCS 1445, pp.307--329, 1998. <br>
-<a href="http://www.cs.ucsb.edu/oocsb/bca/index.html">BCA</a>$B$O!"(B
-$B%=!<%9$N$J$$4{B8$N(B Java $B%/%i%9%i%$%V%i%j$K!"(B
-$B:9J,$rDI2C$G$-$k$h$&$K$9$k%7%9%F%`!#(B
-$B<BAu$5$l$F$$$k$,!"FH<+$N(B JavaVM $B$,I,MW!#(B
-$B!J%7%9%F%`%/%i%9$K:9J,$rDI2C$G$-$k$h$&$K$9$k$?$a$@$m$&$+!)!K(B
-SPARC/Solaris $BMQ$N(B JavaVM $B$,G[I[$5$l$F$$$k!#(B
-$B!V:9J,!W$N7?%A%'%C%/$O!"(B future work $B$K$J$C$F$$$k!#(B
+<a href="http://www.cs.ucsb.edu/oocsb/bca/index.html">BCA</a>は、
+ソースのない既存の Java クラスライブラリに、
+差分を追加できるようにするシステム。
+実装されているが、独自の JavaVM が必要。
+（システムクラスに差分を追加できるようにするためだろうか？）
+SPARC/Solaris 用の JavaVM が配布されている。
+「差分」の型チェックは、 future work になっている。
 </p><p>
 </p><p>
 </p><h2><a name="moby">Moby</a></h2><p>
 <a href="http://www.cs.bell-labs.com/who/jhr/moby/index.html">Moby</a><br>
 ECOOP2000<br>
 PLDI'99<br>
-$B!JL$D4::!K(B
-$BIaDL$N%*%V%8%'%/%H;X8~8@8l$O!"(B class $B$K(B module $B$NLr3d$rIi$o$;$F$$$k$?$a!"(B
- class $B$N5!G=$,J#;(2=$7$F$$$k!#(B
-$B$=$3$G!"(B class $B$H$OJL$K(B module $B$rF3F~!#(B
-ML style $B$N(B module $B%a%+%K%:%`$r(B OOP $B$KF~$l$?$b$N!#(B
+（未調査）
+普通のオブジェクト指向言語は、 class に module の役割を負わせているため、
+ class の機能が複雑化している。
+そこで、 class とは別に module を導入。
+ML style の module メカニズムを OOP に入れたもの。
 </p><p>
 </p><p>
 </p><h2><a name="JML">JML</a></h2><p>
@@ -447,43 +447,43 @@ Clyde Ruby and Gary T.Leavens:<br>
 "Safely Creating Correct Subclasses without Seeing Superclass Code",
 OOPSLA2000 .<br>
 </p><p>
-mixin, separation of concerns $B$H$O4X78$J$$!#(B<br>
-$B!V(Bsuperclass $B$N%=!<%9%3!<%I$r8+$J$/$F$b0BA4$K(B subclass $B$rDj5A$9$kJ}K!!W$K(B
-$B$D$$$F$NO@J8!#(B
-$B$$$o$f$k%/%i%9$N;vA0>r7o!&;v8e>r7o$NB>$K!"(B
- subclassing contract $B$H$$$&>pJs$r2C$($k$3$H$G!"(B
-$B$O$8$a$F(B subclass $B$r0BA4$KDj5A$9$k$3$H$,2DG=$K$J$k!#(B
-subclassing contract $B$O!"(B superclass $B$N%3!<%I$,%"%/%;%9$9$k!"(B
-$B<+J,<+?H$N(B field/method $BL>$N>pJs!#(B
-soundness $B$K$D$$$F$b>ZL@$N35N,$,:\$C$F$$$k!#(B
+mixin, separation of concerns とは関係ない。<br>
+「superclass のソースコードを見なくても安全に subclass を定義する方法」に
+ついての論文。
+いわゆるクラスの事前条件・事後条件の他に、
+ subclassing contract という情報を加えることで、
+はじめて subclass を安全に定義することが可能になる。
+subclassing contract は、 superclass のコードがアクセスする、
+自分自身の field/method 名の情報。
+soundness についても証明の概略が載っている。
 </p><p>
-superclass $B$N(B field/method $B$OF0:n$r3HD%$9$k$?$a$N(B hook $B$G$"$k$H9M$($l$P!"(B
-$B$=$l$,(B subclass $B$KBP$9$k30It;EMM$K4^$^$l$F$$$k$N$OEvA3$G$"$k!#(B
-$B$7$+$7$3$NO@J8$G$O(B hook $B$H$$$&4QE@$G$O(B subclassing contract $B$r8+$F$$$J$$!#(B
+superclass の field/method は動作を拡張するための hook であると考えれば、
+それが subclass に対する外部仕様に含まれているのは当然である。
+しかしこの論文では hook という観点では subclassing contract を見ていない。
 </p><p>
-$B$^$?!"(B mixin $B$K$D$$$F$N9M;!$O$^$C$?$/$J$$!#(B
-subclass $B$+$i8+$F(B superclass $B$O8GDj$G$"$k$?$a!"(B
-mixin $B$,$"$k%7%9%F%`$HHf$Y$F!"$3$NO@J8$NJ}K!$G$O!"(B
- subclass $B$,$G$-$k$3$H$N<+M3EY$,9b$$!#(B
+また、 mixin についての考察はまったくない。
+subclass から見て superclass は固定であるため、
+mixin があるシステムと比べて、この論文の方法では、
+ subclass ができることの自由度が高い。
 </p><p>
 </p><p>
 </p><h2><a name="feature-oriented">feature oriented programming</a></h2><p>
 In proc. of ECOOP'97 <br>
-mixin $B$K6a$$$,!">/$70c$&$i$7$$!#4XO"8&5f$,>/$J$$!#(B
+mixin に近いが、少し違うらしい。関連研究が少ない。
 </p><p>
 </p><p>
 </p><h2><a name="piccola">Piccola - a Small Composition Language</a></h2><p>
 <a href="http://www.iam.unibe.ch/~scg/">
 Software Composition Group at University of Berne</a><br>
-$BF0E*$JL>A06u4V$r;}$D$b$N$i$7$$!#(B<br>
+動的な名前空間を持つものらしい。<br>
 Application = Components + Scripts<br>
 </p><p>
 </p><p>
 </p><h2><a name="ccc">CCC</a></h2><p>
-<a href="http://www.brl.ntt.co.jp/people/hara/">NTT $B86ED$5$s(B</a>$B$N(B
-$B:n$C$?8@8l$N#1$D!#(B
-$BA^F~9=J8$H$$$&$b$N$rMQ$$$F!":9J,%W%m%0%i%_%s%0$,$G$-$k!#(B<br>
-$B>pJs=hM}3X2qO@J8;o%W%m%0%i%_%s%0(B Vol.42 No.SIG 2(PRO 9)
+<a href="http://www.brl.ntt.co.jp/people/hara/">NTT 原田さん</a>の
+作った言語の１つ。
+挿入構文というものを用いて、差分プログラミングができる。<br>
+情報処理学会論文誌プログラミング Vol.42 No.SIG 2(PRO 9)
 </p><p>
 Yasunori Harada, Kenichi Yamazaki, Richard Potter:<br>
 "CCC: User Defined Object Structures in C"<br>
@@ -495,52 +495,52 @@ in Proc. of ECOOP2001.
 </p><p>
 <a href="http://java.sun.com/people/gbracha/">
         [ Gilad Bracha ]</a><br>
-Gilad Bracha $B$O(B <a href="http://java.sun.com/docs/books/jls/">JLS2</a> 
-$B$NCx<T$N0l?M!#(B 
+Gilad Bracha は <a href="http://java.sun.com/docs/books/jls/">JLS2</a> 
+の著者の一人。 
 <a href="http://www.cis.unisa.edu.au/~pizza/gj/">GJ</a>
-$B$N@_7W$K$b4X$o$C$F$$$k!#(B 
+の設計にも関わっている。 
 </p><p>
 <p>
 Gilad Bracha and William Cook: "Mixin-based Inheritance", In Proc. of OOPSLA90.
 <br>
-mixin $B$O:FMxMQ@-$r9b$a$k!"$H$$$&OC!#(B mixin $B$,$"$l$P(B BETA, C++, CLOS $B$N(B
-$B7Q>55!9=$r$9$Y$F%(%_%e%l!<%H$G$-$k!#(B<br>
+mixin は再利用性を高める、という話。 mixin があれば BETA, C++, CLOS の
+継承機構をすべてエミュレートできる。<br>
 </p><p>
 <p>
 Gilad Bracha and Gary Lindstrom:
 "Modularity Meets Inheritance", In Proceedings of
 the IEEE International Conference on Computer Languages, April 1992. <br>
 Gilad Bracha: "The Programming Language Jigsaw: Mixins, Modularity and Multiple Inheritance" .PhD thesis, University of Utah, 1992.<br>
-Jigsaw $B$O(B
-$B%/%i%97Q>5$N5!G=$+$i(B subtyping $B$H<BAu7Q>5$rJ,N%$7$?8@8l$i$7$$!#(B
-$B%W%j%_%F%#%V$9$.$F<BMQE*$J$b$N$G$O$J$$$i$7$$!#(B
+Jigsaw は
+クラス継承の機能から subtyping と実装継承を分離した言語らしい。
+プリミティブすぎて実用的なものではないらしい。
 </p><p>
 </p><p>
 </p><h2><a name="MixedJava">MzScheme, MixedJava, Units, Jiazzi</a></h2><p>
 <a href="http://www.cs.utah.edu/~mflatt/">
 [ Matthew Flatt ]</a><br>
-Matthew Flatt $B$O(B <a href="http://www.cs.rice.edu/CS/PLT/packages/drscheme/">DrScheme</a>$B$N%9%?%C%U$N#1?M!#(B<br>
+Matthew Flatt は <a href="http://www.cs.rice.edu/CS/PLT/packages/drscheme/">DrScheme</a>のスタッフの１人。<br>
 </p><p>
 <p>
 <a href="http://www.cs.rice.edu/CS/PLT/packages/mzscheme/index.html"> MzScheme </a>
 </p><p>
 <p>
 Matthew Flatt : "Class and Mixins", In POPL'98. <br>
-Java $B$K(B mixin $B$N5!G=$rF~$l$?8@8l(B MixedJava $B$N7?%7%9%F%`$NOC!#(B
-$B8@8l$H$7$F$OIaDL!#(B <br>
+Java に mixin の機能を入れた言語 MixedJava の型システムの話。
+言語としては普通。 <br>
 </p><p>
 <p>
 Flatt and Felleisen:
 "Units: Cool Modules for HOT Languages", In Proc. of PLDI 98.<br>
-Units $B$OJ,3d%3%s%Q%$%k!":FMxMQ!"=[4D0MB8!"3,AX9=B$!"F0E*%m!<%I$r%5%]!<%H$9$k(B
-$B%b%8%e!<%k5!9=!#(B
-$B:FMxMQ@-$,9b$$$N$O$$$$$,!"%b%8%e!<%k$r#1$D#1$D$D$J$0$N$,LLE]$=$&!#(B
+Units は分割コンパイル、再利用、循環依存、階層構造、動的ロードをサポートする
+モジュール機構。
+再利用性が高いのはいいが、モジュールを１つ１つつなぐのが面倒そう。
 </p><p>
 <p>
 McDirmid, Flatt, and Hsieh:
 "Jiazzi: New-Age Components for Old-Fashioned Java",
 In Proc. of  OOPSLA 2001.<br>
-Units $B$N5!G=$rF~$l$?(B Java $B>e$N%b%8%e!<%k5!9=!#(B
+Units の機能を入れた Java 上のモジュール機構。
 </p><p>
 </p><p>
 </p><p>
@@ -553,65 +553,65 @@ Units $B$N5!G=$rF~$l$?(B Java $B>e$N%b%8%e!<%k5!9=!#(B
 <p>
 "A Theory of Mixin Modules: Basic and Derived Operators",
 Mathematical Structures in Computer Science, Vol.8, number 4, pages 401-446, August 1998.<br>
-$BL$FI!#(B OOPSLA 2001 $B$N(B <a href="#mixin-modules">mixin module</a> $B$H$OJLJ*$+!#(B
+未読。 OOPSLA 2001 の <a href="#mixin-modules">mixin module</a> とは別物か。
 <p>
 "Jam - A Smooth Extension of Java with Mixins", In proc. of ECOOP'00. <br>
-$B7?%A%'%C%/$G$-$k(B Java $B>e$N(B mixin $B!#(B static field, static method $B$N5!G=$r(B
-$B@8$+$=$&$H$7$F$$$k$,!"$=$N$+$o$j(B mixin $B7?$N07$$$K$A$g$C$H@)8B$,F~$k!#(B
-Java $B$N%W%j%W%m%;%C%5$H$7$F<BAu!#(B
+型チェックできる Java 上の mixin 。 static field, static method の機能を
+生かそうとしているが、そのかわり mixin 型の扱いにちょっと制限が入る。
+Java のプリプロセッサとして実装。
 <p>
 "True Modules for Java-Like Languages "
 ECOOP'01 - European Conference on Object-Oriented Programming, Lecture Notes in Computer Science 2072.<br>
-JavaMod $B$H$$$&8@8l$H$=$N7?%7%9%F%`!#(B
+JavaMod という言語とその型システム。
 </p><p>
 </p><p>
 </p><h2><a name="BETA">BETA</a></h2><p>
-<a href="http://www.daimi.au.dk/~beta/">BETA</a> $B8@8l$N(B
- fragment system $B$H(B virtual class $B$H$$$&5!G=$O!"(B
-$B$=$l$>$l(B MixJuice $B$N:9J,%Y!<%9%b%8%e!<%k$H?<$/4X78$9$k!#(B
-$B>\$7$/$O(B ECOOP'02 $B$N:9J,%Y!<%9%b%8%e!<%k$NO@J8;2>H!#(B
+<a href="http://www.daimi.au.dk/~beta/">BETA</a> 言語の
+ fragment system と virtual class という機能は、
+それぞれ MixJuice の差分ベースモジュールと深く関係する。
+詳しくは ECOOP'02 の差分ベースモジュールの論文参照。
 </p><p>
 </p><p>
 </p><h2><a name="gbeta">gbeta</a></h2><p>
 <a href="http://www.daimi.au.dk/~eernst/">
         [ Eric Ernst ]</a><br>
 </p><p>
-gbeta $B$OKL2$$NM3=o@5$7$$%*%V%8%'%/%H;X8~8@8l(B BETA $B$N5!G=$r0lHL2=$7!"(B
-$B<BAu$7$J$*$5$l$?8@8l!#(B
+gbeta は北欧の由緒正しいオブジェクト指向言語 BETA の機能を一般化し、
+実装しなおされた言語。
 </p><p>
 <p>
 Erik Ernst. "Propagating class and method combination". In Proceedings ECOOP'99.<br>
-BETA $B$G$O(B class $B$H(B method $B$,(B unify $B$5$l$F$$$k!#(B
-$B$?$H$($P(B class $B$N%a%s%P!<$H$7$F(B class $B$rDj5A$G$-$k!#(B
-Java $B$N(B nested class $B$H0c$C$F!"%5%V%/%i%9$N%a%s%P!<%/%i%9$O!"(B
-$B%9!<%Q!<%/%i%9$NF1L>$N%a%s%P!<%/%i%9$r(B override $B$9$k$3$H$,$G$-$k!#(B
-$B$3$N5!G=$r(B virtual class $B$H8F$V!#(B
-$B!J30B&$N%/%i%9$HFbB&$N%/%i%9$N4X78$O!"(B MixJuice $B$K$*$1$k(B module $B$H(B class $B$N(B
-$B4X78$KBP1~$9$k!#!K(B
-gbeta $B$G$O!"(B BETA $B$N5!G=$r$5$i$K3HD%$7$F!"(B mixin $B$r;H$($k$h$&$K$7$F$$$k!#(B
-$B$$$/$D$+$N(B mixin $B$rL@<(E*$K7k9g$9$k$H!"(B
-$B$=$l$i$N(B mixin $B$N%a%s%P!<$N(B class/method $B$d!"(B
-$B$=$l$i$N(B mixin $B$N%9!<%Q!<%/%i%9$N%a%s%P!<$N(B class/method $B$J$I$b(B mixin $B$H$7$F(B
-$B<+F0E*$K7k9g$5$l!"$3$N0EL[$N7k9g$O<!!9$HGH5Z$7$F$/!#(B
-$B$3$l$,(B propagation $B$i$7$$!#(B
-$B$3$N5!G=$K$h$j!"Nc$($P(B
- separation of crosscutting concerns $B$b<B8=$G$-$k!#(B
+BETA では class と method が unify されている。
+たとえば class のメンバーとして class を定義できる。
+Java の nested class と違って、サブクラスのメンバークラスは、
+スーパークラスの同名のメンバークラスを override することができる。
+この機能を virtual class と呼ぶ。
+（外側のクラスと内側のクラスの関係は、 MixJuice における module と class の
+関係に対応する。）
+gbeta では、 BETA の機能をさらに拡張して、 mixin を使えるようにしている。
+いくつかの mixin を明示的に結合すると、
+それらの mixin のメンバーの class/method や、
+それらの mixin のスーパークラスのメンバーの class/method なども mixin として
+自動的に結合され、この暗黙の結合は次々と波及してく。
+これが propagation らしい。
+この機能により、例えば
+ separation of crosscutting concerns も実現できる。
 </p><p>
 <p>
 Erik Ernst. "Family Polymorphism", In Proceedings ECOOP 2001.<br>
-gbeta $B$N7Q>55!9=$K$h$C$F<B8=2DG=$K$J$k(B family polymorphism $B$H$$$&5!G=$K(B
-$B>GE@$rEv$F$?O@J8!#(B
-Node $B$H(B Edge $B$H$$$&Aj8_;2>H$9$k#2$D$N%/%i%9$,$"$k$H$9$k(B
-$B$=$l$>$l$r7Q>5$7!"%5%V%/%i%9(B ColoredNode $B$H(B ColoredEdge $B$rDj5A$G$-$k!#(B
-$BF1MM$K!"%5%V%/%i%9(B WeightedNode $B$H(B  WeightedEdge $B$rDj5A$G$-$k!#(B
-Node $B$H(B Edge $B$r0z?t$H$7$F<u$1<h$k%f!<%F%#%j%F%#4X?t$O!"(B
-$B$3$l$i$N%5%V%/%i%9$+$i$bEvA3!":FMxMQ$7$?$$!#(B
-$B0lJ}$G!"(B WeightedEdge $B$H(B ColoredEdge $B$,Aj8_;2>H$9$k$h$&$J$3$H$O(B
-$BL50UL#$J$N$G!"7?%A%'%C%/$G8!::$7$?$$!#(B
-$B<B$O$3$N>l9g$K$*$1$k:FMxMQ@-$H0BA4@-$NN>N)$O!"(B C++ $B$N(B template $B$J$I4{B8$N5!9=$r(B
-$B6n;H$7$F$bC#@.$G$-$:!"(B gbeta $B$J$i$PC#@.$G$-$k$H$$$&$N$,$3$NO@J8$N<gD%$G$"$k!#(B
-gbeta $B$O(B dependent type $B$H$$$&$b$N$r;H$C$?$"$d$&$$7?%7%9%F%`$K$h$C$F(B
-family polymorphism $B$r<B8=$7$F$$$k$i$7$$!#(B
+gbeta の継承機構によって実現可能になる family polymorphism という機能に
+焦点を当てた論文。
+Node と Edge という相互参照する２つのクラスがあるとする
+それぞれを継承し、サブクラス ColoredNode と ColoredEdge を定義できる。
+同様に、サブクラス WeightedNode と  WeightedEdge を定義できる。
+Node と Edge を引数として受け取るユーティリティ関数は、
+これらのサブクラスからも当然、再利用したい。
+一方で、 WeightedEdge と ColoredEdge が相互参照するようなことは
+無意味なので、型チェックで検査したい。
+実はこの場合における再利用性と安全性の両立は、 C++ の template など既存の機構を
+駆使しても達成できず、 gbeta ならば達成できるというのがこの論文の主張である。
+gbeta は dependent type というものを使ったあやうい型システムによって
+family polymorphism を実現しているらしい。
 </p><p>
 </p><p>
 </p><h2><a name="mixin-modules">Mixin modules</a></h2><p>
@@ -619,13 +619,13 @@ Dominic Duggan, Ching Ching Techaubol:<br>
 "Modular Mixin-Based Inheritance for Application Frameworks",
 in Proc of OOPSLA 2001.
 </p><p>
-OOPSLA2001 $B$NO@J8$O$^$@8+$F$$$J$$!#(B
-$BF1%?%$%H%k$N(B MASPLAS'01 $B$NO@J8$,<j$KF~$k!#(B
+OOPSLA2001 の論文はまだ見ていない。
+同タイトルの MASPLAS'01 の論文が手に入る。
 <a href="http://www.research.ibm.com/masplas/schedule.html">http://www.research.ibm.com/masplas/schedule.html</a>
 </p><p>
-$B0l8+!"(B MJ $B$HHs>o$K$h$/;w$F$$$k$,!"Cf?H$O$@$$$V0c$&!#(B
-Java $B$N$h$&$J8@8l$K(B mixin $B$rF~$l$?$H$-$N7?%7%9%F%`$NOC!#(B
-$BL>A0$N>WFM$O(B rename $B$K$h$C$F2r7h$9$k!#(B
+一見、 MJ と非常によく似ているが、中身はだいぶ違う。
+Java のような言語に mixin を入れたときの型システムの話。
+名前の衝突は rename によって解決する。
 </p><p>
 </p><h2><a name="DisCo">DisCo</a></h2><p>
 <a href="http://disco.cs.tut.fi">http://disco.cs.tut.fi</a>
@@ -633,7 +633,7 @@ Java $B$N$h$&$J8@8l$K(B mixin $B$rF~$l$?$H$-$N7?%7%9%F%`$NOC!#(B
 P. Kellomaki and T. Mikkonen. Design templates for collective behavior.
 In Proc. of ECOOP 2000.
 </p><p>
-$BL$FI!#J,;6%j%"%/%F%#%V%7%9%F%`$K$*$1$k6(D4E*?6$kIq$$$N$?$a$N;EMM5-=R8@8l!)(B
+未読。分散リアクティブシステムにおける協調的振る舞いのための仕様記述言語？
 </p><p>
 </p><hr>
 <table width="100%"> <tr><td>

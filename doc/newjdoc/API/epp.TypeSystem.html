@@ -25,21 +25,21 @@ java.lang.Object
   <dt> public class <b>TypeSystem</b>
   <dt> extends Object
 </dl>
-EPP $B%W%j%W%m%;%C%5$,;}$D%a%=%C%I$N$&$A(B
-$B%U%!%$%k(B TypeSystem.java $B$GDj5A$5$l$k%a%=%C%I$O!"(B
-$B7?F1;N$N4V$N4X78$rDj5A$7$^$9!#(B.
+EPP プリプロセッサが持つメソッドのうち
+ファイル TypeSystem.java で定義されるメソッドは、
+型同士の間の関係を定義します。.
 <p>
-<b> $BCm0U!'(B $B$3$N%/%i%9$O!"(B javadoc $B$r:n$k$?$a$NJX59E*$J%/%i%9$G$9!#(B
-$B<B:]$N(B EPP $B$N%=!<%9%3!<%ICf$K$OB8:_$7$^$;$s!#(B </b>
+<b> 注意： このクラスは、 javadoc を作るための便宜的なクラスです。
+実際の EPP のソースコード中には存在しません。 </b>
 <p>
-plug-in $B$O!"$3$l$i$N%a%=%C%I$r3HD%$9$k$3$H$G!"(B
-$B?7$?$KF3F~$7$?7?$H4{B8$N7?$H$N4V$N4X78$rDj5A$9$k$3$H$,$G$-$^$9!#(B
+plug-in は、これらのメソッドを拡張することで、
+新たに導入した型と既存の型との間の関係を定義することができます。
 <p>
-$B$$$/$D$+$N%a%=%C%I$O!"(B TypeChecker $B$+$i8F$S=P$7$d$9$$$h$&$K!"(B
-$B%/%i%9(B Type $B$N(B static method $B$H$7$F$bDj5A$5$l$F$$$^$9!#(B
-$BNc$($P!"%a%=%C%I(B isSuperType(t1, t2) $B$O!"(B TypeChecker $B$N%a%=%C%ICf$+$i(B
-Type.isSuperType(t1, t2) $B$H=q$$$F8F$S=P$9$3$H$,$G$-$^$9!#(B
-$B$3$N%a%=%C%I$O!"<B:]$K$O(B Ld-2 $B%a%=%C%I$K(B delegation $B$5$l$^$9!#(B
+いくつかのメソッドは、 TypeChecker から呼び出しやすいように、
+クラス Type の static method としても定義されています。
+例えば、メソッド isSuperType(t1, t2) は、 TypeChecker のメソッド中から
+Type.isSuperType(t1, t2) と書いて呼び出すことができます。
+このメソッドは、実際には Ld-2 メソッドに delegation されます。
 <p>
 <dl>
     <dt> <b>See Also:</b>
@@ -61,62 +61,62 @@ Type.isSuperType(t1, t2) $B$H=q$$$F8F$S=P$9$3$H$,$G$-$^$9!#(B
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#argumentListToSignatureString(epp.Tree)"><b>argumentListToSignatureString</b></a>(Tree)
-  <dd> argumentList $B$N3F(B actural parameter $B$N7?$r#1$D$NJ8;zNs$K$7$^$9!#(B.
+  <dd> argumentList の各 actural parameter の型を１つの文字列にします。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#checkVariableDeclaratorId(epp.Type, epp.Tree, epp.Tree[])"><b>checkVariableDeclaratorId</b></a>(Type, Tree, Tree[])
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#coerce(epp.Type, epp.Tree)"><b>coerce</b></a>(Type, Tree)
-  <dd> $B0z?t$N(B tree $B$N7?$,!"7?(B type $B$H$7$F;HMQ2DG=$+$r%A%'%C%/$7!"(B
-tree $B$rJV$7$^$9!#(B.
+  <dd> 引数の tree の型が、型 type として使用可能かをチェックし、
+tree を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#coerceArgumentList(epp.Tree, epp.MethodInfo)"><b>coerceArgumentList</b></a>(Tree, MethodInfo)
-  <dd> argumentList $B$,;}$D3F(B actural parameter $B$r!"(B
-selectedMethod $B$,4|BT$9$k7?$K!"(B coerce $B$7$^$9!#(B.
+  <dd> argumentList が持つ各 actural parameter を、
+selectedMethod が期待する型に、 coerce します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#confirmArgs(epp.MethodInfo, epp.Tree)"><b>confirmArgs</b></a>(MethodInfo, Tree)
-  <dd> method $B$,!"(B argumentList $B$KE,9g$9$k$J$i(B true $B!"$=$&$G$J$$$J$i(B
-false $B$rJV$7$^$9!#(B.
+  <dd> method が、 argumentList に適合するなら true 、そうでないなら
+false を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#confirmType(epp.Type, epp.Tree)"><b>confirmType</b></a>(Type, Tree)
-  <dd> $B0z?t(B type $B$,0z?t(B tree $B$GI=$5$l$k<0$N7?$N(B super type $B$+$I$&$+%A%'%C%/$7$^$9!#(B.
+  <dd> 引数 type が引数 tree で表される式の型の super type かどうかチェックします。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#doesImplement(epp.ClassInfo, epp.ClassInfo)"><b>doesImplement</b></a>(ClassInfo, ClassInfo)
-  <dd> info1 $B$,(B info2 $B$K$h$C$F(B implement $B$5$l$F$$$k$J$i(B true $B!"(B
-$B$=$&$G$J$$$J$i(B false $B$rJV$7$^$9!#(B.
+  <dd> info1 が info2 によって implement されているなら true 、
+そうでないなら false を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#equals(epp.Type, epp.Type)"><b>equals</b></a>(Type, Type)
-  <dd> t1 $B$,(B t2 $B$HF1$87?$J$i$P(B true $B!"$=$&$G$J$$$J$i(B false $B$r(B
-$BJV$7$^$9!#(B.
+  <dd> t1 が t2 と同じ型ならば true 、そうでないなら false を
+返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#isAncestor(epp.ClassInfo, epp.ClassInfo)"><b>isAncestor</b></a>(ClassInfo, ClassInfo)
-  <dd> info1 $B$,(B info2 $B$N(B super class $B$J$i$P(B true $B!"(B
-$B$=$&$G$J$$$J$i(B false $B$rJV$7$^$9!#(B.
+  <dd> info1 が info2 の super class ならば true 、
+そうでないなら false を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#isSuperType(epp.Type, epp.Type)"><b>isSuperType</b></a>(Type, Type)
-  <dd> t1 $B$,(B t2 $B$N(B super type $B$J$i$P(B true $B!"(B
-$B$=$&$G$J$$$J$i(B false $B$rJV$7$^$9!#(B.
+  <dd> t1 が t2 の super type ならば true 、
+そうでないなら false を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#moreSpecificMethod(epp.MethodInfo, epp.MethodInfo)"><b>moreSpecificMethod</b></a>(MethodInfo, MethodInfo)
   <dd> Returns true iff m1 is more specific than m2.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#selectField(epp.Type, epp.Symbol)"><b>selectField</b></a>(Type, Symbol)
-  <dd> targetType $B$,(B fieldName $B$H$$$&L>A0$N%U%#!<%k%I$r;}$C$F$$$l$P$=$l$r(B
-$BJV$7$^$9!#(B.
+  <dd> targetType が fieldName という名前のフィールドを持っていればそれを
+返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#selectMostSpecificMethod(java.lang.String, epp.MethodInfo[], epp.Tree)"><b>selectMostSpecificMethod</b></a>(String, MethodInfo[], Tree)
-  <dd> methods $B$NCf$+$i!"0z?t(B argumentList $B$GI=$5$l$k0z?t$KE,9g$7!"(B
-$B$J$*$+$D:G$bFCDjE*$J%a%=%C%I$r#1$DA*$s$GJV$7$^$9!#(B.
+  <dd> methods の中から、引数 argumentList で表される引数に適合し、
+なおかつ最も特定的なメソッドを１つ選んで返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#typeCheckAndSelectMethod(epp.Type, epp.Symbol, epp.Tree)"><b>typeCheckAndSelectMethod</b></a>(Type, Symbol, Tree)
-  <dd> argumentList $B$r7?%A%'%C%/$7$F!"8F$S=P$9$Y$-%a%=%C%I$rA*Br$7$^$9!#(B.
+  <dd> argumentList を型チェックして、呼び出すべきメソッドを選択します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#typeCheckBlockStatement(epp.Tree, int, epp.Tree[], epp.TreeVec)"><b>typeCheckBlockStatement</b></a>(Tree, int, Tree[], TreeVec)
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#typeCheckBlockStatements(int, epp.Tree[], epp.TreeVec)"><b>typeCheckBlockStatements</b></a>(int, Tree[], TreeVec)
-  <dd> args $B$N(B i $BHVL\0J9_$N(B tree $B$r7?%A%'%C%/$7!"(B
-$B7k2L$r(B newArgs $B$KF~$l$^$9!#(B.
+  <dd> args の i 番目以降の tree を型チェックし、
+結果を newArgs に入れます。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#typeCheckVariableDeclarator(epp.Tree, int, epp.Tree[], epp.TreeVec, epp.Tree, epp.Tree, epp.Tree, int, epp.Tree[], epp.TreeVec)"><b>typeCheckVariableDeclarator</b></a>(Tree, int, Tree[], TreeVec, Tree, Tree, Tree, int, Tree[], TreeVec)
   <dd> 
@@ -145,11 +145,11 @@ false $B$rJV$7$^$9!#(B.
                        <a href="epp.Type.html#_top_">Type</a> t2)
 </pre>
 <dl>
-  <dd> t1 $B$,(B t2 $B$HF1$87?$J$i$P(B true $B!"$=$&$G$J$$$J$i(B false $B$r(B
-$BJV$7$^$9!#(B.
+  <dd> t1 が t2 と同じ型ならば true 、そうでないなら false を
+返します。.
 <p>
-$B$3$N%a%=%C%I$O!"%/%i%9(B Type $B$N(B static method $B$+$i(B
-delegation $B$5$l$^$9!#(B
+このメソッドは、クラス Type の static method から
+delegation されます。
 <p>
 </dl>
 <a name="confirmType(epp.Type, epp.Tree)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -159,9 +159,9 @@ delegation $B$5$l$^$9!#(B
                          <a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> $B0z?t(B type $B$,0z?t(B tree $B$GI=$5$l$k<0$N7?$N(B super type $B$+$I$&$+%A%'%C%/$7$^$9!#(B.
-$B$b$7$=$&$J$i!"2?$b$7$^$;$s!#(B
-super type $B$G$J$$$J$i!"(B EppUserError $B$,(B throw $B$5$l$^$9!#(B
+  <dd> 引数 type が引数 tree で表される式の型の super type かどうかチェックします。.
+もしそうなら、何もしません。
+super type でないなら、 EppUserError が throw されます。
 <p>
 </dl>
 <a name="isSuperType(epp.Type, epp.Type)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -171,16 +171,16 @@ super type $B$G$J$$$J$i!"(B EppUserError $B$,(B throw $B$5$l$^$9!#(B
                             <a href="epp.Type.html#_top_">Type</a> t2)
 </pre>
 <dl>
-  <dd> t1 $B$,(B t2 $B$N(B super type $B$J$i$P(B true $B!"(B
-$B$=$&$G$J$$$J$i(B false $B$rJV$7$^$9!#(B.
-$B$h$j@53N$K$O!"0J2<$N$h$&$K$J$j$^$9!#(B
+  <dd> t1 が t2 の super type ならば true 、
+そうでないなら false を返します。.
+より正確には、以下のようになります。
 <p>
 Return true iff t1 is a super type or same type of t2. <br>
 If t1 is "unknown extended type", it is fatal error. <br>
 Otherwise, if t2 is "unknown extended type", false will be returned.
 <p>
-$B$3$N%a%=%C%I$O!"%/%i%9(B Type $B$N(B static method $B$+$i(B
-delegation $B$5$l$^$9!#(B
+このメソッドは、クラス Type の static method から
+delegation されます。
 <p>
 </dl>
 <a name="isAncestor(epp.ClassInfo, epp.ClassInfo)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -190,15 +190,15 @@ delegation $B$5$l$^$9!#(B
                            <a href="epp.ClassInfo.html#_top_">ClassInfo</a> info2)
 </pre>
 <dl>
-  <dd> info1 $B$,(B info2 $B$N(B super class $B$J$i$P(B true $B!"(B
-$B$=$&$G$J$$$J$i(B false $B$rJV$7$^$9!#(B.
-$B$h$j@53N$K$O!"0J2<$N$h$&$K$J$j$^$9!#(B
+  <dd> info1 が info2 の super class ならば true 、
+そうでないなら false を返します。.
+より正確には、以下のようになります。
 <p>
 Return true iff info1 and info2 has the same name <br>
 or a class info1 is an ancestor of class info2.
 <p>
-info1 $B$H(B info2 $B$O6&$K(B class $B$rI=$9(B ClassInfo $B$G$J$1$l$P$J$j$^$;$s!#(B
-$B!J$I$A$i$+$,(B interface $B$rI=$9(B ClassInfo $B$G$"$C$?>l9g$NF0:n$OL$Dj5A$G$9!#!K(B
+info1 と info2 は共に class を表す ClassInfo でなければなりません。
+（どちらかが interface を表す ClassInfo であった場合の動作は未定義です。）
 <p>
 </dl>
 <a name="doesImplement(epp.ClassInfo, epp.ClassInfo)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -208,11 +208,11 @@ info1 $B$H(B info2 $B$O6&$K(B class $B$rI=$9(B ClassInfo $B$G$J$1$l$P$J$j
                               <a href="epp.ClassInfo.html#_top_">ClassInfo</a> info2)
 </pre>
 <dl>
-  <dd> info1 $B$,(B info2 $B$K$h$C$F(B implement $B$5$l$F$$$k$J$i(B true $B!"(B
-$B$=$&$G$J$$$J$i(B false $B$rJV$7$^$9!#(B.
-info1 $B$O!"(B interface $B$rI=$9(B ClassInfo $B$G$J$1$l$P$J$j$^$;$s!#(B
-info2 $B$O!"(B interface $B$G$b(B class $B$G$b$+$^$$$^$;$s!#(B
-$B$h$j@53N$K$O!"0J2<$N$h$&$K$J$j$^$9!#(B
+  <dd> info1 が info2 によって implement されているなら true 、
+そうでないなら false を返します。.
+info1 は、 interface を表す ClassInfo でなければなりません。
+info2 は、 interface でも class でもかまいません。
+より正確には、以下のようになります。
 <p>
 Return true iff info1 and info2 has the same name <br>
 or a interface info1 is implemented by a class info2 <br>
@@ -226,16 +226,16 @@ or a interface info1 is extended by a interface info2 .
                     <a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> $B0z?t$N(B tree $B$N7?$,!"7?(B type $B$H$7$F;HMQ2DG=$+$r%A%'%C%/$7!"(B
-tree $B$rJV$7$^$9!#(B.
-$B;HMQIT2DG=$J>l9g$O!"(B EppUserError $B$r(B throw $B$7$^$9!#(B
-$BIaDL!"(B tree $B$OJQ99$5$l$:$K$=$N$^$^JV$5$l$^$9!#(B
+  <dd> 引数の tree の型が、型 type として使用可能かをチェックし、
+tree を返します。.
+使用不可能な場合は、 EppUserError を throw します。
+普通、 tree は変更されずにそのまま返されます。
 <p>
-plug-in $B$O$3$N%a%=%C%I$r3HD%$9$k$3$H$G!"(B
-$BI8=`$N(B Java $B$K$J$$!V0EL[$N7?JQ49!W$r<BAu$9$k$3$H$,$G$-$^$9!#(B
+plug-in はこのメソッドを拡張することで、
+標準の Java にない「暗黙の型変換」を実装することができます。
 <p>
-$B$3$N%a%=%C%I$O!"%/%i%9(B Type $B$N(B static method $B$+$i(B
-delegation $B$5$l$^$9!#(B
+このメソッドは、クラス Type の static method から
+delegation されます。
 <p>
 </dl>
 <a name="selectField(epp.Type, epp.Symbol)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -245,12 +245,12 @@ delegation $B$5$l$^$9!#(B
                               <a href="epp.Symbol.html#_top_">Symbol</a> fieldName)
 </pre>
 <dl>
-  <dd> targetType $B$,(B fieldName $B$H$$$&L>A0$N%U%#!<%k%I$r;}$C$F$$$l$P$=$l$r(B
-$BJV$7$^$9!#(B.
-$B;}$C$F$$$J$1$l$P!"(B EppUserError $B$,(B throw $B$5$l$^$9!#(B
+  <dd> targetType が fieldName という名前のフィールドを持っていればそれを
+返します。.
+持っていなければ、 EppUserError が throw されます。
 <p>
-$B$3$N%a%=%C%I$O!"%/%i%9(B Type $B$N(B static method $B$+$i(B
-delegation $B$5$l$^$9!#(B
+このメソッドは、クラス Type の static method から
+delegation されます。
 <p>
 </dl>
 <a name="typeCheckAndSelectMethod(epp.Type, epp.Symbol, epp.Tree)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -261,13 +261,13 @@ delegation $B$5$l$^$9!#(B
                                           <a href="epp.Tree.html#_top_">Tree</a> argumentList)
 </pre>
 <dl>
-  <dd> argumentList $B$r7?%A%'%C%/$7$F!"8F$S=P$9$Y$-%a%=%C%I$rA*Br$7$^$9!#(B.
-$B$3$N%a%=%C%I$O!"#2$D$NCM$rJV$7$^$9!#(B
-$B#1$D$a$O!"A*Br$5$l$?%a%=%C%I$G!"$=$N7?$O(B MethodInfo $B$G$9!#(B
-$B#2$D$a$O!"7?%A%'%C%/$:$_$N(B argumentList $B$G!"$=$N7?$O(B Tree $B$G$9!#(B
+  <dd> argumentList を型チェックして、呼び出すべきメソッドを選択します。.
+このメソッドは、２つの値を返します。
+１つめは、選択されたメソッドで、その型は MethodInfo です。
+２つめは、型チェックずみの argumentList で、その型は Tree です。
 <p>
-$B$3$N%a%=%C%I$O!"%/%i%9(B Type $B$N(B static method $B$+$i(B
-delegation $B$5$l$^$9!#(B
+このメソッドは、クラス Type の static method から
+delegation されます。
 <p>
 </dl>
 <a name="selectMostSpecificMethod(java.lang.String, epp.MethodInfo[], epp.Tree)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -278,10 +278,10 @@ delegation $B$5$l$^$9!#(B
                                             <a href="epp.Tree.html#_top_">Tree</a> argumentList)
 </pre>
 <dl>
-  <dd> methods $B$NCf$+$i!"0z?t(B argumentList $B$GI=$5$l$k0z?t$KE,9g$7!"(B
-$B$J$*$+$D:G$bFCDjE*$J%a%=%C%I$r#1$DA*$s$GJV$7$^$9!#(B.
-$B$=$N$h$&$J%a%=%C%I$,8+$D$+$i$J$$>l9g$O!"(B EppUserError $B$r(B throw
-$B$7$^$9!#0z?t(B methodName $B$O!"%(%i!<%a%C%;!<%8Cf$G;H$o$l$^$9!#(B
+  <dd> methods の中から、引数 argumentList で表される引数に適合し、
+なおかつ最も特定的なメソッドを１つ選んで返します。.
+そのようなメソッドが見つからない場合は、 EppUserError を throw
+します。引数 methodName は、エラーメッセージ中で使われます。
 <p>
 </dl>
 <a name="confirmArgs(epp.MethodInfo, epp.Tree)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -291,8 +291,8 @@ delegation $B$5$l$^$9!#(B
                             <a href="epp.Tree.html#_top_">Tree</a> argumentList)
 </pre>
 <dl>
-  <dd> method $B$,!"(B argumentList $B$KE,9g$9$k$J$i(B true $B!"$=$&$G$J$$$J$i(B
-false $B$rJV$7$^$9!#(B.
+  <dd> method が、 argumentList に適合するなら true 、そうでないなら
+false を返します。.
 <p>
 </dl>
 <a name="moreSpecificMethod(epp.MethodInfo, epp.MethodInfo)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -312,8 +312,8 @@ false $B$rJV$7$^$9!#(B.
                                 <a href="epp.MethodInfo.html#_top_">MethodInfo</a> selectedMethod)
 </pre>
 <dl>
-  <dd> argumentList $B$,;}$D3F(B actural parameter $B$r!"(B
-selectedMethod $B$,4|BT$9$k7?$K!"(B coerce $B$7$^$9!#(B.
+  <dd> argumentList が持つ各 actural parameter を、
+selectedMethod が期待する型に、 coerce します。.
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -326,9 +326,9 @@ selectedMethod $B$,4|BT$9$k7?$K!"(B coerce $B$7$^$9!#(B.
  public String argumentListToSignatureString(<a href="epp.Tree.html#_top_">Tree</a> argumentList)
 </pre>
 <dl>
-  <dd> argumentList $B$N3F(B actural parameter $B$N7?$r#1$D$NJ8;zNs$K$7$^$9!#(B.
-$B$3$N%a%=%C%I$O!"%(%i!<%a%C%;!<%8$r:n$k;~$K(B
-selectMostSpecificMethod $B$+$i8F$S=P$5$l$^$9!#(B
+  <dd> argumentList の各 actural parameter の型を１つの文字列にします。.
+このメソッドは、エラーメッセージを作る時に
+selectMostSpecificMethod から呼び出されます。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -343,12 +343,12 @@ selectMostSpecificMethod $B$+$i8F$S=P$5$l$^$9!#(B
                                       <a href="epp.TreeVec.html#_top_">TreeVec</a> newArgs)
 </pre>
 <dl>
-  <dd> args $B$N(B i $BHVL\0J9_$N(B tree $B$r7?%A%'%C%/$7!"(B
-$B7k2L$r(B newArgs $B$KF~$l$^$9!#(B.
-$B$3$N%a%=%C%I$O!"(B block $B$r7?%A%'%C%/$9$k;~$J$I$K8F$S=P$5$l$^$9!#(B
+  <dd> args の i 番目以降の tree を型チェックし、
+結果を newArgs に入れます。.
+このメソッドは、 block を型チェックする時などに呼び出されます。
 <p>
-$B$3$N%a%=%C%I$O!"%/%i%9(B Type $B$N(B static method $B$+$i(B
-delegation $B$5$l$^$9!#(B
+このメソッドは、クラス Type の static method から
+delegation されます。
 <p>
 </dl>
 <a name="typeCheckBlockStatement(epp.Tree, int, epp.Tree[], epp.TreeVec)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>

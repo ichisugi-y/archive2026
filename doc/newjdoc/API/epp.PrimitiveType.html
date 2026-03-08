@@ -27,12 +27,12 @@ java.lang.Object
   <dt> public class <b>PrimitiveType</b>
   <dt> extends <a href="epp.Type.html#_top_">Type</a>
 </dl>
-$B%/%i%9(B PrimitiveType $B$O!"%W%j%_%F%#%V7?$rI=$9(B Type $B$G$9!#(B.
+クラス PrimitiveType は、プリミティブ型を表す Type です。.
 <p>
-plug-in $B%W%m%0%i%^!<$,(B PrimitiveType $B$N%$%s%9%?%s%9$r@8@.$9$k$3$H$O!"(B
-$B?d>)$5$l$^$;$s!#(B
-$B%/%i%9(B Type $B$N(B static $BJQ?t(B(Type.Tint $B$J$I(B)$B$r;H$C$F!"(B
-$B%W%j%_%F%#%V7?$rI=8=$7$F2<$5$$!#(B
+plug-in プログラマーが PrimitiveType のインスタンスを生成することは、
+推奨されません。
+クラス Type の static 変数(Type.Tint など)を使って、
+プリミティブ型を表現して下さい。
 <p>
 <dl>
     <dt> <b>See Also:</b>
@@ -54,13 +54,13 @@ plug-in $B%W%m%0%i%^!<$,(B PrimitiveType $B$N%$%s%9%?%s%9$r@8@.$9$k$3$H$O!"(
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#isPrimitiveType()"><b>isPrimitiveType</b></a>()
-  <dd> $B$3$N7?$,(B primitive $B7?$J$i$P(B true $B!"$=$&$G$J$$$J$i(B false $B$rJV$7$^$9!#(B.
+  <dd> この型が primitive 型ならば true 、そうでないなら false を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#toString()"><b>toString</b></a>()
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#toTree()"><b>toTree</b></a>()
-  <dd> $B$3$N7?$r%W%m%0%i%`Cf$GI=8=$9$k(B tree $B$rJV$7$^$9!#(B.
+  <dd> この型をプログラム中で表現する tree を返します。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -82,7 +82,7 @@ plug-in $B%W%m%0%i%^!<$,(B PrimitiveType $B$N%$%s%9%?%s%9$r@8@.$9$k$3$H$O!"(
  public boolean isPrimitiveType()
 </pre>
 <dl>
-  <dd> $B$3$N7?$,(B primitive $B7?$J$i$P(B true $B!"$=$&$G$J$$$J$i(B false $B$rJV$7$^$9!#(B.
+  <dd> この型が primitive 型ならば true 、そうでないなら false を返します。.
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>
@@ -95,7 +95,7 @@ plug-in $B%W%m%0%i%^!<$,(B PrimitiveType $B$N%$%s%9%?%s%9$r@8@.$9$k$3$H$O!"(
  public <a href="epp.Tree.html#_top_">Tree</a> toTree()
 </pre>
 <dl>
-  <dd> $B$3$N7?$r%W%m%0%i%`Cf$GI=8=$9$k(B tree $B$rJV$7$^$9!#(B.
+  <dd> この型をプログラム中で表現する tree を返します。.
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>

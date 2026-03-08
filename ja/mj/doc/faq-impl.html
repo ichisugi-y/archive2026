@@ -1,44 +1,44 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="./style.css">
-<title> $B<BAu$K4X$9$k<ALd(B </title>
+<title> 実装に関する質問 </title>
 </head> <body>
 <div class="header-link">
 [<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
 [<a href="index.html">Document index</a>]
 </div>
-<h1>$B<BAu$K4X$9$k<ALd(B</h1>
+<h1>実装に関する質問</h1>
 <ul class="headers">
-<li><a href="#system-class">java.lang.Object $B$K$O:9J,$ODI2C$G$-$J$$$N$+!)(B</a>
-<li><a href="#extern-java">MJ $B$G=q$$$?%i%$%V%i%j$r(B Java $B$+$iMxMQ$G$-$J$$$G$7$g$&$+!#(B</a>
+<li><a href="#system-class">java.lang.Object には差分は追加できないのか？</a>
+<li><a href="#extern-java">MJ で書いたライブラリを Java から利用できないでしょうか。</a>
 </p></ul><p>
 </p><p>
-</p><h2><a name="system-class">java.lang.Object $B$K$O:9J,$ODI2C$G$-$J$$$N$+!)(B</a></h2><p>
+</p><h2><a name="system-class">java.lang.Object には差分は追加できないのか？</a></h2><p>
 </p><p>
-$B$$$^$N$H$3$m$G$-$^$;$s!#(B
+いまのところできません。
 </p><p>
-$B>-Mh$N%P!<%8%g%s$G$O!"(B Java $B8@8l$N%/%i%9%i%$%V%i%j$K(B
-$B:9J,$rDI2C$G$-$k$h$&$K$J$k$+$b$7$l$^$;$s!#(B
+将来のバージョンでは、 Java 言語のクラスライブラリに
+差分を追加できるようになるかもしれません。
 </p><p>
-$B$7$+$7!"(B java.lang.Object $B$J$I$N(B system class $B$N%/%i%9%U%!%$%k$r(B
-$B=q$-49$($k$K$O!"5;=QE*$KLdBj$,$"$j!"(B JavaVM $B$K<j$rF~$l$J$$$H(B
-$B<B8=IT2DG=$+$b$7$l$^$;$s!#(B
+しかし、 java.lang.Object などの system class のクラスファイルを
+書き換えるには、技術的に問題があり、 JavaVM に手を入れないと
+実現不可能かもしれません。
 </p><p>
 </p><p>
-</p><h2><a name="extern-java">MJ $B$G=q$$$?%i%$%V%i%j$r(B Java $B$+$iMxMQ$G$-$J$$$G$7$g$&$+!#(B</a></h2><p>
-MJ $B$G=q$$$?%W%m%0%i%`$r(B mjdump $B$9$l$P!"IaDL$N(B Java $B$N%W%m%0%i%`$K$J$j$^$9!#(B
+</p><h2><a name="extern-java">MJ で書いたライブラリを Java から利用できないでしょうか。</a></h2><p>
+MJ で書いたプログラムを mjdump すれば、普通の Java のプログラムになります。
 </p><p>
-$B$7$+$7!"%U%#!<%k%IL>$H%a%=%C%IL>$N40A48BDjL>$,(B Java $B$N(B identifier $B$K(B
-$B%(%s%3!<%I$5$l$F$$$k$H$$$&LdBj$,$"$j$^$9!#(B
-$B%(%s%3!<%I$5$l$?L>A0$G$h$1$l$P!"$=$N%W%m%0%i%`$r30It$N(B Java $B%W%m%0%i%`$+$i(B
-$BMxMQ$9$k$3$H$O2DG=$G$9!#(B
+しかし、フィールド名とメソッド名の完全限定名が Java の identifier に
+エンコードされているという問題があります。
+エンコードされた名前でよければ、そのプログラムを外部の Java プログラムから
+利用することは可能です。
 </p><p>
-$B>-MhE*$K$O!"(B C++ $B$N(B extern "C" $B$KAjEv$9$k5!G=$r(B MJ $B$KF~$l$h$&$H;W$$$^$9!#(B
-$B8=:_$N(B MJ $B$G$b!"(B Java $B8@8lB&$G(B abstract class $B$H(B interface $B$rDj5A$7$F$*$-!"(B
-MJ $BB&$G%a%=%C%I$r<BAu$9$k$3$H$G!"(B
-$BL>A0$N%(%s%3!<%I$NLdBj$KBP=h$9$k$3$H$,$G$-$^$9!#(B
+将来的には、 C++ の extern "C" に相当する機能を MJ に入れようと思います。
+現在の MJ でも、 Java 言語側で abstract class と interface を定義しておき、
+MJ 側でメソッドを実装することで、
+名前のエンコードの問題に対処することができます。
 </p><hr>
 <table width="100%"> <tr><td>
 <img src="images/img002.gif" alt="mj-logo">

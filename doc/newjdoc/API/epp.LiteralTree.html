@@ -27,9 +27,9 @@ java.lang.Object
   <dt> public class <b>LiteralTree</b>
   <dt> extends <a href="epp.Tree.html#_top_">Tree</a>
 </dl>
-$B%/%i%9(B LiteralTree $B$O!"%j%F%i%k$rI=8=$9$kCj>]9=J8LZ$N%N!<%I$G$9!#(B.
+クラス LiteralTree は、リテラルを表現する抽象構文木のノードです。.
 <p>
-$B!J(B LiteralToken $B$NJ}$O!"%j%F%i%k$rI=8=$9$k%H!<%/%s$G$9!#!K(B
+（ LiteralToken の方は、リテラルを表現するトークンです。）
 <p>
 <dl>
     <dt> <b>See Also:</b>
@@ -46,7 +46,7 @@ java.lang.Object
   <dd> 
   <dt> <img src="images/yellow-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#LiteralTree(epp.Symbol, java.lang.String)"><b>LiteralTree</b></a>(Symbol, String)
-  <dd> new LiteralTree(new LiteralToken(tag, contents)) $B$HF1$8$G$9!#(B.
+  <dd> new LiteralTree(new LiteralToken(tag, contents)) と同じです。.
 </dl>
 <h2>
   <img src="images/method-index.gif" width=207 height=38 alt="Method Index">
@@ -54,7 +54,7 @@ java.lang.Object
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#literalToken()"><b>literalToken</b></a>()
-  <dd> $B$3$N%N!<%I$,;}$D(B LiteralToken $B$rJV$7$^$9!#(B.
+  <dd> このノードが持つ LiteralToken を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#print(java.io.PrintWriter, java.lang.String)"><b>print</b></a>(PrintWriter, String)
   <dd> 
@@ -79,7 +79,7 @@ java.lang.Object
                     String contents)
 </pre>
 <dl>
-  <dd> new LiteralTree(new LiteralToken(tag, contents)) $B$HF1$8$G$9!#(B.
+  <dd> new LiteralTree(new LiteralToken(tag, contents)) と同じです。.
 <p>
 </dl>
 <a name="methods"></a>
@@ -92,10 +92,10 @@ java.lang.Object
  public <a href="epp.LiteralToken.html#_top_">LiteralToken</a> literalToken()
 </pre>
 <dl>
-  <dd> $B$3$N%N!<%I$,;}$D(B LiteralToken $B$rJV$7$^$9!#(B.
-$BNc$($P!"(B `(literalTree string "abc") $B$H$$$&(B LiteralTree $B$KBP$7(B
-$B$3$N%a%=%C%I$r8F$s$@7k2L$O!"(B new LiteralToken(:string, "abc") $B$H(B
-$BF1$8CM$G$9!#(B
+  <dd> このノードが持つ LiteralToken を返します。.
+例えば、 `(literalTree string "abc") という LiteralTree に対し
+このメソッドを呼んだ結果は、 new LiteralToken(:string, "abc") と
+同じ値です。
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>

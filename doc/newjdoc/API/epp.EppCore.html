@@ -25,43 +25,43 @@ java.lang.Object
   <dt> public class <b>EppCore</b>
   <dt> extends Object
 </dl>
-EPP $B%W%j%W%m%;%C%5$,;}$D%a%=%C%I$N$&$A(B
-$B%U%!%$%k(B EppCore.java $B$GDj5A$5$l$k%a%=%C%I$O!"(B
-$B%W%j%W%m%;%C%5$N9|AH$_$rDj5A$9$k$b$N$G$9!#(B.
+EPP プリプロセッサが持つメソッドのうち
+ファイル EppCore.java で定義されるメソッドは、
+プリプロセッサの骨組みを定義するものです。.
 <p>
-<b> $BCm0U!'(B $B$3$N%/%i%9$O!"(B javadoc $B$r:n$k$?$a$NJX59E*$J%/%i%9$G$9!#(B
-$B<B:]$N(B EPP $B$N%=!<%9%3!<%ICf$K$OB8:_$7$^$;$s!#(B </b>
+<b> 注意： このクラスは、 javadoc を作るための便宜的なクラスです。
+実際の EPP のソースコード中には存在しません。 </b>
 <p>
-EPP $B%W%j%W%m%;%C%5$O!"9=J82r@O%Q%9!"%^%/%mE83+%Q%9!"7?%A%'%C%/%Q%9!"(B
-$B%3!<%I=PNO%Q%9$N#4$D$N%Q%9$+$i@.$C$F$$$^$9!#(B
-$B$=$l$>$l$N%Q%9$O!"(B self!tree $B$H$$$&JQ?t!J(BLd-2 $B%/%i%9$N%$%s%9%?%s%9JQ?t!K$r(B
-$BDL$7$F!"Cj>]9=J8LZ$r(B
-$B<uEO$7$7$^$9!#(B
+EPP プリプロセッサは、構文解析パス、マクロ展開パス、型チェックパス、
+コード出力パスの４つのパスから成っています。
+それぞれのパスは、 self!tree という変数（Ld-2 クラスのインスタンス変数）を
+通して、抽象構文木を
+受渡しします。
 <p>
-plug-in $B$,3F%Q%9$NA08e$K?7$?$J%Q%9$rDI2C$G$-$k$h$&$K!"(B
-$B3F%Q%9$O<!$N$h$&$J9=B$$K$J$C$F$$$^$9!#(B
+plug-in が各パスの前後に新たなパスを追加できるように、
+各パスは次のような構造になっています。
 <pre>
     void doTypeCheckingPass() {
-      beforeTypeCheckingPass();// $B%Q%9DI2C$N(B hook
-      ...;			// $BA0=hM}(B
-      typeCheckingPass();	// $BK\BN(B
-      ...;			// $B8e=hM}(B
-      afterTypeCheckingPass();	// $B%Q%9DI2C$N(B hook
+      beforeTypeCheckingPass();// パス追加の hook
+      ...;			// 前処理
+      typeCheckingPass();	// 本体
+      ...;			// 後処理
+      afterTypeCheckingPass();	// パス追加の hook
     }
 </pre>
-$BB>$N#3$D$N%Q%9!"(B parsingPass, macroExpansionPass, codeEmittingPass $B$b(B
-$BF1MM$N9=B$$r$7$F$$$^$9!#(B
+他の３つのパス、 parsingPass, macroExpansionPass, codeEmittingPass も
+同様の構造をしています。
 <p>
-plug-in $B$O!"(B afterXxxPass, beforeXxxPass $B$H$$$&%a%=%C%I$r(B
-$B3HD%$9$k$3$H$K$h$C$F!"(B
-$B$=$l$>$l$N%Q%9$NA08e$K?7$?$J%Q%9$rDI2C$9$k$3$H$,(B
-$B$G$-$^$9!#(B
-$BDI2C$7$?%Q%9$G!"%^%/%mE83+%*%V%8%'%/%H$J$I$K$h$k6I=jE*$JJQ49$G$O=hM}$7@Z$l$J$$(B
-$BBg0hE*$JJQ49$r9T$J$&$3$H$,$G$-$^$9!#(B
+plug-in は、 afterXxxPass, beforeXxxPass というメソッドを
+拡張することによって、
+それぞれのパスの前後に新たなパスを追加することが
+できます。
+追加したパスで、マクロ展開オブジェクトなどによる局所的な変換では処理し切れない
+大域的な変換を行なうことができます。
 <p>
-$B%Q%9$N!VK\BN!W$rDj5A$9$k%a%=%C%I!J%a%=%C%I(B typeCheckingPass $B$J$I!K$O!"(B
-$B%Q%9$N<B9TCf$KF0E*JQ?t$N4D6-$r:n$j$?$$;~$K!";H$($^$9!#(B
-$BNc!'(B
+パスの「本体」を定義するメソッド（メソッド typeCheckingPass など）は、
+パスの実行中に動的変数の環境を作りたい時に、使えます。
+例：
 <pre>
 SystemMixin bindTypeCheckingEnv {
   class Epp {
@@ -97,139 +97,139 @@ SystemMixin bindTypeCheckingEnv {
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#afterCodeEmittingPass()"><b>afterCodeEmittingPass</b></a>()
-  <dd> $B%3!<%I=PNO%Q%9$NK\BN$r<B9T$7$?8e$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B
+  <dd> コード出力パスの本体を実行した後に呼び出されるメソッドです。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#afterMacroExpansionPass()"><b>afterMacroExpansionPass</b></a>()
-  <dd> $B9=J8%^%/%mE83+%Q%9$NK\BN$r<B9T$7$?8e$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B
+  <dd> 構文マクロ展開パスの本体を実行した後に呼び出されるメソッドです。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#afterParsingPass()"><b>afterParsingPass</b></a>()
-  <dd> $B9=J82r@O%Q%9$NK\BN$r<B9T$7$?8e$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B
+  <dd> 構文解析パスの本体を実行した後に呼び出されるメソッドです。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#backtrack(int)"><b>backtrack</b></a>(int)
-  <dd> EppInputStream $B>e$G$N%]%$%s%?$N0LCV$r!"0z?t(B p $B$KLa$7$?8e!"(B
-$B%H!<%/%s$r#1$DFI$_!"!V@hFI$_$5$l$F$$$k%H!<%/%s!W$NCM$r99?7$7$^$9!#(B.
+  <dd> EppInputStream 上でのポインタの位置を、引数 p に戻した後、
+トークンを１つ読み、「先読みされているトークン」の値を更新します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#beforeCodeEmittingPass()"><b>beforeCodeEmittingPass</b></a>()
-  <dd> $B%3!<%I=PNO%Q%9$NK\BN$r<B9T$9$kA0$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B
+  <dd> コード出力パスの本体を実行する前に呼び出されるメソッドです。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#beforeMacroExpansionPass()"><b>beforeMacroExpansionPass</b></a>()
-  <dd> $B9=J8%^%/%mE83+%Q%9$NK\BN$r<B9T$9$kA0$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B
+  <dd> 構文マクロ展開パスの本体を実行する前に呼び出されるメソッドです。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#beforeParsingPass()"><b>beforeParsingPass</b></a>()
-  <dd> $B9=J82r@O%Q%9$NK\BN$r<B9T$9$kA0$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B
+  <dd> 構文解析パスの本体を実行する前に呼び出されるメソッドです。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#codeEmittingPass()"><b>codeEmittingPass</b></a>()
-  <dd> $B%3!<%I=PNO%Q%9$NK\BN$G$9!#(B.
+  <dd> コード出力パスの本体です。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#defineEmitter(epp.Symbol, epp.Emitter)"><b>defineEmitter</b></a>(Symbol, Emitter)
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#defineInvokeStyleMacro(epp.Symbol, epp.InvokeStyleMacro)"><b>defineInvokeStyleMacro</b></a>(Symbol, InvokeStyleMacro)
-  <dd> InvokeStyleMacro $B$r%F!<%V%k$KEPO?$7$^$9!#(B.
+  <dd> InvokeStyleMacro をテーブルに登録します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#defineMacro(epp.Symbol, epp.Macro)"><b>defineMacro</b></a>(Symbol, Macro)
-  <dd> $B%^%/%mE83+%*%V%8%'%/%H$r%F!<%V%k$KEPO?$7$^$9!#(B.
+  <dd> マクロ展開オブジェクトをテーブルに登録します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#doCodeEmittingPass()"><b>doCodeEmittingPass</b></a>()
-  <dd> $B%3!<%I=PNO%Q%9$r8F$S=P$7$^$9!#(B plug-in $B$OIaDL$3$N%a%=%C%I$r3HD%$7$^$;$s!#(B
+  <dd> コード出力パスを呼び出します。 plug-in は普通このメソッドを拡張しません。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#doMacroExpansionPass()"><b>doMacroExpansionPass</b></a>()
-  <dd> $B9=J8%^%/%mE83+%Q%9$r8F$S=P$7$^$9!#(B
-plug-in $B$OIaDL$3$N%a%=%C%I$r3HD%$7$^$;$s!#(B
+  <dd> 構文マクロ展開パスを呼び出します。
+plug-in は普通このメソッドを拡張しません。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#doParsingPass()"><b>doParsingPass</b></a>()
-  <dd> $B9=J82r@O%Q%9$r8F$S=P$7$^$9!#(B
-plug-in $B$OIaDL$3$N%a%=%C%I$r3HD%$7$^$;$s!#(B
+  <dd> 構文解析パスを呼び出します。
+plug-in は普通このメソッドを拡張しません。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#doTypeCheckingPass()"><b>doTypeCheckingPass</b></a>()
-  <dd> $B7?%A%'%C%/%Q%9$r8F$S=P$7$^$9!#(B
-plug-in $B$OIaDL$3$N%a%=%C%I$r3HD%$7$^$;$s!#(B
+  <dd> 型チェックパスを呼び出します。
+plug-in は普通このメソッドを拡張しません。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#emit1(java.lang.String, epp.Tree)"><b>emit1</b></a>(String, Tree)
-  <dd> outputFileName $B$K!"(B tree $B$rJ8;zNs$H$7$F=PNO$7$^$9!#(B.
+  <dd> outputFileName に、 tree を文字列として出力します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#emitAdditionalHeader(java.io.OutputStream)"><b>emitAdditionalHeader</b></a>(OutputStream)
-  <dd> $B$9$Y$F$N%U%!%$%k$N@hF,$K2?$+J8;zNs$r=PNO$9$k;~$K8F$P$l$k%a%=%C%I$G$9!#(B.
+  <dd> すべてのファイルの先頭に何か文字列を出力する時に呼ばれるメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#Epp(java.lang.String, java.lang.String)"><b>Epp</b></a>(String, String)
-  <dd> $B$3$N%a%=%C%I$O!"(B Ld-2 $B%/%i%9(B Epp $B$N%3%s%9%H%i%/%?$G$9!#(B.
+  <dd> このメソッドは、 Ld-2 クラス Epp のコンストラクタです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#eppSourceVersion()"><b>eppSourceVersion</b></a>()
-  <dd> EPP $BK\BN$N%=!<%9%3!<%I$N%P!<%8%g%s$rJ8;zNs$H$7$FJV$7$^$9!#(B
+  <dd> EPP 本体のソースコードのバージョンを文字列として返します。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#eppVersion()"><b>eppVersion</b></a>()
-  <dd> EPP $BK\BN$N%=!<%9%3!<%I$N%P!<%8%g%s$H(B
-$B$=$N%=!<%9%3!<%I$rJQ49$7$?(B EPP $B$N%P!<%8%g%s$rJ8;zNs$H$7$FJV$7$^$9!#(B
+  <dd> EPP 本体のソースコードのバージョンと
+そのソースコードを変換した EPP のバージョンを文字列として返します。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#error(java.lang.String)"><b>error</b></a>(String)
-  <dd> $BF~NO%W%m%0%i%`Cf$N%7%s%?%C%/%9%(%i!<$J$I!"%(%s%I%f!<%6%l%Y%k$N(B
-$B%(%i!<$,5/$-$?;~$K8F$V%a%=%C%I$G$9!#(B.
+  <dd> 入力プログラム中のシンタックスエラーなど、エンドユーザレベルの
+エラーが起きた時に呼ぶメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#extendMacro(epp.Symbol, epp.Macro)"><b>extendMacro</b></a>(Symbol, Macro)
-  <dd> $B%^%/%mE83+%*%V%8%'%/%H$r(B decorator pattern $B$K$h$C$F3HD%$7$^$9!#(B.
+  <dd> マクロ展開オブジェクトを decorator pattern によって拡張します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#initEmitterTable()"><b>initEmitterTable</b></a>()
-  <dd> Emitter $B$N%F!<%V%k$r=i4|2=$9$k%a%=%C%I$G$9!#(B.
+  <dd> Emitter のテーブルを初期化するメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#initializationPass()"><b>initializationPass</b></a>()
-  <dd> $B%W%j%W%m%;%C%5$N=i4|2=$r9T$J$&%a%=%C%I$G$9!#(B.
+  <dd> プリプロセッサの初期化を行なうメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#initInvokeStyleMacroTable()"><b>initInvokeStyleMacroTable</b></a>()
-  <dd> InvokeStyleMacro $B$N%F!<%V%k$r=i4|2=$9$k%a%=%C%I$G$9!#(B.
+  <dd> InvokeStyleMacro のテーブルを初期化するメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#initMacroTable()"><b>initMacroTable</b></a>()
-  <dd> Macro.macroTable $B$r=i4|2=$9$k%a%=%C%I$G$9!#(B.
+  <dd> Macro.macroTable を初期化するメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#inputPointer()"><b>inputPointer</b></a>()
-  <dd> $B@hFI$_$5$l$F$$$k%H!<%/%s$,3+;O$7$?0LCV!J(BEppInputStream $B>e$G$N%P%$%H?t!K$r(B
-$BJV$7$^$9!#(B.
+  <dd> 先読みされているトークンが開始した位置（EppInputStream 上でのバイト数）を
+返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#lookahead()"><b>lookahead</b></a>()
-  <dd> $B@hFI$_$5$l$F$$$k%H!<%/%s$rJV$7$^$9!#(B
-$BF~NO%]%$%s%?$O!"?J$_$^$;$s!#(B.
+  <dd> 先読みされているトークンを返します。
+入力ポインタは、進みません。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#macroExpansionPass()"><b>macroExpansionPass</b></a>()
-  <dd> $B9=J8%^%/%mE83+%Q%9$NK\BN$G$9!#(B.
+  <dd> 構文マクロ展開パスの本体です。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#match(epp.Token)"><b>match</b></a>(Token)
-  <dd> $B@hFI$_$5$l$F$$$k%H!<%/%s$,0z?t$HEy$7$$$+$I$&$+$r3N$+$a!"(B
-$B<!$N%H!<%/%s$KF~NO%]%$%s%?$r?J$a$^$9!#(B.
+  <dd> 先読みされているトークンが引数と等しいかどうかを確かめ、
+次のトークンに入力ポインタを進めます。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#matchAny()"><b>matchAny</b></a>()
-  <dd> $B@hFI$_$5$l$F$$$k%H!<%/%s$rCM$H$7$FJV$7$^$9!#(B
-$B$=$7$F!"F~NO%]%$%s%?$r?J$a$^$9!#(B.
+  <dd> 先読みされているトークンを値として返します。
+そして、入力ポインタを進めます。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#openEppInputStream(java.lang.String)"><b>openEppInputStream</b></a>(String)
-  <dd> $BF~NO%U%!%$%k$+$iJ8;z$rFI$_=P$9$?$a$N%9%H%j!<%`(B EppInputStream $B$r(B
-$B:n$C$FJV$7$^$9!#(B.
+  <dd> 入力ファイルから文字を読み出すためのストリーム EppInputStream を
+作って返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#parsingPass()"><b>parsingPass</b></a>()
-  <dd> $B9=J82r@O%Q%9$NK\BN$G$9!#(B.
+  <dd> 構文解析パスの本体です。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#readToken(epp.EppInputStream)"><b>readToken</b></a>(EppInputStream)
-  <dd> $B6uGrJ8;z$r%9%-%C%W$7!"%a%=%C%I(B readTokenStart $B$r8F$s$G!"(B
-$B%H!<%/%s$r#1$DJV$7$^$9!#(B.
+  <dd> 空白文字をスキップし、メソッド readTokenStart を呼んで、
+トークンを１つ返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#redefineEmitter(epp.Symbol, epp.Emitter)"><b>redefineEmitter</b></a>(Symbol, Emitter)
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#redefineInvokeStyleMacro(epp.Symbol, epp.InvokeStyleMacro)"><b>redefineInvokeStyleMacro</b></a>(Symbol, InvokeStyleMacro)
-  <dd> $B%F!<%V%k$KEPO?$5$l$F$$$k(B InvokeStyleMacro $B$r:FDj5A$7$^$9!#(B.
+  <dd> テーブルに登録されている InvokeStyleMacro を再定義します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#start()"><b>start</b></a>()
-  <dd> $B9=J82r@O$r3+;O$9$kHs=*C<5-9f$KAjEv$9$k%a%=%C%I$G$9!#(B
+  <dd> 構文解析を開始する非終端記号に相当するメソッドです。
 
 </dl>
 <a name="constructors"></a>
@@ -253,10 +253,10 @@ plug-in $B$OIaDL$3$N%a%=%C%I$r3HD%$7$^$;$s!#(B
                  String outputFileName)
 </pre>
 <dl>
-  <dd> $B$3$N%a%=%C%I$O!"(B Ld-2 $B%/%i%9(B Epp $B$N%3%s%9%H%i%/%?$G$9!#(B.
-$B%W%j%W%m%;%C%5$r5/F0$9$k%a%=%C%I$G$9!#(B
-$B$3$N%a%=%C%I$O!"(B EPP main routine $B!J(BEpp $B$H$$$&L>A0$N(B Java $B%/%i%9!K(B
-$B$+$i!"8F$S=P$5$l$^$9!#(B
+  <dd> このメソッドは、 Ld-2 クラス Epp のコンストラクタです。.
+プリプロセッサを起動するメソッドです。
+このメソッドは、 EPP main routine （Epp という名前の Java クラス）
+から、呼び出されます。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -269,11 +269,11 @@ plug-in $B$OIaDL$3$N%a%=%C%I$r3HD%$7$^$;$s!#(B
  public void initializationPass()
 </pre>
 <dl>
-  <dd> $B%W%j%W%m%;%C%5$N=i4|2=$r9T$J$&%a%=%C%I$G$9!#(B.
-$B$3$N%a%=%C%I$O!"(B EPP $B%W%j%W%m%;%C%5$,5/F0$7$?D>8e!J9=J82r@O$r;O$a$kA0!K$K(B
-$B8F$S=P$5$l$^$9!#(B
-plug-in $B$O!"$3$N%a%=%C%I$r3HD%$7!"I,MW$J=i4|2==hM}$r(B
-$BDI2C$9$k$3$H$,$G$-$^$9!#(B
+  <dd> プリプロセッサの初期化を行なうメソッドです。.
+このメソッドは、 EPP プリプロセッサが起動した直後（構文解析を始める前）に
+呼び出されます。
+plug-in は、このメソッドを拡張し、必要な初期化処理を
+追加することができます。
 <p>
 </dl>
 <a name="doParsingPass()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -282,8 +282,8 @@ plug-in $B$O!"$3$N%a%=%C%I$r3HD%$7!"I,MW$J=i4|2==hM}$r(B
  public void doParsingPass()
 </pre>
 <dl>
-  <dd> $B9=J82r@O%Q%9$r8F$S=P$7$^$9!#(B
-plug-in $B$OIaDL$3$N%a%=%C%I$r3HD%$7$^$;$s!#(B
+  <dd> 構文解析パスを呼び出します。
+plug-in は普通このメソッドを拡張しません。
 <p>
 </dl>
 <a name="doMacroExpansionPass()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -292,8 +292,8 @@ plug-in $B$OIaDL$3$N%a%=%C%I$r3HD%$7$^$;$s!#(B
  public void doMacroExpansionPass()
 </pre>
 <dl>
-  <dd> $B9=J8%^%/%mE83+%Q%9$r8F$S=P$7$^$9!#(B
-plug-in $B$OIaDL$3$N%a%=%C%I$r3HD%$7$^$;$s!#(B
+  <dd> 構文マクロ展開パスを呼び出します。
+plug-in は普通このメソッドを拡張しません。
 <p>
 </dl>
 <a name="doTypeCheckingPass()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -302,8 +302,8 @@ plug-in $B$OIaDL$3$N%a%=%C%I$r3HD%$7$^$;$s!#(B
  public void doTypeCheckingPass()
 </pre>
 <dl>
-  <dd> $B7?%A%'%C%/%Q%9$r8F$S=P$7$^$9!#(B
-plug-in $B$OIaDL$3$N%a%=%C%I$r3HD%$7$^$;$s!#(B
+  <dd> 型チェックパスを呼び出します。
+plug-in は普通このメソッドを拡張しません。
 <p>
 </dl>
 <a name="doCodeEmittingPass()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -312,7 +312,7 @@ plug-in $B$OIaDL$3$N%a%=%C%I$r3HD%$7$^$;$s!#(B
  public void doCodeEmittingPass()
 </pre>
 <dl>
-  <dd> $B%3!<%I=PNO%Q%9$r8F$S=P$7$^$9!#(B plug-in $B$OIaDL$3$N%a%=%C%I$r3HD%$7$^$;$s!#(B
+  <dd> コード出力パスを呼び出します。 plug-in は普通このメソッドを拡張しません。
 <p>
 </dl>
 <a name="error(java.lang.String)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -321,16 +321,16 @@ plug-in $B$OIaDL$3$N%a%=%C%I$r3HD%$7$^$;$s!#(B
  public Error error(String str)
 </pre>
 <dl>
-  <dd> $BF~NO%W%m%0%i%`Cf$N%7%s%?%C%/%9%(%i!<$J$I!"%(%s%I%f!<%6%l%Y%k$N(B
-$B%(%i!<$,5/$-$?;~$K8F$V%a%=%C%I$G$9!#(B.
-$B$3$N%a%=%C%I$O!"0z?t$NJ8;zNs$K9THV9f>pJs$J$I$rDI2C$7$F!"(B
-$B%/%i%9(B EppUserError $B$N%$%s%9%?%s%9$r:n$C$FJV$7$^$9!#(B
+  <dd> 入力プログラム中のシンタックスエラーなど、エンドユーザレベルの
+エラーが起きた時に呼ぶメソッドです。.
+このメソッドは、引数の文字列に行番号情報などを追加して、
+クラス EppUserError のインスタンスを作って返します。
 <p>
-$B$3$N%a%=%C%I$OIaDL!"<!$N$h$&$K$7$F;H$$$^$9!#(B
+このメソッドは普通、次のようにして使います。
 <pre>
    throw error("message");
 </pre>
-fatal error $B$N>l9g$O!"$3$N%a%=%C%I$G$O$J$/!"(B Epp.fatal $B$r;H$C$F2<$5$$!#(B
+fatal error の場合は、このメソッドではなく、 Epp.fatal を使って下さい。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -343,8 +343,8 @@ fatal error $B$N>l9g$O!"$3$N%a%=%C%I$G$O$J$/!"(B Epp.fatal $B$r;H$C$F2<$5$$!#
  public <a href="epp.Token.html#_top_">Token</a> lookahead()
 </pre>
 <dl>
-  <dd> $B@hFI$_$5$l$F$$$k%H!<%/%s$rJV$7$^$9!#(B
-$BF~NO%]%$%s%?$O!"?J$_$^$;$s!#(B.
+  <dd> 先読みされているトークンを返します。
+入力ポインタは、進みません。.
 <p>
 </dl>
 <a name="match(epp.Token)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -353,11 +353,11 @@ fatal error $B$N>l9g$O!"$3$N%a%=%C%I$G$O$J$/!"(B Epp.fatal $B$r;H$C$F2<$5$$!#
  public <a href="epp.Token.html#_top_">Token</a> match(<a href="epp.Token.html#_top_">Token</a> token)
 </pre>
 <dl>
-  <dd> $B@hFI$_$5$l$F$$$k%H!<%/%s$,0z?t$HEy$7$$$+$I$&$+$r3N$+$a!"(B
-$B<!$N%H!<%/%s$KF~NO%]%$%s%?$r?J$a$^$9!#(B.
-$B$b$7Ey$7$1$l$P$=$N%H!<%/%s$rJV$7!"(B
-$B$b$7Ey$7$/$J$1$l$P!"%f!<%6$KJ,$+$j$d$9$$%a%C%;!<%8$H$H$b$K(B
-$B%a%=%C%I(B error $B$r8F$S=P$7$^$9!#(B
+  <dd> 先読みされているトークンが引数と等しいかどうかを確かめ、
+次のトークンに入力ポインタを進めます。.
+もし等しければそのトークンを返し、
+もし等しくなければ、ユーザに分かりやすいメッセージとともに
+メソッド error を呼び出します。
 <p>
 </dl>
 <a name="matchAny()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -366,8 +366,8 @@ fatal error $B$N>l9g$O!"$3$N%a%=%C%I$G$O$J$/!"(B Epp.fatal $B$r;H$C$F2<$5$$!#
  public <a href="epp.Token.html#_top_">Token</a> matchAny()
 </pre>
 <dl>
-  <dd> $B@hFI$_$5$l$F$$$k%H!<%/%s$rCM$H$7$FJV$7$^$9!#(B
-$B$=$7$F!"F~NO%]%$%s%?$r?J$a$^$9!#(B.
+  <dd> 先読みされているトークンを値として返します。
+そして、入力ポインタを進めます。.
 <p>
 </dl>
 <a name="start()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -376,7 +376,7 @@ fatal error $B$N>l9g$O!"$3$N%a%=%C%I$G$O$J$/!"(B Epp.fatal $B$r;H$C$F2<$5$$!#
  public <a href="epp.Tree.html#_top_">Tree</a> start()
 </pre>
 <dl>
-  <dd> $B9=J82r@O$r3+;O$9$kHs=*C<5-9f$KAjEv$9$k%a%=%C%I$G$9!#(B
+  <dd> 構文解析を開始する非終端記号に相当するメソッドです。
 <p>
 </dl>
 <a name="readToken(epp.EppInputStream)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -385,11 +385,11 @@ fatal error $B$N>l9g$O!"$3$N%a%=%C%I$G$O$J$/!"(B Epp.fatal $B$r;H$C$F2<$5$$!#
  public <a href="epp.Token.html#_top_">Token</a> readToken(<a href="epp.EppInputStream.html#_top_">EppInputStream</a> in)
 </pre>
 <dl>
-  <dd> $B6uGrJ8;z$r%9%-%C%W$7!"%a%=%C%I(B readTokenStart $B$r8F$s$G!"(B
-$B%H!<%/%s$r#1$DJV$7$^$9!#(B.
-$B$3$N%a%=%C%I$O(B matchAny() $B%a%=%C%I$+$i8F$S=P$5$l$^$9!#(B
-$B9=J82r@O%k!<%A%s$+$i(B
-$B$3$N%a%=%C%I$rD>@\8F$S=P$7$F$O$$$1$^$;$s!#(B
+  <dd> 空白文字をスキップし、メソッド readTokenStart を呼んで、
+トークンを１つ返します。.
+このメソッドは matchAny() メソッドから呼び出されます。
+構文解析ルーチンから
+このメソッドを直接呼び出してはいけません。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -402,12 +402,12 @@ fatal error $B$N>l9g$O!"$3$N%a%=%C%I$G$O$J$/!"(B Epp.fatal $B$r;H$C$F2<$5$$!#
  public <a href="epp.EppInputStream.html#_top_">EppInputStream</a> openEppInputStream(String inputFileName)
 </pre>
 <dl>
-  <dd> $BF~NO%U%!%$%k$+$iJ8;z$rFI$_=P$9$?$a$N%9%H%j!<%`(B EppInputStream $B$r(B
-$B:n$C$FJV$7$^$9!#(B.
-plug-in $B$O!"$3$N%a%=%C%I$r:FDj5A$7!"(B
-EppInputStream $B$N%5%V%/%i%9$rJV$9$h$&$K(B
-$BJQ99$9$k$3$H$G!"F~NO%9%H%j!<%`$N5sF0$r3HD%$9$k$3$H$,$G$-$^$9!#(B
-$B!J(BDesign pattern $B$K$*$1$k(B Factory method $B$G$9!#!K(B
+  <dd> 入力ファイルから文字を読み出すためのストリーム EppInputStream を
+作って返します。.
+plug-in は、このメソッドを再定義し、
+EppInputStream のサブクラスを返すように
+変更することで、入力ストリームの挙動を拡張することができます。
+（Design pattern における Factory method です。）
 <p>
 </dl>
 <a name="beforeParsingPass()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -416,7 +416,7 @@ EppInputStream $B$N%5%V%/%i%9$rJV$9$h$&$K(B
  public void beforeParsingPass()
 </pre>
 <dl>
-  <dd> $B9=J82r@O%Q%9$NK\BN$r<B9T$9$kA0$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B
+  <dd> 構文解析パスの本体を実行する前に呼び出されるメソッドです。
 <p>
 </dl>
 <a name="parsingPass()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -425,9 +425,9 @@ EppInputStream $B$N%5%V%/%i%9$rJV$9$h$&$K(B
  public void parsingPass()
 </pre>
 <dl>
-  <dd> $B9=J82r@O%Q%9$NK\BN$G$9!#(B.
-plug-in $B$O!"$3$N%Q%9<B9TCf$N(B
-$BF0E*JQ?t$N4D6-$r:n$k;~$J$I$K!"$3$N%a%=%C%I$r3HD%$7$^$9!#(B
+  <dd> 構文解析パスの本体です。.
+plug-in は、このパス実行中の
+動的変数の環境を作る時などに、このメソッドを拡張します。
 <p>
 </dl>
 <a name="afterParsingPass()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -436,7 +436,7 @@ plug-in $B$O!"$3$N%Q%9<B9TCf$N(B
  public void afterParsingPass()
 </pre>
 <dl>
-  <dd> $B9=J82r@O%Q%9$NK\BN$r<B9T$7$?8e$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B
+  <dd> 構文解析パスの本体を実行した後に呼び出されるメソッドです。
 <p>
 </dl>
 <a name="inputPointer()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -445,9 +445,9 @@ plug-in $B$O!"$3$N%Q%9<B9TCf$N(B
  public int inputPointer()
 </pre>
 <dl>
-  <dd> $B@hFI$_$5$l$F$$$k%H!<%/%s$,3+;O$7$?0LCV!J(BEppInputStream $B>e$G$N%P%$%H?t!K$r(B
-$BJV$7$^$9!#(B.
-$BJVCM$O!"%a%=%C%I(B backtrack $B$N0z?t$K;H$$$^$9!#(B
+  <dd> 先読みされているトークンが開始した位置（EppInputStream 上でのバイト数）を
+返します。.
+返値は、メソッド backtrack の引数に使います。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -460,12 +460,12 @@ plug-in $B$O!"$3$N%Q%9<B9TCf$N(B
  public void backtrack(int p)
 </pre>
 <dl>
-  <dd> EppInputStream $B>e$G$N%]%$%s%?$N0LCV$r!"0z?t(B p $B$KLa$7$?8e!"(B
-$B%H!<%/%s$r#1$DFI$_!"!V@hFI$_$5$l$F$$$k%H!<%/%s!W$NCM$r99?7$7$^$9!#(B.
-$B<!$K(B lookahead() $B$,8F$S=P$5$l$k$H!"(B p $B$ND>8e$+$i3+;O$5$l$k%H!<%/%s$,(B
-$BJV$5$l$^$9!#(B
-$B0z?t$K;XDj$9$k(B int $B7?$NCM$O!"%a%=%C%I(B inputPointer $B$K$h$C$F(B
-$B$"$i$+$8$a<hF@$7$F$*$/I,MW$,$"$j$^$9!#(B
+  <dd> EppInputStream 上でのポインタの位置を、引数 p に戻した後、
+トークンを１つ読み、「先読みされているトークン」の値を更新します。.
+次に lookahead() が呼び出されると、 p の直後から開始されるトークンが
+返されます。
+引数に指定する int 型の値は、メソッド inputPointer によって
+あらかじめ取得しておく必要があります。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -478,10 +478,10 @@ plug-in $B$O!"$3$N%Q%9<B9TCf$N(B
  public void initMacroTable()
 </pre>
 <dl>
-  <dd> Macro.macroTable $B$r=i4|2=$9$k%a%=%C%I$G$9!#(B.
-plug-in $B$O$3$N%a%=%C%I$r3HD%$7!"(B defineMacro $B$d(B
-extendMacro $B$r8F$S=P$9$3$H$K$h$C$F!"(B
-$B%F!<%V%k$KEPO?$5$l$k%^%/%mE83+%*%V%8%'%/%H$rDI2C!&3HD%$G$-$^$9!#(B
+  <dd> Macro.macroTable を初期化するメソッドです。.
+plug-in はこのメソッドを拡張し、 defineMacro や
+extendMacro を呼び出すことによって、
+テーブルに登録されるマクロ展開オブジェクトを追加・拡張できます。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -495,9 +495,9 @@ extendMacro $B$r8F$S=P$9$3$H$K$h$C$F!"(B
                          <a href="epp.Macro.html#_top_">Macro</a> func)
 </pre>
 <dl>
-  <dd> $B%^%/%mE83+%*%V%8%'%/%H$r%F!<%V%k$KEPO?$7$^$9!#(B.
-$B$b$7$9$G$K(B tag $B$KBP1~$9$k%^%/%mE83+%*%V%8%'%/%H$,EPO?:Q$_$J$i(B
-fatal error $B$K$J$j$^$9!#(B
+  <dd> マクロ展開オブジェクトをテーブルに登録します。.
+もしすでに tag に対応するマクロ展開オブジェクトが登録済みなら
+fatal error になります。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -511,9 +511,9 @@ fatal error $B$K$J$j$^$9!#(B
                          <a href="epp.Macro.html#_top_">Macro</a> func)
 </pre>
 <dl>
-  <dd> $B%^%/%mE83+%*%V%8%'%/%H$r(B decorator pattern $B$K$h$C$F3HD%$7$^$9!#(B.
-$B0z?t(B func $B$NCf$+$i$O!"JQ?t(B orig $B$K$h$C$F!"%*%j%8%J%k$N(B
-$B%^%/%mE83+%*%V%8%'%/%H$r;2>H$G$-$^$9!#(B
+  <dd> マクロ展開オブジェクトを decorator pattern によって拡張します。.
+引数 func の中からは、変数 orig によって、オリジナルの
+マクロ展開オブジェクトを参照できます。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -526,7 +526,7 @@ fatal error $B$K$J$j$^$9!#(B
  public void beforeMacroExpansionPass()
 </pre>
 <dl>
-  <dd> $B9=J8%^%/%mE83+%Q%9$NK\BN$r<B9T$9$kA0$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B
+  <dd> 構文マクロ展開パスの本体を実行する前に呼び出されるメソッドです。
 <p>
 </dl>
 <a name="macroExpansionPass()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -535,9 +535,9 @@ fatal error $B$K$J$j$^$9!#(B
  public void macroExpansionPass()
 </pre>
 <dl>
-  <dd> $B9=J8%^%/%mE83+%Q%9$NK\BN$G$9!#(B.
-plug-in $B$O!"$3$N%Q%9<B9TCf$N(B
-$BF0E*JQ?t$N4D6-$r:n$k;~$J$I$K!"$3$N%a%=%C%I$r3HD%$7$^$9!#(B
+  <dd> 構文マクロ展開パスの本体です。.
+plug-in は、このパス実行中の
+動的変数の環境を作る時などに、このメソッドを拡張します。
 <p>
 </dl>
 <a name="afterMacroExpansionPass()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -546,7 +546,7 @@ plug-in $B$O!"$3$N%Q%9<B9TCf$N(B
  public void afterMacroExpansionPass()
 </pre>
 <dl>
-  <dd> $B9=J8%^%/%mE83+%Q%9$NK\BN$r<B9T$7$?8e$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B
+  <dd> 構文マクロ展開パスの本体を実行した後に呼び出されるメソッドです。
 <p>
 </dl>
 <a name="defineInvokeStyleMacro(epp.Symbol, epp.InvokeStyleMacro)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -556,7 +556,7 @@ plug-in $B$O!"$3$N%Q%9<B9TCf$N(B
                                     <a href="epp.InvokeStyleMacro.html#_top_">InvokeStyleMacro</a> func)
 </pre>
 <dl>
-  <dd> InvokeStyleMacro $B$r%F!<%V%k$KEPO?$7$^$9!#(B.
+  <dd> InvokeStyleMacro をテーブルに登録します。.
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -570,7 +570,7 @@ plug-in $B$O!"$3$N%Q%9<B9TCf$N(B
                                       <a href="epp.InvokeStyleMacro.html#_top_">InvokeStyleMacro</a> func)
 </pre>
 <dl>
-  <dd> $B%F!<%V%k$KEPO?$5$l$F$$$k(B InvokeStyleMacro $B$r:FDj5A$7$^$9!#(B.
+  <dd> テーブルに登録されている InvokeStyleMacro を再定義します。.
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -583,11 +583,11 @@ plug-in $B$O!"$3$N%Q%9<B9TCf$N(B
  public void initInvokeStyleMacroTable()
 </pre>
 <dl>
-  <dd> InvokeStyleMacro $B$N%F!<%V%k$r=i4|2=$9$k%a%=%C%I$G$9!#(B.
-plug-in $B$O$3$N%a%=%C%I$r3HD%$7!"(B defineInvokeStyleMacro $B$d(B
-redefineInvokeStyleMacro $B$r8F$S=P$9$3$H$K$h$C$F!"(B
-$B%F!<%V%k$KEPO?$5$l$k(B InvokeStyleMacro $B%*%V%8%'%/%H$r(B
-$BDI2C!&JQ99$G$-$^$9!#(B
+  <dd> InvokeStyleMacro のテーブルを初期化するメソッドです。.
+plug-in はこのメソッドを拡張し、 defineInvokeStyleMacro や
+redefineInvokeStyleMacro を呼び出すことによって、
+テーブルに登録される InvokeStyleMacro オブジェクトを
+追加・変更できます。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -600,8 +600,8 @@ redefineInvokeStyleMacro $B$r8F$S=P$9$3$H$K$h$C$F!"(B
  public void initEmitterTable()
 </pre>
 <dl>
-  <dd> Emitter $B$N%F!<%V%k$r=i4|2=$9$k%a%=%C%I$G$9!#(B.
-plug-in $B%W%m%0%i%^!<$O!"IaDL$3$N%a%=%C%I$r3HD%$7$^$;$s!#(B
+  <dd> Emitter のテーブルを初期化するメソッドです。.
+plug-in プログラマーは、普通このメソッドを拡張しません。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -626,7 +626,7 @@ plug-in $B%W%m%0%i%^!<$O!"IaDL$3$N%a%=%C%I$r3HD%$7$^$;$s!#(B
  public void beforeCodeEmittingPass()
 </pre>
 <dl>
-  <dd> $B%3!<%I=PNO%Q%9$NK\BN$r<B9T$9$kA0$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B
+  <dd> コード出力パスの本体を実行する前に呼び出されるメソッドです。
 <p>
 </dl>
 <a name="codeEmittingPass()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -635,9 +635,9 @@ plug-in $B%W%m%0%i%^!<$O!"IaDL$3$N%a%=%C%I$r3HD%$7$^$;$s!#(B
  public void codeEmittingPass()
 </pre>
 <dl>
-  <dd> $B%3!<%I=PNO%Q%9$NK\BN$G$9!#(B.
-plug-in $B$O!"$3$N%Q%9<B9TCf$N(B
-$BF0E*JQ?t$N4D6-$r:n$k;~$J$I$K!"$3$N%a%=%C%I$r3HD%$7$^$9!#(B
+  <dd> コード出力パスの本体です。.
+plug-in は、このパス実行中の
+動的変数の環境を作る時などに、このメソッドを拡張します。
 <p>
 </dl>
 <a name="afterCodeEmittingPass()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -646,7 +646,7 @@ plug-in $B$O!"$3$N%Q%9<B9TCf$N(B
  public void afterCodeEmittingPass()
 </pre>
 <dl>
-  <dd> $B%3!<%I=PNO%Q%9$NK\BN$r<B9T$7$?8e$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B
+  <dd> コード出力パスの本体を実行した後に呼び出されるメソッドです。
 <p>
 </dl>
 <a name="emit1(java.lang.String, epp.Tree)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -656,10 +656,10 @@ plug-in $B$O!"$3$N%Q%9<B9TCf$N(B
                    <a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> outputFileName $B$K!"(B tree $B$rJ8;zNs$H$7$F=PNO$7$^$9!#(B.
-$B$?$@$7!"$b$7(B outputFileName $B$,$9$G$KB8:_$7!"(B
-$B!V(BEPP $B$K$h$C$F@8@.$5$l$?%U%!%$%k!W$G$J$$$J$i$P!"(B
-EppUserError $B$r(B throw $B$7$^$9!#(B
+  <dd> outputFileName に、 tree を文字列として出力します。.
+ただし、もし outputFileName がすでに存在し、
+「EPP によって生成されたファイル」でないならば、
+EppUserError を throw します。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -672,8 +672,8 @@ EppUserError $B$r(B throw $B$7$^$9!#(B
  public void emitAdditionalHeader(OutputStream out)
 </pre>
 <dl>
-  <dd> $B$9$Y$F$N%U%!%$%k$N@hF,$K2?$+J8;zNs$r=PNO$9$k;~$K8F$P$l$k%a%=%C%I$G$9!#(B.
-$B$3$N%a%=%C%I$O(B emit1 $B$+$i8F$P$l$^$9!#(B
+  <dd> すべてのファイルの先頭に何か文字列を出力する時に呼ばれるメソッドです。.
+このメソッドは emit1 から呼ばれます。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -686,8 +686,8 @@ EppUserError $B$r(B throw $B$7$^$9!#(B
  public String eppVersion()
 </pre>
 <dl>
-  <dd> EPP $BK\BN$N%=!<%9%3!<%I$N%P!<%8%g%s$H(B
-$B$=$N%=!<%9%3!<%I$rJQ49$7$?(B EPP $B$N%P!<%8%g%s$rJ8;zNs$H$7$FJV$7$^$9!#(B
+  <dd> EPP 本体のソースコードのバージョンと
+そのソースコードを変換した EPP のバージョンを文字列として返します。
 <p>
 </dl>
 <a name="eppSourceVersion()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -696,7 +696,7 @@ EppUserError $B$r(B throw $B$7$^$9!#(B
  public String eppSourceVersion()
 </pre>
 <dl>
-  <dd> EPP $BK\BN$N%=!<%9%3!<%I$N%P!<%8%g%s$rJ8;zNs$H$7$FJV$7$^$9!#(B
+  <dd> EPP 本体のソースコードのバージョンを文字列として返します。
 <p>
 </dl>
 <hr>

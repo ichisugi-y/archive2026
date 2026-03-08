@@ -25,10 +25,10 @@ java.lang.Object
   <dt> public class <b>VarEnv</b>
   <dt> extends Object
 </dl>
-$B%/%i%9(B VarEnv $B$O!"7?%A%'%C%/%Q%9$K$*$$$F!"(B
-$BJQ?t$N4D6-$r<B8=$9$k$?$a$K;H$o$l$^$9!#(B.
+クラス VarEnv は、型チェックパスにおいて、
+変数の環境を実現するために使われます。.
 <p>
-$BDL>o!"JQ?t4D6-$O!"(B :varEnv $B$H$$$&L>A0$NF0E*JQ?t$KF~$l$i$l$F$$$^$9!#(B
+通常、変数環境は、 :varEnv という名前の動的変数に入れられています。
 <p>
 <dl>
     <dt> <b>See Also:</b>
@@ -50,7 +50,7 @@ java.lang.Object
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#lookup(epp.Symbol)"><b>lookup</b></a>(Symbol)
-  <dd> $BJQ?tL>(B name $B$r;}$DJQ?t$N(B VarInfo $B$r8!:w$7$FJV$7$^$9!#(B.
+  <dd> 変数名 name を持つ変数の VarInfo を検索して返します。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -74,11 +74,11 @@ java.lang.Object
  public <a href="epp.VarInfo.html#_top_">VarInfo</a> lookup(<a href="epp.Symbol.html#_top_">Symbol</a> name) throws <a href="epp.NotFound.html#_top_">NotFound</a>
 </pre>
 <dl>
-  <dd> $BJQ?tL>(B name $B$r;}$DJQ?t$N(B VarInfo $B$r8!:w$7$FJV$7$^$9!#(B.
+  <dd> 変数名 name を持つ変数の VarInfo を検索して返します。.
 <p>
   <dd><dl>
     <dt> <b>Throws:</b> <a href="epp.NotFound.html#_top_">NotFound</a>
-    <dd> $B8+$D$+$i$J$+$C$?>l9g!#(B
+    <dd> 見つからなかった場合。
   </dl></dd>
 </dl>
 <hr>

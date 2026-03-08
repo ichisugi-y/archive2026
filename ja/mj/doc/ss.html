@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="./style.css">
 <title> ss plug-in </title>
 </head> <body>
@@ -11,41 +11,41 @@
 </div>
 <h1> ss plug-in</h1>
 <ul class="headers">
-<li><a href="#note"><div style="color:red">$BCm0U(B</div></a>
-<li><a href="#intro">$B35MW(B</a>
-<li><a href="#example">$BNc(B</a>
-<li><a href="#note">$BCm0U(B</a>
-<li><a href="#syntax">$BJ8K!(B</a>
+<li><a href="#note"><div style="color:red">注意</div></a>
+<li><a href="#intro">概要</a>
+<li><a href="#example">例</a>
+<li><a href="#note">注意</a>
+<li><a href="#syntax">文法</a>
 </p></ul><p>
 </p><p>
-</p><h2><a name="note"><div style="color:red">$BCm0U(B</div></a></h2><p>
-$B!!(Bss plug-in $B$O!"(B MJ1.0 $B$+$i$O;H$o$l$F$$$^$;$s!#(B
-$B!!0J2<$N@bL@$O!"(BMJ0.1 $B$N$?$a$N$b$N$G$9!#(B
+</p><h2><a name="note"><div style="color:red">注意</div></a></h2><p>
+　ss plug-in は、 MJ1.0 からは使われていません。
+　以下の説明は、MJ0.1 のためのものです。
 </p><p>
-</p><h2><a name="intro">$B35MW(B</a></h2><p>
- MJ $B$K$O(B SS (startup-singleton) $B$H$$$&L>A0$N%/%i%9$,$"$j!"(B
-Java $B8@8l$N(B static field/method $B$NBe$o$j$K$J$C$F$$$^$9!#(B
-$B$7$+$7!"(B class SS {...} $B$NCf$K(B SS field/method $B$r(B
-$B=q$+$J$1$l$P$J$i$J$$$N$O$a$s$I$&$G$9!#(B
+</p><h2><a name="intro">概要</a></h2><p>
+ MJ には SS (startup-singleton) という名前のクラスがあり、
+Java 言語の static field/method の代わりになっています。
+しかし、 class SS {...} の中に SS field/method を
+書かなければならないのはめんどうです。
 </p><p>
-$B$=$3$G!"(B SS field/method $B$r=>Mh$N(B static field/method $B$N$h$&$K(B
-$B5$7Z$K=q$1$k$h$&$K$9$k%7%s%?%C%/%9%7%e%,!<$r(B
-$BDs6!$9$k$N$,!"$3$N(B ss plug-in $B$G$9!#(B
-ss plug-in $B$O!":G=i$+$iI8=`(B plug-in $B$H$7$F(B mjc $B$N=hM}7O$K<h$j9~$^$l$F$$$^$9!#(B
-</p><p>
-</p><p>
-ss plug-in $B$O!"(B SS field/method $B$,$=$N$^$^$G$O$"$^$j$K;H$$$K$/$$$?$a$K!"(B
-$B$H$j$"$($:<BAu$7$F$_$?%7%s%?%C%/%9%7%e%,!<$G$9!#(B
-$B>-MhE*$K$O!"$b$C$H$$$$9=J8$r;W$$IU$1$P!"$=$l$KJQ$($^$9!#(B
+そこで、 SS field/method を従来の static field/method のように
+気軽に書けるようにするシンタックスシュガーを
+提供するのが、この ss plug-in です。
+ss plug-in は、最初から標準 plug-in として mjc の処理系に取り込まれています。
 </p><p>
 </p><p>
-</p><h2><a name="example">$BNc(B</a></h2><p>
+ss plug-in は、 SS field/method がそのままではあまりに使いにくいために、
+とりあえず実装してみたシンタックスシュガーです。
+将来的には、もっといい構文を思い付けば、それに変えます。
 </p><p>
- $B%U%#!<%k%I@k8@!&%a%=%C%I@k8@$N@hF,$K(B "ss" $B$H=q$/$3$H$G!"(B
-SS field/method $B$r@k8@$G$-$^$9!#(B
 </p><p>
- module $B$N(B body $B$+!"(B
- $BG$0U$N%/%i%9$N(B body $B$K(B SS field/method $B$r=q$/$3$H$,$G$-$^$9!#(B
+</p><h2><a name="example">例</a></h2><p>
+</p><p>
+ フィールド宣言・メソッド宣言の先頭に "ss" と書くことで、
+SS field/method を宣言できます。
+</p><p>
+ module の body か、
+ 任意のクラスの body に SS field/method を書くことができます。
 </p><p>
 </p><p>
 </p><p>
@@ -63,7 +63,7 @@ module test {
 }
 </pre>
 </p><p>
-$B$3$N%W%m%0%i%`$O!"(B ss plug-in $B$K$h$C$F<!$N%W%m%0%i%`$K%^%/%mE83+$5$l$^$9!#(B
+このプログラムは、 ss plug-in によって次のプログラムにマクロ展開されます。
 <pre>
 module test {
   define class C {
@@ -81,24 +81,24 @@ module test {
 </pre>
 </p><p>
 </p><p>
-</p><h2><a name="note">$BCm0U(B</a></h2><p>
-"ss" $B$O!"(B "define" $B$H(B modifier $B$N4V$K(B
-$B=q$/I,MW$,$"$j$^$9!#!J(B "define" $B$b(B "ss" $B$b(B modifier $B$G$O$"$j$^$;$s!#!K(B
-"define" $BA0$K=q$$$?$j!"(B modifier $B$N$&$7$m$K=q$/$H!"(B
-$B%7%s%?%C%/%9%(%i!<$K$J$j$^$9!#(B
+</p><h2><a name="note">注意</a></h2><p>
+"ss" は、 "define" と modifier の間に
+書く必要があります。（ "define" も "ss" も modifier ではありません。）
+"define" 前に書いたり、 modifier のうしろに書くと、
+シンタックスエラーになります。
 </p><p>
-ss field/method $B$O!"$"$/$^$GC1=c$J%7%s%?%C%/%9%7%e%,!<$G$"$C$F!"(B
-static scope $B%k!<%k$K$O=>$$$^$;$s!#(B
-$B%/%i%9FbIt$K=q$+$l$?(B ss method $B$O!"%b%8%e!<%kFb$NB>$N%/%i%9$+$i$b(B
-$B;2>H$9$k$3$H$,$G$-$^$9!#(B
-</p><p>
-</p><p>
-SS $B$H$$$&C1=cL>$N%/%i%9$,B>$K$"$k$H!"F0:n$,$*$+$7$/$J$j$^$9!#(B
-$B$3$l$O!"8=:_$N<BAu$N%P%0$G$9!#(B
+ss field/method は、あくまで単純なシンタックスシュガーであって、
+static scope ルールには従いません。
+クラス内部に書かれた ss method は、モジュール内の他のクラスからも
+参照することができます。
 </p><p>
 </p><p>
+SS という単純名のクラスが他にあると、動作がおかしくなります。
+これは、現在の実装のバグです。
 </p><p>
-</p><h2><a name="syntax">$BJ8K!(B</a></h2><p>
+</p><p>
+</p><p>
+</p><h2><a name="syntax">文法</a></h2><p>
 <pre>
 </p><p>
 MJTypeDeclaration

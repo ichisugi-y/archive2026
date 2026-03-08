@@ -25,9 +25,9 @@ java.lang.Object
   <dt> public class <b>TreeVec</b>
   <dt> extends Object
 </dl>
-$B%/%i%9(B TreeVec $B$O!"%/%i%9(B Tree $B$rMWAG$H$9$k2DJQD9G[Ns$N%/%i%9$G$9!#(B.
+クラス TreeVec は、クラス Tree を要素とする可変長配列のクラスです。.
 <p>
-$BE57?E*$J;H$$J}$O!"<!$N$h$&$K$J$j$^$9!#(B
+典型的な使い方は、次のようになります。
 <pre>
 	TreeVec tvec = new TreeVec();
 	while (...) {
@@ -57,16 +57,16 @@ java.lang.Object
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#add(epp.Tree)"><b>add</b></a>(Tree)
-  <dd> TreeVec $B$K(B Tree $B$r#1$DDI2C$7$^$9!#(B.
+  <dd> TreeVec に Tree を１つ追加します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#addA(epp.Tree[])"><b>addA</b></a>(Tree[])
-  <dd> TreeVec $B$K!"(B Tree $B$NG[Ns$NCf?H$rDI2C$7$^$9!#(B.
+  <dd> TreeVec に、 Tree の配列の中身を追加します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#addA(epp.TreeVec)"><b>addA</b></a>(TreeVec)
-  <dd> TreeVec $B$K!"JL$N(B TreeVec $B$NCf?H$rDI2C$7$^$9!#(B.
+  <dd> TreeVec に、別の TreeVec の中身を追加します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#toArray()"><b>toArray</b></a>()
-  <dd> TreeVec $B$r(B Tree $B$NG[Ns$KJQ49$7$^$9!#(B.
+  <dd> TreeVec を Tree の配列に変換します。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -88,7 +88,7 @@ java.lang.Object
  public <a href="#_top_">TreeVec</a> add(<a href="epp.Tree.html#_top_">Tree</a> t)
 </pre>
 <dl>
-  <dd> TreeVec $B$K(B Tree $B$r#1$DDI2C$7$^$9!#(B.
+  <dd> TreeVec に Tree を１つ追加します。.
 <p>
 </dl>
 <a name="addA(epp.TreeVec)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -97,7 +97,7 @@ java.lang.Object
  public <a href="#_top_">TreeVec</a> addA(<a href="#_top_">TreeVec</a> tvec)
 </pre>
 <dl>
-  <dd> TreeVec $B$K!"JL$N(B TreeVec $B$NCf?H$rDI2C$7$^$9!#(B.
+  <dd> TreeVec に、別の TreeVec の中身を追加します。.
 <p>
 </dl>
 <a name="addA(epp.Tree[])"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -106,7 +106,7 @@ java.lang.Object
  public <a href="#_top_">TreeVec</a> addA(<a href="epp.Tree.html#_top_">Tree</a> trees[])
 </pre>
 <dl>
-  <dd> TreeVec $B$K!"(B Tree $B$NG[Ns$NCf?H$rDI2C$7$^$9!#(B.
+  <dd> TreeVec に、 Tree の配列の中身を追加します。.
 <p>
 </dl>
 <a name="toArray()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -115,7 +115,7 @@ java.lang.Object
  public <a href="epp.Tree.html#_top_">Tree</a>[] toArray()
 </pre>
 <dl>
-  <dd> TreeVec $B$r(B Tree $B$NG[Ns$KJQ49$7$^$9!#(B.
+  <dd> TreeVec を Tree の配列に変換します。.
 <p>
 </dl>
 <hr>

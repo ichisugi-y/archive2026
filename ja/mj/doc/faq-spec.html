@@ -1,283 +1,283 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="./style.css">
-<title> MJ $B$N8@8l;EMM$K4X$9$k<ALd(B </title>
+<title> MJ の言語仕様に関する質問 </title>
 </head> <body>
 <div class="header-link">
 [<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
 [<a href="index.html">Document index</a>]
 </div>
-<h1>MJ $B$N8@8l;EMM$K4X$9$k<ALd(B</h1>
+<h1>MJ の言語仕様に関する質問</h1>
 <ul class="headers">
-<li><a href="#is-aop"> MJ $B$O%"%9%Z%/%H;X8~8@8l$J$N$G$9$+!)(B</a>
-<li><a href="#other-than-java">$B!V:9J,%Y!<%9%b%8%e!<%k!W$O(B Java $B8@8l0J30$KE,MQ$G$-$^$9$+!)(B</a>
-<li><a href="#multiple-inheritance">$B%b%8%e!<%k$NB?=E7Q>5$,$G$-$k$N$O9%$^$7$/$J$$$N$G$O!)(B</a>
-<li><a href="#package"> MJ $B$N%b%8%e!<%k$H(B Java $B$N(B package $B$H$N0c$$$O!)(B</a>
-<li><a href="#modularize">$B3HD%@-!&:FMxMQ@-$r9b$/$7$h$&$H$9$k$H!"%b%8%e!<%kJ,$1$K;~4V$,$+$+$C$F$7$^$&$N$G$O!#(B</a>
-<li><a href="#unmodular-program">$B$3$N8@8l$G=q$$$F$b!"%b%8%e%i%j%F%#$N0-$$%W%m%0%i%`!"3HD%@-$N0-$$%W%m%0%i%`$O=q$1$k$N$G$O!)(B</a>
-<li><a href="#code-fragments">$B#1$D$N%/%i%9Dj5A$,J#?t$N%b%8%e!<%k$K@Z$j9o$^$l$k$HFI$_$K$/$$$N$G$O!)(B</a>
-<li><a href="#multiple-inheritance-of-class">$B%/%i%9$NB?=E7Q>5$O%5%]!<%H$7$J$$$N$G$9$+!)(B</a>
-<li><a href="#inheritance-is-not-import">$BL>A06u4V$N(B import $B$H(B inheritance $B$OJL$N35G0$G$"$j!"J,$1$k$Y$-$G$O!)(B</a>
-<li><a href="#security"> public/private $B$,$J$/$J$j$^$7$?$,!"%;%-%e%j%F%#%a%+%K%:%`$O$I$&$J$j$^$9$+!)(B</a>
-<li><a href="#rename">$BB?=E7Q>5$K$*$1$kL>A0$N>WFM$r(B rename $B$G2sHr$9$k$3$H$O$G$-$J$$$N$G$9$+!)(B</a>
-<li><a href="#fqn-syntax"> FQN $B$N%7%s%?%C%/%9$,$R$I$$$H;W$$$^$9!#(B</a>
-<li><a href="#encapsulation"> m1 $B$r(B m2 $B$,(B extends $B$9$k$H!"(B m1 $BFbIt$GDj5A$5$l$?(B field $B$,(B m2 $B$+$i8+$($F$7$^$$$^$9!#(B $B$3$l$G$O>pJs1#JC$K$J$i$J$$$N$G$O!)(B</a>
-<li><a href="#local-precedence-order"> c extends a, b $B$H=q$$$?$H$-!"(B a $B$H(B b $B$N$I$A$i$,>e$KMh$k$+$,7h$^$C$F$$$J$$$N$O:$$k$N$G$O!)(B</a>
-<li><a href="#code-inheritance">$B%b%8%e!<%k$H%/%i%9$rJ,$1$?$N$O$$$$$G$9$,!"<BAu$N7Q>5$H%$%s%?!<%U%'!<%9$N7Q>5!J(Bsubtyping$B!K$bJ,$1$k$Y$-$G$O!)(B</a>
-<li><a href="#inner-outer"> sub-module $B$O(B super-module $B$NFbB&$K$"$k%b%8%e!<%k$J$N$G$7$g$&$+!)30B&$K$"$k%b%8%e!<%k$J$N$G$7$g$&$+!)(B</a>
-<li><a href="#parameterized-module"> parameterized module $B$O$J$$$N$G$7$g$&$+!)(B</a>
-<li><a href="#copy-class-hierarchy">$B4{B8$N%/%i%93,AX$H!"3HD%$5$l$?%/%i%93,AX$NN>J}$r#1$D$N%"%W%j%1!<%7%g%s$G;H$$$?$$$N$G$9$,!#(B</a>
-<li><a href="#copy-difference">$B#1$D$N:9J,$r!"J#?t$N%/%i%9$KDI2C$7$?$$$N$G$9$,!#(B</a>
-<li><a href="#dynamic-loading"> module $B$r%@%$%J%_%C%/%m!<%I$9$k$3$H$O2DG=$G$7$g$&$+!#(B</a>
-<li><a href="#differential-programming">$B:9J,%W%m%0%i%_%s%0$N5!9=$H$7$F%/%i%97Q>5$H%b%8%e!<%k7Q>5$NN>J}$,$"$k$N$O>iD9$G!"$I$A$i$r;H$($P$h$$$+LB$C$F$7$^$$$^$9!#(B</a>
-<li><a href="#before-after"> before, after, around advice $B$O$J$$$N$G$9$+!)(B</a>
-<li><a href="#upper-compati">$B$J$<(B MJ $B$O(B Java $B$N>e0L8_49$N8@8l$K$7$J$+$C$?$N$G$9$+!)(B</a>
-<li><a href="#module">$B!V%b%8%e!<%k!W$OIaDL!"$=$lC1FH$G2?$i$+$N5!G=$rDs6!$9$k$b$N$r8@$$$^$9$,!"(BMJ $B$N%b%8%e!<%k$O:9J,$G$"$j!"%3!<%I$N2t$K$9$.$J$$$N$G$O!)(B</a>
+<li><a href="#is-aop"> MJ はアスペクト指向言語なのですか？</a>
+<li><a href="#other-than-java">「差分ベースモジュール」は Java 言語以外に適用できますか？</a>
+<li><a href="#multiple-inheritance">モジュールの多重継承ができるのは好ましくないのでは？</a>
+<li><a href="#package"> MJ のモジュールと Java の package との違いは？</a>
+<li><a href="#modularize">拡張性・再利用性を高くしようとすると、モジュール分けに時間がかかってしまうのでは。</a>
+<li><a href="#unmodular-program">この言語で書いても、モジュラリティの悪いプログラム、拡張性の悪いプログラムは書けるのでは？</a>
+<li><a href="#code-fragments">１つのクラス定義が複数のモジュールに切り刻まれると読みにくいのでは？</a>
+<li><a href="#multiple-inheritance-of-class">クラスの多重継承はサポートしないのですか？</a>
+<li><a href="#inheritance-is-not-import">名前空間の import と inheritance は別の概念であり、分けるべきでは？</a>
+<li><a href="#security"> public/private がなくなりましたが、セキュリティメカニズムはどうなりますか？</a>
+<li><a href="#rename">多重継承における名前の衝突を rename で回避することはできないのですか？</a>
+<li><a href="#fqn-syntax"> FQN のシンタックスがひどいと思います。</a>
+<li><a href="#encapsulation"> m1 を m2 が extends すると、 m1 内部で定義された field が m2 から見えてしまいます。 これでは情報隠蔽にならないのでは？</a>
+<li><a href="#local-precedence-order"> c extends a, b と書いたとき、 a と b のどちらが上に来るかが決まっていないのは困るのでは？</a>
+<li><a href="#code-inheritance">モジュールとクラスを分けたのはいいですが、実装の継承とインターフェースの継承（subtyping）も分けるべきでは？</a>
+<li><a href="#inner-outer"> sub-module は super-module の内側にあるモジュールなのでしょうか？外側にあるモジュールなのでしょうか？</a>
+<li><a href="#parameterized-module"> parameterized module はないのでしょうか？</a>
+<li><a href="#copy-class-hierarchy">既存のクラス階層と、拡張されたクラス階層の両方を１つのアプリケーションで使いたいのですが。</a>
+<li><a href="#copy-difference">１つの差分を、複数のクラスに追加したいのですが。</a>
+<li><a href="#dynamic-loading"> module をダイナミックロードすることは可能でしょうか。</a>
+<li><a href="#differential-programming">差分プログラミングの機構としてクラス継承とモジュール継承の両方があるのは冗長で、どちらを使えばよいか迷ってしまいます。</a>
+<li><a href="#before-after"> before, after, around advice はないのですか？</a>
+<li><a href="#upper-compati">なぜ MJ は Java の上位互換の言語にしなかったのですか？</a>
+<li><a href="#module">「モジュール」は普通、それ単独で何らかの機能を提供するものを言いますが、MJ のモジュールは差分であり、コードの塊にすぎないのでは？</a>
 </p></ul><p>
 </p><p>
-</p><h2><a name="is-aop"> MJ $B$O%"%9%Z%/%H;X8~8@8l$J$N$G$9$+!)(B</a></h2><p>
-MJ $B$O9-$$0UL#$G$N%"%9%Z%/%H;X8~8@8l$G$9!#(B
-$BJ#?t$N%/%i%9$r2#CG$9$k%3!<%I$r!"JL$N%b%8%e!<%k$KJ,N%$7$F5-=R$G$-$^$9!#(B
+</p><h2><a name="is-aop"> MJ はアスペクト指向言語なのですか？</a></h2><p>
+MJ は広い意味でのアスペクト指向言語です。
+複数のクラスを横断するコードを、別のモジュールに分離して記述できます。
 </p><p>
-$B$7$+$7!"(B MJ $B$OBeI=E*$J%"%9%Z%/%H;X8~8@8l$G$"$k(B<a href="http://aspectj.org/">AspectJ</a>$B$H$O$+$J$j9M$(J}$,0[$J$j$^$9!#(B
-AspectJ $B$O%G%P%C%0!"F14|!"@-G=8~>e$J$I!"%W%m%0%i%`K\Mh$N5!G=$H$O0[$J$k%"%9%Z%/%H$rJ,N%$9$k$3$H$K<g4c$rCV$$$F$$$^$9$,!"(BMJ $B$O$=$l$i$r=E;k$7$F$$$^$;$s!#(B
+しかし、 MJ は代表的なアスペクト指向言語である<a href="http://aspectj.org/">AspectJ</a>とはかなり考え方が異なります。
+AspectJ はデバッグ、同期、性能向上など、プログラム本来の機能とは異なるアスペクトを分離することに主眼を置いていますが、MJ はそれらを重視していません。
 </p><p>
-MJ $B$,2r7h$7$h$&$H$9$kLdBj$O!"$I$A$i$+$H$$$($P!"(B<a href="http://www.research.ibm.com/hyperspace/">Hyper/J</a>$B$K6a$$$b$N$G$9!#(B
-$B=>Mh$N<jB3$-;X8~8@8l$"$k$$$O%*%V%8%'%/%H;X8~8@8l$O!"#1<oN`$N%b%8%e!<%k$N@Z$jJ,$1J}!J<jB3$-$^$?$O%/%i%9!K$r%W%m%0%i%^!<$K6/@)$9$k$b$N$G$9$,!"(BHyper/J $B$d(B MJ $B$O<+M3$J@Z$jJ,$1J}$r2DG=$K$9$k%7%9%F%`$G$9!#(B
+MJ が解決しようとする問題は、どちらかといえば、<a href="http://www.research.ibm.com/hyperspace/">Hyper/J</a>に近いものです。
+従来の手続き指向言語あるいはオブジェクト指向言語は、１種類のモジュールの切り分け方（手続きまたはクラス）をプログラマーに強制するものですが、Hyper/J や MJ は自由な切り分け方を可能にするシステムです。
 </p><p>
-$B$^$?!"(BMJ $B$O!"8@8l;EMM$N%7%s%W%k$5$H!"%b%8%e!<%k7k9g;~$N0BA4@-$rBh0l$K9M$($F@_7W$7$F$$$^$9!#$3$NE@$O!"B>$N(B AOP $B%7%9%F%`$HBg$-$/0[$J$kE@$G$9!#(B
+また、MJ は、言語仕様のシンプルさと、モジュール結合時の安全性を第一に考えて設計しています。この点は、他の AOP システムと大きく異なる点です。
 </p><p>
-</p><h2><a name="other-than-java">$B!V:9J,%Y!<%9%b%8%e!<%k!W$O(B Java $B8@8l0J30$KE,MQ$G$-$^$9$+!)(B</a></h2><p>
+</p><h2><a name="other-than-java">「差分ベースモジュール」は Java 言語以外に適用できますか？</a></h2><p>
 </p><p>
-$B%*%V%8%'%/%H;X8~8@8l$G$J$/$F$b!"<jB3$-7?8@8l!"O@M}7?8@8l!"%O!<%I%&%(%"5-=R8@8l$J$I$K$bE,MQ$G$-$k$H;W$$$^$9!#(B
-$BB?$/$N%W%m%0%i%_%s%08@8l$O!"$J$s$i$+$N5-=RC10L$K!VL>A0!W$rIU$1$^$9!#(B
-MJ $B$N%b%8%e!<%k5!9=$N%"%$%G%"$O!"%*%j%8%J%k$N%W%m%0%i%`$N!VL>A0!W$KBP1~IU$1$i$l$?%3!<%I$K!"$J$s$i$+$N7A$G:9J,$rDI2C$9$k!"$H$$$&%7%s%W%k$J$b$N$G$9!#(B
-$B$7$?$,$C$F!"B?$/$N%W%m%0%i%_%s%08@8l$KE,MQ$9$k$3$H$,$G$-$^$9!#(B
+オブジェクト指向言語でなくても、手続き型言語、論理型言語、ハードウエア記述言語などにも適用できると思います。
+多くのプログラミング言語は、なんらかの記述単位に「名前」を付けます。
+MJ のモジュール機構のアイデアは、オリジナルのプログラムの「名前」に対応付けられたコードに、なんらかの形で差分を追加する、というシンプルなものです。
+したがって、多くのプログラミング言語に適用することができます。
 </p><p>
-$BNc$($P!":9J,%Y!<%9%b%8%e!<%k$r(B emacs-lisp $B$KE,MQ$7$?$b$N$,!"(B
-<a href="http://staff.aist.go.jp/y-ichisugi/mj/dm-elisp/index.html">dm-elisp</a> $B$G$9!#(B
+例えば、差分ベースモジュールを emacs-lisp に適用したものが、
+<a href="http://staff.aist.go.jp/y-ichisugi/mj/dm-elisp/index.html">dm-elisp</a> です。
 </p><p>
-MJ $B$N%b%8%e!<%k5!9=$rE,MQ$G$-$J$$8@8l$b$"$j$^$9!#(B
-$BNc$($P9`=q49$(7O$O!"5-=RC10L$KL>A0$rIU$1$J$$$N$G!"E,MQ$G$-$^$;$s!#(B
+MJ のモジュール機構を適用できない言語もあります。
+例えば項書換え系は、記述単位に名前を付けないので、適用できません。
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="multiple-inheritance">$B%b%8%e!<%k$NB?=E7Q>5$,$G$-$k$N$O9%$^$7$/$J$$$N$G$O!)(B</a></h2><p>
+</p><h2><a name="multiple-inheritance">モジュールの多重継承ができるのは好ましくないのでは？</a></h2><p>
 </p><p>
-$BB?=E7Q>5$NLdBj$N$&$A!"L>A0$N>WFM$K4X$7$F$O!"%U%#!<%k%I!&%a%=%C%I$N40A48BDjL>$NF3F~$K$h$C$F40A4$K2r7h$7$F$$$^$9!#(B
+多重継承の問題のうち、名前の衝突に関しては、フィールド・メソッドの完全限定名の導入によって完全に解決しています。
 </p><p>
-$B$b$&0l$D$NLdBj!"0UL#E*>WFM$K$D$$$F$O!"(B Design by Contract $B$*$h$S(B behavioral subtyping $B$N9M$(J}$r:9J,%Y!<%9%b%8%e!<%k$K1~MQ$9$k$3$H$G2r7h$G$-$^$9!#!J>\$7$/$O(B
+もう一つの問題、意味的衝突については、 Design by Contract および behavioral subtyping の考え方を差分ベースモジュールに応用することで解決できます。（詳しくは
 <a href="http://staff.aist.go.jp/y-ichisugi/mj/papers/ppl2003.pdf">
-$B$3$NO@J8(B</a> $B$r;2>H$7$F$/$@$5$$!#!K(B
+この論文</a> を参照してください。）
 </p><p>
-$B$7$+$7!"(B tree $B9=B$$NJ}$,0lHL$N%0%i%U9=B$$h$j$b?M4V$K$H$C$F07$$$d$9$$$3$H$O3N$+$G$9!#(B
-MJ $B$K$*$1$k%W%m%0%i%_%s%0$G$b!"J#;($J%b%8%e!<%k$NB?=E7Q>5$r?d>)$7$F$$$k$o$1$G$O$"$j$^$;$s!#(B
-$B%b%8%e!<%k$N7Q>5%0%i%U$O!"$G$-$k$@$1%7%s%W%k$J7A$K$J$k$h$&$K%W%m%0%i%_%s%0$7$?J}$,$h$$$H;W$$$^$9!#(B
+しかし、 tree 構造の方が一般のグラフ構造よりも人間にとって扱いやすいことは確かです。
+MJ におけるプログラミングでも、複雑なモジュールの多重継承を推奨しているわけではありません。
+モジュールの継承グラフは、できるだけシンプルな形になるようにプログラミングした方がよいと思います。
 </p><p>
-$BM}A[E*$J%b%8%e!<%k$N7Q>5%0%i%U$O!"7Q>5$N?<$5$,@u$/!"2#$K9-$$7A$r$7$?7Q>5%0%i%U$G$9!#(B
-$B7Q>5%0%i%U$,$=$N$h$&$J7A$r$7$F$$$l$P!"%W%m%0%i%`$NJ]<i$,MF0W$K$J$j$^$9!#(B
-</p><p>
-</p><p>
-</p><h2><a name="package"> MJ $B$N%b%8%e!<%k$H(B Java $B$N(B package $B$H$N0c$$$O!)(B</a></h2><p>
-</p><p>
-Java $B$K$O(B class $B$H$$$&9=J8$H$OJL$K(B package $B$,$"$j$^$9$,!"Lr3dJ,C4$,40A4$K$G$-$F$$$^$;$s!#(B
-package $B$b(B class $B$b!"$H$b$KL>A06u4V$NLr3d$r2L$?$7$F$$$^$9!#(B
-MJ $B$O!"%/%i%9$NLr3d$H%b%8%e!<%k$NLr3d$r@0M}$7$FJ,$1$k$3$H$G!"8@8l;EMM$r(B Java $B$h$j$b%7%s%W%k$K$7$F$$$^$9!#(B
+理想的なモジュールの継承グラフは、継承の深さが浅く、横に広い形をした継承グラフです。
+継承グラフがそのような形をしていれば、プログラムの保守が容易になります。
 </p><p>
 </p><p>
+</p><h2><a name="package"> MJ のモジュールと Java の package との違いは？</a></h2><p>
+</p><p>
+Java には class という構文とは別に package がありますが、役割分担が完全にできていません。
+package も class も、ともに名前空間の役割を果たしています。
+MJ は、クラスの役割とモジュールの役割を整理して分けることで、言語仕様を Java よりもシンプルにしています。
 </p><p>
 </p><p>
-</p><h2><a name="modularize">$B3HD%@-!&:FMxMQ@-$r9b$/$7$h$&$H$9$k$H!"%b%8%e!<%kJ,$1$K;~4V$,$+$+$C$F$7$^$&$N$G$O!#(B</a></h2><p>
-</p><p>
-XP $B$,8@$C$F$$$k$h$&$K!":G=i$+$i3HD%@-!&:FMxMQ$r9M$($?%b%8%e!<%k$N@Z$jJ,$1$K;~4V$r3d$/$3$H$O$7$J$$J}$,$h$$$H;W$$$^$9!#(B
-</p><p>
-$B$3$N8@8l$K8B$i$:!"3HD%@-!&:FMxMQ@-$r9b$/$9$k$K$OO+NO$,I,MW$G$9!#(B
-$B@h!9$N$3$H$r9M$($F3HD%@-!&:FMxMQ@-$N9b$$%b%8%e!<%kJ,$1$r9T$C$F$b!"<B:]$K3HD%$d:FMxMQ$,9T$o$l$J$1$l$P!"$=$N6lO+$OJs$o$l$^$;$s!#(B
-$B%W%m%0%i%^!<$O!"$=$N%H%l!<%I%*%U$r9M$($F;~4VG[J,$r9T$o$J$1$l$P$J$j$^$;$s!#(B
-</p><p>
-OOP $B$N$$$$$H$3$m$O!"5-=RBP>]$r%/%i%9$K%b%G%k2=$7$F5-=R$5$($9$l$P!"$=$l$@$1$G!"<+F0E*$K$"$kDxEY3HD%@-!&:FMxMQ@-$N9b$$%W%m%0%i%`$,$G$-$k$H$$$&E@$G$9!#(B
-$B$D$^$j!"!V%/%i%9!a%b%8%e!<%k!W$O!"6a;wE*$K$O@.$jN)$D>l9g$,B?$$$N$G!"%/%i%9$N@_7W$5$($9$l$P!"$=$l$@$1$G!"$=$3$=$3$h$$%b%8%e!<%kJ,$1$,$G$-$F$7$^$&$o$1$G$9!#(B
-$B$3$l$b%*%V%8%'%/%H;X8~%Q%i%@%$%`$N%a%j%C%H$N#1$D$@$H;W$$$^$9!#(B
-</p><p>
-$B$3$N%a%j%C%H$O!"(B MJ $B$K$b0z$-7Q$,$l$F$$$^$9!#(B
-$B40`z$J%b%8%e!<%kJ,$1$KF,$rG:$^$9;~4V$,$J$1$l$P!"=>Mh8@8l$HF1MM!"#1%/%i%9#1%b%8%e!<%k$G=q$$$F$*$1$P$$$$$N$G$9!#(B
-$B3+H/!&J]<i$,?J$s$G9T$/$&$A$KLdBj$,$G$-$?$i=i$a$F!"%b%8%e!<%k$NJ,$1J}$r8+D>$;$P$h$$$N$G$9!#(B
-</p><p>
-$B%b%8%e!<%k$NJ,$1J}$rJQ99$9$k:n6H$O%j%U%!%/%?%j%s%0$H8F$P$l$F$$$^$9!#(B
-$B>-MhE*$K$O(B MJ $B$G$N%j%U%!%/%?%j%s%0$r%5%]!<%H$9$k%D!<%k$,$G$-$l$PJXMx$@$H;W$$$^$9!#(B
 </p><p>
 </p><p>
-</p><h2><a name="unmodular-program">$B$3$N8@8l$G=q$$$F$b!"%b%8%e%i%j%F%#$N0-$$%W%m%0%i%`!"3HD%@-$N0-$$%W%m%0%i%`$O=q$1$k$N$G$O!)(B</a></h2><p>
+</p><h2><a name="modularize">拡張性・再利用性を高くしようとすると、モジュール分けに時間がかかってしまうのでは。</a></h2><p>
 </p><p>
-$B$=$N$H$*$j$G$9!#(B
-$B%*%V%8%'%/%H;X8~@_7W$H%j%U%!%/%?%j%s%0$O!"(B MJ $B$G$N%W%m%0%i%_%s%0$G$b=EMW$G$9!#(B
+XP が言っているように、最初から拡張性・再利用を考えたモジュールの切り分けに時間を割くことはしない方がよいと思います。
 </p><p>
+この言語に限らず、拡張性・再利用性を高くするには労力が必要です。
+先々のことを考えて拡張性・再利用性の高いモジュール分けを行っても、実際に拡張や再利用が行われなければ、その苦労は報われません。
+プログラマーは、そのトレードオフを考えて時間配分を行わなければなりません。
 </p><p>
-</p><h2><a name="code-fragments">$B#1$D$N%/%i%9Dj5A$,J#?t$N%b%8%e!<%k$K@Z$j9o$^$l$k$HFI$_$K$/$$$N$G$O!)(B</a></h2><p>
+OOP のいいところは、記述対象をクラスにモデル化して記述さえすれば、それだけで、自動的にある程度拡張性・再利用性の高いプログラムができるという点です。
+つまり、「クラス＝モジュール」は、近似的には成り立つ場合が多いので、クラスの設計さえすれば、それだけで、そこそこよいモジュール分けができてしまうわけです。
+これもオブジェクト指向パラダイムのメリットの１つだと思います。
 </p><p>
-$BF1MM$NHcH=$,!"=>Mh$N%*%V%8%'%/%H;X8~8@8l$K$b8@$o$l$F$$$?$3$H$r;W$$=P$7$F2<$5$$!#(B
-$B!V#1$D$N%/%i%9$NDj5A$,!"%9!<%Q!<%/%i%9$H%5%V%/%i%9$KJ,N%$5$l$F$$$k$?$a!"%W%m%0%i%`$,FI$_$K$/$$!W$H$$$&HcH=$G$9!#(B
-$B$3$NHcH=$KBP$9$kEz$($O#2$D$"$j$^$9!#(B
+このメリットは、 MJ にも引き継がれています。
+完璧なモジュール分けに頭を悩ます時間がなければ、従来言語と同様、１クラス１モジュールで書いておけばいいのです。
+開発・保守が進んで行くうちに問題ができたら初めて、モジュールの分け方を見直せばよいのです。
 </p><p>
-$B#1$D$O(B Design by Contract $B$N<BA)$G$9!#(B
-$B8D!9$N%/%i%9$d%a%=%C%I$N30It;EMM$rL@3N$K$7$F$*$1$P!"$=$N%/%i%9$d%a%=%C%I$NFbIt<BAu$N%3!<%I$r$$$A$$$A8+$K9T$/I,MW$,$"$j$^$;$s!#(B
-$B$D$^$jFbIt<BAu$,J#?t$N>l=j$KJ,;6$7$F$$$F$bLdBj$K$O$J$j$^$;$s!#(B
-$B$`$7$m!">pJs1#JC$K$h$C$FITI,MW$J%/%i%9$d%a%=%C%I$NL>A0$,8+$($J$/$J$k$3$H$K$h$j!"%W%m%0%i%`$N2DFI@-$OA}$9$3$H$K$J$j$^$9!#(B
-$B$3$NEz$($O!":9J,%Y!<%9%b%8%e!<%k$K$b$=$N$^$^Ev$F$O$^$j$^$9!#(B
-</p><p>
-$B$b$&#1$D$O!"(B UML $B$J$I$r;H$C$?30It%I%-%e%a%s%H$G$9!#(B
-$B%*%V%8%'%/%H;X8~8@8l$,07$&LdBj$O=>Mh$N8@8l$,07$&LdBj$h$j$b$O$k$+$KJ#;($G!"$b$O$d%=!<%9%3!<%I$rFI$`$@$1$GA4BNA|$rM}2r$9$k$3$H$OIT2DG=$G$9!#(B
-$B$=$3$G!"(B UML $B$J$I$r;H$C$?M}2r$,I,MW$K$J$j$^$9!#(B
-$B$3$NEz$($b!":9J,%Y!<%9%b%8%e!<%k$K$=$N$^$^Ev$F$O$^$j$^$9!#(B
-UML $B$N%/%i%9?^$r:9J,%Y!<%9%b%8%e!<%kMQ$K3HD%$7$?!"%l%$%d!<%I%/%i%9?^$r;H$($P!"%b%8%e!<%k$,%W%m%0%i%`$r3HD%$9$kMM;R$r;k3PE*$KJ,$+$j$d$9$/I=8=$9$k$3$H$,$G$-$^$9!#(B
+モジュールの分け方を変更する作業はリファクタリングと呼ばれています。
+将来的には MJ でのリファクタリングをサポートするツールができれば便利だと思います。
 </p><p>
 </p><p>
-</p><h2><a name="multiple-inheritance-of-class">$B%/%i%9$NB?=E7Q>5$O%5%]!<%H$7$J$$$N$G$9$+!)(B</a></h2><p>
+</p><h2><a name="unmodular-program">この言語で書いても、モジュラリティの悪いプログラム、拡張性の悪いプログラムは書けるのでは？</a></h2><p>
 </p><p>
-$B%/%i%9$NB?=E7Q>5$O%*%V%8%'%/%H;X8~8@8l$KI,MW$J5!G=$@$H;W$$$^$9!#(B
-$B$7$+$7!"(B MJ $B$,(B JavaVM $B$N>e$G<B9T$5$l$k8@8l$G$"$k8B$j$O!"%/%i%9$NB?=E7Q>5$r%5%]!<%H$9$kM=Dj$O$"$j$^$;$s!#(B
-$B8=:_$N(B JavaVM $B>e$G%/%i%9$NB?=E7Q>5$r<BAu$9$k$H!"$I$&$7$F$b<B9TB.EY$,CY$/$J$j$^$9!#(B
+そのとおりです。
+オブジェクト指向設計とリファクタリングは、 MJ でのプログラミングでも重要です。
 </p><p>
 </p><p>
-</p><h2><a name="inheritance-is-not-import">$BL>A06u4V$N(B import $B$H(B inheritance $B$OJL$N35G0$G$"$j!"J,$1$k$Y$-$G$O!)(B</a></h2><p>
+</p><h2><a name="code-fragments">１つのクラス定義が複数のモジュールに切り刻まれると読みにくいのでは？</a></h2><p>
+</p><p>
+同様の批判が、従来のオブジェクト指向言語にも言われていたことを思い出して下さい。
+「１つのクラスの定義が、スーパークラスとサブクラスに分離されているため、プログラムが読みにくい」という批判です。
+この批判に対する答えは２つあります。
+</p><p>
+１つは Design by Contract の実践です。
+個々のクラスやメソッドの外部仕様を明確にしておけば、そのクラスやメソッドの内部実装のコードをいちいち見に行く必要がありません。
+つまり内部実装が複数の場所に分散していても問題にはなりません。
+むしろ、情報隠蔽によって不必要なクラスやメソッドの名前が見えなくなることにより、プログラムの可読性は増すことになります。
+この答えは、差分ベースモジュールにもそのまま当てはまります。
+</p><p>
+もう１つは、 UML などを使った外部ドキュメントです。
+オブジェクト指向言語が扱う問題は従来の言語が扱う問題よりもはるかに複雑で、もはやソースコードを読むだけで全体像を理解することは不可能です。
+そこで、 UML などを使った理解が必要になります。
+この答えも、差分ベースモジュールにそのまま当てはまります。
+UML のクラス図を差分ベースモジュール用に拡張した、レイヤードクラス図を使えば、モジュールがプログラムを拡張する様子を視覚的に分かりやすく表現することができます。
+</p><p>
+</p><p>
+</p><h2><a name="multiple-inheritance-of-class">クラスの多重継承はサポートしないのですか？</a></h2><p>
+</p><p>
+クラスの多重継承はオブジェクト指向言語に必要な機能だと思います。
+しかし、 MJ が JavaVM の上で実行される言語である限りは、クラスの多重継承をサポートする予定はありません。
+現在の JavaVM 上でクラスの多重継承を実装すると、どうしても実行速度が遅くなります。
+</p><p>
+</p><p>
+</p><h2><a name="inheritance-is-not-import">名前空間の import と inheritance は別の概念であり、分けるべきでは？</a></h2><p>
 </p><p>
 Szyperski, C.A.: "Import is Not Inheritance, Why We Need Both: Modules and Classes", In Proc. of ECOOP'92. <br>
-$B$H$$$&O@J8$G$O!"%/%i%9$N7Q>5$r%i%$%V%i%j$N(B import $B$NJQ$o$j$K;H$&$Y$-$G$O$J$$$H<gD%$7$F$$$^$9!#(B
+という論文では、クラスの継承をライブラリの import の変わりに使うべきではないと主張しています。
 </p><p>
-$B$7$+$7!"K\Mh$O0[$J$k35G0$r#1$D$N8@8l5!9=$G<B8=$9$k$3$H$O!"%W%m%0%i%_%s%08@8l$r@_7W$9$k>e$G$h$/9T$o$l$^$9!#(B
-$BNc$($P!"(B Java $B$G$O(B class $B$r>pJs1#JC$NC10L!"7?Dj5A$N5!9=!"GSB>@)8f$NC10L!"%a%b%j$NF0E*3dEv$NC10L$J$I$KMQ$$$F$$$^$9!#(B
-$B$3$N$h$&$K#1$D$N8@8l5!9=$KB?$/$N5!G=$r(B unify $B$9$k$3$H$G!"8@8l$NB?5!G=$5$H4J7i$5$H$$$&L7=b$9$kMW5a$rF1;~$KK~$?$9$3$H$,2DG=$H$J$j$^$9!#(B
+しかし、本来は異なる概念を１つの言語機構で実現することは、プログラミング言語を設計する上でよく行われます。
+例えば、 Java では class を情報隠蔽の単位、型定義の機構、排他制御の単位、メモリの動的割当の単位などに用いています。
+このように１つの言語機構に多くの機能を unify することで、言語の多機能さと簡潔さという矛盾する要求を同時に満たすことが可能となります。
 </p><p>
-MJ $B$O!"%/%i%9$+$iL>A06u4V$N5!G=$rJ,N%$9$kBe$o$j$K!"L>A06u4V$H:9J,%W%m%0%i%_%s%0$N5!9=$r(B unify $B$7$^$7$?!#(B
-$B$3$N;n$_$O@.8y$7$F$$$k$h$&$G$9!#(B
+MJ は、クラスから名前空間の機能を分離する代わりに、名前空間と差分プログラミングの機構を unify しました。
+この試みは成功しているようです。
 </p><p>
-import $B$H(B inheritance $B$O!"$b$H$b$H5!G=E*$KNI$/;w$F$$$^$9!#(B
-Eiffel $B8@8l$NJ82=$G$O!"7Q>55!9=$r@Q6KE*$K!V%i%$%V%i%j$N<h$j9~$_5!9=!W$H$7$FMxMQ$7$F$$$^$9!#(B
-$BNc$($P!"%/%i%9$NCf$+$iI8=`F~=PNO$N%i%$%V%i%j$r;H$&;~$K$O!"$=$N5!G=$rDs6!$9$k%/%i%9$r7Q>5$7$^$9!#(B
-$B!J$?$@$7!"(B Eiffel $B$G$O%i%$%V%i%j$N%$%s%?!<%U%'!<%9$O!"0EL[$N$&$A$K7Q>5$5$l$k$3$H$O$"$j$^$;$s!#!K(B
-</p><p>
-</p><p>
-</p><h2><a name="security"> public/private $B$,$J$/$J$j$^$7$?$,!"%;%-%e%j%F%#%a%+%K%:%`$O$I$&$J$j$^$9$+!)(B</a></h2><p>
-</p><p>
-$B!V(Bsandbox $B$N30B&!W!"$D$^$j!V0BA4$G$J$$%3!<%I$rF0E*$K%m!<%I$7$F<B9T$9$k%"%W%j%1!<%7%g%s!W$N5-=R$K$O!"8=:_$N(B MJ $B$O;H$($^$;$s!#(B
-$B%;%-%e%j%F%#$N4QE@$+$i$O!"(B MJ $B$GDj5A$5$l$?%/%i%9L>!&%U%#!<%k%IL>!&%a%=%C%IL>$O$9$Y$F(B public $B$G$"$k$H;W$C$F$/$@$5$$!#(B
+import と inheritance は、もともと機能的に良く似ています。
+Eiffel 言語の文化では、継承機構を積極的に「ライブラリの取り込み機構」として利用しています。
+例えば、クラスの中から標準入出力のライブラリを使う時には、その機能を提供するクラスを継承します。
+（ただし、 Eiffel ではライブラリのインターフェースは、暗黙のうちに継承されることはありません。）
 </p><p>
 </p><p>
+</p><h2><a name="security"> public/private がなくなりましたが、セキュリティメカニズムはどうなりますか？</a></h2><p>
 </p><p>
-</p><h2><a name="rename">$BB?=E7Q>5$K$*$1$kL>A0$N>WFM$r(B rename $B$G2sHr$9$k$3$H$O$G$-$J$$$N$G$9$+!)(B</a></h2><p>
-</p><p>
-$BL>A0$N>WFM$NLdBj$O!"%a%=%C%I40A48BDjL>$NF3F~$K$h$j2r7h$G$-$F$$$^$9!#(B
-$B$7$+$7!"%a%=%C%I40A48BDjL>$@$1$G$O2r7h$G$-$J$$<oN`$N>WFM$,$"$j$^$9!#(B
-$BNc$($P!"(B module m1 $B$GDj5A$5$l$F$$$k(B abstract method foo $B$r!"(Bm1 $B$N(B sub-module $B$G$"$k(B m2, m3 $B$G$=$l$>$l<BAu$7$F$$$F!"(Bm2, m3 $B$rF1;~$K7Q>5$9$k(B sub-module m4 $B$,$"$k$H$$$&>u67$r9M$($^$9!#(B
-$B$3$N$H$-!"(B m4 $B$+$i8+$k$H!"(Bm2 $B$+(B m3 $B$N$$$:$l$+$N(B foo $B$N<BAu$,!"(B override $B$K$h$C$F>C$($F$7$^$&!"$H$$$&LdBj$,$"$j$^$9!#(B
-</p><p>
-$B$b$7(B m4 $B$,!"(B m2 $B$H(B m3 $B$NN>J}$N(B foo $B$N<BAu$r@8$+$7$?$$$H;W$C$?$i!"(BEiffel $B8@8l$N$h$&$J%a%=%C%I$N(B rename $B$N5!9=$,I,MW$K$J$k$G$7$g$&!#(B
-$B$3$N5!9=$K$D$$$F$O!">-Mh!"F3F~$7$?$$$H;W$C$F$$$^$9!#(B
+「sandbox の外側」、つまり「安全でないコードを動的にロードして実行するアプリケーション」の記述には、現在の MJ は使えません。
+セキュリティの観点からは、 MJ で定義されたクラス名・フィールド名・メソッド名はすべて public であると思ってください。
 </p><p>
 </p><p>
 </p><p>
+</p><h2><a name="rename">多重継承における名前の衝突を rename で回避することはできないのですか？</a></h2><p>
 </p><p>
-</p><h2><a name="fqn-syntax"> FQN $B$N%7%s%?%C%/%9$,$R$I$$$H;W$$$^$9!#(B</a></h2><p>
+名前の衝突の問題は、メソッド完全限定名の導入により解決できています。
+しかし、メソッド完全限定名だけでは解決できない種類の衝突があります。
+例えば、 module m1 で定義されている abstract method foo を、m1 の sub-module である m2, m3 でそれぞれ実装していて、m2, m3 を同時に継承する sub-module m4 があるという状況を考えます。
+このとき、 m4 から見ると、m2 か m3 のいずれかの foo の実装が、 override によって消えてしまう、という問題があります。
 </p><p>
-$B8=:_$N$h$&$J%7%s%?%C%/%9$K$J$C$F$$$k$N$O!"(BJava $B8@8l$N!V%Q%C%1!<%8L>$N6h@Z$j$K$b%a%s%P!<$N;2>H$K$b(B "." $B$r;H$C$F$$$k!W$H$$$&LdBj$K5/0x$7$^$9!#(B
-$B$3$NLdBj$,2r7h$G$-$l$P!"$b$C$H$^$H$b$J%7%s%?%C%/%9$K$G$-$k$H;W$$$^$9!#(B
-$B!J(B XML $B$N$h$&$KL>A06u4V$NJLL>$r(B prefix $B$K;H$&$h$&$K$9$l$P!"%7%s%?%C%/%9$,$9$C$-$j$9$k$G$7$g$&!#$3$l$O>-Mh$N%P!<%8%g%s$G<BAu$7$h$&$H;W$$$^$9!#!K(B
-</p><p>
-MJ $B$G$O0MB8$9$kL>A06u4V$r:G>.$K$G$-$k$N$G!"L>A0$N>WFM$,5/$-$k3NN($O=>Mh$N%*%V%8%'%/%H;X8~8@8l$h$j$b$+$J$jDc$/$J$k$HM=A[$7$F$$$^$9!#(B
-$B<B:]$N%W%m%0%i%_%s%0$N:]$K!"%W%m%0%i%^!<$,(B FQN $B$r;XDj$7$J$1$l$P$J$i$J$/$J$k$3$H$O!"$"$^$j$J$$$H;W$$$^$9!#(B
-</p><p>
-</p><p>
-</p><p>
-</p><h2><a name="encapsulation"> m1 $B$r(B m2 $B$,(B extends $B$9$k$H!"(B m1 $BFbIt$GDj5A$5$l$?(B field $B$,(B m2 $B$+$i8+$($F$7$^$$$^$9!#(B $B$3$l$G$O>pJs1#JC$K$J$i$J$$$N$G$O!)(B</a></h2><p>
-</p><p>
-MJ $B$K$*$$$F!V(B m1 $B$r(B m2 $B$,(B extends $B$9$k!W$H$$$&$3$H$O!"(BJava $B$N(B nested class $B$GI=8=$9$l$P!V%/%i%9(B m1 $B$NFbIt$K(B m2 $B$,Dj5A$5$l$F$$$k!W$KAjEv$9$k!"$HM}2r$7$F$/$@$5$$!#(B
-$BFbB&$+$i$O!"30B&$GDj5A$5$l$F$$$k$9$Y$F$NL>A0$K%"%/%;%9$G$-$^$9!#(B
-</p><p>
-MJ $B$G$O!"$9$Y$F$NL>A0$N%"%/%;%9=$>~;R$O(B "protected" $B$G$"$k!"$H8+$k$3$H$b$G$-$^$9!#(B
-$BIaDL$N(B Java $B$G(B super class $B$N(B protected field $B$,(B subclass $B$+$i8+$($k$N$HF1MM!"(BMJ $B$G$O(B super-module $B$NCf$N$9$Y$F$NL>A0$,!"(B sub-module $B$+$i8+$($^$9!#(B
-$B$=$N$+$o$j!"(B m1 $B$r(B extends $B$9$k$9$Y$F$N%b%8%e!<%k$N%W%m%0%i%^!<$O!"(Bm1 $B$NMxMQ<T$G$O$J$/!"<BAu<T$NN)>l$K$J$k$3$H$r0U<1$7$F%W%m%0%i%`$7$J$1$l$P$J$j$^$;$s!#(B
-</p><p>
-</p><p>
-$B8=:_$N8@8l;EMM$K$O$"$j$^$;$s$,!">-MhE*$K$O(B "final module" $B$N$h$&$J5!9=$rF~$l$k$+$bCN$l$^$;$s!#(B
-$B$3$l$O(B Java $B$N(B final class $B$N$h$&$K!"(Bsub-module $B$NDj5A$r5v$5$J$$%b%8%e!<%k$G$9!#(B
-final module $B$NFbIt$GDj5A$5$l$kL>A0$O$9$Y$F(B "private" $B$G$"$k!"$H8@$($^$9!#(B
-</p><p>
-final module $B5!9=$O!"(Bfoolproof $B$N$?$a$N5!9=$G$9!#(B
-$B$"$k%W%m%0%i%^!<$,!"%/%i%9$N30It%$%s%?!<%U%'!<%9$@$1$G$J$/FbIt<BAu$K$b0MB8$7$?%W%m%0%i%`$r=q$/$H!"%Z%J%k%F%#$r<u$1$k$N$OL@$i$+$K$=$N%W%m%0%i%^!<$G$9!#(B
-$B>-Mh$=$N%/%i%9$NFbIt<BAu$,JQ99$K$J$C$?;~$K!"$=$N%W%m%0%i%^!<$O<+J,$,=q$$$?%W%m%0%i%`$r=q$-D>$5$J$1$l$P$J$j$^$;$s!#(B
-</p><p>
-$B>-MhE*$K$O(B Eiffel $B$N$h$&$J(B assertion $B5!9=$r(B MJ $B$KF~$l$k$D$b$j$G$9$,!"$=$l$,<B8=$5$l$l$P!"<BAu$K0MB8$9$k%W%m%0%i%^!<$O!"$5$i$K%Z%J%k%F%#$r<u$1$k$3$H$K$J$j$^$9!#(B
-$B%/%i%9$N30It%$%s%?!<%U%'!<%9$N$_$rMxMQ$9$k%W%m%0%i%^!<$O;vA0>r7o$@$1$rK~$?$;$PNI$$$N$G$9$,!"<BAu$K0MB8$9$k%W%m%0%i%^!<$O!"ITJQ>r7o$H;v8e>r7o$bK~$?$9$h$&$K%W%m%0%i%`$7$J$1$l$P$J$j$^$;$s!#(B
-$B$D$^$j!"$h$j@)Ls$N6/$$%W%m%0%i%_%s%0$r6/$$$i$l$k$3$H$K$J$j$^$9!#(B
+もし m4 が、 m2 と m3 の両方の foo の実装を生かしたいと思ったら、Eiffel 言語のようなメソッドの rename の機構が必要になるでしょう。
+この機構については、将来、導入したいと思っています。
 </p><p>
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="local-precedence-order"> c extends a, b $B$H=q$$$?$H$-!"(B a $B$H(B b $B$N$I$A$i$,>e$KMh$k$+$,7h$^$C$F$$$J$$$N$O:$$k$N$G$O!)(B</a></h2><p>
+</p><h2><a name="fqn-syntax"> FQN のシンタックスがひどいと思います。</a></h2><p>
 </p><p>
-CLOS $B$J$I$N8@8l$G$O!"(B c extends a, b $B$H@k8@$9$k$H!"(Ba $B$,(B b $B$h$j$bM%@h$5$l$k$H2r<a$5$l$^$9!#(B
-$B$3$l$r(B local precedence order $B$H8F$S$^$9!#(B
-$B$3$l$i$N8@8l$G$O(B linearize $B$N:]$K$O!"(Blocal precedence order $B$bJ]B8$5$l$^$9!#(B
+現在のようなシンタックスになっているのは、Java 言語の「パッケージ名の区切りにもメンバーの参照にも "." を使っている」という問題に起因します。
+この問題が解決できれば、もっとまともなシンタックスにできると思います。
+（ XML のように名前空間の別名を prefix に使うようにすれば、シンタックスがすっきりするでしょう。これは将来のバージョンで実装しようと思います。）
+</p><p>
+MJ では依存する名前空間を最小にできるので、名前の衝突が起きる確率は従来のオブジェクト指向言語よりもかなり低くなると予想しています。
+実際のプログラミングの際に、プログラマーが FQN を指定しなければならなくなることは、あまりないと思います。
 </p><p>
 </p><p>
-MJ $B$G$O!"%(%s%I%f!<%6$,%b%8%e!<%k$rAH$_9g$o$;$k$H$-$K!"$G$-$k$@$1%j%s%/;~%(%i!<$,5/$-$J$$$h$&$K$7$?$$$H9M$(!"8=:_$O(B local precedence order $B$r8@8l;EMM$KF~$l$F$$$^$;$s!#(B
-$B<!$N$h$&$JNc$r9M$($^$7$g$&!#(B
+</p><p>
+</p><h2><a name="encapsulation"> m1 を m2 が extends すると、 m1 内部で定義された field が m2 から見えてしまいます。 これでは情報隠蔽にならないのでは？</a></h2><p>
+</p><p>
+MJ において「 m1 を m2 が extends する」ということは、Java の nested class で表現すれば「クラス m1 の内部に m2 が定義されている」に相当する、と理解してください。
+内側からは、外側で定義されているすべての名前にアクセスできます。
+</p><p>
+MJ では、すべての名前のアクセス修飾子は "protected" である、と見ることもできます。
+普通の Java で super class の protected field が subclass から見えるのと同様、MJ では super-module の中のすべての名前が、 sub-module から見えます。
+そのかわり、 m1 を extends するすべてのモジュールのプログラマーは、m1 の利用者ではなく、実装者の立場になることを意識してプログラムしなければなりません。
+</p><p>
+</p><p>
+現在の言語仕様にはありませんが、将来的には "final module" のような機構を入れるかも知れません。
+これは Java の final class のように、sub-module の定義を許さないモジュールです。
+final module の内部で定義される名前はすべて "private" である、と言えます。
+</p><p>
+final module 機構は、foolproof のための機構です。
+あるプログラマーが、クラスの外部インターフェースだけでなく内部実装にも依存したプログラムを書くと、ペナルティを受けるのは明らかにそのプログラマーです。
+将来そのクラスの内部実装が変更になった時に、そのプログラマーは自分が書いたプログラムを書き直さなければなりません。
+</p><p>
+将来的には Eiffel のような assertion 機構を MJ に入れるつもりですが、それが実現されれば、実装に依存するプログラマーは、さらにペナルティを受けることになります。
+クラスの外部インターフェースのみを利用するプログラマーは事前条件だけを満たせば良いのですが、実装に依存するプログラマーは、不変条件と事後条件も満たすようにプログラムしなければなりません。
+つまり、より制約の強いプログラミングを強いられることになります。
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="local-precedence-order"> c extends a, b と書いたとき、 a と b のどちらが上に来るかが決まっていないのは困るのでは？</a></h2><p>
+</p><p>
+CLOS などの言語では、 c extends a, b と宣言すると、a が b よりも優先されると解釈されます。
+これを local precedence order と呼びます。
+これらの言語では linearize の際には、local precedence order も保存されます。
+</p><p>
+</p><p>
+MJ では、エンドユーザがモジュールを組み合わせるときに、できるだけリンク時エラーが起きないようにしたいと考え、現在は local precedence order を言語仕様に入れていません。
+次のような例を考えましょう。
 <pre>
 module c extends a, b {...}
 module d extends b, a {...}
 </pre>
 </p><p>
-$B%(%s%I%f!<%6$,(B c $B$H(B d $B$N%b%8%e!<%k$rAH$_9g$o$;$k>l9g!"(B local precedence order $B$rJ]B8$9$k$h$&$J(B linearize $B$OIT2DG=$G$9!#(B
-CLOS $B$J$I$G$O!"$3$N$h$&$J>l9g$O%(%i!<$K$J$j$^$9!#(B
+エンドユーザが c と d のモジュールを組み合わせる場合、 local precedence order を保存するような linearize は不可能です。
+CLOS などでは、このような場合はエラーになります。
 </p><p>
-$B%j%s%/;~%(%i!<$N860x$K$J$k$H$$$&%G%a%j%C%H$r>e2s$k%a%j%C%H$,$"$l$P!">-Mh$O!"(B local precedence order $B$r8@8l;EMM$KF~$l$k$+$b$7$l$^$;$s!#(B
-</p><p>
-</p><p>
+リンク時エラーの原因になるというデメリットを上回るメリットがあれば、将来は、 local precedence order を言語仕様に入れるかもしれません。
 </p><p>
 </p><p>
-</p><h2><a name="code-inheritance">$B%b%8%e!<%k$H%/%i%9$rJ,$1$?$N$O$$$$$G$9$,!"<BAu$N7Q>5$H%$%s%?!<%U%'!<%9$N7Q>5!J(Bsubtyping$B!K$bJ,$1$k$Y$-$G$O!)(B</a></h2><p>
 </p><p>
-$B<BAu$N7Q>5$H%$%s%?!<%U%'!<%9$N7Q>5$,JL$N35G0$G$"$k$3$H$O3N$+$G$9$,!"8@8l5!9=$H$7$FJL$N$b$N$rMQ0U$9$Y$-$@$H$$$&0U8+$K$O;?@.$G$-$^$;$s!#(B
-subtype $B$O(B super type $B$H?6$kIq$$$r6&M-$9$k>l9g$,B?$$$N$G!"%W%m%0%i%^!<$NJX59$r?^$k$?$a$K$O!"(B subtype $B$r:n$C$?$i<+F0E*$K<BAu$b7Q>5$5$l$kJ}$,$h$$$H;W$$$^$9!#(B
 </p><p>
-$B$^$?!"#2$D$N5!9=$rMQ0U$9$k$h$j$b#1$D$N5!9=!J%/%i%9$N7Q>55!9=!K$G$9$^$;$l$P!"8@8l;EMM$,C1=c$K$J$k$H$$$&Bg$-$JMxE@$b$"$j$^$9!#(B
+</p><h2><a name="code-inheritance">モジュールとクラスを分けたのはいいですが、実装の継承とインターフェースの継承（subtyping）も分けるべきでは？</a></h2><p>
 </p><p>
-$B3N$+$K!"!V<BAu$O7Q>5$7$?$$$,!"(B subtype $B$K$O$J$j$?$/$J$$!W!V(Bsubtype $B$r:n$j$?$$$,<BAu$O7Q>5$7$?$/$J$$!W$H$$$&>l9g$b$"$k$H;W$$$^$9!#(B
-$BA0<T$N>l9g$K$D$$$F$O!"(BC++ $B$N(B private inheritance $B$N$h$&$J$b$N$,$"$k$H$h$$$H;W$$$^$9!#(B
-$B8e<T$N>l9g$K$D$$$F$O!"$"$i$+$8$a%U%l!<%`%o!<%/$N<BAu<T$,;EMM%b%8%e!<%k$H<BAu%b%8%e!<%k$rJ,$1$FDj5A$7$F$*$/$N$,!"$=$b$=$bK>$^$7$$$H;W$$$^$9!#(B
-$B$b$7%U%l!<%`%o!<%/$,$=$&$$$&Iw$K$+$+$l$F$$$J$+$C$?$H$7$F$b!"$9$Y$F$N%a%=%C%I$r(B override $B$9$k$3$H$G!"(B super class $B$N<BAu$rL5;k$9$k$3$H$,$G$-$^$9!#(B
+実装の継承とインターフェースの継承が別の概念であることは確かですが、言語機構として別のものを用意すべきだという意見には賛成できません。
+subtype は super type と振る舞いを共有する場合が多いので、プログラマーの便宜を図るためには、 subtype を作ったら自動的に実装も継承される方がよいと思います。
 </p><p>
-</p><h2><a name="inner-outer"> sub-module $B$O(B super-module $B$NFbB&$K$"$k%b%8%e!<%k$J$N$G$7$g$&$+!)30B&$K$"$k%b%8%e!<%k$J$N$G$7$g$&$+!)(B</a></h2><p>
+また、２つの機構を用意するよりも１つの機構（クラスの継承機構）ですませれば、言語仕様が単純になるという大きな利点もあります。
 </p><p>
-$B$3$l$O!"%b%8%e!<%k4V$N$I$&$$$&4X78$KCeL\$9$k$+$G!"Ez$($O0c$C$FMh$^$9!#(B
+確かに、「実装は継承したいが、 subtype にはなりたくない」「subtype を作りたいが実装は継承したくない」という場合もあると思います。
+前者の場合については、C++ の private inheritance のようなものがあるとよいと思います。
+後者の場合については、あらかじめフレームワークの実装者が仕様モジュールと実装モジュールを分けて定義しておくのが、そもそも望ましいと思います。
+もしフレームワークがそういう風にかかれていなかったとしても、すべてのメソッドを override することで、 super class の実装を無視することができます。
 </p><p>
-Java $B$N(B nested class $B$N%$%a!<%8$G8@$&$J$i!"(B sub-module $B$O(B super-module $B$NFbB&$K$"$j$^$9!#(B
-sub-module $B$+$i$O(B super-module $B$N$9$Y$F$NL>A0$K%"%/%;%9$G$-$^$9$,!"$3$l$O(B nested class $B$K$*$$$F!"(B inner class $B$,(B outer class $B$N$9$Y$F$NL>A0$K%"%/%;%9$G$-$k$3$H$KAjEv$7$^$9!#(B
-$B0lHL$K!"30B&$N%b%8%e!<%k$OCj>]E*$J30It%$%s%?!<%U%'!<%9$G$"$j!"FbIt$N%b%8%e!<%k$O!"$h$j6qBNE*$J<BAu$G$9!#(B
-$B$D$^$j!"!VFbIt$r1#JC$9$k$H$$$&4X78!W$G8@$($P!"(B super-module $B$O(B sub-module $B$r1#JC$7$F$$$^$9!#(B
+</p><h2><a name="inner-outer"> sub-module は super-module の内側にあるモジュールなのでしょうか？外側にあるモジュールなのでしょうか？</a></h2><p>
 </p><p>
-$B$3$l$O<B@$3&$K$*$1$k%b%8%e!<%k$NF~$l;R4X78$NBPHf$G$bM}2r$G$-$^$9!#(B
-$BNc$($P!"%Q%=%3%s$N%1!<%9$NFbIt$K$O%O!<%I%G%#%9%/!"%^%6!<%\!<%I$J$I$N%b%8%e!<%k$,$"$j!"$=$l$>$l$O$5$i$K:Y$+$$%b%8%e!<%k$+$i9=@.$5$l$F$$$^$9!#(B
-$B30It$N%b%8%e!<%k$[$I!"FbIt$r1#JC$7$F!"Cj>]EY$N9b$$5!G=$r!"30It$N%f!<%6$KDs6!$7$^$9!#(B
-$B$3$N$h$&$K!"(B super-module $B$H(B sub-module $B$O!"$=$l$>$l<B@$3&$K$*$1$k30B&$N%b%8%e!<%k$HFbB&$N%b%8%e!<%k$KBP1~$7$^$9!#(B
+これは、モジュール間のどういう関係に着目するかで、答えは違って来ます。
 </p><p>
-$B$H$3$m$,!"!V?oH<4X78!W$H!V0MB84X78!W$KCeL\$9$k$H!"(BMJ $B$N%b%8%e!<%k$H<B@$3&$H$NBP1~$O0c$C$F$-$^$9!#(B
+Java の nested class のイメージで言うなら、 sub-module は super-module の内側にあります。
+sub-module からは super-module のすべての名前にアクセスできますが、これは nested class において、 inner class が outer class のすべての名前にアクセスできることに相当します。
+一般に、外側のモジュールは抽象的な外部インターフェースであり、内部のモジュールは、より具体的な実装です。
+つまり、「内部を隠蔽するという関係」で言えば、 super-module は sub-module を隠蔽しています。
 </p><p>
-$B<B@$3&$N%b%8%e!<%k$G$O!"30B&$N%b%8%e!<%k$N>l=j$r0\F0$9$l$P!"F1;~$KFbIt$N%b%8%e!<%k$b0\F0$7$^$9!#(B
-$B$D$^$j!"FbIt$N%b%8%e!<%k$O30It$N%b%8%e!<%k$K?oH<$7$^$9!#(B
-$B0lJ}(B MJ $B$G$O!"(B $B%j%s%/;~$K(B sub-module $B$r;XDj$9$k$H!"(Bsuper-module $B$b<+F0E*$K%j%s%/$5$l$^$9!#(B
-$B$D$^$j!"(B super-module $B$,(B sub-module $B$K?oH<$9$k$N$G$9!#(B
-$B$3$l$O%b%8%e!<%k$NF~$l;R4X78$H$O5UE>$7$F$$$^$9!#(B
+これは実世界におけるモジュールの入れ子関係の対比でも理解できます。
+例えば、パソコンのケースの内部にはハードディスク、マザーボードなどのモジュールがあり、それぞれはさらに細かいモジュールから構成されています。
+外部のモジュールほど、内部を隠蔽して、抽象度の高い機能を、外部のユーザに提供します。
+このように、 super-module と sub-module は、それぞれ実世界における外側のモジュールと内側のモジュールに対応します。
 </p><p>
-$B:G8e$K!V0MB84X78!W$H$$$&4QE@$G8+$k$H!"$I$&$G$7$g$&$+!#(B
-$B<B@$3&$N%b%8%e!<%k$G!"Nc$($P%^%6!<%\!<%I$H$$$&%b%8%e!<%k$NCf$K!"(BCPU $B$H$$$&%b%8%e!<%k$,$"$j$^$9!#(B
-$B%^%6!<%\!<%I$H(BCPU $B$O!"$I$A$i$,$I$A$i$K0MB8$7$F$$$k$N$G$7$g$&$+!)(B
-$B!J$?$@$7!"%^%6!<%\!<%I$b!"(BCPU $B$b!"0[$J$k%a!<%+!<$+$i8_49@-$N$"$kJ#?t$N@=IJ$,MxMQ2DG=$J>l9g$r9M$($^$9!#!K(B
-MJ $BE*$JM}2r$G$O!"FCDj$N%^%6!<%\!<%I$N#1@=IJ$H!"FCDj$N(BCPU$B$N#1@=IJ$O!"$*8_$$$KA4$/0MB8$7$F$$$^$;$s!#(B
-$B$=$l$>$l$r@\B32DG=$J$N$O!"!V(BCPU $B$N%=%1%C%H$N5,3J!W$rN>J}$,@5$7$/<BAu$7$F$$$k$+$i$G$9!#(B
-MJ $B$N9=J8$r;H$&$J$i!"$3$&$$$&$3$H$K$J$j$^$9!#(B
+ところが、「随伴関係」と「依存関係」に着目すると、MJ のモジュールと実世界との対応は違ってきます。
+</p><p>
+実世界のモジュールでは、外側のモジュールの場所を移動すれば、同時に内部のモジュールも移動します。
+つまり、内部のモジュールは外部のモジュールに随伴します。
+一方 MJ では、 リンク時に sub-module を指定すると、super-module も自動的にリンクされます。
+つまり、 super-module が sub-module に随伴するのです。
+これはモジュールの入れ子関係とは逆転しています。
+</p><p>
+最後に「依存関係」という観点で見ると、どうでしょうか。
+実世界のモジュールで、例えばマザーボードというモジュールの中に、CPU というモジュールがあります。
+マザーボードとCPU は、どちらがどちらに依存しているのでしょうか？
+（ただし、マザーボードも、CPU も、異なるメーカーから互換性のある複数の製品が利用可能な場合を考えます。）
+MJ 的な理解では、特定のマザーボードの１製品と、特定のCPUの１製品は、お互いに全く依存していません。
+それぞれを接続可能なのは、「CPU のソケットの規格」を両方が正しく実装しているからです。
+MJ の構文を使うなら、こういうことになります。
 <pre>
 module cpuSpec {...}
 module motherBoardSpec {...}
@@ -285,52 +285,52 @@ module cpuImplementation extends cpuSpec {...}
 module motherBoardImplementation extends cpuSpec, motherBoardSpec {...}
 </pre>
 </p><p>
-$B$3$N!V(BCPU $B$N%=%1%C%H$N5,3J!W$O!"(B MJ $B$G$O#1$D$N;EMM%b%8%e!<%k$H$7$FI=8=$7$^$9!#(B
-$B$H$3$m$,<B@$3&$G$O5,3J$O;f$N>e$NB8:_$G$"$j!"<BBN$r;}$C$?%b%8%e!<%k$H$7$F$ODL>oB8:_$7$^$;$s!#(B
-$B$7$?$,$C$F!"(B MJ $B$G$N0MB84X78$O!"<B@$3&$N%b%8%e!<%k$I$&$7$N4X78$H$OBP1~$7$^$;$s!#(B
+この「CPU のソケットの規格」は、 MJ では１つの仕様モジュールとして表現します。
+ところが実世界では規格は紙の上の存在であり、実体を持ったモジュールとしては通常存在しません。
+したがって、 MJ での依存関係は、実世界のモジュールどうしの関係とは対応しません。
 </p><p>
-$B$^$H$a$k$H$3$&$J$j$^$9!#(B
+まとめるとこうなります。
 </p><p>
-$B1#JC4X78!'(Bsuper-module $B$,30B&$N%b%8%e!<%k!"(B sub-module $B$,FbB&$N%b%8%e!<%k(B
+隠蔽関係：super-module が外側のモジュール、 sub-module が内側のモジュール
 </p><p>
-$B?oH<4X78!'(Bsuper-module $B$,FbB&$N%b%8%e!<%k!"(B sub-module $B$,30B&$N%b%8%e!<%k(B
+随伴関係：super-module が内側のモジュール、 sub-module が外側のモジュール
 </p><p>
-$B0MB84X78!'(Bsuper-module $B$K(B sub-module $B$,0MB8!#<B@$3&$K$OBP1~$7$J$$!#(B
-</p><p>
-</p><p>
+依存関係：super-module に sub-module が依存。実世界には対応しない。
 </p><p>
 </p><p>
-</p><h2><a name="parameterized-module"> parameterized module $B$O$J$$$N$G$7$g$&$+!)(B</a></h2><p>
-</p><p>
-generics$B$N$h$&$J!"%b%8%e!<%k$K7?$d@EE*$JCM$r0z?t$H$7$FM?$($FJL$J%b%8%e!<%k$r@8@.$9$k5!G=$O!"8=:_$N(BMJ$B$K$O$"$j$^$;$s!#(B
 </p><p>
 </p><p>
-</p><h2><a name="copy-class-hierarchy">$B4{B8$N%/%i%93,AX$H!"3HD%$5$l$?%/%i%93,AX$NN>J}$r#1$D$N%"%W%j%1!<%7%g%s$G;H$$$?$$$N$G$9$,!#(B</a></h2><p>
+</p><h2><a name="parameterized-module"> parameterized module はないのでしょうか？</a></h2><p>
 </p><p>
-$B8=:_$N(B MJ $B$G$O$G$-$^$;$s!#(B
-$B>-Mh$O!"%/%i%93,AX$N%3%T!<$r:n$k5!9=$rF3F~$9$kM=Dj$G$9!#(B
-</p><p>
-</p><p>
-</p><h2><a name="copy-difference">$B#1$D$N:9J,$r!"J#?t$N%/%i%9$KDI2C$7$?$$$N$G$9$,!#(B</a></h2><p>
-</p><p>
-$B8=:_$N(B MJ $B$G$O!":9J,$rDI2C$9$kBP>]$H$J$k%/%i%9$N%/%i%9L>$,8GDj$G$"$k$?$a!"$=$N$h$&$J$3$H$O$G$-$^$;$s!#(B
-$B>-Mh$O!":9J,$NDI2CBP>]$N%/%i%9L>$rJQ99$9$k$?$a$N5!9=$rF3F~$9$kM=Dj$G$9!#(B
+genericsのような、モジュールに型や静的な値を引数として与えて別なモジュールを生成する機能は、現在のMJにはありません。
 </p><p>
 </p><p>
-</p><h2><a name="dynamic-loading"> module $B$r%@%$%J%_%C%/%m!<%I$9$k$3$H$O2DG=$G$7$g$&$+!#(B</a></h2><p>
+</p><h2><a name="copy-class-hierarchy">既存のクラス階層と、拡張されたクラス階層の両方を１つのアプリケーションで使いたいのですが。</a></h2><p>
 </p><p>
-$B8=:_$N(B MJ $B$G$O$G$-$^$;$s!#%/%i%9$N(B dynamic loading $B$J$i$P!"(B Java $BF1MM$K$G$-$^$9!#(B 
+現在の MJ ではできません。
+将来は、クラス階層のコピーを作る機構を導入する予定です。
 </p><p>
 </p><p>
-</p><h2><a name="differential-programming">$B:9J,%W%m%0%i%_%s%0$N5!9=$H$7$F%/%i%97Q>5$H%b%8%e!<%k7Q>5$NN>J}$,$"$k$N$O>iD9$G!"$I$A$i$r;H$($P$h$$$+LB$C$F$7$^$$$^$9!#(B</a></h2><p>
+</p><h2><a name="copy-difference">１つの差分を、複数のクラスに追加したいのですが。</a></h2><p>
 </p><p>
-$B%/%i%97Q>5$O(B is-a $B4X78$,$"$k>l9g$K$N$_;H$&$Y$-$G$"$j!":9J,%W%m%0%i%_%s%0$NF;6q$H$7$F0B0W$K;H$&$Y$-$G$O$"$j$^$;$s!#(B
-$B$3$NE@$G$O(B MJ $B$O(B C++ $B$d(B Java $B$HF1$8$G$9!#(B
-$B!J(B Smalltalk $B$O@EE*7?%A%'%C%/$,$J$$$;$$$+!"%/%i%97Q>5$r:9J,%W%m%0%i%_%s%0$NF;6q$H$7$F;H$&J82=$,$"$k$h$&$G$9$,!#!K(B
+現在の MJ では、差分を追加する対象となるクラスのクラス名が固定であるため、そのようなことはできません。
+将来は、差分の追加対象のクラス名を変更するための機構を導入する予定です。
 </p><p>
-</p><h2><a name="before-after"> before, after, around advice $B$O$J$$$N$G$9$+!)(B</a></h2><p>
-$B:#$N(B MJ $B$K$O$"$j$^$;$s$,!"I,MW$@$H;W$C$F$$$^$9!#(B
-$B<!$N%W%m%0%i%`$O(B before $B$NBe$o$j$K$J$k$H;W$&?M$b$$$k$+$b$7$l$^$;$s!#(B
+</p><p>
+</p><h2><a name="dynamic-loading"> module をダイナミックロードすることは可能でしょうか。</a></h2><p>
+</p><p>
+現在の MJ ではできません。クラスの dynamic loading ならば、 Java 同様にできます。 
+</p><p>
+</p><p>
+</p><h2><a name="differential-programming">差分プログラミングの機構としてクラス継承とモジュール継承の両方があるのは冗長で、どちらを使えばよいか迷ってしまいます。</a></h2><p>
+</p><p>
+クラス継承は is-a 関係がある場合にのみ使うべきであり、差分プログラミングの道具として安易に使うべきではありません。
+この点では MJ は C++ や Java と同じです。
+（ Smalltalk は静的型チェックがないせいか、クラス継承を差分プログラミングの道具として使う文化があるようですが。）
+</p><p>
+</p><h2><a name="before-after"> before, after, around advice はないのですか？</a></h2><p>
+今の MJ にはありませんが、必要だと思っています。
+次のプログラムは before の代わりになると思う人もいるかもしれません。
 <pre>
 module m1 extends m0 {
   class C {
@@ -342,11 +342,11 @@ module m1 extends m0 {
 }
 </pre>
 </p><p>
-m1 $B$r=q$$$?%W%m%0%i%^!<$N0U?^$O!"!V(Bfoo $B$NK\BN$r<B9T$9$kA0$K!"(B doBeforeFoo()$B$r<B9T$7$?$$!W$H$$$&$3$H$G$7$g$&!#$3$l$O<B8=2DG=$G$9!#(B
-$B$7$+$7!"$3$l$@$1$G$OIT==J,$J>l9g$,$"$j$^$9!#(B
-$BJL$N%W%m%0%i%^!<$,!"!V!X<+J,$N(B super module $B$,DI2C$7$?(B foo $BK\BND>A0$N=hM}!Y$H!XK\Mh$N(B foo $BK\BN!Y$N4V$K!"=hM}$rDI2C$7$?$$!#!W$H;W$C$?$H$7$^$9!#(B
-$B!J<B:]$K$3$N$h$&$JMW5a$O5/$3$j$^$9!#!K(B
-$B$3$N%W%m%0%i%^!<$,<!$N$h$&$K5-=R$7$F$b$&$^$/$$$-$^$;$s!#(B
+m1 を書いたプログラマーの意図は、「foo の本体を実行する前に、 doBeforeFoo()を実行したい」ということでしょう。これは実現可能です。
+しかし、これだけでは不十分な場合があります。
+別のプログラマーが、「『自分の super module が追加した foo 本体直前の処理』と『本来の foo 本体』の間に、処理を追加したい。」と思ったとします。
+（実際にこのような要求は起こります。）
+このプログラマーが次のように記述してもうまくいきません。
 <pre>
 module m2 extends m1 {
   class C {
@@ -358,9 +358,9 @@ module m2 extends m1 {
 }
 </pre>
 </p><p>
-$B$3$l$G$O=hM}(B m2BeforeFoo() $B$O!"=hM}(B m1BeforeFoo() $B$NA0$K<B9T$5$l$F$7$^$&$+$i$G$9!#(B
+これでは処理 m2BeforeFoo() は、処理 m1BeforeFoo() の前に実行されてしまうからです。
 </p><p>
-$B$3$NLdBj$O!"$"$i$+$8$a%U%l!<%`%o!<%/B&$,!"(B before hook $B$rMQ0U$7$F$*$/$3$H$G2r7h2DG=$G$9!#(B
+この問題は、あらかじめフレームワーク側が、 before hook を用意しておくことで解決可能です。
 <pre>
 module m0 {
   define class C {
@@ -373,24 +373,24 @@ module m0 {
 }
 </pre>
 </p><p>
-$B$7$+$7!"%U%l!<%`%o!<%/9=C[;~E@$G$O(B before, after, around $B$N$?$a$N(B hook $B$,$"$H$GI,MW$K$J$k$+$I$&$+M=B,$9$k$3$H$O$G$-$J$$>l9g$,$"$j$^$9!#(B
-$B$^$?!"$R$g$C$H$7$FI,MW$K$J$k$+$b$7$l$J$$$+$i8@$C$F!"$9$Y$F$N%a%=%C%I$K(B before, after, around hook $B$rF~$l$F$*$/$3$H$O!"8=<BE*$K$OIT2DG=$G$9!#(B
-$B$3$N$h$&$JM}M3$+$i!"(B before, after, around hook $B$NLdBj$KBP=h$9$k$J$s$i$+$N8@8l5!9=$,I,MW$@$H9M$($F$$$^$9!#(B
+しかし、フレームワーク構築時点では before, after, around のための hook があとで必要になるかどうか予測することはできない場合があります。
+また、ひょっとして必要になるかもしれないから言って、すべてのメソッドに before, after, around hook を入れておくことは、現実的には不可能です。
+このような理由から、 before, after, around hook の問題に対処するなんらかの言語機構が必要だと考えています。
 </p><p>
-</p><h2><a name="upper-compati">$B$J$<(B MJ $B$O(B Java $B$N>e0L8_49$N8@8l$K$7$J$+$C$?$N$G$9$+!)(B</a></h2><p>
-$B3N$+$K8@8l8&5f<T$OB?$/$N>l9g!"4{B8$N8@8l$X$N>e0L8_49$N7A$G?7$7$$8@8l$rDs0F$7$^$9!#(B
-$B?7$7$$8@8l$r(B Java $B$N>e0L8_49$K$9$l$P!"(B Java $B$+$i$N0\9T$bMF0W$G$9$7!"5-=RNO$K4X$7$F$O>/$J$/$H$b(B Java $B$h$j0-$/$J$k$3$H$,$J$$$3$H$,J]>Z$5$l$k$o$1$G$9!#(B
+</p><h2><a name="upper-compati">なぜ MJ は Java の上位互換の言語にしなかったのですか？</a></h2><p>
+確かに言語研究者は多くの場合、既存の言語への上位互換の形で新しい言語を提案します。
+新しい言語を Java の上位互換にすれば、 Java からの移行も容易ですし、記述力に関しては少なくとも Java より悪くなることがないことが保証されるわけです。
 </p><p>
-$B$7$+$7!"(B MJ $B$N%b%8%e!<%k5!9=$N%"%$%G%"$r!"(B Java $B$N%b%8%e!<%k5!9=!J(Bpackage, public/protected/private, nested class$B!K$H@09g@-$r$?$b$C$?$^$^<h$j9~$`$N$O6K$a$F:$Fq$G$9!#(B
-$B$b$7!"$=$N$h$&$J8@8l$r<B:]$K@_7W$7$?$H$7$F$b!"8@8l;EMM$,J#;($K$J$j!"<BAu$bHs>o$KFq$7$/!"<BMQE*8@8l$K$9$k$3$H$OIT2DG=$@$H;W$$$^$9!#(B
+しかし、 MJ のモジュール機構のアイデアを、 Java のモジュール機構（package, public/protected/private, nested class）と整合性をたもったまま取り込むのは極めて困難です。
+もし、そのような言語を実際に設計したとしても、言語仕様が複雑になり、実装も非常に難しく、実用的言語にすることは不可能だと思います。
 </p><p>
 </p><p>
-</p><h2><a name="module">$B!V%b%8%e!<%k!W$OIaDL!"$=$lC1FH$G2?$i$+$N5!G=$rDs6!$9$k$b$N$r8@$$$^$9$,!"(BMJ $B$N%b%8%e!<%k$O:9J,$G$"$j!"%3!<%I$N2t$K$9$.$J$$$N$G$O!)(B</a></h2><p>
+</p><h2><a name="module">「モジュール」は普通、それ単独で何らかの機能を提供するものを言いますが、MJ のモジュールは差分であり、コードの塊にすぎないのでは？</a></h2><p>
 </p><p>
-sub-module $BC1FH$G$O5!G=$O;}$A$^$;$s$,!"(Bsuper-module $B$H9g$o$;$F9M$($l$P!"5!G=$r;}$C$?%/%i%9$N=89g$rDs6!$7$^$9!#(B
+sub-module 単独では機能は持ちませんが、super-module と合わせて考えれば、機能を持ったクラスの集合を提供します。
 </p><p>
-$B$3$l$O(B OOP $B$N(B subclass $B$HF1$8$3$H$G$9!#(B
-subclass $B$N%3!<%I$@$1$G$O0UL#$r;}$A$^$;$s$,!"(Bsuperclass $B$N%3!<%I$H9g$o$;$F=i$a$F!"0UL#$N$"$k%/%i%9Dj5A$K$J$j$^$9!#(B
+これは OOP の subclass と同じことです。
+subclass のコードだけでは意味を持ちませんが、superclass のコードと合わせて初めて、意味のあるクラス定義になります。
 </p><hr>
 <table width="100%"> <tr><td>
 <img src="images/img002.gif" alt="mj-logo">

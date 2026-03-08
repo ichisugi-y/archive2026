@@ -1,137 +1,137 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="./style.css">
-<title> $B0lHLE*$J<ALd(B </title>
+<title> 一般的な質問 </title>
 </head> <body>
 <div class="header-link">
 [<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
 [<a href="index.html">Document index</a>]
 </div>
-<h1>$B0lHLE*$J<ALd(B</h1>
+<h1>一般的な質問</h1>
 <ul class="headers">
-<li><a href="#mj-meaning">MJ $B$N0UL#$O!)(B</a>
-<li><a href="#speed">$B<B9TB.EY$O!)(B</a>
-<li><a href="#speed">$B%3%s%Q%$%kB.EY!J(Bmjc $B$NB.EY!K$,CY$$$N$G$9$,!#(B</a>
-<li><a href="#license">$B%i%$%s%;%s%9$O!)(B</a>
-<li><a href="#suffix">$B$J$s$G%=!<%9%U%!%$%k$N(B suffix $B$,(B .mj $B$H$+$G$O$J$/(B .java $B$J$N!)(B</a>
-<li><a href="#collection-plugin"> $BIaDL$N(B Java + Collection plug-in $B$H$7$F;H$$$?$$$N$G$9$,!#(B</a>
-<li><a href="#new-language3">Java $B$,6H3&I8=`$H$7$F$NCO0L$rC[$$$F$$$k$N$G!"(B Java $B$r$A$g$C$HJQ$($?$@$1$N8@8l$,Ia5Z$9$kM>CO$O$J$$$N$G$O!#(B</a>
-<li><a href="#application">$B%"%W%j%1!<%7%g%s$O$"$k$N$G$7$g$&$+!)(B</a>
-<li><a href="#results">$B<B:]$K$3$N8@8l$G=q$/$H3HD%@-$N9b$$%"%W%j%1!<%7%g%s$,=q$1$?$H$$$&<B@S$O$"$k$N$G$7$g$&$+!)(B</a>
-<li><a href="#design-pattern"> MJ $B$J$i$G$O$N%G%6%$%s%Q%?!<%s$H$$$&$b$N$O$J$$$N$G$9$+!)(B</a>
+<li><a href="#mj-meaning">MJ の意味は？</a>
+<li><a href="#speed">実行速度は？</a>
+<li><a href="#speed">コンパイル速度（mjc の速度）が遅いのですが。</a>
+<li><a href="#license">ラインセンスは？</a>
+<li><a href="#suffix">なんでソースファイルの suffix が .mj とかではなく .java なの？</a>
+<li><a href="#collection-plugin"> 普通の Java + Collection plug-in として使いたいのですが。</a>
+<li><a href="#new-language3">Java が業界標準としての地位を築いているので、 Java をちょっと変えただけの言語が普及する余地はないのでは。</a>
+<li><a href="#application">アプリケーションはあるのでしょうか？</a>
+<li><a href="#results">実際にこの言語で書くと拡張性の高いアプリケーションが書けたという実績はあるのでしょうか？</a>
+<li><a href="#design-pattern"> MJ ならではのデザインパターンというものはないのですか？</a>
 </p></ul><p>
 </p><p>
-</p><h2><a name="mj-meaning">MJ $B$N0UL#$O!)(B</a></h2><p>
+</p><h2><a name="mj-meaning">MJ の意味は？</a></h2><p>
 </p><p>
-MJ $B$O!"(B Modular Java $B$^$?$O(B Mixin-Layers Java $B$NN,$G$9!#(B
-$B0{J*$NL>A0$H$$$&$3$H$G!"(B MixJuice $B$NN,$G$b$"$k!"$H$$$&$3$H$K$7$F$$$^$9!#(B
-</p><p>
-</p><p>
-</p><p>
-</p><h2><a name="speed">$B<B9TB.EY$O!)(B</a></h2><p>
-</p><p>
-$B86M}E*$K$O!"IaDL$N(B Java $B$HF1$8B.EY$GF0$/$O$:$G$9!#(B
-MJ $B$N<B9T;~$N%b%G%k$O(B Java $B$H40A4$KF10l$G$9$+$i!#(B
-$B$7$+$7!"8=:_$N<BAu$G$O!"<BAu>e$NET9g$K$h$j!"(B
-byte code $BCf$KK\MhITMW$J%-%c%9%H$,;D$C$F$$$^$9!#(B
-$B$3$l$,860x$G!"%a%=%C%I8F$S=P$7$N%3%9%H$,(B 50% $B$/$i$$A}$($k$3$H$,$"$j$^$9!#(B
-$B$3$N!VM>J,$J%-%c%9%H!W$O4JC1$K<h$j=|$/$3$H$,$G$-$k$N$G!"(B
-$B>-Mh$N%P!<%8%g%s$G$O!"%*!<%P!<%X%C%I$O$J$/$J$k$H;W$$$^$9!#(B
-</p><p>
-</p><h2><a name="speed">$B%3%s%Q%$%kB.EY!J(Bmjc $B$NB.EY!K$,CY$$$N$G$9$,!#(B</a></h2><p>
-</p><p>
-1GHz PentiumIII $B$G$O!"(B 1000 $B9T$N%=!<%9$r%3%s%Q%$%k$9$k$N$K(B
-$B#5!A#1#5IC$[$I$+$+$k$h$&$G$9!#(B
-</p><p>
-</p><p>
-$B0lHL$K!"(B java, javac $B$,F|K\8l$N%(%i!<%a%C%;!<%8$r=P$9$h$&$J(B
-$B4D6-$K$J$C$F$$$k>l9g!"(B java, javac $B$N5/F0$,CY$$$i$7$$$G$9!#(B
- unsetenv LANG $B$7$F$*$-$^$7$g$&!#(B
-</p><p>
-Java $B%3%s%Q%$%i$N%U%'!<%:$rB.$/$9$k$K$O!"(B jikes $B$r;H$&$N$,$*4+$a$G$9!#(B
-</p><p>
-$B$J$*!">-MhE*$K$O(B EPP 2.0 $B$r;H$C$F(B mjc $B$r:n$jD>$9$N$G!"(B
-mjc $B$NB.EY$OG\0J>e$OB.$/$J$k$H;W$$$^$9!#(B
-</p><p>
-</p><p>
-</p><h2><a name="license">$B%i%$%s%;%s%9$O!)(B</a></h2><p>
-</p><p>
-$BHs1DMxL\E*!&I>2AL\E*$J$i$PL5NA$G$9!#(B<br>
-$B>-MhE*$K$O!"1DMxL\E*$G$bL5NA$K$G$-$k$+$b$7$l$^$;$s!#(B
-</p><p>
-</p><p>
-</p><h2><a name="suffix">$B$J$s$G%=!<%9%U%!%$%k$N(B suffix $B$,(B .mj $B$H$+$G$O$J$/(B .java $B$J$N!)(B</a></h2><p>
-</p><p>
-EPP $B$+$i8+$l$P!"(B MJ $B$H$$$&8@8l$O(B Java $B8@8l$r3HD%$9$k$?$a$N(B mjc plug-in $B$H$$$&(B
-$B#1$D$N(B plug-in $B$K$9$.$J$$$+$i$G$9!#(B
-suffix $B$,(B .java $B$K$J$C$F$$$k$*$+$2$G!"(B emacs $B$N@_Dj$r$^$C$?$/$$$8$i$J$/$F$b!"(B
-$B%=!<%9%U%!%$%k$r(B java-mode $B$GJT=8$9$k$3$H$,$G$-$^$9!#(B
-</p><p>
-</p><h2><a name="collection-plugin"> $BIaDL$N(B Java + Collection plug-in $B$H$7$F;H$$$?$$$N$G$9$,!#(B</a></h2><p>
-</p><p>
-$B:G?7HG(B EPP $B$K$O(B Collection plug-in $B$r%i%$%V%i%j$H$7$FF~$l$kM=Dj$J$N$G!"(B
-EPP $B$r%$%s%9%H!<%k$9$l$P;H$($^$9!#(B
-$B$?$@$7!"(B EPP 1.1 $B$OJ,3d%3%s%Q%$%k$r40A4$K%5%]!<%H$7$F$$$J$$$7!"(B
-$BJQ49B.EY$,CY$$$N$G!"(B
-$B$"$^$j<BMQ$K$O$J$i$J$$$H;W$$$^$9!#(B
-EPP 2.0 $B$^$GBT$C$F$/$@$5$$!#(B
+MJ は、 Modular Java または Mixin-Layers Java の略です。
+飲物の名前ということで、 MixJuice の略でもある、ということにしています。
 </p><p>
 </p><p>
 </p><p>
+</p><h2><a name="speed">実行速度は？</a></h2><p>
 </p><p>
-</p><h2><a name="new-language3">Java $B$,6H3&I8=`$H$7$F$NCO0L$rC[$$$F$$$k$N$G!"(B Java $B$r$A$g$C$HJQ$($?$@$1$N8@8l$,Ia5Z$9$kM>CO$O$J$$$N$G$O!#(B</a></h2><p>
+原理的には、普通の Java と同じ速度で動くはずです。
+MJ の実行時のモデルは Java と完全に同一ですから。
+しかし、現在の実装では、実装上の都合により、
+byte code 中に本来不要なキャストが残っています。
+これが原因で、メソッド呼び出しのコストが 50% くらい増えることがあります。
+この「余分なキャスト」は簡単に取り除くことができるので、
+将来のバージョンでは、オーバーヘッドはなくなると思います。
 </p><p>
-$B$3$l$@$1Ia5Z$7$F$$$k(B Java $B8@8l$r:#$9$0CV$-49$($k$N$O;d$bIT2DG=$@$H;W$$$^$9!#(B
-$B<R2q4D6-$,JQ2=$7!"(B Java $B8@8l$KBe$o$k?7$7$$%W%m%0%i%_%s%08@8l$N=P8=$,(B
-$BI,MW$H$5$l$?$H$-$K!"(B MJ $B$N:9J,%Y!<%9%b%8%e!<%k$,?7$7$$8@8l$K(B
-$B:NMQ$5$l$k$3$H$rK>$s$G$$$^$9!#(B
+</p><h2><a name="speed">コンパイル速度（mjc の速度）が遅いのですが。</a></h2><p>
 </p><p>
-</p><p>
-</p><h2><a name="application">$B%"%W%j%1!<%7%g%s$O$"$k$N$G$7$g$&$+!)(B</a></h2><p>
-</p><p>
-$B$H$j$"$($:(B EPP 2.0 $B$r(B MJ $B$G=q$3$&$H;W$C$F$$$^$9!#(B
-MJ $B$O!"3HD%@-$N9b$$%"%W%j%1!<%7%g%s$N5-=R$K(B
-$BFC$K8~$$$F$$$k$H;W$$$^$9!#(B
-$BNc$($P%a%$%j%s%0%j%9%HG[?.%D!<%k!"(B web $B%5!<%P!<!"%(%G%#%?$J$I$,(B
-$B9M$($i$l$^$9!#(B
+1GHz PentiumIII では、 1000 行のソースをコンパイルするのに
+５〜１５秒ほどかかるようです。
 </p><p>
 </p><p>
-</p><h2><a name="results">$B<B:]$K$3$N8@8l$G=q$/$H3HD%@-$N9b$$%"%W%j%1!<%7%g%s$,=q$1$?$H$$$&<B@S$O$"$k$N$G$7$g$&$+!)(B</a></h2><p>
+一般に、 java, javac が日本語のエラーメッセージを出すような
+環境になっている場合、 java, javac の起動が遅いらしいです。
+ unsetenv LANG しておきましょう。
 </p><p>
-MJ $B<+BN$G$O!"$^$@Bg$-$J%"%W%j%1!<%7%g%s$O$"$j$^$;$s$,!"(B
-MJ $B$HF1$8!V:9J,!a%b%8%e!<%k!W$H$$$&%9%?%$%k$r;}$D%W%m%0%i%_%s%08@8l$G!"(B
-$B$9$G$KBg$-$J%"%W%j%1!<%7%g%s$r=q$$$F$$$^$9!#(B
-MJ $B$NA0?H$G$"$k(B Ld-2 $B$H$$$&8@8l$rMQ$$$?$b$N$G!"(B
-Common Lisp $BHG(B Ld-2 $B$G5-=R$7$?3HD%2DG=%3%s%Q%$%i$H!"(B
- Java $BHG(B Ld-2 $B$G5-=R$7$?(B EPP1.1 $B$,$"$j$^$9!#(B
-$B$3$l$i$N%=!<%9%3!<%I$O9g$o$;$F#3K|9T6a$/$K$J$j$^$9!#(B
-$B$3$l$i$N7P83$+$i!"!V:9J,!a%b%8%e!<%k!W$H$$$&%9%?%$%k$,(B
-$BHs>o$KM%$l$F$$$k$3$H$r<B46$7$F$$$^$9!#(B
+Java コンパイラのフェーズを速くするには、 jikes を使うのがお勧めです。
 </p><p>
-Java $B$G=q$+$l$?#1K|9T$N(B HTTP server $B$r(B MJ $B$G=q$-D>$7$^$7$?!#(B
-$B$3$NO@J8$r;2>H$7$F$/$@$5$$!#(B<br>
-$BEDCfE/!"0l?yM5;V!'(B<br>
-$B!V%W%m%0%i%_%s%08@8l(B MixJuice $B$K$h$k(B HTTP server $B$N%b%8%e!<%k2=!W(B<br>
-<a href="http://www.fun.ac.jp/jssst2001/">$B%=%U%H%&%(%"2J3X2qBh#1#82sBg2q(B</a>, Sep. 2001.
+なお、将来的には EPP 2.0 を使って mjc を作り直すので、
+mjc の速度は倍以上は速くなると思います。
+</p><p>
+</p><p>
+</p><h2><a name="license">ラインセンスは？</a></h2><p>
+</p><p>
+非営利目的・評価目的ならば無料です。<br>
+将来的には、営利目的でも無料にできるかもしれません。
+</p><p>
+</p><p>
+</p><h2><a name="suffix">なんでソースファイルの suffix が .mj とかではなく .java なの？</a></h2><p>
+</p><p>
+EPP から見れば、 MJ という言語は Java 言語を拡張するための mjc plug-in という
+１つの plug-in にすぎないからです。
+suffix が .java になっているおかげで、 emacs の設定をまったくいじらなくても、
+ソースファイルを java-mode で編集することができます。
+</p><p>
+</p><h2><a name="collection-plugin"> 普通の Java + Collection plug-in として使いたいのですが。</a></h2><p>
+</p><p>
+最新版 EPP には Collection plug-in をライブラリとして入れる予定なので、
+EPP をインストールすれば使えます。
+ただし、 EPP 1.1 は分割コンパイルを完全にサポートしていないし、
+変換速度が遅いので、
+あまり実用にはならないと思います。
+EPP 2.0 まで待ってください。
+</p><p>
+</p><p>
+</p><p>
+</p><p>
+</p><h2><a name="new-language3">Java が業界標準としての地位を築いているので、 Java をちょっと変えただけの言語が普及する余地はないのでは。</a></h2><p>
+</p><p>
+これだけ普及している Java 言語を今すぐ置き換えるのは私も不可能だと思います。
+社会環境が変化し、 Java 言語に代わる新しいプログラミング言語の出現が
+必要とされたときに、 MJ の差分ベースモジュールが新しい言語に
+採用されることを望んでいます。
+</p><p>
+</p><p>
+</p><h2><a name="application">アプリケーションはあるのでしょうか？</a></h2><p>
+</p><p>
+とりあえず EPP 2.0 を MJ で書こうと思っています。
+MJ は、拡張性の高いアプリケーションの記述に
+特に向いていると思います。
+例えばメイリングリスト配信ツール、 web サーバー、エディタなどが
+考えられます。
+</p><p>
+</p><p>
+</p><h2><a name="results">実際にこの言語で書くと拡張性の高いアプリケーションが書けたという実績はあるのでしょうか？</a></h2><p>
+</p><p>
+MJ 自体では、まだ大きなアプリケーションはありませんが、
+MJ と同じ「差分＝モジュール」というスタイルを持つプログラミング言語で、
+すでに大きなアプリケーションを書いています。
+MJ の前身である Ld-2 という言語を用いたもので、
+Common Lisp 版 Ld-2 で記述した拡張可能コンパイラと、
+ Java 版 Ld-2 で記述した EPP1.1 があります。
+これらのソースコードは合わせて３万行近くになります。
+これらの経験から、「差分＝モジュール」というスタイルが
+非常に優れていることを実感しています。
+</p><p>
+Java で書かれた１万行の HTTP server を MJ で書き直しました。
+この論文を参照してください。<br>
+田中哲、一杉裕志：<br>
+「プログラミング言語 MixJuice による HTTP server のモジュール化」<br>
+<a href="http://www.fun.ac.jp/jssst2001/">ソフトウエア科学会第１８回大会</a>, Sep. 2001.
 <A HREF="http://staff.aist.go.jp/y-ichisugi/mj/papers/mj-jssst2001.pdf">mj-jssst2001.pdf</A>
 </p><p>
-$B$^$?!"(B Mixin Layers $B$N%0%k!<%W$b(B C++ $B$N(B template $B$r;H$C$F(B
-$B:9J,$r:FMxMQ$NC10L$H$7$?%"%W%j%1!<%7%g%s9=C[$NM-MQ@-$r<gD%$7$F$$$^$9!#(B
+また、 Mixin Layers のグループも C++ の template を使って
+差分を再利用の単位としたアプリケーション構築の有用性を主張しています。
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="design-pattern"> MJ $B$J$i$G$O$N%G%6%$%s%Q%?!<%s$H$$$&$b$N$O$J$$$N$G$9$+!)(B</a></h2><p>
+</p><h2><a name="design-pattern"> MJ ならではのデザインパターンというものはないのですか？</a></h2><p>
 </p><p>
-$B$"$j$^$9!#(B MJ $B$G3HD%@-$N9b$$%"%W%j%1!<%7%g%s$r5-=R$9$k$H!"(B
-$B$$$/$D$+$N7h$^$C$?%Q%?!<%s$,0c$&>l=j$K2?EY$b8=$l$k$3$H$,$"$j$^$9!#(B
-$BNc$($P!"(B if-then-else $B$K$h$k>r7oJ,4t$rJL$N%a%=%C%I$KJ,$1$k$3$H$G!"(B
-$B>r7oJ,4t@a$r8e$+$iDI2C$G$-$k$h$&$K$9$k$N$b%Q%?!<%s$N#1$D$G$9!#(B
+あります。 MJ で拡張性の高いアプリケーションを記述すると、
+いくつかの決まったパターンが違う場所に何度も現れることがあります。
+例えば、 if-then-else による条件分岐を別のメソッドに分けることで、
+条件分岐節を後から追加できるようにするのもパターンの１つです。
 </p><p>
-GoF $B$,BgNL$N%=!<%9%3!<%I$rD4$Y$F%Q%?!<%s$rCj=P$7$F@0M}$7$?$h$&$K!"(B
-MJ $B$N%Q%?!<%s$r@0M}$9$k$K$O$^$@;~4V$,$+$+$j$^$9!#(B
-$B$^$:$O!"BgNL$N%"%W%j%1!<%7%g%s$r=q$+$J$1$l$P$J$j$^$;$s!#(B
+GoF が大量のソースコードを調べてパターンを抽出して整理したように、
+MJ のパターンを整理するにはまだ時間がかかります。
+まずは、大量のアプリケーションを書かなければなりません。
 </p><hr>
 <table width="100%"> <tr><td>
 <img src="images/img002.gif" alt="mj-logo">

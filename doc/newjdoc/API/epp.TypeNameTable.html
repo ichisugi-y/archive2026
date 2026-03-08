@@ -25,33 +25,33 @@ java.lang.Object
   <dt> public class <b>TypeNameTable</b>
   <dt> extends Object
 </dl>
-$B%/%i%9(B TypeNameTable $B$O!"!V7?$NL>A0!W$r!"40A48BDjL>(B(fully qualified name)$B$K(B
-$BJQ49$7$^$9!#(B.
+クラス TypeNameTable は、「型の名前」を、完全限定名(fully qualified name)に
+変換します。.
 <p>
-$B$3$N%/%i%9$,07$&!V7?$NL>A0!W$H$O!"(B "(name ...)" $B$N7A$r$7$?(B Tree $B$G$9!#(B
-$BG[Ns7?$N$h$&$K!"9=B$$r;}$C$?7?$O!"07$$$^$;$s!#(B
+このクラスが扱う「型の名前」とは、 "(name ...)" の形をした Tree です。
+配列型のように、構造を持った型は、扱いません。
 <p>
-$BJQ49$O!"<!$N%k!<%k$K$7$?$,$C$F9T$J$o$l$^$9!#(B
+変換は、次のルールにしたがって行なわれます。
 <ul>
-<li> "int", "char" $B$J$I$NAH$_9~$_7?$NL>A0$O!"$=$N$^$^JV$5$l$^$9!#(B
-<li> "java.util.Hashtable" $B$N$h$&$K!"(B "." $B$r4^$s$G$$$kL>A0$O$9$G$K(B
-$B40A48BDjL>$J$N$G!"$=$N$^$^JV$5$l$^$9!#$=$N%/%i%9$,<B:]$KB8:_$9$k$+$I$&$+$O(B
-$B%A%'%C%/$5$l$^$;$s!#(B
-<li> "Object" $B$d(B "Tree" $B$N$h$&$JC1=cL>(B(simple name)$B$O!"(B
-Java $B$N8@8l;EMM$K$7$?$,$C$F(B
-$B$=$l$,I=$9%/%i%9$N40A48BDjL>$KJQ49$5$l$^$9!#(B
-$B8+$D$+$i$J$+$C$?$j!"0l0U$K7h$^$i$J$$>l9g$O!"(B EppUserError $B$,(B
-throw $B$5$l$^$9!#(B
+<li> "int", "char" などの組み込み型の名前は、そのまま返されます。
+<li> "java.util.Hashtable" のように、 "." を含んでいる名前はすでに
+完全限定名なので、そのまま返されます。そのクラスが実際に存在するかどうかは
+チェックされません。
+<li> "Object" や "Tree" のような単純名(simple name)は、
+Java の言語仕様にしたがって
+それが表すクラスの完全限定名に変換されます。
+見つからなかったり、一意に決まらない場合は、 EppUserError が
+throw されます。
 </ul>
 <p>
-$B$3$N%F!<%V%k$N%$%s%9%?%s%9$O!"F0E*JQ?t(B :typeNameTable $B$KF~$l$i$l$F$$$^$9!#(B
-$B$?$@$7!"(B Phase2 $B$K$J$i$J$$$H$3$N%F!<%V%k$rMxMQ$9$k$3$H$O$G$-$^$;$s!#(B
-$B!J(BJava $B$N8@8l;EMM>e!"(B Phase1 $B$G$O!"40A48BDjL>$X$NJQ49$OIT2DG=$G$9!#(B
-$B%+%l%s%H%Q%C%1!<%8Cf$K$I$N$h$&$J%/%i%9$,B8:_$9$k$+$K1F6A$5$l$k$+$i$G$9!#!K(B
+このテーブルのインスタンスは、動的変数 :typeNameTable に入れられています。
+ただし、 Phase2 にならないとこのテーブルを利用することはできません。
+（Java の言語仕様上、 Phase1 では、完全限定名への変換は不可能です。
+カレントパッケージ中にどのようなクラスが存在するかに影響されるからです。）
 <p>
-$B40A48BDjL>$X$NJQ49$O!"=hM}Cf$N%U%!%$%k$N(B pacakge $B@k8@!"(B import $B@k8@!"(B
-$BA4%=!<%9%U%!%$%kCf$GDj5A$5$l$F$$$k%/%i%9L>!"(B
-CLASSPATH $B$G%"%/%;%9$G$-$k%/%i%9L>$r;2>H$9$k$3$H$K$h$C$F!"9T$J$o$l$^$9!#(B
+完全限定名への変換は、処理中のファイルの pacakge 宣言、 import 宣言、
+全ソースファイル中で定義されているクラス名、
+CLASSPATH でアクセスできるクラス名を参照することによって、行なわれます。
 <p>
 <hr>
 <a name="index"></a>
@@ -61,8 +61,8 @@ CLASSPATH $B$G%"%/%;%9$G$-$k%/%i%9L>$r;2>H$9$k$3$H$K$h$C$F!"9T$J$o$l$^$9!#(B
 <dl>
   <dt> <img src="images/yellow-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#TypeNameTable(epp.Tree)"><b>TypeNameTable</b></a>(Tree)
-  <dd> $B0z?t$H$7$F!"(B CompilationUnit $B$N(B tree $B$r<u$1<h$j!"(B
-TypeNameTable $B$r:n$C$FJV$7$^$9!#(B.
+  <dd> 引数として、 CompilationUnit の tree を受け取り、
+TypeNameTable を作って返します。.
 </dl>
 <h2>
   <img src="images/method-index.gif" width=207 height=38 alt="Method Index">
@@ -70,18 +70,18 @@ TypeNameTable $B$r:n$C$FJV$7$^$9!#(B.
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#doesClassExist(epp.Tree)"><b>doesClassExist</b></a>(Tree)
-  <dd> $B40A48BDjL>$GI=$5$l$k%/%i%9$,!"<B:]$KB8:_$7$F%"%/%;%92DG=$J$i$P(B true $B!"(B
-$B$=$&$G$J$$$J$i(B false $B$rJV$7$^$9!#(B.
+  <dd> 完全限定名で表されるクラスが、実際に存在してアクセス可能ならば true 、
+そうでないなら false を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#isSamePackage(epp.Tree)"><b>isSamePackage</b></a>(Tree)
-  <dd> $B8=:_=hM}Cf$N%Q%C%1!<%8$H!"(B fullName $B$,B0$9$k%Q%C%1!<%8$,F1$8$J$i(B
-true $B!"$=$&$G$J$$$J$i(B false $B$rJV$7$^$9!#(B.
+  <dd> 現在処理中のパッケージと、 fullName が属するパッケージが同じなら
+true 、そうでないなら false を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#nameToFullName(epp.Tree)"><b>nameToFullName</b></a>(Tree)
-  <dd> $B7?L>$N(B Tree $B$r(B $B40A48BDjL>$rI=$9(B Tree $B$KJQ49$7$^$9!#(B.
+  <dd> 型名の Tree を 完全限定名を表す Tree に変換します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#nameToFullNameSymbol(epp.Tree)"><b>nameToFullNameSymbol</b></a>(Tree)
-  <dd> $B7?L>$N(B Tree $B$r(B $B40A48BDjL>$rI=$9(B Symbol $B$KJQ49$7$^$9!#(B.
+  <dd> 型名の Tree を 完全限定名を表す Symbol に変換します。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -94,8 +94,8 @@ true $B!"$=$&$G$J$$$J$i(B false $B$rJV$7$^$9!#(B.
  public TypeNameTable(<a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> $B0z?t$H$7$F!"(B CompilationUnit $B$N(B tree $B$r<u$1<h$j!"(B
-TypeNameTable $B$r:n$C$FJV$7$^$9!#(B.
+  <dd> 引数として、 CompilationUnit の tree を受け取り、
+TypeNameTable を作って返します。.
 <p>
 </dl>
 <a name="methods"></a>
@@ -108,7 +108,7 @@ TypeNameTable $B$r:n$C$FJV$7$^$9!#(B.
  public <a href="epp.Symbol.html#_top_">Symbol</a> nameToFullNameSymbol(<a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> $B7?L>$N(B Tree $B$r(B $B40A48BDjL>$rI=$9(B Symbol $B$KJQ49$7$^$9!#(B.
+  <dd> 型名の Tree を 完全限定名を表す Symbol に変換します。.
 <p>
 </dl>
 <a name="nameToFullName(epp.Tree)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -117,7 +117,7 @@ TypeNameTable $B$r:n$C$FJV$7$^$9!#(B.
  public <a href="epp.Tree.html#_top_">Tree</a> nameToFullName(<a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> $B7?L>$N(B Tree $B$r(B $B40A48BDjL>$rI=$9(B Tree $B$KJQ49$7$^$9!#(B.
+  <dd> 型名の Tree を 完全限定名を表す Tree に変換します。.
 <p>
 </dl>
 <a name="doesClassExist(epp.Tree)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -126,10 +126,10 @@ TypeNameTable $B$r:n$C$FJV$7$^$9!#(B.
  public boolean doesClassExist(<a href="epp.Tree.html#_top_">Tree</a> fullName)
 </pre>
 <dl>
-  <dd> $B40A48BDjL>$GI=$5$l$k%/%i%9$,!"<B:]$KB8:_$7$F%"%/%;%92DG=$J$i$P(B true $B!"(B
-$B$=$&$G$J$$$J$i(B false $B$rJV$7$^$9!#(B.
-$B$3$N%a%=%C%I$O!"(B nameToFullName $B$H(B Type#resolveAmbiguousName $B$+$i(B
-$B8F$P$l$^$9!#(B
+  <dd> 完全限定名で表されるクラスが、実際に存在してアクセス可能ならば true 、
+そうでないなら false を返します。.
+このメソッドは、 nameToFullName と Type#resolveAmbiguousName から
+呼ばれます。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -142,8 +142,8 @@ TypeNameTable $B$r:n$C$FJV$7$^$9!#(B.
  public boolean isSamePackage(<a href="epp.Tree.html#_top_">Tree</a> fullName)
 </pre>
 <dl>
-  <dd> $B8=:_=hM}Cf$N%Q%C%1!<%8$H!"(B fullName $B$,B0$9$k%Q%C%1!<%8$,F1$8$J$i(B
-true $B!"$=$&$G$J$$$J$i(B false $B$rJV$7$^$9!#(B.
+  <dd> 現在処理中のパッケージと、 fullName が属するパッケージが同じなら
+true 、そうでないなら false を返します。.
 <p>
 </dl>
 <hr>

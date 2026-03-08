@@ -1,63 +1,63 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="./style.css">
-<title> EPP 2.0 $B$N7W2h(B </title>
+<title> EPP 2.0 の計画 </title>
 </head> <body>
 <div class="header-link">
 [<a href="index.html">MJ Top page</a>]
 [<a href="site-map.html">Site map</a>]
 </div>
-<h1> EPP 2.0 $B$N7W2h(B</h1>
+<h1> EPP 2.0 の計画</h1>
 <ul class="headers">
 <li><a href="#next-epp"> EPP 2.0</a>
-<li><a href="#epp-on-mj">EPP $B$H(B MJ $B$N4X78(B</a>
+<li><a href="#epp-on-mj">EPP と MJ の関係</a>
 </p></ul><p>
 </p><p>
 <hr>
 <span style="color:#FF0000;font-weight:bold">
-EPP2.0 $B$N3+H/$OCf;_$7$^$7$?!#(B </span>
+EPP2.0 の開発は中止しました。 </span>
 <hr>
 </p><p>
 </p><h2><a name="next-epp"> EPP 2.0</a></h2><p>
-$B8=:_$N(B <a href="http://staff.aist.go.jp/y-ichisugi/epp/">EPP 1.1 </a>$B$K$O!"(B
-$B<!$N$h$&$J7gE@$,$"$j$^$9!#(B
-$B<!4|%P!<%8%g%s$G$O$3$l$i$N7gE@$rL5$/$7!"<BMQ@-$N9b$$(B
-$B!V%=!<%9%3!<%I=hM}%U%l!<%`%o!<%/!W$r9=C[$9$kM=Dj$G$9!#(B
+現在の <a href="http://staff.aist.go.jp/y-ichisugi/epp/">EPP 1.1 </a>には、
+次のような欠点があります。
+次期バージョンではこれらの欠点を無くし、実用性の高い
+「ソースコード処理フレームワーク」を構築する予定です。
 <ol>
-<li> EPP $B$r5-=R$9$k5-=R8@8l$N<BAu$K(B EPP $B<+?H$rMQ$$$F$$$?$,!"Ev;~$N(B EPP 
-$B$O7?%A%'%C%/5!9=$rM-$7$F$$$J$+$C$?$?$a!"8@8l3HD%5!G=$KBg$-$J@)Ls$,$"$C(B
-$B$?!#$=$N$?$aI,$:$7$b:GE,$J5-=R8@8l$G$O$J$+$C$?!#(B
-<li>$BEv;~$N(B Java $B%$%s%?!<%W%j%?$N%9%T!<%I$OCY$/!"%"!<%-%F%/%A%c@_7W$N6/$$(B
-$B@)Ls$K$J$C$F$$$?!#$=$N7k2L!"3HD%%$%s%?!<%U%'!<%9$NE}0l@-$N0lIt$r5>@7$K(B
-$B$;$6$k$rF@$J$+$C$?!#(B
+<li> EPP を記述する記述言語の実装に EPP 自身を用いていたが、当時の EPP 
+は型チェック機構を有していなかったため、言語拡張機能に大きな制約があっ
+た。そのため必ずしも最適な記述言語ではなかった。
+<li>当時の Java インタープリタのスピードは遅く、アーキテクチャ設計の強い
+制約になっていた。その結果、拡張インターフェースの統一性の一部を犠牲に
+せざるを得なかった。
 </ol>
 </p><p>
-$B8=:_$O>e5-$N@)Ls$,$J$/$J$C$?$?$a!"$h$j4J7i$G6/NO$J3HD%%$%s%?!<%U%'!<%9(B
-$B$rDs6!$G$-$k$O$:$G$9!#$^$?!"5l(BEPP $B$G$O@9$j9~$a$J$+$C$?0J2<$N%"%$%G%"(B
-$B$NM-8z@-$r8!>Z$9$kM=Dj$G$9!#(B
+現在は上記の制約がなくなったため、より簡潔で強力な拡張インターフェース
+を提供できるはずです。また、旧EPP では盛り込めなかった以下のアイデア
+の有効性を検証する予定です。
 </p><p>
 <ul>
-<li>$B>WFM$N5/$-$J$$8@8l3HD%$N<BAu5,Ls(B
-<li>$B#2$D$N3HD%%b%8%e!<%k$N4V$N!VJd40%b%8%e!<%k!W$N<+F0%m!<%I5!9=(B
-<li>$B$h$j40A4$G(B user friendly $B$J%(%i!<=hM}5!9=(B
-<li>$B#S<0$G$O$J$/(BJava $BJ8K!$K$h$k%P%C%/%/%)!<%H%^%/%m(B
+<li>衝突の起きない言語拡張の実装規約
+<li>２つの拡張モジュールの間の「補完モジュール」の自動ロード機構
+<li>より完全で user friendly なエラー処理機構
+<li>Ｓ式ではなくJava 文法によるバッククォートマクロ
 </ul>
 </p><p>
-$B0J>e$N%"%$%G%"$K$h$j!"%=!<%9%3!<%IJQ49$K4p$E$/8@8l=hM}7O$N@8;:@-$r!":G(B
-$B=*E*$K$O5l(BEPP $B$N#2!A#3G\$K$9$k$3$H$rL\;X$7$^$9!#$^$?!"F1;~E,MQ2DG=@-$d%(%i!<(B
-$B=hM}$NLdBj$r2r7h$9$k$3$H$G!"40@.EY$N9b$$8@8l=hM}7O$N<BAu$KMQ$$$k$3$H$,(B
-$B$G$-$k%U%l!<%`%o!<%/$rL\;X$7$^$9!#(B
+以上のアイデアにより、ソースコード変換に基づく言語処理系の生産性を、最
+終的には旧EPP の２〜３倍にすることを目指します。また、同時適用可能性やエラー
+処理の問題を解決することで、完成度の高い言語処理系の実装に用いることが
+できるフレームワークを目指します。
 </p><p>
-</p><h2><a name="epp-on-mj">EPP $B$H(B MJ $B$N4X78(B</a></h2><p>
-EPP $B$O!"(B Java $B8@8l$N%W%j%W%m%;%C%5$r:n$k$?$a$N%U%l!<%`%o!<%/$G$9!#(B
-$B8=:_!"(B EPP $B$N:G$bBg5,LO$J1~MQNc$,(B MJ $B$N8@8l=hM}7O$G$9!#(B
+</p><h2><a name="epp-on-mj">EPP と MJ の関係</a></h2><p>
+EPP は、 Java 言語のプリプロセッサを作るためのフレームワークです。
+現在、 EPP の最も大規模な応用例が MJ の言語処理系です。
 </p><p>
 </p><p>
-$B<!4|%P!<%8%g%s$N(B EPP 2.0 $B$O!"(B MJ $B$rMQ$$$F$9$Y$F<BAu$7$J$*$9M=Dj$G$9!#(B
-MJ $B$N8@8l=hM}7O<+?H$b(B EPP 2.0 $B$G=q$-D>$7!"(B bootstrap $B$7$^$9!#(B
-$B$3$l$K$h$j!"(B MJ $B$N%3%s%Q%$%kB.EY$N8~>e!"%(%i!<=hM}$N2~A1$J$I$r?^$j$^$9!#(B
+次期バージョンの EPP 2.0 は、 MJ を用いてすべて実装しなおす予定です。
+MJ の言語処理系自身も EPP 2.0 で書き直し、 bootstrap します。
+これにより、 MJ のコンパイル速度の向上、エラー処理の改善などを図ります。
 </p><hr>
 <table width="100%"> <tr><td>
 <img src="images/img002.gif" alt="mj-logo">

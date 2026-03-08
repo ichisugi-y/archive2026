@@ -25,8 +25,8 @@ java.lang.Object
   <dt> public abstract class <b>MemberInfo</b>
   <dt> extends Object
 </dl>
-$B%/%i%9(B MemberInfo $B$O!"(B ClassInfo, FieldInfo, MethodInfo $B$K6&DL$J%a%=%C%I$r(B
-$BDj5A$7$^$9!#(B.
+クラス MemberInfo は、 ClassInfo, FieldInfo, MethodInfo に共通なメソッドを
+定義します。.
 <p>
 <dl>
     <dt> <b>See Also:</b>
@@ -48,19 +48,19 @@ java.lang.Object
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getDeclaringClass()"><b>getDeclaringClass</b></a>()
-  <dd> $B$3$N%a%s%P!<$,@k8@$5$l$?%/%i%9$rJV$7$^$9!#(B.
+  <dd> このメンバーが宣言されたクラスを返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getModifiers()"><b>getModifiers</b></a>()
-  <dd> $B$3$N%a%s%P!<$N(B modifier $B$rJV$7$^$9!#(B.
+  <dd> このメンバーの modifier を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getName()"><b>getName</b></a>()
-  <dd> $B$3$N%a%s%P!<$NL>A0$rJV$7$^$9!#(B.
+  <dd> このメンバーの名前を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#modifiersToString()"><b>modifiersToString</b></a>()
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#toString()"><b>toString</b></a>()
-  <dd> $B$3$N%a%s%P!<$r!"?M4V$,FI$_$d$9$$J8;zNs$KJQ49$7$^$9!#(B.
+  <dd> このメンバーを、人間が読みやすい文字列に変換します。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -83,8 +83,8 @@ java.lang.Object
  public <a href="epp.Type.html#_top_">Type</a> getDeclaringClass()
 </pre>
 <dl>
-  <dd> $B$3$N%a%s%P!<$,@k8@$5$l$?%/%i%9$rJV$7$^$9!#(B.
-$B!J(BEPP 1.1.0 beta3 $B$G$O!"$^$@40A4$K<BAu$5$l$F$$$^$;$s!#!K(B
+  <dd> このメンバーが宣言されたクラスを返します。.
+（EPP 1.1.0 beta3 では、まだ完全に実装されていません。）
 <p>
 </dl>
 <a name="getName()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -93,8 +93,8 @@ java.lang.Object
  public <a href="epp.Symbol.html#_top_">Symbol</a> getName()
 </pre>
 <dl>
-  <dd> $B$3$N%a%s%P!<$NL>A0$rJV$7$^$9!#(B.
-$B%/%i%9$N>l9g$O!"40A48BDjL>%7%s%\%k$rJV$7$^$9!#(B
+  <dd> このメンバーの名前を返します。.
+クラスの場合は、完全限定名シンボルを返します。
 <p>
 </dl>
 <a name="getModifiers()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -103,8 +103,8 @@ java.lang.Object
  public <a href="epp.Tree.html#_top_">Tree</a>[] getModifiers()
 </pre>
 <dl>
-  <dd> $B$3$N%a%s%P!<$N(B modifier $B$rJV$7$^$9!#(B.
-$BJV$5$l$kG[Ns$NMWAG$O!"IaDL$O%/%i%9(B Identifier $B$N%$%s%9%?%s%9$G$9!#(B
+  <dd> このメンバーの modifier を返します。.
+返される配列の要素は、普通はクラス Identifier のインスタンスです。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -117,8 +117,8 @@ java.lang.Object
  public abstract String toString()
 </pre>
 <dl>
-  <dd> $B$3$N%a%s%P!<$r!"?M4V$,FI$_$d$9$$J8;zNs$KJQ49$7$^$9!#(B.
-$B%G%P%C%0MQ$N%a%=%C%I$G$9!#(B
+  <dd> このメンバーを、人間が読みやすい文字列に変換します。.
+デバッグ用のメソッドです。
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>

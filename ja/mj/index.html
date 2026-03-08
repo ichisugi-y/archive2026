@@ -1,23 +1,23 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="./style.css">
-<title> $B%W%m%0%i%_%s%08@8l(B MixJuice </title>
+<title> プログラミング言語 MixJuice </title>
 </head> <body>
 <div class="header-link">
 [<a href="index.html">MJ Top page</a>]
 [<a href="site-map.html">Site map</a>]
 </div>
-<h1>$B%W%m%0%i%_%s%08@8l(B MixJuice</h1>
+<h1>プログラミング言語 MixJuice</h1>
 <ul class="headers">
 </p></ul><p>
 </p><p>
 <table width="95%"  style="font-size:x-small">
 <tr><td>
-<a href="doc/whats-new.html">$B99?7>pJs(B</a><br>
-<a href="doc/index.html">$B%I%-%e%a%s%H(B</a><br>
-<a href="demo.html">$B%G%b%"%W%l%C%H(B</a><br>
+<a href="doc/whats-new.html">更新情報</a><br>
+<a href="doc/index.html">ドキュメント</a><br>
+<a href="demo.html">デモアプレット</a><br>
 <a href="http://groups.yahoo.co.jp/group/mj-language/">mj-language ML</a><br>
 <a href="http://groups.yahoo.co.jp/group/aosd-jp/">aosd-jp ML</a><br>
 </td><td>
@@ -25,7 +25,7 @@
 <center>
 <a href="http://groups.yahoo.co.jp/group/mj-language/">
 <img src="http://www.egroups.co.jp/img/ui/join.gif" border=0><br>
-<div style="font-size:x-small">mj-language ML $B$K;22C$7$^$;$s$+!)(B</div>
+<div style="font-size:x-small">mj-language ML に参加しませんか？</div>
 </a>
 </center>
 </td><td>
@@ -33,7 +33,7 @@
 <center>
 <a href="http://groups.yahoo.co.jp/group/aosd-jp/">
 <img src="http://www.egroups.co.jp/img/ui/join.gif" border=0><br>
-<div style="font-size:x-small">aosd-jp ML $B$K;22C$7$^$;$s$+!)(B</div>
+<div style="font-size:x-small">aosd-jp ML に参加しませんか？</div>
 </a>
 </center>
 </td>
@@ -49,185 +49,185 @@
 </table>
 </p><p>
 </p><p>
-MixJuice $B!J0J2<(B MJ $B$HN,!K(B $B$O!"(BJava $B8@8l$r2~NI$7$?8@8l$G$9!#(B
-$B:GBg$NFCD'$O!V:9J,%Y!<%9%b%8%e!<%k!W$H8F$V%b%8%e!<%k5!9=$G$9!#(B
-$B$3$N%b%8%e!<%k5!9=$O!"(B Java $B8@8l$N%b%8%e!<%k5!9=$h$j$b(B
-$B$O$k$+$K%7%s%W%k$G$"$k$K$b$+$+$o$i$:!"(B
-$B%W%m%0%i%`$N:FMxMQ@-!&3HD%@-!&J]<i@-$r$h$j8~>e$5$;$^$9!#(B
-$B6qBNE*$K$O!"(B MJ $B$N%b%8%e!<%k5!9=$O0J2<$NFCD9$r;}$A$^$9!#(B
+MixJuice （以下 MJ と略） は、Java 言語を改良した言語です。
+最大の特徴は「差分ベースモジュール」と呼ぶモジュール機構です。
+このモジュール機構は、 Java 言語のモジュール機構よりも
+はるかにシンプルであるにもかかわらず、
+プログラムの再利用性・拡張性・保守性をより向上させます。
+具体的には、 MJ のモジュール機構は以下の特長を持ちます。
 <ul>
-<li> $B3HD%@-$N9b$$%"%W%j%1!<%7%g%s$,4J7i$K=q$1$k!#(B
-<li> $B%/%i%9$H%b%8%e!<%k$,D>8r$7$F$*$j!"%b%8%e!<%k2=$N<+M3EY$,9b$$!#(B
-$BNc$($PJ#?t$N%/%i%9$r2#CG$9$k%3%i%\%l!<%7%g%s$r%b%8%e!<%k$H$7$F(B
-$B@Z$j=P$9$3$H$,$G$-$k!#(B
-<li> $B%"%W%j%1!<%7%g%s$N%(%s%I%f!<%6$,!"(B
-$B<BAu$N>\:Y$rCN$i$J$/$F$b%b%8%e!<%k$rAH$_9g$o$;$F;H$&$3$H$,$G$-$k!#(B
+<li> 拡張性の高いアプリケーションが簡潔に書ける。
+<li> クラスとモジュールが直交しており、モジュール化の自由度が高い。
+例えば複数のクラスを横断するコラボレーションをモジュールとして
+切り出すことができる。
+<li> アプリケーションのエンドユーザが、
+実装の詳細を知らなくてもモジュールを組み合わせて使うことができる。
 </ul>
 </p><p>
-$B>\$7$/$O!"2<5-$N%I%-%e%a%s%H$r8fMw$/$@$5$$!#(B
+詳しくは、下記のドキュメントを御覧ください。
 <ol>
-<li>$B!V%*%V%8%'%/%H$N9->l!W2r@b5-;v(B<br>
+<li>「オブジェクトの広場」解説記事<br>
 <a href="http://www.ogis-ri.co.jp/otc/hiroba/technical/MixJuice/index.html">
-$B!V%*%V%8%'%/%H;X8~8@8l$O4V0c$C$F$$$?!*(B--- $B?7@$5*8@8l(B MixJuice ---$B!W(B
+「オブジェクト指向言語は間違っていた！--- 新世紀言語 MixJuice ---」
 </a><br>
-<li>$B8&5fH/I=MQ%9%i%$%I(B
+<li>研究発表用スライド
 <A href="../../mj/papers/mj-20020830.pdf">mj-20020830.pdf</A> <br>
-<li>$B0l?yM5;V!"EDCfE/!'(B<br>
-$B!V:9J,%Y!<%9%b%8%e!<%k!'%/%i%9FHN)$J%b%8%e!<%k5!9=!W(B<br>
-$B;:6H5;=QAm9g8&5f=j%F%/%K%+%k%j%]!<%H(B AIST01-J00002-1, Dec. 2001.
+<li>一杉裕志、田中哲：<br>
+「差分ベースモジュール：クラス独立なモジュール機構」<br>
+産業技術総合研究所テクニカルリポート AIST01-J00002-1, Dec. 2001.
 <a href="../../doc/AIST01-J00002-1.pdf">
 AIST01-J00002-1.pdf</a><br><br>
-<li><a href="doc/index.html">MJ $B%I%-%e%a%s%H(B</a><br>
+<li><a href="doc/index.html">MJ ドキュメント</a><br>
 <li><a href="doc/faq.html">FAQ</a>
 <li><a href="design-pattern/index.html">
-MixJuice $B$K$h$k%G%6%$%s%Q%?!<%s2~A1%+%?%m%0!JF|K\8lHG!K(B</a><font COLOR="red"> [New !]</font>$B!"(B
-<a href="http://cvs.m17n.org/~akr/mj/design-pattern/en/">$B!J1Q8lHG!K(B
+MixJuice によるデザインパターン改善カタログ（日本語版）</a><font COLOR="red"> [New !]</font>、
+<a href="http://cvs.m17n.org/~akr/mj/design-pattern/en/">（英語版）
 </a>
-<li>$B%l%$%d!<%I%/%i%9?^(B <a href="../../mj/papers/lclass-diag-20021030.pdf">lclass-diag-20021030.pdf</a>
-<li><a href="../../mj/2003/index.html">2003$BG/EY:n@.$N%=%U%H%&%(%"$*$h$S%I%-%e%a%s%H(B</a><font COLOR="red"> [New !]</font><br>
+<li>レイヤードクラス図 <a href="../../mj/papers/lclass-diag-20021030.pdf">lclass-diag-20021030.pdf</a>
+<li><a href="../../mj/2003/index.html">2003年度作成のソフトウエアおよびドキュメント</a><font COLOR="red"> [New !]</font><br>
 </ol>
 </p><p>
 </p><p>
 <hr>
-<div style="font-size:large">$B%@%&%s%m!<%I(B</div>
+<div style="font-size:large">ダウンロード</div>
 <ul>
-<li> Windows $BHG!J(Bcygwin $BITMW!K(B<font COLOR="red"> [New !]</font><br>
-$B%3%^%s%I%W%m%s%W%H$+$i(B MixJuice $B$N3+H/MQ%3%^%s%I$,<B9T$G$-$^$9!#(B
+<li> Windows 版（cygwin 不要）<font COLOR="red"> [New !]</font><br>
+コマンドプロンプトから MixJuice の開発用コマンドが実行できます。
 <ul>
-<li>MixJuice 1.1 $B%$%s%9%H!<%i(B mj.msi </li>
-<li><a href="../../mj/2003/msi/doc/install_ja.html">$B%$%s%9%H!<%k%^%K%e%"%k(B</a></li>
+<li>MixJuice 1.1 インストーラ mj.msi </li>
+<li><a href="../../mj/2003/msi/doc/install_ja.html">インストールマニュアル</a></li>
 </ul>
 </li>
-<li> Unix $BHG(B <br>
-Unix $BHG(B MixJuice 1.1 $B$O2<5-$N4D6-$GA`:n3NG'$7$F$$$^$9!#(B<br>
+<li> Unix 版 <br>
+Unix 版 MixJuice 1.1 は下記の環境で操作確認しています。<br>
 <ul>
 <li>linux, IBM JDK1.1.8
 <li>linux, Sun j2sdk1.4.1_01
 <li>Windows2000, cygwin 1.3.16-1, Sun JDK1.2.2
 </ul>
 <p>
-Zip $B%U%!%$%k$rE83+$9$k$H(B <tt>mj</tt> $B$H$$$&%G%#%l%/%H%j$,$G$-$^$9!#(B
-$B%G%#%l%/%H%j(B <tt>mj/bin</tt> $B$r(B <tt>PATH</tt> $B$KDI2C$7$F2<$5$$!#(B
-<tt>CLASSPATH</tt> $B$N@_Dj$OITMW$G$9!#(B
+Zip ファイルを展開すると <tt>mj</tt> というディレクトリができます。
+ディレクトリ <tt>mj/bin</tt> を <tt>PATH</tt> に追加して下さい。
+<tt>CLASSPATH</tt> の設定は不要です。
 </p>
 <p>
 <a href="../../mj/download/mj-1.1.zip">mj-1.1.zip</a> (2003-01-17)</li>
-<li><a href="form.html">MixJuice $B$N(B License</a></li>
+<li><a href="form.html">MixJuice の License</a></li>
 </ul>
 </p><p>
 <hr>
-<div style="font-size:large">$B%G%b%"%W%l%C%H(B</div>
+<div style="font-size:large">デモアプレット</div>
 <p>
-<a href="demo.html">$B%I%m!<%D!<%k!"%3!<%R!<%+%C%W(B</a><br>
-<a href="../../mj/2003/sweeper/sweeper_demo_ja.html">$BA]=|%m%\%C%H(B $B%7%_%e%l!<%7%g%s(B</a> <font COLOR="red"> [New !]</font><br>
+<a href="demo.html">ドローツール、コーヒーカップ</a><br>
+<a href="../../mj/2003/sweeper/sweeper_demo_ja.html">掃除ロボット シミュレーション</a> <font COLOR="red"> [New !]</font><br>
 </p><p>
 <hr>
-<div style="font-size:large">$BBg5,LO%=%U%H%&%(%"$N(BMixJuice$B$X$N0\?"<B83$N%l%]!<%H(B</div>
+<div style="font-size:large">大規模ソフトウエアのMixJuiceへの移植実験のレポート</div>
  <p>
-$BHf3SE*Bg5,LO$J4{B8$N%*!<%W%s%=!<%9(BJava$B%"%W%j%1!<%7%g%s(B Grappa $B$N(BMixJuice$B$X$N0\?"<B83$r9T$$!"(B
- MixJuice $B$,M-$9$k:9J,%Y!<%9%b%8%e!<%k$NI>2A$r9T$$$^$7$?!#(B 
+比較的大規模な既存のオープンソースJavaアプリケーション Grappa のMixJuiceへの移植実験を行い、
+ MixJuice が有する差分ベースモジュールの評価を行いました。 
 </p><p>
-   <a href="../../mj/2003/mjGrappa/index_ja.html">Grappa$B$N(BMixJuice$B$X$N0\?"<B83%l%]!<%H(B</a><font COLOR="red"> [New !]</font><br>
+   <a href="../../mj/2003/mjGrappa/index_ja.html">GrappaのMixJuiceへの移植実験レポート</a><font COLOR="red"> [New !]</font><br>
     </p>
 <hr>
 </p>
-<div style="font-size:large">$B:9J,%Y!<%9%b%8%e!<%k(B for emacs-lisp</div>
+<div style="font-size:large">差分ベースモジュール for emacs-lisp</div>
 </p><p>
-emacs-lisp $BMQ:9J,%Y!<%9%b%8%e!<%k$r:n$C$F$_$^$7$?!#(B
-$B$^$@<BMQE*$G$O$"$j$^$;$s$,!"(B Java $B8@8l0J30$K$b:9J,%Y!<%9%b%8%e!<%k$,(B
-$BE,MQ2DG=$G$"$k$3$H$r<($90lNc$K$J$C$F$$$^$9!#(B<br>
+emacs-lisp 用差分ベースモジュールを作ってみました。
+まだ実用的ではありませんが、 Java 言語以外にも差分ベースモジュールが
+適用可能であることを示す一例になっています。<br>
 <a href="../../mj/dm-elisp/index.html">dm-elisp</a>
 </p><p>
 </p><p>
 <hr>
-<div style="font-size:large">$BO@J8(B</div>
+<div style="font-size:large">論文</div>
 </p><p>
 <ul>
 </p><p>
-<li>$B0l?yM5;V!"EDCfE/!"EOItBnM:!'(B<br>
-$B!V3HD%%k!<%k!'0BA4$K7k9g2DG=$J%"%9%Z%/%H$N5-=R%k!<%k!W(B<br>
+<li>一杉裕志、田中哲、渡部卓雄：<br>
+「拡張ルール：安全に結合可能なアスペクトの記述ルール」<br>
 <a href="http://wwwfun.kurims.kyoto-u.ac.jp/~nisimura/ppl2003/">PPL2003</a> 
-$BH/I=;qNA(B, Mar, 2003.
+発表資料, Mar, 2003.
 <A href="../../mj/papers/ppl2003.pdf">ppl2003.pdf</A><br>
 <li>Yuuji Ichisugi, Akira Tanaka, Takuo WATANABE:<br>
 "Extension Rules: Description Rules for Safely Composable Aspects"<br>
 Technical Report of National Institute of Advanced Industrial Science and Technology(AIST), AIST01-J00002-4, Feb 2003.
 <A href="../../mj/papers/tr2003.pdf">tr2003.pdf</A><br>
 </p><p>
-<li>$B0l?yM5;V(B<br>
-$B!V(Bpxml plug-in $B%A%e!<%H%j%"%k!W(B
+<li>一杉裕志<br>
+「pxml plug-in チュートリアル」
 <a href="http://www.apgrid.org/sat/japanese/jigyoannnai/2002event/show2gaiyou.html">
-$B$D$/$P%F%/%N%m%8!<%7%g!<%1!<%9(B</a> $BG[I[;qNA(B, Jan 2003.
+つくばテクノロジーショーケース</a> 配布資料, Jan 2003.
 <A href="../../mj/papers/pxml20030130.txt">pxml20030130.txt</A><br>
 </p><p>
-<li>$B0l?yM5;V!"EDCfE/!"EOItBnM:!'(B<br>
-$B!V0BA4$K7k9g2DG=$J(B mixin $B$rDs6!$9$k$?$a$N%k!<%k!W(B,
-$B%3%s%T%e!<%?%=%U%H%&%(%"(B, Vol.20, No.3(2003), pp.80--87. 
+<li>一杉裕志、田中哲、渡部卓雄：<br>
+「安全に結合可能な mixin を提供するためのルール」,
+コンピュータソフトウエア, Vol.20, No.3(2003), pp.80--87. 
 </p><p>
-<li>$BEDCfE/!"0l?yM5;V(B:<br>
-$B!V(BMixJuice $B8@8l$K$h$k%G%6%$%s%Q%?!<%s$N2~A1!W(B,
-$B>pJs=hM}3X2qO@J8;o!'%W%m%0%i%_%s%0(B, Vol.44 No.SIG 4(PRO 17), pp25--46, Mar. 2003. 
+<li>田中哲、一杉裕志:<br>
+「MixJuice 言語によるデザインパターンの改善」,
+情報処理学会論文誌：プログラミング, Vol.44 No.SIG 4(PRO 17), pp25--46, Mar. 2003. 
 </p><p>
-<li>$BEDCfE/!"0l?yM5;V(B:<br>
-$B!V(BMixJuice $B8@8l$K$h$k%G%6%$%s%Q%?!<%s$N2~A1!W(B<br>
-$B>pJs=hM}3X2q%W%m%0%i%_%s%08@8l8&5f2q(B $BH/I=;qNA(B, Oct. 2002.
+<li>田中哲、一杉裕志:<br>
+「MixJuice 言語によるデザインパターンの改善」<br>
+情報処理学会プログラミング言語研究会 発表資料, Oct. 2002.
 <A href="../../mj/papers/pro200210.pdf">pro200210.pdf</A>
- $B!J%9%i%$%I(B <A href="../../mj/papers/pro200210slides.pdf">pro200210slides.pdf</A>$B!K(B
-<li>$B0l?yM5;V!"EDCfE/!"EOItBnM:!'(B<br>
-$B!V0BA4$K7k9g2DG=$J%"%9%Z%/%H$rDs6!$9$k$?$a$N%k!<%k!W(B<br>
-<a href="http://www.iplab.is.tsukuba.ac.jp/jssst2002/">$B%=%U%H%&%(%"2J3X2qBh#1#92sBg2q(B</a>, Sep. 2002.
+ （スライド <A href="../../mj/papers/pro200210slides.pdf">pro200210slides.pdf</A>）
+<li>一杉裕志、田中哲、渡部卓雄：<br>
+「安全に結合可能なアスペクトを提供するためのルール」<br>
+<a href="http://www.iplab.is.tsukuba.ac.jp/jssst2002/">ソフトウエア科学会第１９回大会</a>, Sep. 2002.
 <A href="../../mj/papers/mj-jssst2002.pdf">mj-jssst2002.pdf</A>
- $B!J%9%i%$%I(B <A href="../../mj/papers/mj-jssst20020911.pdf">mj-jssst20020911.pdf</A>$B!K(B
+ （スライド <A href="../../mj/papers/mj-jssst20020911.pdf">mj-jssst20020911.pdf</A>）
 <li>Yuuji Ichisugi, Akira Tanaka:<br>
 "Difference-Based Modules: A Class-Independent Module Mechanism",<br>
 In Proc. of  <a href="http://www.ecoop2002.lcc.uma.es/">ECOOP 2002</a>,
 <a href="http://link.springer.de/link/service/series/0558/tocs/t2374.htm">LNCS 2374</a>, June 2002.
 <A href="../../mj/papers/ecoop2002-en.pdf">ecoop2002-en.pdf</A>
-<li>$B0l?yM5;V!'(B<br>
-$B!V%7%s%W%k$+$D6/NO$J%b%8%e!<%k5!9=$rM-$9$k(B
-$B%*%V%8%'%/%H;X8~8@8l(B MixJuice $B$NDs0F!W(B<br>
-$B%3%s%T%e!<%?%=%U%H%&%(%"(B, Vol.18,No.6(2001),pp.54--58.
+<li>一杉裕志：<br>
+「シンプルかつ強力なモジュール機構を有する
+オブジェクト指向言語 MixJuice の提案」<br>
+コンピュータソフトウエア, Vol.18,No.6(2001),pp.54--58.
 <br>
-<li>$BEDCfE/!"0l?yM5;V!'(B<br>
-$B!V%W%m%0%i%_%s%08@8l(B MixJuice $B$K$h$k(B HTTP server $B$N%b%8%e!<%k2=!W(B<br>
-<a href="http://www.fun.ac.jp/jssst2001/">$B%=%U%H%&%(%"2J3X2qBh#1#82sBg2q(B</a>, Sep. 2001.
+<li>田中哲、一杉裕志：<br>
+「プログラミング言語 MixJuice による HTTP server のモジュール化」<br>
+<a href="http://www.fun.ac.jp/jssst2001/">ソフトウエア科学会第１８回大会</a>, Sep. 2001.
 <A href="../../mj/papers/mj-jssst2001.pdf">mj-jssst2001.pdf</A><br>
-<li>$B0l?yM5;V!'(B<br>
-$B!V%7%s%W%k$+$D6/NO$J%b%8%e!<%k5!9=$rM-$9$k(B
-$B%*%V%8%'%/%H;X8~8@8l(B MixJuice $B$NDs0F!W(B<br>
-$B%=%U%H%&%(%"2J3X2qBh#1#72sBg2q(B, Sep. 2000.
+<li>一杉裕志：<br>
+「シンプルかつ強力なモジュール機構を有する
+オブジェクト指向言語 MixJuice の提案」<br>
+ソフトウエア科学会第１７回大会, Sep. 2000.
 <A href="../../mj/papers/mj-jssst2000.pdf">mj-jssst2000.pdf</A><br>
 </ul>
 </p><p>
 </p><p>
 </p><p>
 <hr>
-<div style="font-size:large">$B8&5f!&3+H/$NL\E*(B</div>
+<div style="font-size:large">研究・開発の目的</div>
 </p><p>
- MJ $B$O!VItIJ2=$5$l$?8@8l=hM}7O!W$N<BAuMQ8@8l$H$7$F3+H/$r;O$a$^$7$?!#(B
-$B$^$?!"9-$$0UL#$G$N%"%9%Z%/%H;X8~%W%m%0%i%_%s%0$r(B
-$B;Y1g$9$kHFMQ8@8l$G$b$"$j$^$9!#(B
-$B>\$7$/$O!"2<5-$N%Z!<%8$r8fMw$/$@$5$$!#(B
+ MJ は「部品化された言語処理系」の実装用言語として開発を始めました。
+また、広い意味でのアスペクト指向プログラミングを
+支援する汎用言語でもあります。
+詳しくは、下記のページを御覧ください。
 <ol>
-<li><a href="language.html">$B8@8l=hM}7O$NItIJ2=(B</a>
-<li><a href="soc.html">$B%"%9%Z%/%H;X8~8@8l!"(Bseparation of concerns $B4XO"8&5f%a%b(B</a>
+<li><a href="language.html">言語処理系の部品化</a>
+<li><a href="soc.html">アスペクト指向言語、separation of concerns 関連研究メモ</a>
 <li> Aspect-Oriented Software Development <a href="http://aosd.net">http://aosd.net</a>
 </ol>
 </p><p>
 </p><p>
 </p><p>
 <hr>
-<div style="font-size:large">$B%W%m%8%'%/%H%9%?%C%U(B</div>
+<div style="font-size:large">プロジェクトスタッフ</div>
 </p><p>
 <ul>
 <li><a href="http://www.aist.go.jp/index_j.html">
 <img src="images/aist-logo-s.gif" alt="aist-logo" border=0></a> 
-$B;:6H5;=QAm9g8&5f=j(B $B>pJs=hM}8&5fItLg(B $B!?(B <br>
+産業技術総合研究所 情報処理研究部門 ／ <br>
 <a href="http://www.jst.go.jp/">
 <img src="images/jst-logo-s.gif" alt="jst-logo" border=0></a> 
-$B2J3X5;=Q?66=;v6HCD(B $B$5$-$,$18&5f#2#1(B $B85(B $B8&5f0w(B
-$B0l?yM5;V(B<br>
-<li>$B;:6H5;=QAm9g8&5f=j(B $B>pJs=hM}8&5fItLg(B $BEDCfE/(B<br>
+科学技術振興事業団 さきがけ研究２１ 元 研究員
+一杉裕志<br>
+<li>産業技術総合研究所 情報処理研究部門 田中哲<br>
 </ul>
 </p><hr>
 <table width="100%"> <tr><td>

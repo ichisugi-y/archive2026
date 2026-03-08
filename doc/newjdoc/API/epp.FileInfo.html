@@ -25,20 +25,20 @@ java.lang.Object
   <dt> public class <b>FileInfo</b>
   <dt> extends Object
 </dl>
-FileInfo $B$O!"%0%m!<%P%k=hM}%b!<%I$K$*$$$F;H$o$l$k%G!<%?9=B$$G!"(B
-$B=hM}Cf$N%U%!%$%k$NCj>]9=J8LZ!"=hM}$K;H$o$l$F$$$k(B EPP $B%W%j%W%m%;%C%5$H(B
-$B$=$N<B9T4D6-$J$I$rJ];}$7$F$$$^$9!#(B.
+FileInfo は、グローバル処理モードにおいて使われるデータ構造で、
+処理中のファイルの抽象構文木、処理に使われている EPP プリプロセッサと
+その実行環境などを保持しています。.
 <p>
-EPP $B%0%m!<%P%k%W%m%;%C%5$N!"%$%s%9%?%s%9JQ?t(B allFileInfo $B$K$O(B
-FileInfo $B$NG[Ns$,F~$l$i$l$F$$$^$9!#(B
+EPP グローバルプロセッサの、インスタンス変数 allFileInfo には
+FileInfo の配列が入れられています。
 <p>
-getTree $B%a%=%C%I$K$h$C$F!"(B
-$B=hM}Cf$NA4%U%!%$%k$NCj>]9=J8LZ$K%"%/%;%9$9$k$3$H$,$G$-$^$9!#(B
-$B$^$?!"(B setTree $B%a%=%C%I$K$h$C$F(B
-$BCj>]9=J8LZ$r99?7$9$k$3$H$b$G$-$^$9!#(B
-$B$3$l$K$h$C$F!"%0%m!<%P%k$J:GE,2=%D!<%k$J$I$,<B8=2DG=$K$J$j$^$9!#(B
+getTree メソッドによって、
+処理中の全ファイルの抽象構文木にアクセスすることができます。
+また、 setTree メソッドによって
+抽象構文木を更新することもできます。
+これによって、グローバルな最適化ツールなどが実現可能になります。
 <p>
-$B$=$NB>$N%a%=%C%I$O!"(B plug-in $B%W%m%0%i%^!<$K$OIaDL!"4X78$"$j$^$;$s!#(B
+その他のメソッドは、 plug-in プログラマーには普通、関係ありません。
 <p>
 <dl>
     <dt> <b>See Also:</b>
@@ -84,7 +84,7 @@ getTree $B%a%=%C%I$K$h$C$F!"(B
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#getTree()"><b>getTree</b></a>()
-  <dd> $B$3$N%U%!%$%k$NCj>]9=J8LZ$rJV$7$^$9!#(B.
+  <dd> このファイルの抽象構文木を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#globalProcessAfterMacroExpansionPass(epp.FileInfo[])"><b>globalProcessAfterMacroExpansionPass</b></a>(FileInfo[])
   <dd> 
@@ -123,7 +123,7 @@ getTree $B%a%=%C%I$K$h$C$F!"(B
   <dd> 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#setTree(epp.Tree)"><b>setTree</b></a>(Tree)
-  <dd> $B$3$N%U%!%$%k$NCj>]9=J8LZ$rJQ99$7$^$9(B.
+  <dd> このファイルの抽象構文木を変更します.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -168,7 +168,7 @@ getTree $B%a%=%C%I$K$h$C$F!"(B
  public <a href="epp.Tree.html#_top_">Tree</a> getTree()
 </pre>
 <dl>
-  <dd> $B$3$N%U%!%$%k$NCj>]9=J8LZ$rJV$7$^$9!#(B.
+  <dd> このファイルの抽象構文木を返します。.
 <p>
 </dl>
 <a name="setTree(epp.Tree)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -177,7 +177,7 @@ getTree $B%a%=%C%I$K$h$C$F!"(B
  public void setTree(<a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> $B$3$N%U%!%$%k$NCj>]9=J8LZ$rJQ99$7$^$9(B.
+  <dd> このファイルの抽象構文木を変更します.
 <p>
 </dl>
 <a name="getClassTable()"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>

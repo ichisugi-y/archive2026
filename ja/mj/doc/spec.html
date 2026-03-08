@@ -1,311 +1,311 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="./style.css">
-<title> MJ $B8@8l;EMM%a%b(B </title>
+<title> MJ 言語仕様メモ </title>
 </head> <body>
 <div class="header-link">
 [<a href="http://staff.aist.go.jp/y-ichisugi/mj/">MJ Home Page </a>]
 [<a href="index.html">Document index</a>]
 </div>
-<h1>MJ $B8@8l;EMM%a%b(B</h1>
+<h1>MJ 言語仕様メモ</h1>
 <ul class="headers">
-<li><a href="#note"><div style="color:red">$BCm0U(B</div></a>
-<li><a href="#glossary">$BMQ8lDj5A(B</a>
-<li><a href="#what-is-extends"> module $B$N(B extends, uses, complements, imports</a>
-<li><a href="#method-selector">$B!V%a%=%C%IC1=cL>!W!V%a%=%C%I40A48BDjL>!W!V%a%=%C%I%;%l%/%?!W!V%a%=%C%I3HD%E@!W!V%a%=%C%ICGJRL>!W(B</a>
-<li><a href="#module">$B%b%8%e!<%kDj5A(B</a>
-<li><a href="#class-interface-method-field">$B%/%i%9!&%$%s%?!<%U%'!<%9Dj5A!"%a%=%C%IDj5A!"%U%#!<%k%IDj5A(B</a>
-<li><a href="#constructor">$B%3%s%9%H%i%/%?(B</a>
-<li><a href="#class-extension">$B%/%i%9$N3HD%(B</a>
-<li><a href="#interface-extension">$B%$%s%?!<%U%'!<%9$N3HD%(B</a>
-<li><a href="#">$B%a%=%C%I$N3HD%(B</a>
-<li><a href="#fqn"> FQN $B!J40A48BDjL>!K$N;H$$J}(B</a>
+<li><a href="#note"><div style="color:red">注意</div></a>
+<li><a href="#glossary">用語定義</a>
+<li><a href="#what-is-extends"> module の extends, uses, complements, imports</a>
+<li><a href="#method-selector">「メソッド単純名」「メソッド完全限定名」「メソッドセレクタ」「メソッド拡張点」「メソッド断片名」</a>
+<li><a href="#module">モジュール定義</a>
+<li><a href="#class-interface-method-field">クラス・インターフェース定義、メソッド定義、フィールド定義</a>
+<li><a href="#constructor">コンストラクタ</a>
+<li><a href="#class-extension">クラスの拡張</a>
+<li><a href="#interface-extension">インターフェースの拡張</a>
+<li><a href="#">メソッドの拡張</a>
+<li><a href="#fqn"> FQN （完全限定名）の使い方</a>
 <li><a href="#statement"> Statement</a>
 <li><a href="#expression"> Expression</a>
 <li><a href="#naming-convention"> naming convention</a>
-<li><a href="#unsupported-java-features">$B%5%]!<%H$7$J$$(B Java $B$N5!G=(B</a>
-<li><a href="#other-features">$B$=$NB>$N5!G=(B</a>
-<li><a href="#syntax">$BJ8K!(B</a>
+<li><a href="#unsupported-java-features">サポートしない Java の機能</a>
+<li><a href="#other-features">その他の機能</a>
+<li><a href="#syntax">文法</a>
 </p></ul><p>
 </p><p>
-</p><h2><a name="note"><div style="color:red">$BCm0U(B</div></a></h2><p>
-$B$3$N%I%-%e%a%s%H$O!"!V(BMJ $B8@8l;EMM=q!W$K=q$/$Y$-FbMF$r$H$j$"$($:(B
-$B%a%b$K$7$?$b$G!"(B
-$B$"$$$^$$$JE@$d4V0c$C$F$$$kE@$r4^$s$G$$$k>l9g$,$"$j$^$9!#(B
-$B$^$?!"@hF,$+$iFI$s$GJ,$+$k$h$&$J9=@.$K$J$C$F$$$^$;$s!#(B
+</p><h2><a name="note"><div style="color:red">注意</div></a></h2><p>
+このドキュメントは、「MJ 言語仕様書」に書くべき内容をとりあえず
+メモにしたもで、
+あいまいな点や間違っている点を含んでいる場合があります。
+また、先頭から読んで分かるような構成になっていません。
 </p><p>
-$BFbMF$O$9$Y$F!"!V(B Java $B8@8l$KBP$9$k0c$$!W$H$$$&7A$G@bL@$7$F$"$j$^$9!#(B
-$B$7$?$,$C$F!"(B Java $B8@8l$NCN<1$O$"$k$b$N$H2>Dj$7$F$$$^$9!#(B
+内容はすべて、「 Java 言語に対する違い」という形で説明してあります。
+したがって、 Java 言語の知識はあるものと仮定しています。
 </p><p>
-$BK\Ev$O%W%m%0%i%`Nc$r$U$s$@$s$K<($7$F@bL@$9$Y$-$G$9$,!"(B
-$B$^$@$[$H$s$I=q$$$F$"$j$^$;$s!#(B
+本当はプログラム例をふんだんに示して説明すべきですが、
+まだほとんど書いてありません。
 </p><p>
 <hr>
-<div style="font-size:x-large">$BMQ8lDj5A$H35G0$N@bL@(B</div>
+<div style="font-size:x-large">用語定義と概念の説明</div>
 <hr>
 </p><p>
-</p><h2><a name="glossary">$BMQ8lDj5A(B</a></h2><p>
+</p><h2><a name="glossary">用語定義</a></h2><p>
 </p><p>
 <dl>
 <dt> sub-module, super-module
 <dd>
 </p><p>
-m2 uses m1 $B$N;~!"(B m1 $B$O(B m2 $B$N(B super-module $B!"(B m2 $B$O(B m1 $B$N(B sub-module 
-$B$H8F$V!#(B
-$B!J$J$*!"(B m2 extends m1, m2 complements m1 $B$O!"$H$b$K(B
-m2 uses m1 $B$r$b0UL#$9$k$b$N$H$9$k!#!K(B
+m2 uses m1 の時、 m1 は m2 の super-module 、 m2 は m1 の sub-module 
+と呼ぶ。
+（なお、 m2 extends m1, m2 complements m1 は、ともに
+m2 uses m1 をも意味するものとする。）
 </p><p>
 <dt> Java class, MJ class
 <dd>
 </p><p>
-Java $B8@8l$G=q$+$l$?%/%i%9$r(B Java class $B!"(B
-MJ $B8@8l$G=q$+$l$?%/%i%9$r(B MJ class $B$H8F$V!#(B
-$B!J(BJava class $B$r7Q>5$9$k(B MJ class $B$rDj5A$G$-$k$,!"5U$OIT2D!#!K(B
+Java 言語で書かれたクラスを Java class 、
+MJ 言語で書かれたクラスを MJ class と呼ぶ。
+（Java class を継承する MJ class を定義できるが、逆は不可。）
 </p><p>
 <dt> Java method, MJ method
 <dd>
 </p><p>
-Java class $B$,Dj5A$7$?%a%=%C%I%;%l%/%?$r(B Java method $B!"(B
-MJ class $B$,Dj5A$7$?%a%=%C%I%;%l%/%?$r(B MJ method $B$H8F$V!#(B
-$B!J(BJava class $B$O(B Java method $B$7$+;}$AF@$J$$$,!"(B
-MJ class $B$O(B Java method $B$H(B MJ method $B$NN>J}$r;}$AF@$k!#(B
-MJ class $B$O!"(B super class $B$+$i(B Java method $B$r7Q>5$9$k$?$a!#!K(B
+Java class が定義したメソッドセレクタを Java method 、
+MJ class が定義したメソッドセレクタを MJ method と呼ぶ。
+（Java class は Java method しか持ち得ないが、
+MJ class は Java method と MJ method の両方を持ち得る。
+MJ class は、 super class から Java method を継承するため。）
 </p><p>
-MJ $B8@8l$K$h$C$F(B Java method $B$KBP$7:9J,$rDI2C$7$?>l9g$b!"(B
-$B$=$l$O(B MJ method $B$H8F$P$:!"(B Java method $B$H8F$V!#(B
+MJ 言語によって Java method に対し差分を追加した場合も、
+それは MJ method と呼ばず、 Java method と呼ぶ。
 </p><p>
 </p><p>
 <dt> SS class
 <dd>
 </p><p>
-SS class $B$O(B startup-singleton class $B$NN,!#(B
-$B%W%m%0%i%`$N5/F0$K;H$o$l$k(B singleton object $B$rDj5A$9$k%/%i%9!#(B
+SS class は startup-singleton class の略。
+プログラムの起動に使われる singleton object を定義するクラス。
 </p><p>
 <dt>module graph
 <dd>
 </p><p>
-$B%b%8%e!<%k4V$N(B uses $B4X78!J$9$J$o$A7Q>54X78!K$rM-8~%0%i%U$GI=8=$7$?$b$N!#(B
+モジュール間の uses 関係（すなわち継承関係）を有向グラフで表現したもの。
 </p><p>
 <dt>linearized list
 <dd>
 </p><p>
-$B%b%8%e!<%k$r(B topological sort $B$K$h$C$F#1Ns$KJB$Y$?7k2L$N%j%9%H!#(B
-$BNc$($P!"(B m1 extends m0, m2 extends m0 $B$N;~!"(B m0, m1, m2 $B$N(B linearized list $B$O(B
-(m0 m1 m2) $B$HI=5-$9$k$3$H$K$9$k!#(B super module $BB&$,:8$KMh$k$h$&$K=q$/!#(B
-$B$^$?!"!V(Blinearized list $B>e$G!"(Bm1, m2 $B$h$j$b>e$K$"$k!W$H$$$&I=8=$rMQ$$$k!#(B
-$B!J1&!":8!"A0!"8e$H$$$&I=8=$O!"8m2r$r>7$-$d$9$$$N$G;HMQ$7$J$$!#!K(B
+モジュールを topological sort によって１列に並べた結果のリスト。
+例えば、 m1 extends m0, m2 extends m0 の時、 m0, m1, m2 の linearized list は
+(m0 m1 m2) と表記することにする。 super module 側が左に来るように書く。
+また、「linearized list 上で、m1, m2 よりも上にある」という表現を用いる。
+（右、左、前、後という表現は、誤解を招きやすいので使用しない。）
 </p><p>
 </p><p>
 </dl>
 </p><p>
-</p><h2><a name="what-is-extends"> module $B$N(B extends, uses, complements, imports</a></h2><p>
+</p><h2><a name="what-is-extends"> module の extends, uses, complements, imports</a></h2><p>
 </p><p>
 <dl>
-<dt> extends $B@k8@(B
+<dt> extends 宣言
 <dd>
 </p><p>
- extends $B@k8@$O!"=>Mh$N8@8l$N(B require, import, makefile, patch $B$r7s$M$F$$$k!#(B
-$B$3$l$i$N5!G=$r#1$D$N@k8@$K(B unify $B$7$?$b$N$,(B module $B$N(B extends $B$G$"$k!#(B
+ extends 宣言は、従来の言語の require, import, makefile, patch を兼ねている。
+これらの機能を１つの宣言に unify したものが module の extends である。
 </p><p>
-$B$b$C$H>\$7$/@bL@$9$k$H(B extends $B@k8@$,M-$9$k5!G=$O!"(B
-$BB>$N8@8l$K$*$1$k0J2<$K5s$2$k5!G=$KAjEv$9$k!#(B
+もっと詳しく説明すると extends 宣言が有する機能は、
+他の言語における以下に挙げる機能に相当する。
 </p><p>
 </p><p>
 <dl>
-<dt>$B!V<B9T;~!&%j%s%/;~$KI,MW$J%b%8%e!<%k$N@k8@!W(B
-<dd>    Emacs Lisp, Common Lisp $B$N(B require<br>
-        C $B$N(B cc -l<br>
-        Java $B$OL@<(E*$J@k8@$O$J$$!#(B
-        $B!J;HMQ$9$k%/%i%9$O<+F0E*$K(B load $B$5$l$k!#!K(B<br>
+<dt>「実行時・リンク時に必要なモジュールの宣言」
+<dd>    Emacs Lisp, Common Lisp の require<br>
+        C の cc -l<br>
+        Java は明示的な宣言はない。
+        （使用するクラスは自動的に load される。）<br>
 </p><p>
-<dt>$B!V%b%8%e!<%k$NL>A06u4V$NMxMQ!W(B
-<dd>    Emacs Lisp, Common Lisp $B$N(B require<br>
-        C, C++ $B$N(B #include        <br>
-        C++ $B$N(B uses namespace $B!J!)!K(B<br>
-        Java $B$N(B import<br>
+<dt>「モジュールの名前空間の利用」
+<dd>    Emacs Lisp, Common Lisp の require<br>
+        C, C++ の #include        <br>
+        C++ の uses namespace （？）<br>
+        Java の import<br>
 </p><p>
-<dt>$B!V%b%8%e!<%k$NL>A06u4V$N7Q>5!W(B
-<dd>    Emacs Lisp, Common Lisp $B$N(B require<br>
-        Common Lisp $B$N!V(Bpackage $B$N7Q>5!W(B<br>
-        C, C++ $B$N(B #include $B$N%M%9%H(B<br>
-        C++, Java $B$N%/%i%97Q>5!J(Bfield, method $B$NL>A06u4V$r7Q>5$9$k!#!K(B<br>
-        C++ $B$N(B namespace $B$N%M%9%H(B<br>
-        Java $B$N(B nested class$B!JFbB&$N%/%i%9$,30B&$NL>A06u4V$r7Q>5$9$k!K(B<br>
+<dt>「モジュールの名前空間の継承」
+<dd>    Emacs Lisp, Common Lisp の require<br>
+        Common Lisp の「package の継承」<br>
+        C, C++ の #include のネスト<br>
+        C++, Java のクラス継承（field, method の名前空間を継承する。）<br>
+        C++ の namespace のネスト<br>
+        Java の nested class（内側のクラスが外側の名前空間を継承する）<br>
 </p><p>
-<dt>$B!V%b%8%e!<%k4V$N0MB84X78$N@k8@!W(B
-<dd>    C, C++ $B$N(B makefile $B!J(B #include $B$r8+$F(B makedepend $B$G<+F0@8@.2DG=!)!K(B<br>
-        Java $B$N%/%i%9%U%!%$%k!J(Bjavac $B$,2r@O$7$F(B class file $B$KKd$a9~$`!#!K(B<br>
+<dt>「モジュール間の依存関係の宣言」
+<dd>    C, C++ の makefile （ #include を見て makedepend で自動生成可能？）<br>
+        Java のクラスファイル（javac が解析して class file に埋め込む。）<br>
 </p><p>
-<dt>$B!V%b%8%e!<%k$N:9J,E*3HD%!W(B
-<dd>    Emacs Lisp $B$N(B advice <br>
-         C++, Java $B$N%/%i%97Q>5!J$?$@$7%/%i%9C10L$N:9J,!K(B<br>
-        objective-C $B$N(B category <br>
-        CLOS, Dylan $B$J$I%^%k%A%a%=%C%I$N8@8l$K$*$1$k%a%=%C%I@k8@$NDI2C(B<br>
-        $BG$0U$N8@8l$N%=!<%9%3!<%I$N(B patch <br>
+<dt>「モジュールの差分的拡張」
+<dd>    Emacs Lisp の advice <br>
+         C++, Java のクラス継承（ただしクラス単位の差分）<br>
+        objective-C の category <br>
+        CLOS, Dylan などマルチメソッドの言語におけるメソッド宣言の追加<br>
+        任意の言語のソースコードの patch <br>
 </dl>
 </p><p>
 </p><p>
 </p><p>
-<dt> uses $B@k8@(B
+<dt> uses 宣言
 <dd>
 </p><p>
- extends $B@k8@$O!"(B module $B$r(B linearize $B$9$k$H$-$N>e2<4X78$N@)Ls$N@k8@$b(B
-$B7s$M$F$$$k!#(B 
-$B$=$N$?$a!"!V(Bextends $B$N4X78!W$K%5%$%/%k$,$"$k$H!"%3%s%Q%$%k;~%(%i!<$K$J$k!#(B
+ extends 宣言は、 module を linearize するときの上下関係の制約の宣言も
+兼ねている。 
+そのため、「extends の関係」にサイクルがあると、コンパイル時エラーになる。
 </p><p>
- $B$7$+$7!"FC$K%W%m%0%i%`$N@_7W$N=i4|CJ3,$G$O!"(B module $B4V$NAj8_0MB8$,5v$5$l$J$$$H(B
-$BHs>o$K%W%m%0%i%_%s%0$,$7$K$/$$!#(B
- $B$=$3$G!"MQ$$$k$N$,(B uses $B@k8@$G$"$k!#(B
- uses $B@k8@$O(B extends $B@k8@$H;w$F$$$k$,!"(B
-linearize $B$9$k$H$-$N>e2<4X78$K@)Ls$r2C$($J$$!#(B
+ しかし、特にプログラムの設計の初期段階では、 module 間の相互依存が許されないと
+非常にプログラミングがしにくい。
+ そこで、用いるのが uses 宣言である。
+ uses 宣言は extends 宣言と似ているが、
+linearize するときの上下関係に制約を加えない。
 </p><p>
 </p><p>
-<dt> complements $B@k8@(B
+<dt> complements 宣言
 <dd>
 </p><p>
-$B!J>JN,!#!K(B
+（省略。）
 </p><p>
-<dt> imports $B@k8@(B
+<dt> imports 宣言
 <dd>
 </p><p>
-Java $B8@8l$N%i%$%V%i%j$rMxMQ$9$k$?$a$KJXMx$@$+$iB8:_$7$F$$$k$K$9$.$J$$!#(B
-$B!J$b$7$9$Y$F$N%i%$%V%i%j$,(B MJ $B8@8l$G=q$+$l$l$F$$$l$P!"$3$N5!G=$OITMW!#!K(B
+Java 言語のライブラリを利用するために便利だから存在しているにすぎない。
+（もしすべてのライブラリが MJ 言語で書かれれていれば、この機能は不要。）
 </dl>
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="method-selector">$B!V%a%=%C%IC1=cL>!W!V%a%=%C%I40A48BDjL>!W!V%a%=%C%I%;%l%/%?!W!V%a%=%C%I3HD%E@!W!V%a%=%C%ICGJRL>!W(B</a></h2><p>
+</p><h2><a name="method-selector">「メソッド単純名」「メソッド完全限定名」「メソッドセレクタ」「メソッド拡張点」「メソッド断片名」</a></h2><p>
 </p><p>
 <dl>
-<dt>$B%a%=%C%IC1=cL>$H%a%=%C%I40A48BDjL>(B
+<dt>メソッド単純名とメソッド完全限定名
 <dd>
 </p><p>
-$B%a%=%C%IL>$K$OC1=cL>$H40A48BDjL>$,$"$k!#(B
-$BC1=cL>$OC1$J$k(B Java $B$N(B identifier $B!#Nc$($P(B foo $B!#(B
-$B40A48BDjL>$O!"%b%8%e!<%kL>$HC1=cL>$NAH!#Nc$($P(B FQN[a.b::foo] $B!#(B
+メソッド名には単純名と完全限定名がある。
+単純名は単なる Java の identifier 。例えば foo 。
+完全限定名は、モジュール名と単純名の組。例えば FQN[a.b::foo] 。
 </p><p>
 </p><p>
-<dt>$B%a%=%C%I%;%l%/%?(B
+<dt>メソッドセレクタ
 <dd>
 </p><p>
-$B%a%=%C%I%;%l%/%?$O!"(B
+メソッドセレクタは、
 <ul>
-<li>    $B!V%?!<%2%C%H$H$J$k%*%V%8%'%/%H$N@EE*$J7?$N7?L>!W(B
-<li>    $B!V%a%=%C%I40A48BDjL>!W(B
-<li>    $B!V2>0z?t$N7?L>$NAH!W(B
+<li>    「ターゲットとなるオブジェクトの静的な型の型名」
+<li>    「メソッド完全限定名」
+<li>    「仮引数の型名の組」
 </ul>
 </p><p>
-$B$NAH$G$"$k!#(B
+の組である。
 </p><p>
 </p><p>
-MJ $B$N%W%m%0%i%`Cf$G?7$?$J%a%=%C%I%;%l%/%?$rDj5A$9$k$H$-$K$O!"(B
-$B%a%=%C%I@k8@$K(B "define" $B$rIU$1$kI,MW$,$"$k!#(B
+MJ のプログラム中で新たなメソッドセレクタを定義するときには、
+メソッド宣言に "define" を付ける必要がある。
 </p><p>
-$B%a%=%C%I%;%l%/%?$O!"%a%=%C%I8F$S=P$7=hM}$@$1$G$O$J$/(B
- override $B=hM}$G$b;H$o$l$k!#(B
-$B%/%i%97Q>5$*$h$S%a%=%C%I7Q>5$K$*$$$F$O!"(B
-$B!VF1$8%a%=%C%I%;%l%/%?$r;}$D%a%=%C%ICGJR!W$,(B override $B$5$l$k!#(B
+メソッドセレクタは、メソッド呼び出し処理だけではなく
+ override 処理でも使われる。
+クラス継承およびメソッド継承においては、
+「同じメソッドセレクタを持つメソッド断片」が override される。
 </p><p>
 </p><p>
-<dt>$B%a%=%C%I3HD%E@!J$"$k$$$O(B hook $B!K(B
+<dt>メソッド拡張点（あるいは hook ）
 <dd>
 </p><p>
-$B$3$l$O!"(B MJ $B0J30$N8@8l$K$O$J$$35G0$G$"$k!#(B
-$B$^$?!"(B MJ $B$K$*$$$F$b!"%3%s%Q%$%k;~$K$7$+B8:_$7$J$$35G0$G$"$k!#(B
+これは、 MJ 以外の言語にはない概念である。
+また、 MJ においても、コンパイル時にしか存在しない概念である。
 </p><p>
-$B!V%a%=%C%I3HD%E@!"(B extensible point for method$B!W$H$O!"(B
-$B!V4{B8$NItIJ$r3HD%$9$k$?$a$N%=%1%C%H!W$N$h$&$J$b$N$G$"$k!#(B
+「メソッド拡張点、 extensible point for method」とは、
+「既存の部品を拡張するためのソケット」のようなものである。
 </p><p>
-$B%a%=%C%I3HD%E@$r0l0U$K;XDj$9$k$?$a$K$O!"(B
+メソッド拡張点を一意に指定するためには、
 <ul>
-<li>    $B!V%a%=%C%I%;%l%/%?!W(B
-<li>    $B!V%/%i%940A48BDjL>!W(B
+<li>    「メソッドセレクタ」
+<li>    「クラス完全限定名」
 </ul>
 </p><p>
-$B$N>pJs$,I,MW$G$"$k!#(B
+の情報が必要である。
 </p><p>
-$B$3$3$G!"!V%/%i%940A48BDjL>!W$N>pJs$O!"<!$NM}M3$GI,MW$H$J$k!#(B
-$B%/%i%9(B C $B$N(B subclass SubC $B$,$"$j!"(B C $B$,%a%=%C%I(B m1 $B$r;}$C$F$$$k$H$9$k!#(B
-$B$3$N%7%9%F%`$KBP$7$F:9J,$rDI2C$9$k$H$-!"(B
- C $B$N(B m1 $B$r3HD%$9$k$N$+!"(B SubC $B$N(B m1 $B$r3HD%$9$k$N$+$r!"(B
-$B6hJL$9$kI,MW$,$"$k$?$a$G$"$k!#(B
+ここで、「クラス完全限定名」の情報は、次の理由で必要となる。
+クラス C の subclass SubC があり、 C がメソッド m1 を持っているとする。
+このシステムに対して差分を追加するとき、
+ C の m1 を拡張するのか、 SubC の m1 を拡張するのかを、
+区別する必要があるためである。
 </p><p>
 </p><p>
 </p><p>
-<dt>$B%a%=%C%ICGJRL>(B
+<dt>メソッド断片名
 <dd>
 </p><p>
-$B%=!<%9%3!<%ICf$N(B method body $B!"$9$J$o$A(B { ... } $B$NItJ,$r!"(B
-$B!V%a%=%C%ICGJR!"(B method fragment $B!W$HL>IU$1$k!#(B
-$B$"$k$$$O!"C1$K!V%a%=%C%I!W$H8F$V>l9g$b$"$k!#(B
-$B%a%=%C%ICGJR$O!"%3%s%Q%$%k;~$K$b<B9T;~$K$bB8:_$9$k35G0$G$"$k!#(B
-$B!J<B9T;~$K$O!"%9%?%C%/%H%l!<%9$N3F9T$,%a%=%C%ICGJR$KBP1~$9$k!#!K(B
+ソースコード中の method body 、すなわち { ... } の部分を、
+「メソッド断片、 method fragment 」と名付ける。
+あるいは、単に「メソッド」と呼ぶ場合もある。
+メソッド断片は、コンパイル時にも実行時にも存在する概念である。
+（実行時には、スタックトレースの各行がメソッド断片に対応する。）
 </p><p>
-$B%a%=%C%ICGJR$r0l0U$K;XDj$9$k$K$O!"(B
+メソッド断片を一意に指定するには、
 <ul>
-<li>    $B!V%b%8%e!<%kL>!W(B
-<li>    $B!V%/%i%940A48BDjL>!W(B
-<li>    $B!V%a%=%C%I%;%l%/%?!W(B
+<li>    「モジュール名」
+<li>    「クラス完全限定名」
+<li>    「メソッドセレクタ」
 </ul>
 </p><p>
-$B$N#3$D$NAH$N>pJs$,I,MW$G$"$k!#(B
-$B$3$NAH$r!V%a%=%C%ICGJRL>!W$H8F$V!#(B
+の３つの組の情報が必要である。
+この組を「メソッド断片名」と呼ぶ。
 </p><p>
 </dl>
 </p><p>
-</p><h3>$B%a%=%C%I$K4X$9$kJdB-@bL@(B</h3><p>
+</p><h3>メソッドに関する補足説明</h3><p>
 </p><p>
-$B!&<B9T;~$K%/%i%9$,;}$D!V%a%=%C%I%F!<%V%k!W$O!"(B
-$B!V%a%=%C%I%;%l%/%?!W$+$i!V%a%=%C%ICGJR!W$rF@$k$?$a$NI=$G$"$k!#(B
+・実行時にクラスが持つ「メソッドテーブル」は、
+「メソッドセレクタ」から「メソッド断片」を得るための表である。
 </p><p>
-$B!&(B MJ $B$G$O%a%=%C%I%;%l%/%?$K!V%?!<%2%C%H$N@EE*$J7?$N7?L>!W$N(B
-$B>pJs$,F~$C$F$$$kE@$KCm0U!#(B
+・ MJ ではメソッドセレクタに「ターゲットの静的な型の型名」の
+情報が入っている点に注意。
 </p><p>
-Car $B$H$$$&%/%i%9$H(B Figure $B$H$$$&%/%i%9$,6&$K(B move $B$H$$$&%a%=%C%I$r(B
-$B;}$C$F$$$?$H$7$F$b!"$b$7$=$l$>$l$,JL!9$KDj5A$5$l$?$b$N$G$"$k$J$i$P!"(B
-$B#2$D$N(B move $B$OA4$/JL$N$b$N$G$"$k!#(B
+Car というクラスと Figure というクラスが共に move というメソッドを
+持っていたとしても、もしそれぞれが別々に定義されたものであるならば、
+２つの move は全く別のものである。
 </p><p>
-$B=>Mh$N%*%V%8%'%/%H;X8~8@8l$K$O!"$3$N#2$D$N(B move $B$r6hJL$7$J$$$b$N$b$"$k!#(B
-Smalltalk, CLOS $B$OA4$/6hJL$7$J$$!#(B
-Eiffel $B$O!"6hJL$9$k!#(B
-C++ $B$O6hJL$9$k$,!"B?=E7Q>5$G#2$D$N%a%=%C%I$,F10l$K$J$C$F$7$^$&$?$a!"(B
-$B6hJL$,IT40A4$G$"$k!#(B
-$B$^$?!"(B template $B$H(B g++ $B$N(B signature $B$H$$$&5!G=$G$O!"6hJL$7$F$$$J$$!#(B
-Java $B$O%/%i%9$,Dj5A$9$k%a%=%C%I$K4X$7$F$OB?=E7Q>5$,$J$$$N$G(B
-$B6hJL$9$kI,MW$,$J$$!#(Binterface $B$,Dj5A$9$k%a%=%C%I$K$D$$$F$O6hJL$7$F$$$J$$!#(B
-Java $B$N(B Reflection API $B$G$b6hJL$7$F$$$J$$!#(B
-</p><p>
-</p><p>
-$B!&(B MJ $B$N8@8l;EMM$r87L)$K@bL@$9$k$K$O!"(B
-$B!V%a%=%C%IC1=cL>!W!V%a%=%C%I40A48BDjL>!W!V%a%=%C%I%;%l%/%?!W(B
-$B!V%a%=%C%I3HD%E@!W!V%a%=%C%ICGJRL>!W$N#5$D$N35G0$r6hJL$9$kI,MW$,$"$k!#(B
-</p><p>
-$B=>Mh$N%*%V%8%'%/%H;X8~8@8l$K$O!"$3$N$&$A!"(B
-$B!V%a%=%C%I40A48BDjL>!W$H!V%a%=%C%I3HD%E@!W$H$$$&35G0$OB8:_$7$J$$!#(B
-$B!J!V%a%=%C%I40A48BDjL>!W$OB?=E7Q>5$K$*$1$kL>A0$N>WFM$NLdBj$r2r7h$9$k$?$a$K(B
-$BF3F~$5$l$?35G0$G$"$j!"!V%a%=%C%I3HD%E@!W$O%W%m%0%i%`$KBP$9$k(B
-$B:9J,$NDI2C$r2DG=$K$9$k$?$a$KF3F~$5$l$?35G0$G$"$k!#!K(B
+従来のオブジェクト指向言語には、この２つの move を区別しないものもある。
+Smalltalk, CLOS は全く区別しない。
+Eiffel は、区別する。
+C++ は区別するが、多重継承で２つのメソッドが同一になってしまうため、
+区別が不完全である。
+また、 template と g++ の signature という機能では、区別していない。
+Java はクラスが定義するメソッドに関しては多重継承がないので
+区別する必要がない。interface が定義するメソッドについては区別していない。
+Java の Reflection API でも区別していない。
 </p><p>
 </p><p>
-$B$D$^$j=>Mh$N%*%V%8%'%/%H;X8~8@8l$G$O(B
-$B!V%a%=%C%IL>!W!V%a%=%C%I%;%l%/%?!W!V%a%=%C%I!J$N#I#D!K!W$N#3$D$N35G0$G$9$`!#(B
+・ MJ の言語仕様を厳密に説明するには、
+「メソッド単純名」「メソッド完全限定名」「メソッドセレクタ」
+「メソッド拡張点」「メソッド断片名」の５つの概念を区別する必要がある。
 </p><p>
-overload $B$,$J$$8@8l$J$i$P!"!V%a%=%C%I%;%l%/%?!W$H!V%a%=%C%I!W$N#2$D$G$9$`!#(B
+従来のオブジェクト指向言語には、このうち、
+「メソッド完全限定名」と「メソッド拡張点」という概念は存在しない。
+（「メソッド完全限定名」は多重継承における名前の衝突の問題を解決するために
+導入された概念であり、「メソッド拡張点」はプログラムに対する
+差分の追加を可能にするために導入された概念である。）
 </p><p>
-$B!&(B Java $B$K$*$$$F$O!"(B a.b.C#foo(int, String) $B$H$$$&=q$-J}$G!"(B
-$B%a%=%C%I!J(BMJ $B$G$$$&%a%=%C%ICGJR!K$r;XDj$9$k$3$H$,$G$-$?!#(B
-MJ $B$G$O!"<B9T;~$NOC$J$i$P$3$l$G$b$h$$$,!"(B
-$B%=!<%9%3!<%I>e$NOC$r$9$k$H$-$K$OIT==J,$G$"$k!#(B
-MJ $B$G%a%=%C%ICGJR$r;XDj$9$k$K$O!"(B
+</p><p>
+つまり従来のオブジェクト指向言語では
+「メソッド名」「メソッドセレクタ」「メソッド（のＩＤ）」の３つの概念ですむ。
+</p><p>
+overload がない言語ならば、「メソッドセレクタ」と「メソッド」の２つですむ。
+</p><p>
+・ Java においては、 a.b.C#foo(int, String) という書き方で、
+メソッド（MJ でいうメソッド断片）を指定することができた。
+MJ では、実行時の話ならばこれでもよいが、
+ソースコード上の話をするときには不十分である。
+MJ でメソッド断片を指定するには、
 <pre>
         FQN[m1::C]#FQN[m1::foo](int, String)@m2
 </pre>
 </p><p>
-$B$H$$$&I=5-$rMQ$$$k$3$H$K$9$k!#(B
- $B%a%=%C%I40A48BDjL>$,I,MW$K$J$k>l9g$O$"$^$j$J$$$7!"(B
-$B%/%i%940A48BDjL>$O(B m1.C $B$HI=5-$G$-$k$N$G!"<!$N4JN,5-K!$bMQ$$$k!#(B
+という表記を用いることにする。
+ メソッド完全限定名が必要になる場合はあまりないし、
+クラス完全限定名は m1.C と表記できるので、次の簡略記法も用いる。
 <pre>
         m1.C#foo(int, String)@m2
 </pre>
@@ -313,377 +313,377 @@ MJ $B$G%a%=%C%ICGJR$r;XDj$9$k$K$O!"(B
 </p><p>
 </p><p>
 </p><p>
-$B!&(BJava $B$K$*$1$k%a%=%C%I%;%l%/%?$K$D$$$F!#(B
+・Java におけるメソッドセレクタについて。
 </p><p>
-$B8@8l;EMM>e$O!"%a%=%C%I%;%l%/%?$O!V%a%=%C%IL>!W$H!V0z?t$N7?!W$N>pJs$N$_$G(B
-$BF1Dj$5$l$k!#(B
-Reflection API $B$b$=$l$K$7$?$,$C$?%G%6%$%s$K$J$C$F$$$k!#(B
+言語仕様上は、メソッドセレクタは「メソッド名」と「引数の型」の情報のみで
+同定される。
+Reflection API もそれにしたがったデザインになっている。
 </p><p>
-$B%3%s%Q%$%iFbIt$G$O!"(B public $B$G$J$$F1L>$N%a%=%C%I$,J#?t$"$k>l9g$r(B
-$B6hJL$9$k$?$a$K!"L>A06u4V!J!a%?!<%2%C%H$N%/%i%9L>!K$N>pJs$r(B
-$B$D$1$F6hJL$7$F$$$k$h$&$KA[A|$G$-$k!#(B
+コンパイラ内部では、 public でない同名のメソッドが複数ある場合を
+区別するために、名前空間（＝ターゲットのクラス名）の情報を
+つけて区別しているように想像できる。
 </p><p>
-JavaVM $B$G$O!"!V%?!<%2%C%H$N%/%i%9L>!W$K2C$($F!VJVCM$N7?L>!W$N>pJs$b2C$o$k!#(B
-$B!J$A$J$_$K(B GJ $B$O!"JVCM$N7?$@$1$rJQ$($?%a%=%C%IDj5A$N%3!<%I$r@8@.$9$k!#!K(B
+JavaVM では、「ターゲットのクラス名」に加えて「返値の型名」の情報も加わる。
+（ちなみに GJ は、返値の型だけを変えたメソッド定義のコードを生成する。）
 </p><p>
 </p><p>
-$B!&8=:_$N(B MJ $B$NJ8K!$G$O!"<B$O<!$N$h$&$JITET9g$,$"$k!#(B
-$B<!$N>l9g$K!"(B C $B$,$I$N%a%=%C%I$r;2>H$7$F$$$k$N$+$,$"$$$^$$$K$J$k!#(B
+・現在の MJ の文法では、実は次のような不都合がある。
+次の場合に、 C がどのメソッドを参照しているのかがあいまいになる。
 <pre>
 module m {
   define interface I1 { define void foo(); }
   define interface I2 { define void foo(); }
   define class C implements I1, I2 {
-    void FQN[m::foo](){ //$B$"$$$^$$!#(B
+    void FQN[m::foo](){ //あいまい。
       ...
-      this.FQN[m::foo]();//$B$"$$$^$$!#(B
+      this.FQN[m::foo]();//あいまい。
     }
   }
 }
 </pre>
 </p><p>
-$B$3$N$h$&$K!"F10l%b%8%e!<%kFb$GDj5A$5$l$?F1$8L>A0$rB?=E7Q>5$7$?$?$a$K>WFM$9$k(B
-$BLdBj$K$D$$$F$O!":#$O9MN8$7$F$$$J$$!#(B
-$B$3$N>WFM$r2sHr$9$k$?$a$K!"J}K!$O#2$D$"$k!#(B
+このように、同一モジュール内で定義された同じ名前を多重継承したために衝突する
+問題については、今は考慮していない。
+この衝突を回避するために、方法は２つある。
 </p><p>
-$B#1$D$O!"%a%=%C%I%;%l%/%?$r;XDj$9$k$H$-$K!"(B
-$BDj5ADL$j$K!"!V%?!<%2%C%H$H$J$k%*%V%8%'%/%H$N@EE*$J7?$N7?L>!W$N>pJs$r(B
-$B=q$/$h$&$K$9$kJ}K!$G$"$k!#(B
-$B$7$+$7!"$3$NJ}K!$O!"%a%=%C%I%;%l%/%?$N5-=RJ}K!$,0lAXHK;($K$J$k$H$$$&(B
-$B7gE@$,$"$k!#(B
+１つは、メソッドセレクタを指定するときに、
+定義通りに、「ターゲットとなるオブジェクトの静的な型の型名」の情報を
+書くようにする方法である。
+しかし、この方法は、メソッドセレクタの記述方法が一層繁雑になるという
+欠点がある。
 </p><p>
-$B#2$D$a$O!"F10l%b%8%e!<%kFb$N0[$J$k%/%i%9$G!"(B
-$BF1$8C1=cL>!&0z?t$r;}$D%a%=%C%I$r!VDj5A!W$7$F$O$$$1$J$$!"$H$$$&%k!<%k$r(B
-$BF~$l$k$H$$$&J}K!!#$3$N$h$&$J@)Ls$rF~$l$F$b!"<BMQ>e$O!"B?J,:$$i$J$$!#(B
+２つめは、同一モジュール内の異なるクラスで、
+同じ単純名・引数を持つメソッドを「定義」してはいけない、というルールを
+入れるという方法。このような制約を入れても、実用上は、多分困らない。
 </p><p>
 </p><p>
 </p><p>
 <hr>
-<div style="font-size:x-large">$B8@8l;EMM(B</div>
+<div style="font-size:x-large">言語仕様</div>
 <hr>
 </p><p>
-</p><h2><a name="module">$B%b%8%e!<%kDj5A(B</a></h2><p>
+</p><h2><a name="module">モジュール定義</a></h2><p>
 </p><p>
 </p><p>
 </p><h3>uses</h3><p>
 </p><p>
-$B!&B>$N%b%8%e!<%k$G!VDj5A!W$5$l$?L>A0$r!"%b%8%e!<%kFb$+$i!VMxMQ!W2DG=$K$9$k!#(B
-$B$3$3$G!"!VMxMQ!W$H$O!"0J2<$N$3$H$r0UL#$9$k!#(B
+・他のモジュールで「定義」された名前を、モジュール内から「利用」可能にする。
+ここで、「利用」とは、以下のことを意味する。
 </p><p>
 <ul>
-<li>$B%/%i%9L>$K4X$7$F$O!"JQ?t@k8@!"0z?t!&JVCM!"%$%s%9%?%s%9@8@.<0$G7?L>$H$7$FMQ$$$k$3$H!#(B
-<li>$B%a%=%C%IL>$K4X$7$F$O!"%a%=%C%I8F$S=P$7$r9T$&$3$H!#(B
-<li>$B%U%#!<%k%IL>$K4X$7$F$O!";2>H!&BeF~$r9T$&$3$H!#(B
+<li>クラス名に関しては、変数宣言、引数・返値、インスタンス生成式で型名として用いること。
+<li>メソッド名に関しては、メソッド呼び出しを行うこと。
+<li>フィールド名に関しては、参照・代入を行うこと。
 </ul>
 </p><p>
 </p><p>
-$B!&%b%8%e!<%kF1;N$OAj8_$K(B uses $B$7$"$C$F$b$+$^$o$J$$!#(B
+・モジュール同士は相互に uses しあってもかまわない。
 </p><p>
-$B$?$@$7!"Aj8_0MB8$9$k%b%8%e!<%k$,4^$^$l$kA4$F$N%=!<%9%U%!%$%k$O!"(B
-mjc $B$N0z?t$KF1;~$KEO$5$l$J$1$l$P$J$i$J$$!#(B
-$B5U$K8@$($P!"Aj8_0MB8$9$kJ#?t$N%b%8%e!<%k$rJ,3d%3%s%Q%$%k$9$k$3$H$OIT2DG=!#(B
+ただし、相互依存するモジュールが含まれる全てのソースファイルは、
+mjc の引数に同時に渡されなければならない。
+逆に言えば、相互依存する複数のモジュールを分割コンパイルすることは不可能。
 </p><p>
-$B!&(B uses $B$7$F$$$J$$%b%8%e!<%kCf$NL>A0$O!"(B
-$B40A48BDjL>$rMQ$$$F$bMxMQ$9$k$3$H$,$G$-$J$$!#(B
-$B!J$?$@$7(B Java class $B$N%/%i%9L>$O!"40A48BDjL>$GMxMQ$G$-$k!#!K(B
+・ uses していないモジュール中の名前は、
+完全限定名を用いても利用することができない。
+（ただし Java class のクラス名は、完全限定名で利用できる。）
 </p><p>
-$B!&(B module m3 uses m1, m2 $B$H@k8@$5$l$F$$$F!"(B
-$B$b$7%j%s%/;~$K%j%s%/BP>]%b%8%e!<%k$K(B m3 $B$,;XDj$5$l$?$J$i!"(B
-m1, m2 $B$b<+F0E*$K(B link $B$5$l$k!#(B
+・ module m3 uses m1, m2 と宣言されていて、
+もしリンク時にリンク対象モジュールに m3 が指定されたなら、
+m1, m2 も自動的に link される。
 </p><p>
-$B!&(B m2 uses m1, m3 uses m2 $B$J$i$P(B m3 uses m1 $B$G$"$k$H$9$k!#(B
+・ m2 uses m1, m3 uses m2 ならば m3 uses m1 であるとする。
 </p><p>
-$B!&(B uses $B@k8@$GB>$N%b%8%e!<%kCf$NL>A0$r%"%/%;%92DG=$K$9$k$3$H$r(B
-$B!VL>A06u4V$N7Q>5!W$H8F$V!#(B
+・ uses 宣言で他のモジュール中の名前をアクセス可能にすることを
+「名前空間の継承」と呼ぶ。
 </p><p>
 </p><p>
 </p><h3>extends</h3><p>
-$B!&(B extends $B@k8@$O!"(B module $B$r(B linearize $B$9$k$H$-$N@)Ls>r7o$K$J$k!#(B
-$BNc$($P(B module m3 extends m1, m2 $B$H@k8@$7$?>l9g!"(B
-linearized list $B$K$*$$$F!"(B m1, m2 $B$,I,$:(B m3 $B$N>e$KMh$k!#(B
-$B!J(Bsuper-module $BB&$r!V>e!W$HDj5A$9$k!#!K(B
+・ extends 宣言は、 module を linearize するときの制約条件になる。
+例えば module m3 extends m1, m2 と宣言した場合、
+linearized list において、 m1, m2 が必ず m3 の上に来る。
+（super-module 側を「上」と定義する。）
 </p><p>
-m1 $B$H(B m2 $B$N=g=x4X78$K4X$7$F$O!"@)Ls$O$D$+$J$$!#(B
+m1 と m2 の順序関係に関しては、制約はつかない。
 </p><p>
-$B!&!J(Blinearize $B$N%"%k%4%j%:%`$N>\:Y$O>JN,!#(B
-$B8=:_<BAu$5$l$F$$$k%"%k%4%j%:%`$O!"(B
-$B%b%8%e!<%kL>$N>pJs$r;H$C$F(B monotonic $B$J(B linearize $B$r9T$&!#!K(B
+・（linearize のアルゴリズムの詳細は省略。
+現在実装されているアルゴリズムは、
+モジュール名の情報を使って monotonic な linearize を行う。）
 </p><p>
 </p><p>
-$B!&(B class, interface, method $B$r!V3HD%!W$9$k;~$O!"(B
-$B$=$l$i$NL>A0$,Dj5A$5$l$F$$$k(B module $B$r(B extends $B@k8@$7$J$1$l$P$J$i$J$$!#(B
-$B$3$3$G!"!V3HD%!W$H$O!"0J2<$N$3$H$r0UL#$9$k!#(B
+・ class, interface, method を「拡張」する時は、
+それらの名前が定義されている module を extends 宣言しなければならない。
+ここで、「拡張」とは、以下のことを意味する。
 </p><p>
 <ul>
-<li>$B%/%i%9L>$K4X$7$F$O!"(B subclass $B$r:n$k$+!":9J,$rDI2C$9$k$3$H!#(B
-<li>$B%$%s%?!<%U%'!<%9$K4X$7$F$O!"%/%i%9$G$=$l$r(B implements $B$9$k$+!"(B
-        $B%$%s%?!<%U%'!<%9$G$=$l$r(B extends $B$9$k$+!":9J,$rDI2C$9$k$3$H!#(B
-<li>$B%a%=%C%IL>$K4X$7$F$O!"(B override $B$9$k$3$H!#(B
-<li>$B!J%U%#!<%k%IL>$K4X$7$F$O!"3HD%$H$$$&35G0$O$J$$!#%U%#!<%k%I$N>O;2>H!#!K(B
+<li>クラス名に関しては、 subclass を作るか、差分を追加すること。
+<li>インターフェースに関しては、クラスでそれを implements するか、
+        インターフェースでそれを extends するか、差分を追加すること。
+<li>メソッド名に関しては、 override すること。
+<li>（フィールド名に関しては、拡張という概念はない。フィールドの章参照。）
 </ul>
 </p><p>
-$B!J(B extends $B$7$J$$$G$3$l$i$N3HD%$r9T$C$?>l9g$O%3%s%Q%$%k%(%i!<$K$J$k$Y$-$@$,!"(B
-$B8=:_$O@5$7$/<BAu$5$l$F$$$J$$!#!K(B
+（ extends しないでこれらの拡張を行った場合はコンパイルエラーになるべきだが、
+現在は正しく実装されていない。）
 </p><p>
-$B!&(B m2 extends m1, m3 extends m2 $B$J$i$P(B m3 extends m1 $B$G$"$k$H$9$k!#(B
+・ m2 extends m1, m3 extends m2 ならば m3 extends m1 であるとする。
 </p><p>
-$B!&0J>e=R$Y$?$3$H$r=|$1$P!"(B extends $B$O(B uses $B$HF1$8!#(B
+・以上述べたことを除けば、 extends は uses と同じ。
 </p><p>
 </p><p>
 </p><h3> complements</h3><p>
 </p><p>
-$B!&(B complements $B$O!"Jd40$NBP>]$H$J$k%b%8%e!<%k$r;XDj$9$k!#(B
-$BNc$($P(B module m3 complements m1, m2 $B$H@k8@$7$?>l9g!"(B
-$B$b$7%j%s%/;~$K%j%s%/BP>]%b%8%e!<%k$K(B m1, m2 $B$,4^$^$l$F$$$?$i!"(B
-m3 $B$b<+F0E*$K(B link $B$5$l$k!#(B
+・ complements は、補完の対象となるモジュールを指定する。
+例えば module m3 complements m1, m2 と宣言した場合、
+もしリンク時にリンク対象モジュールに m1, m2 が含まれていたら、
+m3 も自動的に link される。
 </p><p>
-$B!&!JJd40%b%8%e!<%k$NA*Br%"%k%4%j%:%`$N>\:Y$O>JN,!#!K(B
+・（補完モジュールの選択アルゴリズムの詳細は省略。）
 </p><p>
-$B!&0J>e=R$Y$?$3$H$r=|$1$P!"(B complements $B@k8@$O(B extends $B@k8@$HF1$8!#(B
-$B!J$D$^$j!"(B m3 $B$OI,$:(B m1, m2 $B$N2<$K(B link $B$5$l$k!#!K(B
+・以上述べたことを除けば、 complements 宣言は extends 宣言と同じ。
+（つまり、 m3 は必ず m1, m2 の下に link される。）
 </p><p>
 </p><p>
 </p><h3> imports</h3><p>
 </p><p>
-$B!&(B imports a.b.* $B$H@k8@$5$l$F$$$l$P!"$=$N%b%8%e!<%kFb$G!"(B
-a.b.* $B$H$$$&%/%i%9L>$rC1=cL>$G%"%/%;%9$9$k$3$H$,$G$-$k$h$&$K$J$k!#(B
- imports a.b.C $B$H$$$&$U$&$KC10l$N%/%i%9$r;XDj$9$k$3$H$b$G$-$k!#(B
-$B$3$l$K$h$j!"(B a.b.C $B$r(B C $B$H$$$&C1=cL>$G%"%/%;%9$9$k$3$H$,$G$-$k!#(B
+・ imports a.b.* と宣言されていれば、そのモジュール内で、
+a.b.* というクラス名を単純名でアクセスすることができるようになる。
+ imports a.b.C というふうに単一のクラスを指定することもできる。
+これにより、 a.b.C を C という単純名でアクセスすることができる。
 </p><p>
-$B$?$@$7!"(B a.b $B$O(B Java $B$N%/%i%9%i%$%V%i%j$N(B package $BL>$G$J$1$l$P$J$i$J$$!#(B
-MJ $B$N(B module $BL>$r(B imports $B@k8@$G;XDj$9$k$H%3%s%Q%$%k;~%(%i!<$K$J$k!#(B
-$B!J%3%s%Q%$%i$O!"(B MJModuleLoader $B$H$$$&L>A0$N%/%i%9$r;}$D(B package $B$O!"(B
-Java $B$N(B package $B$G$O$J$/(B MJ $B$N(B module $B$H8+$J$9!#!K(B
+ただし、 a.b は Java のクラスライブラリの package 名でなければならない。
+MJ の module 名を imports 宣言で指定するとコンパイル時エラーになる。
+（コンパイラは、 MJModuleLoader という名前のクラスを持つ package は、
+Java の package ではなく MJ の module と見なす。）
 </p><p>
-$B!&(B imports $B@k8@$O!"(B sub-module $B$K7Q>5$5$l$k!#(B
-$BNc$($P(B super-module $B$,(B imports a.b.* $B$H@k8@$7$F$$$l$P!"(B
-$B$9$Y$F$N(B sub-module $B$O<+F0E*$K(B imports a.b.* $B$N@k8@$r$7$?$3$H$K$J$k!#(B
-$B!JL>A06u4V$r1x@w$7$J$$$?$a$K!"$G$-$k$@$1(B module graph $B$N>e$NJ}$G$O(B
- imports $B@k8@$rMQ$$$J$$J}$,K>$^$7$$!#!K(B
+・ imports 宣言は、 sub-module に継承される。
+例えば super-module が imports a.b.* と宣言していれば、
+すべての sub-module は自動的に imports a.b.* の宣言をしたことになる。
+（名前空間を汚染しないために、できるだけ module graph の上の方では
+ imports 宣言を用いない方が望ましい。）
 </p><p>
-$B!&(B imports $B$G@k8@$7$?%/%i%9L>$H!"L>A06u4V$N7Q>5$G;2>H2DG=$K$J$C$?%/%i%9L>$G(B
-$BF10l$N$b$N$,$"$k>l9g!"$=$NL>A0$rC1=cL>$G;2>H$9$k$H(B ambiguous error $B$K$J$k!#(B
-$B$=$N>l9g$O!"$I$A$i$+$r40A48BDjL>$G;XDj$9$kI,MW$,$"$k!#(B
-</p><p>
-</p><p>
+・ imports で宣言したクラス名と、名前空間の継承で参照可能になったクラス名で
+同一のものがある場合、その名前を単純名で参照すると ambiguous error になる。
+その場合は、どちらかを完全限定名で指定する必要がある。
 </p><p>
 </p><p>
-</p><h2><a name="class-interface-method-field">$B%/%i%9!&%$%s%?!<%U%'!<%9Dj5A!"%a%=%C%IDj5A!"%U%#!<%k%IDj5A(B</a></h2><p>
-</p><p>
-$B!&%/%i%9!"%$%s%?!<%U%'!<%9!"%a%=%C%I$rDj5A$9$k$H$-$K$O!"(B
-"define" $B$r@hF,$K$D$1$kI,MW$,$"$k!#(B
-"define" $B$,$D$$$F$$$J$$$H!"%3%s%Q%$%i$O!"(B
-$B!VDj5A!W$G$O$J$/!V3HD%!W$G$"$k$HH=CG$9$k!#(B
-</p><p>
-$B!&%U%#!<%k%IDj5A$K$O(B "define" $B$r$D$1$kI,MW$O$J$$!#(B
-$B%3%s%Q%$%i$O!">o$K!VDj5A!W$G$"$k$HH=CG$9$k!#(B
-super-module $B$GF1$8C1=cL>$N%U%#!<%k%I$,Dj5A$5$l$F$$$k>l9g$G$b!"(B
-$B%3%s%Q%$%k%(%i!<$K$O$J$i$J$$!#(B
-$B!J$?$@$7!"%"%/%;%9$K$O40A48BDjL>$,I,MW$K$J$k!#!K(B
-</p><p>
-$B!&$"$k%b%8%e!<%k$,;2>H$9$kL>A0$O!"$=$N%b%8%e!<%k<+?H$+!"(B
-$B$=$N%b%8%e!<%k$N@hAD%b%8%e!<%k$NCf$N(B
-$B$A$g$&$I#12U=j$GDj5A$5$l$F$$$kI,MW$,$"$k!#(B
-</p><p>
-$B!&%/%i%9$rDj5A$9$k$H$-$O!"(B superclass, superinterface $B$K!"(B
-Java class $B$+(B MJ class $B$r;XDj$9$k$3$H$,$G$-$k!#(B
-superclass $B$r;XDj$7$J$$>l9g$O(B java.lang.Object $B$,(B superclass $B$K$J$k!#(B
-$B%/%i%9Dj5A$K$O(B abstract modifier $B$r;XDj$9$k$3$H$,$G$-$k!#(B
-public/protected/private $B$,;XDj$5$l$k$H!"8=:_$N<BAu$G$OL5;k$5$l$k!#(B
-$B$=$NB>$N(B modifier $B$K$D$$$F$O!"$I$&$$$&F0:n$K$J$k$+ITL@!#(B
-</p><p>
-$B!&%a%=%C%IDj5A$O!"(B abstract $B$K$9$k$3$H$,$G$-$k!#(B
-public/protected/private $B$,;XDj$5$l$k$H!"8=:_$N<BAu$G$OL5;k$5$l$k!#(B
-$B$=$NB>$N(B modifier $B$K$D$$$F$O!"$I$&$$$&F0:n$K$J$k$+ITL@!#(B
-throws $B@k8@$O!"B?J,@5$7$/F0:n$9$k!#(B
-</p><p>
-$B!&%U%#!<%k%IDj5A$b!"(B
- public/protected/private $B$,;XDj$5$l$k$H!"8=:_$N<BAu$G$OL5;k$5$l$k!#(B
-static $B$H(B final $B$K$D$$$F$O!"@5$7$/=hM}$5$l$k!#(B
-$B$=$NB>$N(B modifier $B$K$D$$$F$O!"$I$&$$$&F0:n$K$J$k$+ITL@!#(B
 </p><p>
 </p><p>
-</p><h2><a name="constructor">$B%3%s%9%H%i%/%?(B</a></h2><p>
+</p><h2><a name="class-interface-method-field">クラス・インターフェース定義、メソッド定義、フィールド定義</a></h2><p>
+</p><p>
+・クラス、インターフェース、メソッドを定義するときには、
+"define" を先頭につける必要がある。
+"define" がついていないと、コンパイラは、
+「定義」ではなく「拡張」であると判断する。
+</p><p>
+・フィールド定義には "define" をつける必要はない。
+コンパイラは、常に「定義」であると判断する。
+super-module で同じ単純名のフィールドが定義されている場合でも、
+コンパイルエラーにはならない。
+（ただし、アクセスには完全限定名が必要になる。）
+</p><p>
+・あるモジュールが参照する名前は、そのモジュール自身か、
+そのモジュールの先祖モジュールの中の
+ちょうど１箇所で定義されている必要がある。
+</p><p>
+・クラスを定義するときは、 superclass, superinterface に、
+Java class か MJ class を指定することができる。
+superclass を指定しない場合は java.lang.Object が superclass になる。
+クラス定義には abstract modifier を指定することができる。
+public/protected/private が指定されると、現在の実装では無視される。
+その他の modifier については、どういう動作になるか不明。
+</p><p>
+・メソッド定義は、 abstract にすることができる。
+public/protected/private が指定されると、現在の実装では無視される。
+その他の modifier については、どういう動作になるか不明。
+throws 宣言は、多分正しく動作する。
+</p><p>
+・フィールド定義も、
+ public/protected/private が指定されると、現在の実装では無視される。
+static と final については、正しく処理される。
+その他の modifier については、どういう動作になるか不明。
+</p><p>
+</p><p>
+</p><h2><a name="constructor">コンストラクタ</a></h2><p>
 <ul>
-<li>$B$9$Y$F$N%/%i%9$O!"%3%s%9%H%i%/%?$,>/$J$/$H$b#1$DDj5A$5$l$F$$$k(B
-$BI,MW$,$"$k!#(B
-$B!J(BJava $B$H0c$$!"%3%s%9%H%i%/%?$,#1$D$bDj5A$5$l$F$$$J$$>l9g$K(B
-$B!V%G%U%)%k%H%3%s%9%H%i%/%?!W$,<+F0E*$KDI2C$5$l$k$3$H$O$J$$!#!K(B
-<li>$B%3%s%9%H%i%/%?$K$b!VDj5A!W$H!V3HD%!W$,$"$k!#(B
-$BDj5A$NA0$K$O(B define $B$rIU$1$kI,MW$,$"$k!#(B
-<li>$B%3%s%9%H%i%/%?K\BN$N@hF,$O(B Java $BF1MM!"FCJL07$$$5$l$k!#(B
-$B@hF,$K(B super(...), this(...), original(...) $B$N$$$:$l$b$J$1$l$P!"(B
-$B@hF,$K<+F0E*$K(B super() $B$,DI2C$5$l$k!#(B
-$B!J(B original(...) $B$N=q$-K:$l$O%A%'%C%/$5$l$J$$$N$GCm0U!#!K(B
-<li> super(...) $B!J0z?t$r;}$C$?(B super class $B$N%3%s%9%H%i%/%?8F$S=P$7!K$O!"(B
- super class $B$,(B Java $B8@8l$N(B class $B$G$"$k>l9g$O%5%]!<%H$5$l$J$$!#(B
-$B%3%s%Q%$%k%(%i!<$K$J$k!#(B
-$B$?$@$7!"0z?t$,$J$$>l9g$@$1$O5v$5$l$k!#(B
+<li>すべてのクラスは、コンストラクタが少なくとも１つ定義されている
+必要がある。
+（Java と違い、コンストラクタが１つも定義されていない場合に
+「デフォルトコンストラクタ」が自動的に追加されることはない。）
+<li>コンストラクタにも「定義」と「拡張」がある。
+定義の前には define を付ける必要がある。
+<li>コンストラクタ本体の先頭は Java 同様、特別扱いされる。
+先頭に super(...), this(...), original(...) のいずれもなければ、
+先頭に自動的に super() が追加される。
+（ original(...) の書き忘れはチェックされないので注意。）
+<li> super(...) （引数を持った super class のコンストラクタ呼び出し）は、
+ super class が Java 言語の class である場合はサポートされない。
+コンパイルエラーになる。
+ただし、引数がない場合だけは許される。
 </ul>
 </p><p>
 </p><p>
-</p><h2><a name="class-extension">$B%/%i%9$N3HD%(B</a></h2><p>
+</p><h2><a name="class-extension">クラスの拡張</a></h2><p>
 </p><p>
-$B%/%i%9$N3HD%$G$O!"0J2<$N$3$H$,$G$-$k!#(B
+クラスの拡張では、以下のことができる。
 </p><p>
 <ul>
-<li>implements $B@k8@$G!"(B superinterface $B$rDI2C$9$k$3$H$,$G$-$k!#(B
-<li>$B?7$?$J%U%#!<%k%I$rDj5A$9$k$3$H$,$G$-$k!#(B
-<li>$B?7$?$J%a%=%C%I$rDj5A$9$k$3$H$,$G$-$k!#(B
-<li>$B4{B8$N%a%=%C%I$r(B override $B$9$k$3$H$,$G$-$k!#(B
+<li>implements 宣言で、 superinterface を追加することができる。
+<li>新たなフィールドを定義することができる。
+<li>新たなメソッドを定義することができる。
+<li>既存のメソッドを override することができる。
 </ul>
 </p><p>
-</p><h2><a name="interface-extension">$B%$%s%?!<%U%'!<%9$N3HD%(B</a></h2><p>
+</p><h2><a name="interface-extension">インターフェースの拡張</a></h2><p>
 </p><p>
-$B%$%s%?!<%U%'!<%9$N3HD%$G$O!"0J2<$N$3$H$,$G$-$k!#(B
+インターフェースの拡張では、以下のことができる。
 <ul>
-<li>$B?7$?$J%U%#!<%k%I$rDj5A$9$k$3$H$,$G$-$k!#(B
-<li>extends $B@k8@$G!"(B superinterface $B$rDI2C$9$k$3$H$,$G$-$k!#(B<br>
-$B!J$?$@$740A4$K$O<BAu$5$l$F$$$J$$!#!K(B
-<li>$B?7$?$J%a%=%C%I$rDj5A$9$k$3$H$,$G$-$k!#(B<br>
-$B!J$?$@$740A4$K$O<BAu$5$l$F$$$J$$!#!K(B
+<li>新たなフィールドを定義することができる。
+<li>extends 宣言で、 superinterface を追加することができる。<br>
+（ただし完全には実装されていない。）
+<li>新たなメソッドを定義することができる。<br>
+（ただし完全には実装されていない。）
 </ul>
 </p><p>
-</p><h2><a name="">$B%a%=%C%I$N3HD%(B</a></h2><p>
+</p><h2><a name="">メソッドの拡張</a></h2><p>
 </p><p>
 </p><h3> definition method</h3><p>
 </p><p>
-$B!&(B "define" $B$,$D$$$?%a%=%C%ICGJR$O(B definition method $B$H8F$V!#(B
+・ "define" がついたメソッド断片は definition method と呼ぶ。
 </p><p>
-$B!&%a%=%C%ICGJR$r#1Ns$KJB$Y$?$H$-!"(B
-$B:G=i$,(B definition $B$G$J$/$F$O$J$i$:!"(B
-$B:G=i0J30$O(B definition $B$G$"$C$F$O$J$i$J$$!#(B
+・メソッド断片を１列に並べたとき、
+最初が definition でなくてはならず、
+最初以外は definition であってはならない。
 </p><p>
-$B!&(B Java method $B$O!"(B Java $B8@8l$N@$3&$GDj5A$5$l$F$$$k$N$G!"(B
-$B$=$l$r(B MJ class $B$,7Q>5$7$F(B override $B$9$k>l9g$O(B "define" $B$r(B
-$BIU$1$kI,MW$O$J$$!#(B
+・ Java method は、 Java 言語の世界で定義されているので、
+それを MJ class が継承して override する場合は "define" を
+付ける必要はない。
 </p><p>
-$B!&(B interface $B$N%a%=%C%I$K$D$$$F!#(B $B!J>JN,!#!K(B
+・ interface のメソッドについて。 （省略。）
 </p><p>
 </p><p>
 </p><h3> abstract class / abstract method</h3><p>
 </p><p>
-$B!&%/%i%9Dj5A;~$K(B abstract modifier $B$rIU$1$?%/%i%9$O!"(B abstract class $B!"(B
-$BDj5A;~$K(B abstract modifier $B$rIU$1$?%a%=%C%I$O(B abstract method $B$H8F$V!#(B
-$B!J(BMJ $B$K$O(B abstract constructor $B$b$"$k!#0J2<$N@bL@$G;H$&(B
-abstract method $B$H$$$&8@MU$O(Babstract constructor $B$b4^$`$b$N$H$9$k!#!K(B
+・クラス定義時に abstract modifier を付けたクラスは、 abstract class 、
+定義時に abstract modifier を付けたメソッドは abstract method と呼ぶ。
+（MJ には abstract constructor もある。以下の説明で使う
+abstract method という言葉はabstract constructor も含むものとする。）
 </p><p>
-$B!&(B Java $B8@8l$G$O!"(B
- abstract $B$G$J$$%/%i%9$G(B abstract method $B$rDj5A!&7Q>5$9$k$3$H$O5v$5$l$J$$$,!"(B
- MJ $B$G$O5v$5$l$k!#(B
+・ Java 言語では、
+ abstract でないクラスで abstract method を定義・継承することは許されないが、
+ MJ では許される。
 </p><p>
-$B$?$@$7!"%j%s%/;~$K!V(B abstract method $B$N<BAu$b$l!W$,%A%'%C%/$5$l$k!#(B
-$B%j%s%/7k2L$N%W%m%0%i%`$K$*$$$F!"(B abstract $B$G$J$$%/%i%9$,(B
-abstract method $B$r;}$C$F$$$k$H$-$O!"%j%s%/;~%(%i!<$H$J$k!#(B
+ただし、リンク時に「 abstract method の実装もれ」がチェックされる。
+リンク結果のプログラムにおいて、 abstract でないクラスが
+abstract method を持っているときは、リンク時エラーとなる。
 </p><p>
-$B!&(B Java $B8@8l$O(B abstract $B$G$J$$%a%=%C%I$r(B abstract method $B$G(B
-override $B$9$k$3$H$,$G$-$k$,!"(B MJ $B$G$O$G$-$J$$!#(B
-</p><p>
-</p><p>
-</p><p>
-</p><p>
-</p><h3>throws $B@k8@(B</h3><p>
-</p><p>
-$B!&%a%=%C%I$r3HD%$9$k:]$K$O!"%*%j%8%J%k$N%a%=%C%I$N(B throws $B@k8@$H(B
-$BF10l$N(B throws $B@k8@$r=q$+$J$1$l$P$J$i$J$$!#(B
-$B!J@k8@$r8:$i$7$?$jA}$d$7$?$j$7$F$O$J$i$J$$!#!K(B
-</p><p>
-$B$J$*!"(B Java $B8@8l$HF1MM$K!"(B subclass $B$G(B superclass $B$N(B throws $B@k8@$r(B
-$B8:$i$9$3$H$O$G$-$k!#(B
+・ Java 言語は abstract でないメソッドを abstract method で
+override することができるが、 MJ ではできない。
 </p><p>
 </p><p>
 </p><p>
-</p><h3>$B<BAu$N>WFM(B</h3><p>
 </p><p>
-$B%3%s%Q%$%i$rDL$C$?%b%8%e!<%kF1;N$G$"$C$F$b!"(B
-$BAH$_9g$o$;$F(B linearize $B$7$?$H$-$K%j%s%/;~%(%i!<$K$9$Y$->l9g$,$"$k!#(B
+</p><h3>throws 宣言</h3><p>
 </p><p>
-$BNc$($P!"#1$D$N(B abstract method $B$rJL!9$K!V<BAu!W$9$k%b%8%e!<%k$r!"(B
-$BF1;~$K;HMQ$9$k$H!"%(%i!<$K$9$Y$-$G$"$k!#(B
-$B$3$l$r!V<BAu$N>WFM!W$H8F$V!#(B
-$B8=:_$N=hM}7O$O!"$3$N%j%s%/;~$N<BAu$N>WFM$N%A%'%C%/$r9T$C$F$$$J$$!#(B
+・メソッドを拡張する際には、オリジナルのメソッドの throws 宣言と
+同一の throws 宣言を書かなければならない。
+（宣言を減らしたり増やしたりしてはならない。）
+</p><p>
+なお、 Java 言語と同様に、 subclass で superclass の throws 宣言を
+減らすことはできる。
 </p><p>
 </p><p>
-</p><h2><a name="fqn"> FQN $B!J40A48BDjL>!K$N;H$$J}(B</a></h2><p>
 </p><p>
-$B!&$[$H$s$IA4$F$N>l=j$G!"%/%i%9L>!&%a%=%C%IL>!&%U%#!<%k%IL>$NC1=cL>$N$+$o$j$K!"(B
-$B40A48BDjL>$,;H$($k!#(B
+</p><h3>実装の衝突</h3><p>
 </p><p>
-$BNc30$H$7$F!"%U%#!<%k%I@k8@$G$O!"40A48BDjL>$r;H$&$3$H$O$G$-$J$$!#(B
-$B!J%U%#!<%k%I$K$O!V3HD%!W$,$J$$$N$G!"%U%#!<%k%I@k8@$K(B FQN $B$OITMW!#(B
-$B%b%8%e!<%k(B m $BFb$N%U%#!<%k%I(B f $B$N@k8@$O!"I,$:(B m::f $B$H$$$&L>A0$N@k8@$rI=$9!#!K(B
+コンパイラを通ったモジュール同士であっても、
+組み合わせて linearize したときにリンク時エラーにすべき場合がある。
 </p><p>
-$B!&(BFQN $B$N;XDj$O!"C1=cL>$N$"$$$^$$$5$N2r>C$KMQ$$$i$l$k!#(B
-$B!J(BJava $B8@8l$N$h$&$K!"(B import $B$7$F$$$J$$L>A0$r;2>H$9$k<jCJ$H$7$F$O(B
-$B;H$($J$$!#!K(B
+例えば、１つの abstract method を別々に「実装」するモジュールを、
+同時に使用すると、エラーにすべきである。
+これを「実装の衝突」と呼ぶ。
+現在の処理系は、このリンク時の実装の衝突のチェックを行っていない。
 </p><p>
-$B!&$"$$$^$$$5$,$J$$>l9g!"$9$J$o$AC1=cL>$G@53N$K#1$D$NBP>]$r;XDj$G$-$k>l9g$K!"(B
-$B$"$($F(B FQN $B$r;HMQ$7$F$b$+$^$o$J$$!#(B
-$B$?$@$7!"$=$N>l9g!"$=$N(B FQN $B$O!"(B
-$BC1=cL>$K$h$C$FA*Br$5$l$kBP>]$N(B FQN $B$H0lCW$7$F$$$J$1$l$P$J$i$J$$!#(B
-$B0lCW$7$J$$>l9g$O%3%s%Q%$%k%(%i!<$H$J$k!#(B
 </p><p>
-$B!&Nc$H$7$F!"(B method overloading $B2r7h$N%"%k%4%j%:%`$K$D$$$F!"(B
-$B5?;w%3!<%I$G@bL@$9$k!#(B
+</p><h2><a name="fqn"> FQN （完全限定名）の使い方</a></h2><p>
+</p><p>
+・ほとんど全ての場所で、クラス名・メソッド名・フィールド名の単純名のかわりに、
+完全限定名が使える。
+</p><p>
+例外として、フィールド宣言では、完全限定名を使うことはできない。
+（フィールドには「拡張」がないので、フィールド宣言に FQN は不要。
+モジュール m 内のフィールド f の宣言は、必ず m::f という名前の宣言を表す。）
+</p><p>
+・FQN の指定は、単純名のあいまいさの解消に用いられる。
+（Java 言語のように、 import していない名前を参照する手段としては
+使えない。）
+</p><p>
+・あいまいさがない場合、すなわち単純名で正確に１つの対象を指定できる場合に、
+あえて FQN を使用してもかまわない。
+ただし、その場合、その FQN は、
+単純名によって選択される対象の FQN と一致していなければならない。
+一致しない場合はコンパイルエラーとなる。
+</p><p>
+・例として、 method overloading 解決のアルゴリズムについて、
+疑似コードで説明する。
 </p><p>
 <pre>
-$B$^$:!"%?!<%2%C%H$N7?!"%a%=%C%IC1=cL>!"<B0z?t$N7?$G!"(B
-$B8F$S=P$5$l$k%a%=%C%I$N8uJd$r$7$\$k!#(B
-$B!J$3$NCJ3,$G$O!"%a%=%C%I$N40A48BDjL>$N>pJs$O;H$o$J$$!#!K(B
-$B8uJd$,#1$D$b$J$1$l$P!"(B No method matching xxx found.
-$B8uJd$,#1$D0J>e$"$l$P!"$=$NCf$+$i(B most specific method $B$rA*$V!#(B
-        most specific method $B$,(B $B#1$D$b$J$1$l$P!"(B  ambiguous error $B!#(B
-        most specific method $B$,(B $B#1$D$"$C$?>l9g!"(B
-                $B%W%m%0%i%^$,%a%=%C%IC1=cL>$G8F$S=P$7$F$$$?$J$i!"8F$S=P$7@h3NDj!#(B
-                $B%W%m%0%i%^!<$,(B FQN $B$G8F$S=P$7$F$$$?$J$i!"(B
-                $B8uJd$N(B FQN $B$H%W%m%0%i%^$,;XDj$7$?(B FQN $B$,0lCW$9$k$+$rD4$Y!"(B
-                        $B0lCW$7$F$$$k$J$i!"8F$S=P$7@h3NDj!#(B
-                        $B0lCW$7$F$$$J$$$J$i!"(B No method matching xxx found. 
-        most specific method $B$,J#?t$"$C$?>l9g!"(B
-                $B%W%m%0%i%^$,%a%=%C%IC1=cL>$G8F$S=P$7$F$$$?$J$i!"(B ambiguous error $B!#(B
-                $B%W%m%0%i%^!<$,(B FQN $B$G8F$S=P$7$F$$$?$J$i!"(B
-                $B8uJd$NCf$+$i(B FQN $B$,0lCW$9$k$b$N$rA*$V!#(B
-                        $B8+$D$+$C$?$J$i$P!"8F$S=P$7@h3NDj!#(B
-                        $B8+$D$+$i$J$+$C$?$i!"(B No method matching xxx found. 
+まず、ターゲットの型、メソッド単純名、実引数の型で、
+呼び出されるメソッドの候補をしぼる。
+（この段階では、メソッドの完全限定名の情報は使わない。）
+候補が１つもなければ、 No method matching xxx found.
+候補が１つ以上あれば、その中から most specific method を選ぶ。
+        most specific method が １つもなければ、  ambiguous error 。
+        most specific method が １つあった場合、
+                プログラマがメソッド単純名で呼び出していたなら、呼び出し先確定。
+                プログラマーが FQN で呼び出していたなら、
+                候補の FQN とプログラマが指定した FQN が一致するかを調べ、
+                        一致しているなら、呼び出し先確定。
+                        一致していないなら、 No method matching xxx found. 
+        most specific method が複数あった場合、
+                プログラマがメソッド単純名で呼び出していたなら、 ambiguous error 。
+                プログラマーが FQN で呼び出していたなら、
+                候補の中から FQN が一致するものを選ぶ。
+                        見つかったならば、呼び出し先確定。
+                        見つからなかったら、 No method matching xxx found. 
 </pre>
 </p><p>
-$B$?$@$7!"(B most specific method $B$H$O!"A4$F$N(B i $B$KBP$7(B
- i $BHVL\$N2>0z?t$N7?(B  T1_i $B$,!"(B
-$BB>$NA4$F$N8uJd%a%=%C%I$N(B i $BHVL\$N2>0z?t$N7?(B  T2_i $B$N!"(B
-subtype $B$+Ey$7$$7?$G$"$k$b$N$r8@$&!#(B
-$B!J(BJava $B$G$O!"(B most specific method $B$,#1$DB8:_$9$k$+!"(B
-$B#1$D$bB8:_$7$J$$$+$N$I$A$i$+$@$,!"(B
-MJ $B$G$O!"0[$J$k40A48BDjL>$r;}$C$?J#?t$N(B most specific method $B$,(B
-$BB8:_$9$k2DG=@-$,$"$k!#!K(B
+ただし、 most specific method とは、全ての i に対し
+ i 番目の仮引数の型  T1_i が、
+他の全ての候補メソッドの i 番目の仮引数の型  T2_i の、
+subtype か等しい型であるものを言う。
+（Java では、 most specific method が１つ存在するか、
+１つも存在しないかのどちらかだが、
+MJ では、異なる完全限定名を持った複数の most specific method が
+存在する可能性がある。）
 </p><p>
 </p><p>
-$B!&(B Java $B8@8l$G(B a.b.C $B$H$$$&!V%/%i%9L>$N40A48BDjL>!W$,;H$($k>l=j$G$O!"(B
-MJ $B$G$bF1MM$K(B a.b.C $B$H=q$1$k!#$=$N>l=j$G(B FQN[a.b::C] $B$H=q$$$F$b$+$^$o$J$$!#(B
-Java $B8@8l$G!V%/%i%9L>$NC1=cL>!W$7$+5v$5$l$J$$>l=j$G$O!"(B
-$BC1=cL>$+(B FQN[a.b::C] $B$N$_$,;H$(!"(B a.b.C $B$H$$$&=q$-J}$O5v$5$l$J$$!#(B
+・ Java 言語で a.b.C という「クラス名の完全限定名」が使える場所では、
+MJ でも同様に a.b.C と書ける。その場所で FQN[a.b::C] と書いてもかまわない。
+Java 言語で「クラス名の単純名」しか許されない場所では、
+単純名か FQN[a.b::C] のみが使え、 a.b.C という書き方は許されない。
 </p><p>
-$B!&(B Java class $B$GDj5A$5$l$?%U%#!<%k%I!&%a%=%C%IL>(B n $B$N(B
-$B40A48BDjL>$O(B FQN[java::n] $B$H$J$k!#(B
+・ Java class で定義されたフィールド・メソッド名 n の
+完全限定名は FQN[java::n] となる。
 </p><p>
 </p><p>
 </p><h2><a name="statement"> Statement</a></h2><p>
-$B8=:_$N$H$3$m!"(B Statement $B$K4X$7$F$O(B Java $B8@8l$HA4$/JQ$o$i$J$$!#(B
+現在のところ、 Statement に関しては Java 言語と全く変わらない。
 </p><p>
 </p><p>
 </p><h2><a name="expression"> Expression</a></h2><p>
 </p><p>
-</p><h3>$B%a%=%C%I8F$S=P$7(B</h3><p>
+</p><h3>メソッド呼び出し</h3><p>
 </p><p>
-$B!&(B Java class, MJ class $B$N8F$S=P$7$OIaDL$K9T$($k!#(B
-$BNc!'(B
+・ Java class, MJ class の呼び出しは普通に行える。
+例：
 </p><p>
 <pre>
         c.foo();
 </pre>
 </p><p>
 </p><p>
-$B!&%a%=%C%IL>$K40A48BDjL>$rMQ$$$k$3$H$,$G$-$k!#(B
-$BNc!'(B
+・メソッド名に完全限定名を用いることができる。
+例：
 </p><p>
 <pre>
 c.FQN[m::foo]();
@@ -691,74 +691,74 @@ FQN[m::foo]();
 </pre>
 </p><p>
 </p><p>
-</p><h3>$B%U%#!<%k%I%"%/%;%9(B</h3><p>
+</p><h3>フィールドアクセス</h3><p>
 </p><p>
-$B!&<+J,<+?H!J$*$h$S<+J,$N(B superclass$B!K$N%U%#!<%k%I$O!"IaDL$K%"%/%;%9$G$-$k!#(B
-$BNc!'(B
+・自分自身（および自分の superclass）のフィールドは、普通にアクセスできる。
+例：
 </p><p>
 <pre>
         f
 </pre>
 </p><p>
-$B!&<+J,0J30$N(B Java class, MJ class $B$N%U%#!<%k%I$K$bIaDL$K%"%/%;%9$G$-$k!#(B
-$BNc!'(B
+・自分以外の Java class, MJ class のフィールドにも普通にアクセスできる。
+例：
 </p><p>
 <pre>
         c.f
 </pre>
 </p><p>
-$B!J$?$@$7!"<+J,0J30$N(B MJ class $B$N%U%#!<%k%I%"%/%;%9$K$O!">-Mh$O@)8B$,IU$/M=Dj!#(B
-class invariant $B$rGK2u$9$k62$l$,$"$k$N$GHr$1$k$Y$-$G$"$k!#(B
-$BD>@\%"%/%;%9$;$:$K!"%"%/%;%9%a%=%C%I$rDL$9$3$H$r?d>)!#!K(B
+（ただし、自分以外の MJ class のフィールドアクセスには、将来は制限が付く予定。
+class invariant を破壊する恐れがあるので避けるべきである。
+直接アクセスせずに、アクセスメソッドを通すことを推奨。）
 </p><p>
-$B!&%U%#!<%k%IL>$K40A48BDjL>$rMQ$$$k$3$H$,$G$-$k!#(B
-$BNc!'(B
+・フィールド名に完全限定名を用いることができる。
+例：
 </p><p>
 <pre>
 x = c.FQN[m::f];
 x = FQN[m::f];
 </pre>
 </p><p>
-$B!&(B Java $B$G$O(B subclass $B$N(B field $B$,(B super class $B$NF1L>$N(B field $B$r(B hide $B$9$k$,!"(B
-MJ $B$G$O(B field $B$N(B hide $B$O5/$-$J$$!#(B
-$BC1=cL>$G$=$N%U%#!<%k%IL>$r;2>H$7$?>l9g!"(B ambiguous error $B$K$J$k!#(B
-$B40A48BDjL>$r;XDj$9$l$P!"$I$A$i$N(B field$B!!$b;2>H$9$k$3$H$,$G$-$k!#(B
+・ Java では subclass の field が super class の同名の field を hide するが、
+MJ では field の hide は起きない。
+単純名でそのフィールド名を参照した場合、 ambiguous error になる。
+完全限定名を指定すれば、どちらの field　も参照することができる。
 </p><p>
-$B!&%m!<%+%kJQ?t$GF1L>$N(B field $B$r(B shadow $B$9$k$3$H$O!"(B Java $BF1MM$K$G$-$k!#(B
+・ローカル変数で同名の field を shadow することは、 Java 同様にできる。
 </p><p>
-$B!&30B&$N%m!<%+%kJQ?t!&%a%=%C%I0z?t$HF1$8L>A0$N%m!<%+%kJQ?t$r(B
-$BFbB&$G@k8@$9$k$3$H$O!"(B Java $BF1MM$G$-$J$$!#@k8@$9$k$H%3%s%Q%$%k%(%i!<$H$J$k!#(B
+・外側のローカル変数・メソッド引数と同じ名前のローカル変数を
+内側で宣言することは、 Java 同様できない。宣言するとコンパイルエラーとなる。
 </p><p>
 </p><p>
 </p><p>
-</p><h3> original $B8F$S=P$7(B</h3><p>
+</p><h3> original 呼び出し</h3><p>
 </p><p>
-$B!&(B original $B8F$S=P$7$N(B signature $B$O!"$=$N(B original $B8F$S=P$7$,4^$^$l$k%a%=%C%I$H(B
-$B0lCW$7$F$$$J$1$l$P$J$i$J$$!#(B
-$B!J(B Java $B$G$O(B super.foo(args) $B$H$$$&9=J8$K$h$C$F!"<+J,$H$O0[$J$k(B signature $B$N!"(B
-super $B$N%a%=%C%I$r8F$S=P$;$k$,!"(B MJ $B$G$O$G$-$J$$!#!K(B
+・ original 呼び出しの signature は、その original 呼び出しが含まれるメソッドと
+一致していなければならない。
+（ Java では super.foo(args) という構文によって、自分とは異なる signature の、
+super のメソッドを呼び出せるが、 MJ ではできない。）
 </p><p>
 </p><p>
 </p><p>
 </p><h3> anonymous class</h3><p>
 </p><p>
-$B!&(B Java class/interface $B$N(B anonymous class $B$r:n$k$3$H$,$G$-$k!#(B
-MJ class/interface $B$N(B anonymous class $B$O!"8=:_$N<BAu$O%5%]!<%H$7$J$$!#(B
-$B$D$^$j!"(B new A(){...} $B$H=q$$$?$H$-!"(B A $B$,(B MJ $B8@8l$GDj5A$5$l$?(B
-class $B$^$?$O(B interface $B$G$"$k>l9g$O!"%3%s%Q%$%k%(%i!<$K$J$k!#(B
+・ Java class/interface の anonymous class を作ることができる。
+MJ class/interface の anonymous class は、現在の実装はサポートしない。
+つまり、 new A(){...} と書いたとき、 A が MJ 言語で定義された
+class または interface である場合は、コンパイルエラーになる。
 </p><p>
 </p><p>
-$B!&(B anonymous class $B$O!"$@$$$?$$$O!"(B Java $B$HF1$8$h$&$K;H$($k!#(B
-$B$?$@$7!"!J8=:_$N<BAu$G$O!"!K(B
- outer class $B$N(B field/method $B$K%"%/%;%9$9$k$3$H$O$G$-$J$$!#(B
-OuterClass.this $B$H$$$&9=J8$b%5%]!<%H$7$F$$$J$$!#(B
-$B$3$NLdBj$KBP=h$9$k$K$O!"<!$N$h$&$K$9$k!#(B
+・ anonymous class は、だいたいは、 Java と同じように使える。
+ただし、（現在の実装では、）
+ outer class の field/method にアクセスすることはできない。
+OuterClass.this という構文もサポートしていない。
+この問題に対処するには、次のようにする。
 </p><p>
 <pre>
-      final Draw outer = this;               // outer $B$H$$$&(B final $BJQ?t$r@k8@(B
+      final Draw outer = this;               // outer という final 変数を宣言
       b.addActionListener(new ActionListener(){
         public void actionPerformed(ActionEvent e){
-          Graphics g = outer.getGraphics();  // outer class $B$N(B method $B8F$S=P$7(B
+          Graphics g = outer.getGraphics();  // outer class の method 呼び出し
           ...;
         }});
 </pre>
@@ -767,70 +767,70 @@ OuterClass.this $B$H$$$&9=J8$b%5%]!<%H$7$F$$$J$$!#(B
 </p><p>
 </p><h2><a name="naming-convention"> naming convention</a></h2><p>
 </p><p>
-$B!&%b%8%e!<%kL>$O$9$Y$F>.J8;z!#(B
-$B!J(Bpackage $BL>$,(B Java $B$N%/%i%9L>$H>WFM$9$k$H(B javac $B$,(B
-$B$o$+$j$K$/$$%(%i!<%a%C%;!<%8$r=P$7$F$7$^$&$N$G!"$=$l$rHr$1$k$?$a!#!K(B
+・モジュール名はすべて小文字。
+（package 名が Java のクラス名と衝突すると javac が
+わかりにくいエラーメッセージを出してしまうので、それを避けるため。）
 </p><p>
-$B!&%b%8%e!<%kL>$K$O!"(B a.b.c $B$H$$$&$U$&$K(B identifier $B$r(B "." $B$G(B
-$B6h@Z$C$?$b$N$b;H$($k!#(B
-$B%I%a%$%sL>$N(B prefix $B$rIU$1$kI,MW$O$J$$!#(B
-$B!J%b%8%e!<%kL>$N>WFM$O!"30It%D!<%k$K$h$k(B rename $B$K$h$C$FBP=h$9$k!#!K(B
+・モジュール名には、 a.b.c というふうに identifier を "." で
+区切ったものも使える。
+ドメイン名の prefix を付ける必要はない。
+（モジュール名の衝突は、外部ツールによる rename によって対処する。）
 </p><p>
-$B!&%b%8%e!<%k$N(B rename $B$r$9$k%D!<%k$rDs6!$9$kM=Dj!#!JL$<BAu!K(B
+・モジュールの rename をするツールを提供する予定。（未実装）
 </p><p>
 <pre>
         mjrnp in.jar out.jar foo jp.go.etl
 </pre>
 </p><p>
-$B$G!"(B in.jar $B$NCf$K8=$l$k(B "foo." $B$G$O$8$^$k(B module $BL>$,!"(B
- "jp.go.etl." $B$G$O$8$^$k(B module $BL>$K$KJQ49$5$l$k!#(B
-$B!J3+H/$9$k$H$-$OC;$$L>A0$G3+H/$7!"G[I[$9$k$H$-$K%I%a%$%sL>$r$D$1$k!"(B
-$B$H$$$&;H$$J}$r?d>)!#!K(B
+で、 in.jar の中に現れる "foo." ではじまる module 名が、
+ "jp.go.etl." ではじまる module 名にに変換される。
+（開発するときは短い名前で開発し、配布するときにドメイン名をつける、
+という使い方を推奨。）
 </p><p>
-$B!&(B "java" $B$H$$$&%b%8%e!<%kL>$O;H$($J$$!#(B
+・ "java" というモジュール名は使えない。
 </p><p>
-$B!&(B Java $B$N%Q%C%1!<%8L>$H$7$F5v$5$l$J$$$b$N$O!"(B MJ $B$N(B module $BL>$G$b5v$5$l$J$$!#(B
-$B!JNc$($P(B p.class.a $B$O!"(B class $B$H$$$&%-!<%o!<%I$r4^$s$G$$$k$N$G%(%i!<$K$J$k!#!K(B
+・ Java のパッケージ名として許されないものは、 MJ の module 名でも許されない。
+（例えば p.class.a は、 class というキーワードを含んでいるのでエラーになる。）
 </p><p>
-$B!&30It%$%s%?!<%U%'!<%9$rDj5A$9$k%b%8%e!<%k$K$OC;$$L>A0$r!"(B
-$BFbIt<BAu%b%8%e!<%k$rDj5A$9$k%b%8%e!<%k$K$O!"(B
- postfix $B$rIU$1$FD9$/$7$?L>A0$rIU$1$k$H$h$$$H;W$&!#(B
+・外部インターフェースを定義するモジュールには短い名前を、
+内部実装モジュールを定義するモジュールには、
+ postfix を付けて長くした名前を付けるとよいと思う。
 </p><p>
-$BNc!'(B p.collection $B$H(B p.collection.implementation
+例： p.collection と p.collection.implementation
 </p><p>
-$B6qBNE*$K$I$&$$$&%9%?%$%k$GL>A0$rIU$1$k$N$,$h$$$+$O!":#8e9M$($k!#(B
-</p><p>
-</p><p>
+具体的にどういうスタイルで名前を付けるのがよいかは、今後考える。
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="unsupported-java-features">$B%5%]!<%H$7$J$$(B Java $B$N5!G=(B</a></h2><p>
-</p><p>
-$B!&(B MJ class $BFbIt$G$N(B member class, block local class $B$NDj5A$O$G$-$J$$!#(B
-</p><p>
-$B!&(B Java class $B$N(B member class $B$N7Q>5$O$G$-$J$$!#(B
-</p><p>
-$B!&%/%i%9!"%a%=%C%I$r(B final $B$K$G$-$J$$!#(B
-$B!J(Bfield $B$H%m!<%+%kJQ?t$O(B final $B$K$G$-$k!#!K(B
-</p><p>
-$B!&(B abstract/public/protected/private/final $B0J30$N(B modifier $B$K$D$$$F$O!"(B
-$B$I$&$$$&F0:n$K$J$k$+ITL@!#(B
 </p><p>
 </p><p>
-</p><h2><a name="other-features">$B$=$NB>$N5!G=(B</a></h2><p>
+</p><h2><a name="unsupported-java-features">サポートしない Java の機能</a></h2><p>
 </p><p>
-$B!&(B #+comment <br>
-$B!J>JN,!K(B
+・ MJ class 内部での member class, block local class の定義はできない。
+</p><p>
+・ Java class の member class の継承はできない。
+</p><p>
+・クラス、メソッドを final にできない。
+（field とローカル変数は final にできる。）
+</p><p>
+・ abstract/public/protected/private/final 以外の modifier については、
+どういう動作になるか不明。
+</p><p>
+</p><p>
+</p><h2><a name="other-features">その他の機能</a></h2><p>
+</p><p>
+・ #+comment <br>
+（省略）
 </p><p>
 </p><p>
 </p><p>
-</p><h2><a name="syntax">$BJ8K!(B</a></h2><p>
+</p><h2><a name="syntax">文法</a></h2><p>
 </p><p>
-$B$3$3$G$O(B Java $B8@8l$NJ8K!$KBP$9$k:9J,$N$_$r5-=R$9$k!#(B
-&lt;original alternatives&gt; $B$O!"(B Java $B8@8l$K$*$1$kA*Br;h$r(B
-$BI=$7$F$$$k!#(B<br>
-$BBgJ8;z$G;O$^$k5-9f$OHs=*C<5-9f!"$=$l0J30$O=*C<5-9f$rI=$9!#(B<br>
-&lt;e&gt; $B$O6uJ8;zNs$rI=$9!#(B
+ここでは Java 言語の文法に対する差分のみを記述する。
+&lt;original alternatives&gt; は、 Java 言語における選択肢を
+表している。<br>
+大文字で始まる記号は非終端記号、それ以外は終端記号を表す。<br>
+&lt;e&gt; は空文字列を表す。
 </p><p>
 <pre>
 </p><p>

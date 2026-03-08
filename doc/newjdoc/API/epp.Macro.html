@@ -25,22 +25,22 @@ java.lang.Object
   <dt> public abstract class <b>Macro</b>
   <dt> extends Object
 </dl>
-$B%/%i%9(B Macro $B$O!"$9$Y$F$N%^%/%mE83+%*%V%8%'%/%H$N%/%i%9$N(B
-$B%9!<%Q!<%/%i%9$G$9!#(B.
+クラス Macro は、すべてのマクロ展開オブジェクトのクラスの
+スーパークラスです。.
 <p>
-$B9=J8%^%/%mE83+%Q%9$K$*$$$F!"Cj>]9=J8LZ$N3F%N!<%I$O(B
-$B%^%/%m%N!<%I$+$I$&$+%A%'%C%/$5$l!"$b$7$=$&$J$i$P!"(B
-$BBP1~$9$k%^%/%mE83+%*%V%8%'%/%H$N%a%=%C%I(B "call" $B$,8F$S=P$5$l$^$9!#(B
+構文マクロ展開パスにおいて、抽象構文木の各ノードは
+マクロノードかどうかチェックされ、もしそうならば、
+対応するマクロ展開オブジェクトのメソッド "call" が呼び出されます。
 <p>
-plug-in programmer $B$O!"I8=`$N(B Java $B$K$J$$%N!<%I$rF3F~$7$?$i!"(B
-$B$=$l$rI8=`$N(B Java $B$N%N!<%I$KJQ49$9$k!V%^%/%mE83+%*%V%8%'%/%H!W$N%/%i%9$r(B
-$BDj5A$7$J$1$l$P$J$j$^$;$s!#(B
-$B$^$?!"Dj5A$7$?%^%/%mE83+%*%V%8%'%/%H$O!"(B Epp $B$N%a%=%C%I(B "defineMacro" $B$r(B
-$B;H$C$F!"%^%/%mE83+%*%V%8%'%/%H$N%F!<%V%k$KEPO?$7$J$1$l$P$J$j$^$;$s!#(B
-$BNc$($P!"(B enum plug-in $B$N%=!<%9%3!<%I$G$O!"(B
-$B<!$N$h$&$K$7$F(B :enum $B$H$$$&(B tag $B$r;}$D(B
-tree $B$rE83+$9$kE83+%*%V%8%'%/%H$rEPO?$7$F$$$^$9!#(B
-$B!J%/%i%9(B EnumMacro $B$O!"%/%i%9(B Macro $B$N%5%V%/%i%9$G$9!#!K(B
+plug-in programmer は、標準の Java にないノードを導入したら、
+それを標準の Java のノードに変換する「マクロ展開オブジェクト」のクラスを
+定義しなければなりません。
+また、定義したマクロ展開オブジェクトは、 Epp のメソッド "defineMacro" を
+使って、マクロ展開オブジェクトのテーブルに登録しなければなりません。
+例えば、 enum plug-in のソースコードでは、
+次のようにして :enum という tag を持つ
+tree を展開する展開オブジェクトを登録しています。
+（クラス EnumMacro は、クラス Macro のサブクラスです。）
 <pre>
     extend void initMacroTable() {
       original();
@@ -48,19 +48,19 @@ tree $B$rE83+$9$kE83+%*%V%8%'%/%H$rEPO?$7$F$$$^$9!#(B
     }
 </pre>
 <p>
-$B%^%/%mE83+%*%V%8%'%/%H$O!"%/%i%9(B Macro $B$N%5%V%/%i%9$N%$%s%9%?%s%9$G$9!#(B
-$B%^%/%mE83+%*%V%8%'%/%H$O!"(B tree $B$r0z?t$K$H$j(B tree $B$rJV$9(B call $B$H$$$&L>$N(B
-$B%a%=%C%I$r;}$A$^$9!#(B
+マクロ展開オブジェクトは、クラス Macro のサブクラスのインスタンスです。
+マクロ展開オブジェクトは、 tree を引数にとり tree を返す call という名の
+メソッドを持ちます。
 <p>
-$B%^%/%mE83+%*%V%8%'%/%H$O!"(B decorator pattern $B$K$h$C$F(B
-$B3HD%$9$k$3$H$,$G$-$^$9!#(B
-$B$=$l$K$O!"(B Epp $B$N(B extendMacro $B%a%=%C%I$r;H$$$^$9!#(B
-decorator $B$+$i$O!"%$%s%9%?%s%9JQ?t(B orig $B$rDL$7$F!"(B
-$B%*%j%8%J%k$N%^%/%mE83+%*%V%8%'%/%H$r8F$S=P$9$3$H$,$G$-$^$9!#(B
-extendMacro $B$K$h$C$F3HD%$5$l$F$$$J$$;~$O!"JQ?t(B orig $B$NCM$O(B null $B$G$9!#(B
+マクロ展開オブジェクトは、 decorator pattern によって
+拡張することができます。
+それには、 Epp の extendMacro メソッドを使います。
+decorator からは、インスタンス変数 orig を通して、
+オリジナルのマクロ展開オブジェクトを呼び出すことができます。
+extendMacro によって拡張されていない時は、変数 orig の値は null です。
 <p>
-Tree $B$N:F5"E*$J%^%/%mE83+$O!"%a%=%C%I(B macroExpandTree $B$K$h$C$F9T$J$o$l$^$9!#(B
-$B%a%=%C%I(B macroExpandTree $B$NF0:n$O!"87L)$K$O<!$N$h$&$KDj5A$5$l$^$9!#(B
+Tree の再帰的なマクロ展開は、メソッド macroExpandTree によって行なわれます。
+メソッド macroExpandTree の動作は、厳密には次のように定義されます。
 <pre>
       Symbol lastTag = null;
       while(true) {
@@ -76,16 +76,16 @@ Tree $B$N:F5"E*$J%^%/%mE83+$O!"%a%=%C%I(B macroExpandTree $B$K$h$C$F9T$J$o$l$
       }
       return tree;
 </pre>
-$B$9$J$o$A!"(B tree $B$N(B tag $B$KBP1~$9$k%^%/%mE83+%*%V%8%'%/%H$N(B
-$B%a%=%C%I(B call $B$r8F$S=P$7!"JVCM$N(B tag $B$H!"8F$S=P$9A0$N(B tag $B$,(B
-$BEy$7$1$l$P!"%k!<%W$rH4$1$FJVCM$rJV$7$^$9!#$=$&$G$J$1$l$P!"(B
-tag $B$,JQ$o$i$J$/$J$k$^$G%^%/%mE83+$rJQ49$r7+$jJV$7$^$9!#(B
-$B%N!<%I$N(B tag $B$KBP1~$9$k%^%/%mE83+4X?t$,$J$$>l9g$O!"(B
-$B%G%U%)%k%H$NF0:n$H$7$F!"<+J,<+?H$N(B subtree $B$r%^%/%mE83+$7$?$b$N$KCV$-49$($?(B
-$B%N!<%I$r:n$C$F$=$l$rJV$7$^$9!#(B
+すなわち、 tree の tag に対応するマクロ展開オブジェクトの
+メソッド call を呼び出し、返値の tag と、呼び出す前の tag が
+等しければ、ループを抜けて返値を返します。そうでなければ、
+tag が変わらなくなるまでマクロ展開を変換を繰り返します。
+ノードの tag に対応するマクロ展開関数がない場合は、
+デフォルトの動作として、自分自身の subtree をマクロ展開したものに置き換えた
+ノードを作ってそれを返します。
 <p>
-$B%a%=%C%I8F$S=P$7$HF1$8J8K!$r;}$D%^%/%m$NDj5A$rMF0W$K$9$k$?$a$N(B
-InvokeStyleMacro $B$H$$$&%/%i%9$bMQ0U$5$l$F$$$^$9!#(B
+メソッド呼び出しと同じ文法を持つマクロの定義を容易にするための
+InvokeStyleMacro というクラスも用意されています。
 <p>
 <dl>
     <dt> <b>See Also:</b>
@@ -107,30 +107,30 @@ InvokeStyleMacro $B$H$$$&%/%i%9$bMQ0U$5$l$F$$$^$9!#(B
 <dl>
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#addTree(epp.Symbol, epp.Tree)"><b>addTree</b></a>(Symbol, Tree)
-  <dd> $BF0E*JQ?t$K!"(B tree $B$rDI2C$9$k%a%=%C%I$G$9!#(B.
+  <dd> 動的変数に、 tree を追加するメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#call(epp.Tree)"><b>call</b></a>(Tree)
-  <dd> $B%5%V%/%i%9$K$*$$$F!"(B tree $B$r%^%/%mE83+$9$k%a%=%C%I$rDj5A$7$^$9!#(B
+  <dd> サブクラスにおいて、 tree をマクロ展開するメソッドを定義します。
 
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#checkArgsLength(epp.Tree, int)"><b>checkArgsLength</b></a>(Tree, int)
-  <dd> $B%N!<%I$N0z?t$N?t$r%A%'%C%/$7$^$9!#(B.
+  <dd> ノードの引数の数をチェックします。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#error(java.lang.String)"><b>error</b></a>(String)
-  <dd> $B%^%/%mE83+;~$N%(%i!<$,5/$-$?;~$K!"8F$V%a%=%C%I$G$9!#(B.
+  <dd> マクロ展開時のエラーが起きた時に、呼ぶメソッドです。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#genTemp(java.lang.String)"><b>genTemp</b></a>(String)
-  <dd> $B%^%/%mE83+;~$K!"%f%K!<%/$J<1JL;R$r@8@.$9$k$?$a$K8F$S=P$9%a%=%C%I$G$9!#(B.
+  <dd> マクロ展開時に、ユニークな識別子を生成するために呼び出すメソッドです。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#macroExpand1(epp.Tree)"><b>macroExpand1</b></a>(Tree)
-  <dd> $B%^%/%m$r#1EY$@$1E83+$7$^$9!#(B.
+  <dd> マクロを１度だけ展開します。.
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#macroExpandArray(epp.Tree[])"><b>macroExpandArray</b></a>(Tree[])
-  <dd> $B0z?t$NG[Ns$N3FMWAG$r%^%/%mE83+$7!"7k2L$r?7$7$$G[Ns$KF~$l$FJV$7$^$9!#(B
+  <dd> 引数の配列の各要素をマクロ展開し、結果を新しい配列に入れて返します。
 
   <dt> <img src="images/green-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#macroExpandTree(epp.Tree)"><b>macroExpandTree</b></a>(Tree)
-  <dd> $B:F5"E*$KA4$F$N%^%/%mE83+$r9T$J$&%a%=%C%I$G$9!#(B.
+  <dd> 再帰的に全てのマクロ展開を行なうメソッドです。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -152,7 +152,7 @@ InvokeStyleMacro $B$H$$$&%/%i%9$bMQ0U$5$l$F$$$^$9!#(B
  public abstract <a href="epp.Tree.html#_top_">Tree</a> call(<a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> $B%5%V%/%i%9$K$*$$$F!"(B tree $B$r%^%/%mE83+$9$k%a%=%C%I$rDj5A$7$^$9!#(B
+  <dd> サブクラスにおいて、 tree をマクロ展開するメソッドを定義します。
 <p>
 </dl>
 <a name="macroExpandTree(epp.Tree)"><img src="images/green-ball.gif" width=12 height=12 alt=" o "></a>
@@ -161,19 +161,19 @@ InvokeStyleMacro $B$H$$$&%/%i%9$bMQ0U$5$l$F$$$^$9!#(B
  public static <a href="epp.Tree.html#_top_">Tree</a> macroExpandTree(<a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> $B:F5"E*$KA4$F$N%^%/%mE83+$r9T$J$&%a%=%C%I$G$9!#(B.
-$B0z?t$N(B tree $B$N(B tag $B$r(B key $B$K$7$F!"(B
-Macro.macroTable $B$KEPO?$5$l$F$$$k%^%/%mE83+%*%V%8%'%/%H$r<h$j=P$7!"(B
-$B$b$7$"$l$P$=$l$r8F$S=P$7!"$J$1$l$P%G%U%)%k%H$N%^%/%mE83+F0:n$r(B
-$B9T$J$$$^$9!#(B
+  <dd> 再帰的に全てのマクロ展開を行なうメソッドです。.
+引数の tree の tag を key にして、
+Macro.macroTable に登録されているマクロ展開オブジェクトを取り出し、
+もしあればそれを呼び出し、なければデフォルトのマクロ展開動作を
+行ないます。
 <p>
-plug-in $B%W%m%0%i%^!<$,Dj5A$9$k(B
-$B%^%/%mE83+%*%V%8%'%/%H$NCf$+$i!"(B
-$B$3$N%a%=%C%I$rL@<(E*$K8F$S=P$7$F$b9=$$$^$;$s$,!"(B
-$B$[$H$s$I$N>l9g!"$=$NI,MW$O$"$j$^$;$s!#(B
-$B!J%^%/%mE83+%*%V%8%'%/%H$N%a%=%C%I(B call $B$,JV$9(B tree $B$O!"(B
-$B<+F0E*$KFbIt$K%^%/%m$,$J$/$J$k$^$GE83+$5$l$k;E3]$1$K(B
-$B$J$C$F$$$^$9!#!K(B
+plug-in プログラマーが定義する
+マクロ展開オブジェクトの中から、
+このメソッドを明示的に呼び出しても構いませんが、
+ほとんどの場合、その必要はありません。
+（マクロ展開オブジェクトのメソッド call が返す tree は、
+自動的に内部にマクロがなくなるまで展開される仕掛けに
+なっています。）
 <p>
 </dl>
 <a name="macroExpand1(epp.Tree)"><img src="images/green-ball.gif" width=12 height=12 alt=" o "></a>
@@ -182,11 +182,11 @@ plug-in $B%W%m%0%i%^!<$,Dj5A$9$k(B
  public static <a href="epp.Tree.html#_top_">Tree</a> macroExpand1(<a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> $B%^%/%m$r#1EY$@$1E83+$7$^$9!#(B.
-$B0z?t$N(B tree $B$N(B tag $B$KBP1~$9$k%^%/%mE83+%*%V%8%'%/%H$r8F$S=P$7!"(B
-$B7k2L$rJV$7$^$9!#(B
-$B%^%/%mE83+%*%V%8%'%/%H$N%G%P%C%0;~$K!"F0:n3NG'$9$k;~$J$I$K(B
-$B;H$$$^$9!#(B
+  <dd> マクロを１度だけ展開します。.
+引数の tree の tag に対応するマクロ展開オブジェクトを呼び出し、
+結果を返します。
+マクロ展開オブジェクトのデバッグ時に、動作確認する時などに
+使います。
 <p>
 </dl>
 <a name="macroExpandArray(epp.Tree[])"><img src="images/green-ball.gif" width=12 height=12 alt=" o "></a>
@@ -195,7 +195,7 @@ plug-in $B%W%m%0%i%^!<$,Dj5A$9$k(B
  public static <a href="epp.Tree.html#_top_">Tree</a>[] macroExpandArray(<a href="epp.Tree.html#_top_">Tree</a> args[])
 </pre>
 <dl>
-  <dd> $B0z?t$NG[Ns$N3FMWAG$r%^%/%mE83+$7!"7k2L$r?7$7$$G[Ns$KF~$l$FJV$7$^$9!#(B
+  <dd> 引数の配列の各要素をマクロ展開し、結果を新しい配列に入れて返します。
 <p>
 </dl>
 <a name="checkArgsLength(epp.Tree, int)"><img src="images/green-ball.gif" width=12 height=12 alt=" o "></a>
@@ -205,8 +205,8 @@ plug-in $B%W%m%0%i%^!<$,Dj5A$9$k(B
                                     int argc)
 </pre>
 <dl>
-  <dd> $B%N!<%I$N0z?t$N?t$r%A%'%C%/$7$^$9!#(B.
-tree $B$N(B args $B$ND9$5$,!"(B argc $B$G$J$1$l$P!"%a%=%C%I(B error $B$r8F$S=P$7$^$9!#(B
+  <dd> ノードの引数の数をチェックします。.
+tree の args の長さが、 argc でなければ、メソッド error を呼び出します。
 <p>
 </dl>
 <a name="addTree(epp.Symbol, epp.Tree)"><img src="images/green-ball.gif" width=12 height=12 alt=" o "></a>
@@ -216,8 +216,8 @@ tree $B$N(B args $B$ND9$5$,!"(B argc $B$G$J$1$l$P!"%a%=%C%I(B error $B$r8
                             <a href="epp.Tree.html#_top_">Tree</a> tree)
 </pre>
 <dl>
-  <dd> $BF0E*JQ?t$K!"(B tree $B$rDI2C$9$k%a%=%C%I$G$9!#(B.
-$B$3$N%a%=%C%I$O!"<!$N$h$&$KDj5A$5$l$F$$$^$9!#(B
+  <dd> 動的変数に、 tree を追加するメソッドです。.
+このメソッドは、次のように定義されています。
 <pre>
   public static void addTree(Symbol sym, Tree tree){
     TreeVec tvec = (TreeVec)Dynamic.get(sym);
@@ -225,14 +225,14 @@ tree $B$N(B args $B$ND9$5$,!"(B argc $B$G$J$1$l$P!"%a%=%C%I(B error $B$r8
   }
 </pre>
 <p>
-$BNc$($P$"$k3HD%9=J8$r%^%/%mE83+$9$k:]!"(B
-$B$"$k%a%=%C%I$r8=:_E83+Cf$N%/%i%9$KDI2C$7$?$/$J$k>l9g$,$"$j$^$9!#(B
-$B$=$N$h$&$J>l9g$O!"Nc$($P<!$N$h$&$K$7$^$9!#(B
+例えばある拡張構文をマクロ展開する際、
+あるメソッドを現在展開中のクラスに追加したくなる場合があります。
+そのような場合は、例えば次のようにします。
 <pre>
     addTree(:beginningOfClassBody,
     	    aMethodDeclarationTree);
 </pre>
-addTree $B$NBh0l0z?t$K;XDj$G$-$k(B symbol $B$K$O!"8=:_0J2<$N$b$N$,$"$j$^$9!#(B
+addTree の第一引数に指定できる symbol には、現在以下のものがあります。
 <pre>
 	:beforeCurrentTypeDeclaration
 	:afterCurrentTypeDeclaration
@@ -242,10 +242,10 @@ addTree $B$NBh0l0z?t$K;XDj$G$-$k(B symbol $B$K$O!"8=:_0J2<$N$b$N$,$"$j$^$9!#
 	:beforeCurrentBlockStatement
 	:afterCurrentBlockStatement
 </pre>
-$B$3$l$i$K$h$C$F!"8=:_$N%U%!%$%k$N%H%C%W%l%Y%k$X$N%3!<%I$NDI2C!"(B
-$B8=:_$N%/%i%9$X$N%$%s%9%?%s%9JQ?t$d%a%=%C%I$NDI2C!"(B
-$B8=:_$NJ8$ND>A0$X$N%m!<%+%k7?@k8@$NDI2C!"(B
-$B8=:_$NJ8$ND>8e$X$N8e=hM}$NDI2C$J$I$,$G$-$^$9!#(B
+これらによって、現在のファイルのトップレベルへのコードの追加、
+現在のクラスへのインスタンス変数やメソッドの追加、
+現在の文の直前へのローカル型宣言の追加、
+現在の文の直後への後処理の追加などができます。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -258,16 +258,16 @@ addTree $B$NBh0l0z?t$K;XDj$G$-$k(B symbol $B$K$O!"8=:_0J2<$N$b$N$,$"$j$^$9!#
  public static <a href="epp.Symbol.html#_top_">Symbol</a> genTemp(String prefix)
 </pre>
 <dl>
-  <dd> $B%^%/%mE83+;~$K!"%f%K!<%/$J<1JL;R$r@8@.$9$k$?$a$K8F$S=P$9%a%=%C%I$G$9!#(B.
-$B<!$N$h$&$KDj5A$5$l$F$$$^$9!#(B
+  <dd> マクロ展開時に、ユニークな識別子を生成するために呼び出すメソッドです。.
+次のように定義されています。
 <pre>
   public static Symbol genTemp(String prefix){
     return Symbol.intern(prefix + genTempCounter++);
   }
 </pre>
 <p>
-$B$3$3$G!"(B genTempCounter $B$O(B static $BJQ?t$G!"=i4|CM$O#0$G$9!#(B
-$B=i4|2=$O!"(B EPP $B$N5/F0;~$K#1EY$@$19T$J$o$l$^$9!#(B
+ここで、 genTempCounter は static 変数で、初期値は０です。
+初期化は、 EPP の起動時に１度だけ行なわれます。
 <p>
 </dl>
 <a name="error(java.lang.String)"><img src="images/green-ball.gif" width=12 height=12 alt=" o "></a>
@@ -276,9 +276,9 @@ addTree $B$NBh0l0z?t$K;XDj$G$-$k(B symbol $B$K$O!"8=:_0J2<$N$b$N$,$"$j$^$9!#
  public static Error error(String str)
 </pre>
 <dl>
-  <dd> $B%^%/%mE83+;~$N%(%i!<$,5/$-$?;~$K!"8F$V%a%=%C%I$G$9!#(B.
-$B%/%i%9(B EppUserError $B$N%$%s%9%?%s%9$rJV$7$^$9!#(B
-$B;H$$J}$O!"(B EppCore#error $B$HF1$8$G$9!#(B
+  <dd> マクロ展開時のエラーが起きた時に、呼ぶメソッドです。.
+クラス EppUserError のインスタンスを返します。
+使い方は、 EppCore#error と同じです。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>

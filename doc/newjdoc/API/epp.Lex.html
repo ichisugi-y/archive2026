@@ -25,26 +25,26 @@ java.lang.Object
   <dt> public class <b>Lex</b>
   <dt> extends Object
 </dl>
-EPP $B%W%j%W%m%;%C%5$,;}$D%a%=%C%I$N$&$A(B
-$B%U%!%$%k(B Lex.java $B$GDj5A$5$l$k%a%=%C%I$O!"(B
-Java $B8@8l$N;z6g2r@O$r9T$J$&$?$a$N$b$N$G$9!#(B.
+EPP プリプロセッサが持つメソッドのうち
+ファイル Lex.java で定義されるメソッドは、
+Java 言語の字句解析を行なうためのものです。.
 <p>
-<b> $BCm0U!'(B $B$3$N%/%i%9$O!"(B javadoc $B$r:n$k$?$a$NJX59E*$J%/%i%9$G$9!#(B
-$B<B:]$N(B EPP $B$N%=!<%9%3!<%ICf$K$OB8:_$7$^$;$s!#(B </b>
+<b> 注意： このクラスは、 javadoc を作るための便宜的なクラスです。
+実際の EPP のソースコード中には存在しません。 </b>
 <p>
-$B9=J82r@O%k!<%A%s$O!"%a%=%C%I(B match $B$H(B matchAny $B$K$h$C$F!"(B
-$B;z6g2r@O%k!<%A%s$r4V@\E*$K8F$S=P$7$F$$$^$9!#(B
+構文解析ルーチンは、メソッド match と matchAny によって、
+字句解析ルーチンを間接的に呼び出しています。
 <p>
-$B%a%=%C%I(B match $B$"$k$$$O(B matchAny $B$N8F$S=P$7$K$h$C$F?7$?$J%H!<%/%s$,(B
-$BI,MW$K$J$k$H!"%a%=%C%I(B readToken $B$,8F$P$l$^$9!#(B
-$B$3$N%a%=%C%I$O!"I,MW$K1~$8$F$5$i$KB>$N%a%=%C%I$r8F$S=P$7$F!"(B
-EppInputStream $B$+$i%H!<%/%s$r#1$D@Z$j=P$7$FJV$7$^$9!#(B
+メソッド match あるいは matchAny の呼び出しによって新たなトークンが
+必要になると、メソッド readToken が呼ばれます。
+このメソッドは、必要に応じてさらに他のメソッドを呼び出して、
+EppInputStream からトークンを１つ切り出して返します。
 <p>
-plug-in $B$O!"$3$l$i$N%a%=%C%I$r3HD%$9$k$3$H$G!"(B
-$B$3$N;z6g2r@O%k!<%A%s$N5sF0$rJQ99$G$-$^$9!#(B
-$BNc$($P!"IaDL$N(B Java $B$G$O(B "**" $B$H$$$&J8;zNs$O(B :"*" $B$H$$$&(B Symbol $B#2$D$K(B
-$B;z6g2r@O$5$l$^$9$,!"$=$l$r(B :"**" $B$H$$$&#1$D$N(B Symbol $B$K;z6g2r@O$9$k$h$&$K(B
-$B3HD%$9$k$K$O!"<!$N$h$&$K$7$^$9!#(B
+plug-in は、これらのメソッドを拡張することで、
+この字句解析ルーチンの挙動を変更できます。
+例えば、普通の Java では "**" という文字列は :"*" という Symbol ２つに
+字句解析されますが、それを :"**" という１つの Symbol に字句解析するように
+拡張するには、次のようにします。
 <pre>
 SystemMixin NewOp {
   class Epp {
@@ -85,41 +85,41 @@ SystemMixin NewOp {
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#readCharLiteral(epp.EppInputStream)"><b>readCharLiteral</b></a>(EppInputStream)
-  <dd> $B%H!<%/%s$N@hF,$,%7%s%0%k%/%)!<%H$@$C$?;~$K!"(B readOperator $B$+$i(B
-$B8F$S=P$5$l!"J8;z%j%F%i%k$rJV$7$^$9!#(B
+  <dd> トークンの先頭がシングルクォートだった時に、 readOperator から
+呼び出され、文字リテラルを返します。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#readEndOfLineComment(epp.EppInputStream)"><b>readEndOfLineComment</b></a>(EppInputStream)
-  <dd> "//" $B$G;O$^$k%3%a%s%H$rFI$_Ht$P$7!"<!$N%H!<%/%s$rJV$7$^$9!#(B.
+  <dd> "//" で始まるコメントを読み飛ばし、次のトークンを返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#readEscapedChar(epp.EppInputStream, java.lang.StringBuffer, char)"><b>readEscapedChar</b></a>(EppInputStream, StringBuffer, char)
-  <dd> "(J\(B"" $B$N$h$&$J%(%9%1!<%W%7!<%1%s%9$r=hM}$7$^$9!#(B.
+  <dd> "\"" のようなエスケープシーケンスを処理します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#readId(epp.EppInputStream)"><b>readId</b></a>(EppInputStream)
-  <dd> $B%H!<%/%s$N@hF,$,%"%k%U%!%Y%C%H$G$"$k>l9g$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B.
+  <dd> トークンの先頭がアルファベットである場合に呼び出されるメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#readNumber(epp.EppInputStream)"><b>readNumber</b></a>(EppInputStream)
-  <dd> $B?tCM%j%F%i%k$rFI$s$GJV$7$^$9!#(B.
+  <dd> 数値リテラルを読んで返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#readOperator(epp.EppInputStream)"><b>readOperator</b></a>(EppInputStream)
-  <dd> $B%H!<%/%s$N@hF,$,5-9f$G$"$k>l9g$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B.
+  <dd> トークンの先頭が記号である場合に呼び出されるメソッドです。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#readSharp(epp.EppInputStream)"><b>readSharp</b></a>(EppInputStream)
-  <dd> "#" $B$G;O$^$k%H!<%/%s$r=hM}$7$^$9!#(B.
+  <dd> "#" で始まるトークンを処理します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#readStringLiteral(epp.EppInputStream)"><b>readStringLiteral</b></a>(EppInputStream)
-  <dd> $B%H!<%/%s$N@hF,$,%@%V%k%/%)!<%H$@$C$?;~$K!"(B readOperator $B$+$i(B
-$B8F$S=P$5$l!"J8;zNs%j%F%i%k$rJV$7$^$9!#(B
+  <dd> トークンの先頭がダブルクォートだった時に、 readOperator から
+呼び出され、文字列リテラルを返します。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#readTokenAtNextLine(epp.EppInputStream)"><b>readTokenAtNextLine</b></a>(EppInputStream)
-  <dd> $B9TKv$^$G$rL5;k$7!"<!$N9T$+$i%H!<%/%s$rFI$s$G$=$l$rJV$7$^$9!#(B.
+  <dd> 行末までを無視し、次の行からトークンを読んでそれを返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#readTokenStart(epp.EppInputStream)"><b>readTokenStart</b></a>(EppInputStream)
-  <dd> $B0z?t(B in $B$+$i%H!<%/%s$r#1$DFI$s$GJV$7$^$9!#(B.
+  <dd> 引数 in からトークンを１つ読んで返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#readTraditionalComment(epp.EppInputStream)"><b>readTraditionalComment</b></a>(EppInputStream)
-  <dd> "/*" $B$G;O$^$k%3%a%s%H$rFI$_Ht$P$7!"<!$N%H!<%/%s$rJV$7$^$9!#(B.
+  <dd> "/*" で始まるコメントを読み飛ばし、次のトークンを返します。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -141,12 +141,12 @@ SystemMixin NewOp {
  public <a href="epp.Token.html#_top_">Token</a> readTokenStart(<a href="epp.EppInputStream.html#_top_">EppInputStream</a> in)
 </pre>
 <dl>
-  <dd> $B0z?t(B in $B$+$i%H!<%/%s$r#1$DFI$s$GJV$7$^$9!#(B.
-$B6uGrJ8;z$O4{$K%9%-%C%W$5$l$F$$$k$b$N$H2>Dj$7$^$9!#(B
-$B:G=i$N#1J8;z$r@hFI$_$7!"$=$NCM$,%"%k%U%!%Y%C%H$+(B
-$B?t;z$+5-9f$+$K$h$C$F!"(B
-readId, readNumber, readOperator $B$r8F$S=P$7$^$9!#(B
-$B$3$N%a%=%C%I$O!"(B readToken $B$+$i8F$P$l$^$9!#(B
+  <dd> 引数 in からトークンを１つ読んで返します。.
+空白文字は既にスキップされているものと仮定します。
+最初の１文字を先読みし、その値がアルファベットか
+数字か記号かによって、
+readId, readNumber, readOperator を呼び出します。
+このメソッドは、 readToken から呼ばれます。
 <p>
   <dd><dl>
     <dt> <b>See Also:</b>
@@ -159,9 +159,9 @@ readId, readNumber, readOperator $B$r8F$S=P$7$^$9!#(B
  public <a href="epp.Token.html#_top_">Token</a> readId(<a href="epp.EppInputStream.html#_top_">EppInputStream</a> in)
 </pre>
 <dl>
-  <dd> $B%H!<%/%s$N@hF,$,%"%k%U%!%Y%C%H$G$"$k>l9g$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B.
-$B<1JL;R$"$k$$$O%-!<%o!<%I(B(if, while $B$J$I(B)$B$rFI$s$G(B Symbol 
-$B$H$7$FJV$7$^$9!#(B
+  <dd> トークンの先頭がアルファベットである場合に呼び出されるメソッドです。.
+識別子あるいはキーワード(if, while など)を読んで Symbol 
+として返します。
 <p>
 </dl>
 <a name="readNumber(epp.EppInputStream)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -170,11 +170,11 @@ readId, readNumber, readOperator $B$r8F$S=P$7$^$9!#(B
  public <a href="epp.Token.html#_top_">Token</a> readNumber(<a href="epp.EppInputStream.html#_top_">EppInputStream</a> in)
 </pre>
 <dl>
-  <dd> $B?tCM%j%F%i%k$rFI$s$GJV$7$^$9!#(B.
-$B%H!<%/%s$N@hF,$,?t;z$G$"$k>l9g$K(B readTokenStart $B$+$i(B
-$B8F$S=P$5$l$^$9!#(B
-$B$?$@$7!"(B ".1" $B$N$h$&$J>l9g$O!"(B readTokenStart $B$+$i(B
-$B$^$:(B readOperator $B$,8F$S=P$5$l!"$=$3$+$i$3$N%a%=%C%I$,8F$P$l$^$9!#(B
+  <dd> 数値リテラルを読んで返します。.
+トークンの先頭が数字である場合に readTokenStart から
+呼び出されます。
+ただし、 ".1" のような場合は、 readTokenStart から
+まず readOperator が呼び出され、そこからこのメソッドが呼ばれます。
 <p>
 </dl>
 <a name="readOperator(epp.EppInputStream)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -183,8 +183,8 @@ readId, readNumber, readOperator $B$r8F$S=P$7$^$9!#(B
  public <a href="epp.Token.html#_top_">Token</a> readOperator(<a href="epp.EppInputStream.html#_top_">EppInputStream</a> in)
 </pre>
 <dl>
-  <dd> $B%H!<%/%s$N@hF,$,5-9f$G$"$k>l9g$K8F$S=P$5$l$k%a%=%C%I$G$9!#(B.
-$BI,MW$K1~$8$F!"(B readTraditionalComment $B$J$IB>$N%a%=%C%I$r8F$S=P$7$^$9!#(B
+  <dd> トークンの先頭が記号である場合に呼び出されるメソッドです。.
+必要に応じて、 readTraditionalComment など他のメソッドを呼び出します。
 <p>
 </dl>
 <a name="readStringLiteral(epp.EppInputStream)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -193,8 +193,8 @@ readId, readNumber, readOperator $B$r8F$S=P$7$^$9!#(B
  public <a href="epp.Token.html#_top_">Token</a> readStringLiteral(<a href="epp.EppInputStream.html#_top_">EppInputStream</a> in)
 </pre>
 <dl>
-  <dd> $B%H!<%/%s$N@hF,$,%@%V%k%/%)!<%H$@$C$?;~$K!"(B readOperator $B$+$i(B
-$B8F$S=P$5$l!"J8;zNs%j%F%i%k$rJV$7$^$9!#(B
+  <dd> トークンの先頭がダブルクォートだった時に、 readOperator から
+呼び出され、文字列リテラルを返します。
 <p>
 </dl>
 <a name="readCharLiteral(epp.EppInputStream)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -203,8 +203,8 @@ readId, readNumber, readOperator $B$r8F$S=P$7$^$9!#(B
  public <a href="epp.Token.html#_top_">Token</a> readCharLiteral(<a href="epp.EppInputStream.html#_top_">EppInputStream</a> in)
 </pre>
 <dl>
-  <dd> $B%H!<%/%s$N@hF,$,%7%s%0%k%/%)!<%H$@$C$?;~$K!"(B readOperator $B$+$i(B
-$B8F$S=P$5$l!"J8;z%j%F%i%k$rJV$7$^$9!#(B
+  <dd> トークンの先頭がシングルクォートだった時に、 readOperator から
+呼び出され、文字リテラルを返します。
 <p>
 </dl>
 <a name="readEscapedChar(epp.EppInputStream, java.lang.StringBuffer, char)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -215,8 +215,8 @@ readId, readNumber, readOperator $B$r8F$S=P$7$^$9!#(B
                              char c)
 </pre>
 <dl>
-  <dd> "(J\(B"" $B$N$h$&$J%(%9%1!<%W%7!<%1%s%9$r=hM}$7$^$9!#(B.
-readStringLiteral $B$H(B readCharLiteral $B$+$i8F$S=P$5$l$^$9!#(B
+  <dd> "\"" のようなエスケープシーケンスを処理します。.
+readStringLiteral と readCharLiteral から呼び出されます。
 <p>
 </dl>
 <a name="readTraditionalComment(epp.EppInputStream)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -225,8 +225,8 @@ readStringLiteral $B$H(B readCharLiteral $B$+$i8F$S=P$5$l$^$9!#(B
  public <a href="epp.Token.html#_top_">Token</a> readTraditionalComment(<a href="epp.EppInputStream.html#_top_">EppInputStream</a> in)
 </pre>
 <dl>
-  <dd> "/*" $B$G;O$^$k%3%a%s%H$rFI$_Ht$P$7!"<!$N%H!<%/%s$rJV$7$^$9!#(B.
-"/*" $B$N#2J8;z$O$9$G$K>CHq$5$l$?>uBV$G8F$S=P$5$l$^$9!#(B
+  <dd> "/*" で始まるコメントを読み飛ばし、次のトークンを返します。.
+"/*" の２文字はすでに消費された状態で呼び出されます。
 <p>
 </dl>
 <a name="readEndOfLineComment(epp.EppInputStream)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -235,8 +235,8 @@ readStringLiteral $B$H(B readCharLiteral $B$+$i8F$S=P$5$l$^$9!#(B
  public <a href="epp.Token.html#_top_">Token</a> readEndOfLineComment(<a href="epp.EppInputStream.html#_top_">EppInputStream</a> in)
 </pre>
 <dl>
-  <dd> "//" $B$G;O$^$k%3%a%s%H$rFI$_Ht$P$7!"<!$N%H!<%/%s$rJV$7$^$9!#(B.
-"//" $B$N#2J8;z$O$9$G$K>CHq$5$l$?>uBV$G8F$S=P$5$l$^$9!#(B
+  <dd> "//" で始まるコメントを読み飛ばし、次のトークンを返します。.
+"//" の２文字はすでに消費された状態で呼び出されます。
 <p>
 </dl>
 <a name="readSharp(epp.EppInputStream)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -245,11 +245,11 @@ readStringLiteral $B$H(B readCharLiteral $B$+$i8F$S=P$5$l$^$9!#(B
  public <a href="epp.Token.html#_top_">Token</a> readSharp(<a href="epp.EppInputStream.html#_top_">EppInputStream</a> in)
 </pre>
 <dl>
-  <dd> "#" $B$G;O$^$k%H!<%/%s$r=hM}$7$^$9!#(B.
-"#" $B$N#1J8;z$O$9$G$K>CHq$5$l$?>uBV$G8F$S=P$5$l$^$9!#(B
-$B$3$N%a%=%C%I$N%G%U%)%k%H$NF0:n$O!"(BreadTokenAtNextLine $B%a%=%C%I$r(B
-$B8F$S=P$7$^$9!#(B
-$B!J(B #epp $B%3%^%s%I$rFI$_Ht$P$9$?$a$G$9!#!K(B
+  <dd> "#" で始まるトークンを処理します。.
+"#" の１文字はすでに消費された状態で呼び出されます。
+このメソッドのデフォルトの動作は、readTokenAtNextLine メソッドを
+呼び出します。
+（ #epp コマンドを読み飛ばすためです。）
 <p>
 </dl>
 <a name="readTokenAtNextLine(epp.EppInputStream)"><img src="images/red-ball.gif" width=12 height=12 alt=" o "></a>
@@ -258,9 +258,9 @@ readStringLiteral $B$H(B readCharLiteral $B$+$i8F$S=P$5$l$^$9!#(B
  public <a href="epp.Token.html#_top_">Token</a> readTokenAtNextLine(<a href="epp.EppInputStream.html#_top_">EppInputStream</a> in)
 </pre>
 <dl>
-  <dd> $B9TKv$^$G$rL5;k$7!"<!$N9T$+$i%H!<%/%s$rFI$s$G$=$l$rJV$7$^$9!#(B.
-$B$3$N%a%=%C%I$O(B readEndOfLineComment $B$*$h$S(B readSharp $B$+$i(B
-$B8F$S=P$5$l$^$9!#(B
+  <dd> 行末までを無視し、次の行からトークンを読んでそれを返します。.
+このメソッドは readEndOfLineComment および readSharp から
+呼び出されます。
 <p>
 </dl>
 <hr>

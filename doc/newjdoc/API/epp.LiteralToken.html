@@ -27,18 +27,18 @@ java.lang.Object
   <dt> public class <b>LiteralToken</b>
   <dt> extends <a href="epp.Token.html#_top_">Token</a>
 </dl>
-$B%/%i%9(B LiteralToken $B$O!"%j%F%i%k$rI=$9%H!<%/%s$G$9!#(B.
+クラス LiteralToken は、リテラルを表すトークンです。.
 <p>
-$BA4$F$N%j%F%i%k$O!"$3$N%/%i%9$N%$%s%9%?%s%9$GI=8=$5$l$^$9!#(B
-$B%j%F%i%k$N<oN`$O(B literalTag $B$H$$$&(B Symbol $B7?$N%G!<%?!"(B
-$B%j%F%i%k$NCf?H$N>pJs$O!"(B literalContents $B$H$$$&(B String $B7?$N%G!<%?$G(B
-$BI=$5$l$^$9!#(B
+全てのリテラルは、このクラスのインスタンスで表現されます。
+リテラルの種類は literalTag という Symbol 型のデータ、
+リテラルの中身の情報は、 literalContents という String 型のデータで
+表されます。
 <pre>
-$BNc!'(B
+例：
 123       (int "123")
 1.2       (double "1.2")
 "abc"     (string "abc")
-"(J\(Bn"      (string "(J\\(Bn")
+"\n"      (string "\\n")
 'c'       (char "c")
 </pre>
 <p>
@@ -62,17 +62,17 @@ java.lang.Object
 <dl>
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#isLiteralToken()"><b>isLiteralToken</b></a>()
-  <dd> $B$3$N(B token $B$,(B LiteralToken $B$J$i(B true $B!"(B $B$=$&$G$J$$$1$l$P(B false $B$rJV$7$^$9!#(B
+  <dd> この token が LiteralToken なら true 、 そうでないければ false を返します。
 
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#literalContents()"><b>literalContents</b></a>()
-  <dd> $B$3$N(B token $B$,(B LiteralToken $B$J$i!"(B literalContents $B$rJV$7$^$9!#(B.
+  <dd> この token が LiteralToken なら、 literalContents を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#literalTag()"><b>literalTag</b></a>()
-  <dd> $B$3$N(B token $B$,(B LiteralToken $B$J$i!"(B literalTag $B$rJV$7$^$9!#(B.
+  <dd> この token が LiteralToken なら、 literalTag を返します。.
   <dt> <img src="images/red-ball-small.gif" width=6 height=6 alt=" o ">
 	<a href="#toString()"><b>toString</b></a>()
-  <dd> LiteralToken $B$r(B String $B$KJQ49$9$k%G%P%C%0MQ%a%=%C%I$G$9!#(B.
+  <dd> LiteralToken を String に変換するデバッグ用メソッドです。.
 </dl>
 <a name="constructors"></a>
 <h2>
@@ -95,7 +95,7 @@ java.lang.Object
  public boolean isLiteralToken()
 </pre>
 <dl>
-  <dd> $B$3$N(B token $B$,(B LiteralToken $B$J$i(B true $B!"(B $B$=$&$G$J$$$1$l$P(B false $B$rJV$7$^$9!#(B
+  <dd> この token が LiteralToken なら true 、 そうでないければ false を返します。
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>
@@ -108,8 +108,8 @@ java.lang.Object
  public <a href="epp.Symbol.html#_top_">Symbol</a> literalTag()
 </pre>
 <dl>
-  <dd> $B$3$N(B token $B$,(B LiteralToken $B$J$i!"(B literalTag $B$rJV$7$^$9!#(B.
-$B$3$N(B token $B$,(B LiteralToken $B$G$J$$$J$i!"(B fatal error $B$G$9!#(B
+  <dd> この token が LiteralToken なら、 literalTag を返します。.
+この token が LiteralToken でないなら、 fatal error です。
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>
@@ -122,8 +122,8 @@ java.lang.Object
  public String literalContents()
 </pre>
 <dl>
-  <dd> $B$3$N(B token $B$,(B LiteralToken $B$J$i!"(B literalContents $B$rJV$7$^$9!#(B.
-$B$3$N(B token $B$,(B LiteralToken $B$G$J$$$J$i!"(B fatal error $B$G$9!#(B
+  <dd> この token が LiteralToken なら、 literalContents を返します。.
+この token が LiteralToken でないなら、 fatal error です。
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>
@@ -136,10 +136,10 @@ java.lang.Object
  public String toString()
 </pre>
 <dl>
-  <dd> LiteralToken $B$r(B String $B$KJQ49$9$k%G%P%C%0MQ%a%=%C%I$G$9!#(B.
-literalTag $B$H(B literalContents $B$r$J$i$Y$F$+$C$3$G0O$s$@J8;zNs$KJQ49$7$^$9!#(B
-$BNc$($P!"(B 123 $B$rI=$9(B LiteralToken $B$O!"(B "(int (J\(B"123(J\(B")" $B$H$$$&J8;zNs$K(B
-$BJQ49$5$l$^$9!#(B
+  <dd> LiteralToken を String に変換するデバッグ用メソッドです。.
+literalTag と literalContents をならべてかっこで囲んだ文字列に変換します。
+例えば、 123 を表す LiteralToken は、 "(int \"123\")" という文字列に
+変換されます。
 <p>
   <dd><dl>
     <dt> <b>Overrides:</b>

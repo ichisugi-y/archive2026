@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="./style.css">
 <title> assert2 plug-in </title>
 </head> <body>
@@ -13,14 +13,14 @@
 <ul class="headers">
 </p></ul><p>
 </p><p>
-JDK1.4 $B$N(B assert $BJ8$r%W%j%W%m%;%C%5$G%(%_%e%l!<%H$9$k(B assert2 plug-in $B$,!"(B
-$BI8=`$G(B mjc $B%3%^%s%I$KAH$_9~$^$l$F$$$^$9!#(B
+JDK1.4 の assert 文をプリプロセッサでエミュレートする assert2 plug-in が、
+標準で mjc コマンドに組み込まれています。
 </p><p>
-$B$3$N(B assert $BJ8$O!"0z?t$N>r7o<0$,(B false $B$@$C$?>l9g$O!"(B
-$BI8=`%(%i!<=PNO$K(B assert $B%^%/%m$N0LCV$N>pJs$r=PNO$7$?8e!"(B
- java.lang.Error $B$r(B throw $B$7$^$9!#(B
+この assert 文は、引数の条件式が false だった場合は、
+標準エラー出力に assert マクロの位置の情報を出力した後、
+ java.lang.Error を throw します。
 </p><p>
-assert $BJ8$K$O#10z?t$N$b$N$H#20z?t$N$b$N$,$"$j$^$9!#(B
+assert 文には１引数のものと２引数のものがあります。
 </p><p>
 <pre>
         Statement:
@@ -28,37 +28,37 @@ assert $BJ8$K$O#10z?t$N$b$N$H#20z?t$N$b$N$,$"$j$^$9!#(B
                 assert exp : exp;
 </pre>
 </p><p>
-$B#10z?t$N(B assert $BJ8$O!"(B exp $B$,Hf3S1i;;;R$G$"$k>l9g!"(B
-$BN>JU$NCM$r%a%C%;!<%8$K=P$7$F$/$l$^$9!#Nc$($P!"(B
+１引数の assert 文は、 exp が比較演算子である場合、
+両辺の値をメッセージに出してくれます。例えば、
 </p><p>
 <pre>
       double d = 10;
       assert(d / 2 &gt; d + 2);
 </pre>
 </p><p>
-$B$r<B9T$9$k$H!"<!$N$h$&$J%(%i!<%a%C%;!<%8$,=P$^$9!#(B
+を実行すると、次のようなエラーメッセージが出ます。
 </p><p>
 <pre>
 java.lang.Error: Assertion failed : (5.0 &gt; 12.0) is not true.
 </pre>
 </p><p>
-$B#20z?t$N(B assert $BJ8$O!"#2$D$a$N0z?t$r%a%C%;!<%8$K;H$$$^$9!#(B
-$B#2$D$a$N0z?t$O!"#1$D$a$N0z?t$,(B false $B$G$"$C$?;~$N$_I>2A$5$l$^$9!#(B
-$BNc$($P!"(B
+２引数の assert 文は、２つめの引数をメッセージに使います。
+２つめの引数は、１つめの引数が false であった時のみ評価されます。
+例えば、
 </p><p>
 <pre>
     int y = 0;
     assert y != 0 : "Zero divide.";
 </pre>
 </p><p>
-$B$r<B9T$9$k$H!"<!$N$h$&$J%(%i!<%a%C%;!<%8$,=P$^$9!#(B
+を実行すると、次のようなエラーメッセージが出ます。
 </p><p>
 <pre>
 java.lang.Error: Assertion failed : Zero divide.
 </pre>
 </p><p>
-$B%3%s%Q%$%k;~$K(B NDEBUG $B$H$$$&(B property $B$NCM$r(B true $B$K$9$k$3$H$G!"(B
-assert $B%^%/%m$r6uJ8$KE83+$9$k$h$&$K$G$-$^$9!#Nc!'(B
+コンパイル時に NDEBUG という property の値を true にすることで、
+assert マクロを空文に展開するようにできます。例：
 </p><p>
 <pre>
  mjc -J-DNDEBUG=true Tutorial.java 
